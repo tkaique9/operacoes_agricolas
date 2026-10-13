@@ -1,0 +1,7 @@
+# planilhas da semana: ficam só na máquina (o index.html já leva os números)
+dados/
+arquivo_rsc0819/dados/
+~$*
+__pycache__/
+*.pyc
+.claude/

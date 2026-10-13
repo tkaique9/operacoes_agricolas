@@ -1,0 +1,2185 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="na-capa"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tratos Culturais — Reunião Semanal | UGS</title>
+<!-- Fontes do tema (Archivo, Source Serif 4, IBM Plex Mono): carregadas do Google Fonts sem
+     travar a página. Sem internet, entram as fontes do sistema e nada quebra. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&amp;display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&amp;display=swap"></noscript>
+<style>
+/* Estilo base, capa, páginas, tabela, quadro e painel de detalhe: os mesmos do
+   comparativo_moagem (Indicadores Grupo Japungu), para as apresentações terem o
+   mesmo padrão. O que é só deste relatório fica no fim deste bloco. */
+:root{--navy:#12224A;--navy2:#1E3566;--gold:#C9A227;--red:#C0392B;--green:#2E7D46;--ink:#2B2B2B;--mut:#5A6072;--line:#D6DAE2;--bgsoft:#F4F6FA;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;color:var(--ink);background:#fff}
+header.top{background:var(--navy);color:#fff;padding:10px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--gold);flex-wrap:wrap;gap:6px}
+header.top .brand{font-weight:700;font-size:15px} header.top .meta{font-size:12.5px;color:#C6CEE0}
+nav.toc{background:#fff;border-bottom:1px solid var(--line);padding:7px 28px;overflow-x:auto;white-space:nowrap}
+nav.toc a{color:var(--navy);text-decoration:none;font-size:12.5px;font-weight:500;margin-right:16px;
+  padding-bottom:4px;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+nav.toc a b{color:var(--gold);font-weight:700;margin-right:4px}
+nav.toc a:hover{color:var(--gold)}
+nav.toc a.on{color:var(--gold);border-bottom-color:var(--gold);font-weight:700}
+/* menu por módulo: à esquerda a capa e os módulos, à direita só as páginas do
+   módulo em que a apresentação está */
+nav.toc{display:flex;align-items:center}
+.toc-mods{display:inline-flex;align-items:center;gap:6px;margin-left:2px}
+.toc-mod{font:inherit;font-size:12px;font-weight:700;color:var(--navy);background:var(--bgsoft);
+  border:1px solid var(--line);border-radius:14px;padding:3px 11px;cursor:pointer;white-space:nowrap}
+.toc-mod u{text-decoration:none;color:var(--mut);font-weight:500;font-size:11px;margin-left:3px}
+.toc-mod:hover{border-color:var(--gold)}
+.toc-mod.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.toc-mod.on u{color:var(--gold)}
+.toc-sep{flex:0 0 1px;align-self:stretch;background:var(--line);margin:0 14px}
+.toc-pags{display:inline-flex;align-items:center}
+.toc-dica{font-size:12px;color:var(--mut);font-style:italic}
+
+/* dourado é o valor neutro; só o número negativo muda de cor, para não passar
+   por crescimento numa leitura rápida de sala */
+.s-chip .v.neg{color:#F0897A}
+
+/* ============================================================
+   MODO APRESENTAÇÃO — uma página por tópico, sem rolagem
+   ============================================================ */
+html,body{height:100%}
+body{margin:0;display:flex;flex-direction:column;overflow:hidden}
+header.top,nav.toc{flex:0 0 auto}
+
+.deck{position:relative;flex:1 1 auto;min-height:0}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;visibility:hidden;
+  transform:translateY(14px);transition:opacity .38s ease,transform .38s ease,visibility .38s}
+.slide.active{opacity:1;visibility:visible;transform:none}
+
+.deck-nav{flex:0 0 auto;display:flex;align-items:center;gap:14px;background:var(--navy);
+  border-top:3px solid var(--gold);padding:7px 20px}
+.deck-nav button{font:inherit;font-size:13px;font-weight:700;color:var(--navy);background:var(--gold);
+  border:0;border-radius:6px;padding:6px 15px;cursor:pointer}
+.deck-nav button:disabled{opacity:.32;cursor:default}
+.deck-dots{display:flex;gap:8px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.deck-dots button{width:11px;height:11px;padding:0;border-radius:50%;background:rgba(255,255,255,.3);border:0;cursor:pointer}
+.deck-dots button.on{background:var(--gold);transform:scale(1.3)}
+.deck-dots button.mod-ini{margin-left:10px}   /* espaço entre um módulo e outro */
+.deck-count{color:#C6CEE0;font-size:12.5px;font-variant-numeric:tabular-nums;min-width:58px;text-align:right}
+.deck-hint{color:#8C97AE;font-size:11px;letter-spacing:.02em}
+
+/* ---- capa ----
+   Capa de apresentação: ocupa a janela inteira, por cima do cabeçalho e do índice,
+   e deixa só a barra de navegação de baixo (a altura dela vem de --navh, medida em
+   JS). É position:fixed de propósito: dentro do deck, em absolute, a capa
+   empurraria o layout das outras páginas ao entrar e sair.
+   Os tamanhos usam clamp() com vw/vh: a capa escala sozinha de um projetor 16:9 a
+   uma janela baixa de notebook, sem depender só de media query. */
+.slide.slide-cover{position:fixed;inset:0 0 var(--navh,46px) 0;z-index:40;
+  --mx:clamp(22px,4.4vw,72px);
+  display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden;color:#fff;
+  background:
+    radial-gradient(820px 520px at 80% 60%,rgba(201,162,39,.11),transparent 64%),
+    radial-gradient(1300px 760px at 4% -14%,#274889 0%,#162B5E 40%,#0A1330 100%)}
+.deck-nav{position:relative;z-index:41}   /* a barra de navegação fica acima da capa */
+
+/* topo: a logo direto sobre o fundo escuro (sem painel) + quem apresenta. O recuo da
+   esquerda é o mesmo --mx do título, então logo e título alinham pela mesma margem.
+   A imagem já vem com o fundo das letras branco: é ele que dá leitura à logo azul. */
+.capa-topo{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;min-width:0}
+.capa-placa{display:flex;align-items:center;padding:clamp(14px,3.2vh,34px) 0 0 var(--mx)}
+.capa-logo-img{display:block;height:clamp(40px,8vh,88px);width:auto}
+.capa-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right;
+  padding:clamp(12px,3vh,30px) var(--mx) 0 0}
+.capa-meta-k{font-size:clamp(10.5px,1.5vh,12px);letter-spacing:.22em;text-transform:uppercase;
+  font-weight:700;color:var(--gold)}
+.capa-meta-v{font-size:clamp(12px,1.8vh,14px);color:#C6CEE0}
+
+/* meio: título à esquerda, curva de moagem acumulada à direita */
+.capa-meio{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);align-items:center;
+  gap:clamp(18px,3.4vw,56px);padding:0 var(--mx);min-height:0}
+.capa-texto{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(8px,1.9vh,20px);min-width:0}
+.capa-selo{display:inline-flex;align-items:center;gap:12px;font-size:clamp(10.5px,1.55vh,12.5px);
+  letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.capa-selo::before{content:"";width:38px;height:3px;background:var(--gold);border-radius:2px;flex:none}
+.slide-cover h1{margin:0;font-size:clamp(30px,min(5.1vw,8.8vh),80px);line-height:1.02;
+  font-weight:700;letter-spacing:-.025em}
+.slide-cover h1 em{display:block;font-style:normal;font-weight:300;color:#AEBBD8;
+  font-size:.43em;letter-spacing:-.005em;line-height:1.2;margin-top:.45em}
+.slide-cover p.sub{margin:0;color:#C6CEE0;font-size:clamp(12.5px,2vh,16.5px);line-height:1.55;max-width:34em}
+.capa-aviso{display:inline-flex;align-items:center;gap:9px;font-size:clamp(10.5px,1.55vh,12px);font-weight:600;
+  color:#F0DFA8;border:1px solid rgba(201,162,39,.55);background:rgba(201,162,39,.10);
+  padding:6px 13px;border-radius:999px}
+.capa-aviso i{width:7px;height:7px;border-radius:50%;background:var(--gold);flex:none}
+
+.capa-curva{margin:0;min-width:0;min-height:0;height:100%;display:flex;flex-direction:column;
+  gap:6px;padding:clamp(6px,1.4vh,14px) 0}
+.capa-curva figcaption{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 16px}
+.curva-t{font-size:clamp(11px,1.6vh,13px);letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#fff}
+.curva-u{font-size:clamp(10.5px,1.5vh,12px);color:#8FA0C4}
+.capa-curva .s-legend{margin-left:auto;gap:14px;font-size:clamp(10.5px,1.5vh,12px)}
+.curva-svg{flex:1 1 auto;min-height:0}
+.curva-svg svg{display:block;width:100%;height:100%}
+
+/* base: os quatro números da safra */
+.capa-base{padding:0 var(--mx) clamp(14px,3.2vh,36px)}
+.capa-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  background:rgba(5,11,28,.58);border:1px solid rgba(201,162,39,.32);border-radius:14px}
+.capa-kpi{padding:clamp(8px,1.8vh,18px) clamp(12px,1.8vw,28px);min-width:0}
+.capa-kpi + .capa-kpi{border-left:1px solid rgba(255,255,255,.10)}
+.capa-kpi-num{color:var(--gold);font-size:clamp(24px,min(3.4vw,6.2vh),50px);font-weight:700;line-height:1.05;
+  letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.capa-kpi-num small{font-size:.42em;font-weight:600;letter-spacing:0;margin-left:.3em;opacity:.85}
+.capa-kpi-num.neg{color:#F0897A}
+.capa-kpi-lab{margin-top:clamp(3px,.7vh,7px);font-size:clamp(10.5px,1.6vh,12.5px);line-height:1.35;
+  font-weight:600;color:#fff}
+.capa-kpi-lab em{display:block;font-style:normal;font-weight:400;color:#AEBBD8}
+
+/* entrada: o painel desce, o texto sobe em sequência e a curva se desenha da
+   esquerda para a direita; os rótulos finais aparecem por último */
+@keyframes capa-sobe{from{opacity:0;transform:translateY(18px)}}
+@keyframes capa-desce{from{opacity:0;transform:translateY(-100%)}}
+@keyframes capa-rev{from{width:0}}
+@keyframes capa-fade{from{opacity:0}}
+.slide-cover.active .capa-placa{animation:capa-desce .7s cubic-bezier(.2,.75,.2,1) both}
+.slide-cover.active .capa-selo,.slide-cover.active h1,.slide-cover.active p.sub,.slide-cover.active .capa-aviso,
+.slide-cover.active .capa-curva,.slide-cover.active .capa-base{animation:capa-sobe .75s cubic-bezier(.2,.75,.2,1) both}
+.slide-cover.active .capa-selo{animation-delay:.10s}
+.slide-cover.active h1{animation-delay:.18s}
+.slide-cover.active p.sub{animation-delay:.28s}
+.slide-cover.active .capa-aviso{animation-delay:.36s}
+.slide-cover.active .capa-curva{animation-delay:.30s}
+.slide-cover.active .capa-base{animation-delay:.50s}
+.slide-cover.active .capa-rev{animation:capa-rev 1.6s cubic-bezier(.3,.7,.2,1) .65s both}
+.slide-cover.active .capa-fim{animation:capa-fade .6s ease 2s both}
+
+/* janelas baixas: o parágrafo e os avisos saem para sobrar altura ao título e aos números */
+@media(max-height:640px){ .slide-cover p.sub{display:none} }
+@media(max-height:520px){ .capa-aviso,.capa-meta{display:none} }
+/* janelas estreitas (tablet em pé, celular): uma coluna, sem a curva, e a capa rola */
+@media(max-width:900px){
+  .slide.slide-cover{grid-template-rows:auto auto auto;overflow-y:auto;overscroll-behavior:contain}
+  /* min-height:auto: com 0 o navegador espremeria a linha do meio abaixo do conteúdo */
+  .capa-meio{grid-template-columns:minmax(0,1fr);min-height:auto;padding-top:22px;padding-bottom:22px}
+  .slide-cover h1{font-size:clamp(34px,9vw,60px)}
+  .capa-curva,.capa-meta{display:none}
+  .capa-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .capa-kpi:nth-child(3){border-left:0}
+  .capa-kpi:nth-child(n+3){border-top:1px solid rgba(255,255,255,.10)}
+}
+@media(prefers-reduced-motion:reduce){ .slide-cover,.slide-cover *{animation:none!important} }
+
+/* ---- páginas de conteúdo ---- */
+.slide-dark{background:radial-gradient(1100px 620px at 12% -12%,#20386E 0%,#111F45 55%,#0A1330 100%);
+  color:#fff;padding:20px 30px 16px;gap:13px}
+.s-head{display:flex;align-items:flex-start;gap:22px;flex:0 0 auto}
+.s-eyebrow{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.s-title{font-size:25px;font-weight:700;margin:3px 0 0;line-height:1.15}
+.s-sub{font-size:13px;color:#AEBBD8;margin:5px 0 0;max-width:820px;line-height:1.45}
+.s-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.s-chips{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.s-chip{background:rgba(255,255,255,.07);border:1px solid rgba(201,162,39,.45);border-radius:10px;padding:8px 14px;min-width:120px}
+.s-chip .v{color:var(--gold);font-size:17.5px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.s-chip .k{color:#AEBBD8;font-size:10.5px;margin-top:3px;line-height:1.3}
+.s-toggle{display:flex;border:1px solid rgba(201,162,39,.5);border-radius:8px;overflow:hidden}
+.s-toggle button{font:inherit;font-size:12px;font-weight:700;padding:6px 14px;border:0;cursor:pointer;background:transparent;color:#C6CEE0}
+.s-toggle button.on{background:var(--gold);color:var(--navy)}
+.s-sel{font:inherit;font-size:12.5px;font-weight:700;padding:6px 12px;border:1px solid rgba(201,162,39,.5);
+  border-radius:8px;background:rgba(255,255,255,.08);color:#fff;cursor:pointer;max-width:250px}
+.s-sel:focus{outline:2px solid var(--gold)}
+.s-sel option{background:#12224A;color:#fff}
+/* seletor com etiqueta de cor (página região x região): a cor da etiqueta é a
+   da barra daquela região no gráfico */
+.sel-par{display:inline-flex;align-items:center;gap:6px}
+.sel-par i{font-style:normal;font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:2px 7px;
+  border:1px solid rgba(255,255,255,.45)}
+.s-legend{display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:#C6CEE0;flex:0 0 auto}
+.s-legend .lg{display:inline-flex;align-items:center;gap:7px}
+.s-legend .lg svg{display:block;flex:none}
+.s-legend b{color:#fff;font-weight:600}
+
+.s-card{flex:1 1 auto;min-height:0;background:#fff;border-radius:12px;box-shadow:0 18px 44px rgba(0,0,0,.38);
+  padding:8px 12px;display:flex;color:var(--ink)}
+.s-card > svg{width:100%;height:100%;display:block}
+.s-card.s-grid{display:grid;gap:9px}
+.s-card.s-grid.cols4{grid-template-columns:repeat(4,1fr);grid-template-rows:1fr}
+.s-card.s-grid.cols2{grid-template-columns:repeat(2,1fr);grid-template-rows:1fr}
+/* overflow:hidden é a rede de segurança: se um rótulo ainda estourar o viewBox
+   do painel, ele é cortado em vez de invadir o painel vizinho */
+.s-card.s-grid > svg{width:100%;height:100%;display:block;min-width:0;min-height:0;overflow:hidden}
+.s-insight{flex:0 0 auto;background:linear-gradient(90deg,rgba(201,162,39,.24),rgba(201,162,39,.04));
+  border-left:4px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 16px;font-size:13.5px;line-height:1.55;color:#EAF0FF}
+.s-insight strong{color:var(--gold)}
+.s-insight .sep{color:#5B6B90;margin:0 8px}
+/* custo por especialidade: tabela por grupo à esquerda, resumo por ordem à direita */
+#ces-card{gap:18px;padding:12px 16px}
+.ces-esq{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;min-height:0}
+.ces-dir{flex:0 0 430px;min-width:0;display:flex;flex-direction:column;min-height:0;border-left:1px solid var(--line);padding-left:16px}
+.ces-esq h4,.ces-dir h4{margin:0 0 6px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:700}
+.ces-rolo{overflow:auto;min-height:0;flex:1 1 auto}
+table.ces{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+table.ces th{position:sticky;top:0;z-index:1;background:var(--navy);color:#fff;font-weight:600;padding:6px 8px;text-align:right;font-size:11px}
+table.ces th.l,table.ces td.l{text-align:left}
+table.ces th.c,table.ces td.c{text-align:center}
+table.ces td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-weight:600}
+table.ces td.l{color:var(--ink);white-space:normal}
+table.ces td.l u{text-decoration:none;color:var(--mut);font-weight:400;font-size:10.5px}
+table.ces tr.g{cursor:pointer}
+table.ces tr.g td{font-weight:700;background:#F7F8FB}
+table.ces tr.g td.l{color:var(--navy)}
+table.ces tr.g td.l::before{content:"▸ ";color:var(--gold)}
+table.ces tr.g.aberto td.l::before{content:"▾ "}
+table.ces tr.g:hover td{background:#EEF1F7}
+table.ces tr.e td{font-weight:500}
+table.ces tr.e td.l{padding-left:26px}
+table.ces tr.tot td{font-weight:700;background:#FDF8EA;border-bottom:2px solid var(--navy)}
+table.ces tr.clic{cursor:pointer}
+table.ces tr.clic:hover td{background:#F4F6FA}
+table.ces tr.sel td{background:#FDF2D3}
+.ces-bar{position:relative;display:inline-block;width:96px;height:10px;vertical-align:middle}
+.ces-bar::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;border-left:1px solid #B7BECC}
+.ces-bar i{position:absolute;top:0;height:10px;border-radius:2px}
+.ces-nota{font-size:11px;color:var(--mut);line-height:1.45;margin:10px 0 0}
+@media(max-height:780px){ table.ces td{padding:4px 7px} .ces-dir{flex-basis:390px} }
+/* quadro da composição do custo — só aparece no indicador de custo, ao lado do
+   gráfico. O SVG passa a dividir a largura do cartão com ele. */
+.s-card.s-quadro{gap:14px}
+.s-card.s-quadro > svg{flex:1 1 auto;width:auto;min-width:0}
+/* --qf é o fator de ajuste do quadro: o JS mede a altura que sobrou no cartão e
+   encolhe tudo junto, para o "Custo total" nunca ser cortado embaixo */
+.quadro{--qf:1;flex:0 0 236px;min-width:0;border-left:1px solid var(--line);padding:4px 2px 2px 16px;
+  display:flex;flex-direction:column;gap:calc(9px*var(--qf));overflow:hidden}
+.quadro[hidden]{display:none}
+.quadro h4{margin:0;font-size:calc(10.5px*var(--qf));letter-spacing:.12em;text-transform:uppercase;
+  color:var(--mut);font-weight:700;line-height:1.3}
+.q-item{display:flex;flex-direction:column;gap:1px}
+.q-nome{display:flex;align-items:center;gap:7px;font-size:calc(12.5px*var(--qf));font-weight:700;color:var(--navy)}
+.q-nome i{width:11px;height:11px;border-radius:3px;flex:none}
+.q-v{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.q-v b{font-size:calc(19px*var(--qf));font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1.15}
+.q-v u{text-decoration:none;font-size:calc(11px*var(--qf));color:var(--mut);font-weight:600}
+.q-v span{font-size:calc(12px*var(--qf));font-weight:700}
+.q-sub{font-size:calc(11.5px*var(--qf));color:var(--mut);line-height:1.45}
+.q-sub b{color:var(--navy);font-weight:700}
+.q-tot{border-top:1px solid var(--line);padding-top:calc(9px*var(--qf));margin-top:auto}
+@media(max-height:780px){
+  .quadro{flex:0 0 206px;padding-left:12px}
+}
+
+/* telas baixas (projetor de sala, janela larga e curta): compacta o cabeçalho
+   para sobrar altura ao gráfico */
+@media(max-height:780px){
+  .slide-dark{padding:13px 24px 11px;gap:8px}
+  .s-title{font-size:21px}
+  .s-sub{display:none}
+  .s-eyebrow{font-size:10.5px}
+  .s-chip{padding:5px 11px;min-width:0}
+  .s-chip .v{font-size:15px}
+  .s-chip .k{font-size:9.5px}
+  .s-toggle button{padding:5px 11px;font-size:11.5px}
+  .s-sel{padding:5px 10px;font-size:11.5px}
+  .s-insight{padding:8px 14px;font-size:12.5px}
+  .s-legend{font-size:11px;gap:12px}
+  .ind{padding:5px 10px;min-width:98px}
+  .ind .ind-k{font-size:9px}
+  .ind .iv.on b{font-size:17px}
+  .ind .iv b{font-size:12.5px}
+  .ind .ind-pct{font-size:10px;padding:1px 6px}
+  .ind .ind-lupa{display:none}
+}
+/* painel de detalhe: a conta por trás do número clicado */
+.mf{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:28px}
+.mf[hidden]{display:none!important}
+.mf-fundo{position:absolute;inset:0;background:rgba(6,12,28,.72);backdrop-filter:blur(2px)}
+.mf-caixa{position:relative;background:#fff;border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.5);
+  width:min(1180px,95vw);max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+.mf-topo{flex:0 0 auto;display:flex;align-items:flex-start;gap:16px;padding:15px 20px 12px;
+  background:var(--navy);color:#fff;border-bottom:3px solid var(--gold)}
+.mf-titulo{font-size:17px;font-weight:700}
+.mf-sub{font-size:12.5px;color:#C6CEE0;margin-top:3px}
+.mf-fechar{margin-left:auto;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;
+  background:var(--gold);color:var(--navy);border:0;border-radius:6px;padding:7px 16px}
+.mf-conta{flex:0 0 auto;background:#FDF8EA;border-bottom:1px solid var(--line);padding:11px 20px;
+  font-size:14px;color:var(--ink);line-height:1.6}
+.mf-conta b{color:var(--navy);font-variant-numeric:tabular-nums}
+.mf-conta .op{color:var(--gold);font-weight:700;margin:0 7px}
+.mf-conta .res{font-size:17px;font-weight:700;color:var(--navy)}
+.mf-conta em{font-style:normal;display:block;font-size:11.5px;color:var(--mut);margin-top:3px}
+.mf-corpo{flex:1 1 auto;min-height:0;overflow:auto;padding:0 20px 18px}
+.mf-corpo table{width:100%;border-collapse:collapse;font-size:12.5px}
+.mf-corpo thead th{position:sticky;top:0;background:var(--navy);color:#fff;text-align:center;
+  padding:8px 9px;font-weight:600;font-size:12px;z-index:1}
+.mf-corpo thead th.l{text-align:left}
+.mf-corpo thead th.key{background:#1E3566;border-bottom:2px solid var(--gold)}
+.mf-corpo td{padding:5px 9px;border-bottom:1px solid var(--line);text-align:center;
+  font-variant-numeric:tabular-nums}
+.mf-corpo td.l{text-align:left}
+.mf-corpo td.key{font-weight:700;color:var(--navy);background:#FBF6E6}
+.mf-corpo tbody tr:nth-child(even) td{background:var(--bgsoft)}
+.mf-corpo tbody tr:nth-child(even) td.key{background:#F6EFDC}
+.mf-corpo tr.tot td{background:#FFF3D0!important;font-weight:700;border-top:2px solid var(--navy)}
+.mf-corpo td.pos{color:var(--green);font-weight:700} .mf-corpo td.neg{color:var(--red);font-weight:700}
+.rc-clicavel{cursor:pointer}
+.rc-clicavel:hover{opacity:.78}
+
+@media(prefers-reduced-motion:reduce){.slide{transition:none}}
+
+/* ============================================================
+   TRATOS CULTURAIS — o que é só deste relatório
+   A apresentação passa na TV da diretoria: as páginas não têm parágrafo de
+   explicação nem faixa de texto; o espaço vai para tabelas com gráfico e números.
+   Toda tabela rola dentro do próprio cartão: nada passa da altura da tela.
+   ============================================================ */
+/* topo enxuto (pedido para a TV): sem a faixa da marca e com o índice numa linha baixa;
+   o período da semana vai para a ponta direita do índice. "body nav.toc" vence a
+   camada do tema, que vem depois deste bloco. */
+header.top{display:none}
+body nav.toc{padding:3px 24px;min-height:0}
+body nav.toc::after{content:attr(data-periodo);margin-left:auto;padding-left:18px;font:500 10px var(--f-mono);
+  letter-spacing:.14em;text-transform:uppercase;color:var(--tm-ink-3);white-space:nowrap}
+body .toc-mod{padding:2px 8px}
+body nav.toc a{padding-bottom:2px}
+@media(max-width:760px){ body nav.toc::after{display:none} }
+
+/* grades de painéis */
+.s-card.s-grid.c32{grid-template-columns:minmax(0,3fr) minmax(0,2fr);grid-template-rows:minmax(0,1fr)}
+.s-card.s-grid.c32 > :nth-child(2){border-left:1px solid var(--line)}
+.s-card.s-grid.c32 > svg{width:100%;height:100%;display:block;min-width:0;min-height:0}
+
+/* linha inteira clicável num gráfico: realça no passar do mouse */
+.hit{fill:transparent;cursor:pointer}
+.hit:hover{fill:rgba(18,34,74,.06)}
+
+/* farol da meta: a cor repete o número, nunca o substitui */
+.st-ok{color:var(--green)} .st-medio{color:#A6620A} .st-baixo{color:var(--red)} .st-sem{color:var(--mut)}
+
+/* cartões das frentes (resumo da semana) — clicar leva à página da operação */
+.fr-cards{flex:0 0 auto;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.fr-card{position:relative;overflow:hidden;min-width:0;padding:10px 14px 10px;border-radius:4px;cursor:pointer;
+  background:rgba(5,11,28,.55);border:1px solid var(--tm-linha-2);transition:border-color .25s,background-color .25s}
+.fr-card:hover{border-color:var(--accent);background:var(--accent-dim)}
+.fr-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--fr,var(--accent))}
+.fr-card .k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fr-card .n{margin-top:4px;display:flex;align-items:baseline;gap:8px;font-family:var(--f-display);color:var(--gold);font-size:28px;
+  font-weight:700;line-height:1.05;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.fr-card .n small{font-size:.45em;font-weight:600;opacity:.85}
+.fr-card .n b{margin-left:auto;font-size:.62em}
+.fr-card .s{margin-top:2px;font-family:var(--f-serif);font-size:12.5px;color:var(--tm-ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fr-bar{margin-top:6px;height:6px;border-radius:4px;background:rgba(255,255,255,.12);position:relative;overflow:hidden}
+.fr-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.fr-card.total{background:rgba(201,162,39,.10);border-color:rgba(201,162,39,.45)}
+
+/* tabelas com gráfico */
+.tb-card{flex-direction:column;padding:8px 12px 10px;min-height:0}
+.tb-rolo{flex:1 1 auto;min-height:0;overflow:auto}
+table.tb{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+table.tb th{position:sticky;top:0;z-index:2;background:var(--navy);color:#fff;font-weight:600;font-size:.88em;padding:7px 8px;
+  text-align:right;line-height:1.2;white-space:nowrap}
+table.tb th.l,table.tb td.l{text-align:left}
+table.tb th.c,table.tb td.c{text-align:center}
+table.tb th u{display:block;text-decoration:none;font-weight:400;font-size:.9em;opacity:.75}
+table.tb td{padding:4px 8px;border-bottom:1px solid var(--line);text-align:right;font-weight:600;color:var(--ink);white-space:nowrap;height:30px}
+table.tb td.l{white-space:normal;color:var(--navy);min-width:180px}
+table.tb td.l u{text-decoration:none;color:var(--mut);font-weight:400;font-size:.86em;margin-left:5px}
+table.tb tr.fr td{background:#F1F3F8;font-weight:700;color:var(--navy);border-top:2px solid #D6DAE2}
+table.tb tr.fr td.l{box-shadow:inset 5px 0 0 var(--fr);padding-left:13px;text-transform:uppercase;letter-spacing:.04em;font-size:.92em}
+table.tb tr.at td.l{padding-left:18px;font-weight:600}
+table.tb tr.tot td{background:#FFF3D0;font-weight:700;color:var(--navy);border-top:2px solid var(--navy)}
+table.tb tr.par td{color:#8F99AD;font-weight:500}
+table.tb tr.par td.l{color:#8F99AD;font-weight:500}
+table.tb tr.clic{cursor:pointer}
+table.tb tr.clic:hover td{background:#E9EDF5}
+/* célula do dia: o fundo é a parte da meta do dia, e o percentual vem escrito ao lado */
+table.tb td.d{min-width:84px}
+table.tb td.d small{font-weight:500;font-size:.8em;margin-left:4px;opacity:.85}
+table.tb td.d.ok{background:#E2F1E6} table.tb td.d.medio{background:#FBEEDA} table.tb td.d.baixo{background:#FAE1DD}
+table.tb td.d.zero{color:#C3C9D6;font-weight:400}
+table.tb tr.fr td.d.ok{background:#D2E9D9} table.tb tr.fr td.d.medio{background:#F7E2C2} table.tb tr.fr td.d.baixo{background:#F5CFC9}
+/* barra dentro da célula: parte da meta, com o traço da meta em 100% */
+.bc{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.bc .trk{position:relative;flex:1 1 auto;min-width:80px;max-width:240px;height:12px;border-radius:3px;background:#EEF0F5}
+.bc .trk i{position:absolute;left:0;top:0;bottom:0;border-radius:3px}
+.bc .trk b{position:absolute;top:-3px;bottom:-3px;border-left:2px dashed var(--navy);opacity:.6}
+.bc em{font-style:normal;font-weight:700;min-width:44px;text-align:right}
+
+/* página de cada operação: gráfico em cima, tabela embaixo */
+.s-card.op-card{display:grid;grid-template-rows:minmax(0,1fr) auto;padding:8px 12px 10px;gap:6px}
+.s-card.op-card > .tb-rolo{max-height:56vh}
+.s-card.op-card > svg{width:100%;height:100%;display:block;min-height:0}
+.s-card.op-card > .tb-rolo{border-top:1px solid var(--line);padding-top:6px}
+
+/* tabela de calor dos blocos */
+#bl-card{flex-direction:column;padding:12px 16px}
+#bl-tabela{flex:1 1 auto;min-height:0;overflow:auto}
+table.hm{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+table.hm th{position:sticky;top:0;z-index:1;background:var(--navy);color:#fff;font-weight:600;font-size:12px;padding:8px 10px;text-align:right;line-height:1.25}
+table.hm th.l,table.hm td.l{text-align:left}
+table.hm td{padding:6px 10px;border-bottom:1px solid #fff;text-align:right;font-weight:600;color:var(--ink);white-space:nowrap}
+table.hm td.l{color:var(--navy);font-weight:700;background:#F4F6FA}
+table.hm td.z{color:#B8C0D0;font-weight:400}
+table.hm tr.clic{cursor:pointer}
+table.hm tr.clic:hover td.l{background:#E6EAF2}
+table.hm td.tt{background:#FDF8EA;color:var(--navy);font-weight:700}
+table.hm tr.tot td{background:#FFF3D0;font-weight:700;color:var(--navy);border-top:2px solid var(--navy)}
+
+/* pontos de atenção: cartões com número grande e a lista embaixo */
+.at-grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;overflow:auto}
+.at-card{background:#fff;border-radius:4px;border-top:4px solid var(--accent);padding:12px 16px;display:flex;flex-direction:column;gap:5px;min-width:0;
+  box-shadow:0 18px 44px -12px rgba(0,0,0,.5);color:var(--ink)}
+.at-card.baixo{border-top-color:var(--red)} .at-card.medio{border-top-color:#D68910} .at-card.ok{border-top-color:var(--green)} .at-card.info{border-top-color:#7D8BB0}
+.at-card .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--mut)}
+.at-card .n{font-family:var(--f-display);font-size:32px;font-weight:700;line-height:1.05;color:var(--navy);font-variant-numeric:tabular-nums}
+.at-card .n small{font-size:.42em;font-weight:600;margin-left:.3em;color:var(--mut)}
+.at-card ul{margin:2px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px;font-size:13px}
+.at-card li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:3px 0}
+.at-card li span{min-width:0}
+.at-card li b{flex:none;font-variant-numeric:tabular-nums;color:var(--navy)}
+.at-card p{margin:0;font-size:13px;color:var(--mut);line-height:1.45}
+
+/* painel de detalhe */
+.mf-nota{font-size:11.5px;color:#5A6072;margin:10px 0 0;line-height:1.5}
+.mf-voltar{flex:0 0 auto;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;background:transparent;
+  color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:2px;padding:7px 14px}
+.mf-voltar:hover{background:rgba(255,255,255,.12)}
+.mf-voltar[hidden]{display:none}
+.mf-ir{display:inline-block;font:inherit;font-size:13px;font-weight:700;cursor:pointer;background:var(--navy);
+  color:#fff;border:0;border-radius:2px;padding:6px 14px;margin-top:8px}
+.mf-ir:hover{background:#1E3566}
+.mf-corpo tr.clic{cursor:pointer}
+.mf-corpo tr.clic:hover td{background:#E9EDF5}
+.mf-corpo tr.clic td:first-child::after{content:" \203A";color:var(--gold);font-weight:700}
+.mf-corpo td.prod{text-align:left;white-space:nowrap}
+.mf-corpo td.prod u{text-decoration:none;color:var(--mut);font-size:.9em}
+/* quantas fazendas e talhões têm detalhe na semana: o clique abre a lista */
+.loc-tag{display:inline-block;margin-left:.6em;padding:.05em .5em;border-radius:4px;background:var(--navy);
+  color:#fff;font-size:.72em;font-weight:700;white-space:nowrap;vertical-align:.1em}
+
+/* TV da diretoria (1920×1080 e maiores): títulos, números e tabelas crescem para
+   serem lidos de longe. O texto dos gráficos cresce no JS (função fz). */
+@media(min-width:1600px) and (min-height:860px){
+  .slide-dark{padding:22px 40px 18px;gap:14px}
+  .s-eyebrow{font-size:13px}
+  .s-title{font-size:34px}
+  .s-chip{padding:10px 18px;min-width:150px}
+  .s-chip .v{font-size:26px}
+  .s-chip .k{font-size:13px}
+  .s-legend{font-size:15px;gap:26px}
+  .fr-card{padding:14px 18px 12px}
+  .fr-card .k{font-size:12.5px}
+  .fr-card .n{font-size:40px}
+  .fr-card .s{font-size:15px}
+  .fr-bar{height:8px}
+  table.tb{font-size:17px}
+  table.tb th{font-size:.84em;padding:9px 10px}
+  table.tb td{padding:4px 10px;height:32px}
+  table.tb td.d{min-width:104px}
+  .bc .trk{height:15px}
+  table.hm{font-size:17px}
+  table.hm th{font-size:14px;padding:10px 12px}
+  table.hm td{padding:8px 12px}
+  .at-card .k{font-size:13px}
+  .at-card .n{font-size:46px}
+  .at-card ul,.at-card p{font-size:16px}
+  .mf-titulo{font-size:21px}
+  .mf-sub{font-size:15px}
+  .mf-conta{font-size:16.5px}
+  .mf-corpo table{font-size:15.5px}
+  .mf-corpo thead th{font-size:14px}
+  .mf-voltar,.mf-fechar,.mf-ir{font-size:15px}
+}
+
+/* telas baixas (navegador com a barra do claude.ai em cima, notebook): linhas e cartões
+   mais baixos, para a tabela inteira caber sem rolar */
+@media(max-height:900px) and (min-width:761px){
+  .slide-dark{gap:9px}
+  .fr-card{padding:7px 12px 8px}
+  .fr-card .n{font-size:22px;margin-top:2px}
+  .fr-card .s{font-size:11.5px}
+  .fr-bar{margin-top:4px;height:5px}
+  table.tb td{height:auto;padding:3px 8px}
+  table.tb th{padding:5px 8px}
+  .bc .trk{height:10px}
+}
+
+/* celular ou janela estreita: a página rola, os painéis empilham */
+@media(max-width:760px){
+  .slide-dark{overflow-y:auto;padding:14px 16px;gap:10px}
+  .s-head{flex-direction:column;gap:10px}
+  .s-right,.s-chips{margin-left:0;justify-content:flex-start}
+  .s-card{flex:0 0 auto;min-height:420px}
+  .s-card.s-grid.c32{grid-template-columns:minmax(0,1fr);grid-template-rows:none}
+  .s-card.s-grid > svg{height:380px}
+  .s-card.s-grid > :not(:first-child){border-left:0;border-top:1px solid var(--line)}
+  .s-card.op-card{grid-template-rows:300px auto}
+  .tb-rolo{max-height:70vh}
+  .fr-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .fr-card .n{font-size:24px}
+  .at-grid{grid-template-columns:minmax(0,1fr)}
+  .deck-hint{display:none}
+  .deck-nav{gap:8px;padding:8px 12px}
+  header.top{padding:9px 16px}
+  nav.toc{padding:7px 16px}
+}
+</style>
+<style id="tema">
+/* ============================================================
+   TEMA — estilo visual da apresentação "Seu Assessor Comercial", aplicado
+   a este deck SEM mudar a estrutura nem os gráficos:
+     · fundo animado (campo de partículas) na paleta do grupo
+     · tipografia: Archivo (títulos), Source Serif 4 (textos), IBM Plex Mono (rótulos)
+     · cromo mínimo: cabeçalho, índice e barra inferior translúcidos, com linhas finas
+     · transições: páginas em fade, elementos entrando em sequência, gráfico
+       "varrido" da esquerda para a direita
+     · cor de destaque que muda por módulo (Moagem, CTT, Irrigação, Manutenção)
+   É uma camada isolada, que sobrepõe as regras acima. Para voltar ao visual
+   anterior basta remover o bloco de estilo "tema" e o bloco de script "tema-js" (ids).
+   Regra desta camada: não mexe em tamanho, espaçamento nem display dos
+   componentes que as telas baixas (max-height:780px) compactam — só cor, fonte,
+   borda e movimento. Tudo que depende do JS fica sob .tema-ok.
+   ============================================================ */
+@property --accent{syntax:"<color>";inherits:true;initial-value:#C9A227}
+:root{
+  --tm-void:#0A1330;
+  --tm-ink:#F4F6FA;--tm-ink-2:#AEBBD8;--tm-ink-3:#7D8BB0;
+  --tm-linha:rgba(174,187,216,.20);--tm-linha-2:rgba(174,187,216,.34);
+  --accent:#C9A227;
+  --accent-dim:rgba(201,162,39,.14);--accent-line:rgba(201,162,39,.50);--accent-glow:rgba(201,162,39,.26);
+  --f-display:"Archivo","Segoe UI",-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --f-serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,"Liberation Mono",monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+@supports (color:color-mix(in srgb,red 10%,transparent)){
+  :root{
+    --accent-dim:color-mix(in srgb,var(--accent) 14%,transparent);
+    --accent-line:color-mix(in srgb,var(--accent) 50%,transparent);
+    --accent-glow:color-mix(in srgb,var(--accent) 26%,transparent);
+  }
+}
+/* a cor de destaque muda por módulo; a transição é da própria variável (registrada
+   acima), então tudo que a usa muda junto, em fade */
+html{transition:--accent .9s ease}
+html[data-acento="azul"]{--accent:#5DADE2}
+html[data-acento="agua"]{--accent:#58C4BA}
+html[data-acento="creme"]{--accent:#F0DFA8}
+
+/* ---------- fundo ---------- */
+html{background:var(--tm-void)}
+body{
+  background:
+    radial-gradient(1300px 780px at 12% -14%,#1C3672 0%,rgba(28,54,114,0) 62%),
+    radial-gradient(1000px 640px at 96% 112%,rgba(46,134,193,.16),rgba(46,134,193,0) 62%),
+    linear-gradient(180deg,#0D1A3F 0%,#0A1330 52%,#070E26 100%);
+}
+#tema-campo,#tema-vig{position:fixed;inset:0;z-index:0;pointer-events:none}
+#tema-campo{display:block;width:100%;height:100%}
+#tema-vig{
+  background:
+    radial-gradient(125% 95% at 50% 42%,transparent 34%,rgba(4,8,22,.60) 100%),
+    radial-gradient(70% 55% at 50% 40%,var(--accent-dim),transparent 72%);
+}
+/* com o fundo animado no ar, as páginas deixam de ter fundo próprio */
+.tema-ok .slide-dark{background:transparent}
+.tema-ok .slide.slide-cover{background:none}
+
+/* progresso da apresentação: fio de 2px no pé da janela */
+#tema-barra{position:fixed;left:0;bottom:0;height:2px;width:0;z-index:60;background:var(--accent);
+  transition:width .52s var(--ease);pointer-events:none}
+
+/* ---------- cromo: cabeçalho, índice e barra inferior ---------- */
+/* ao sair da capa o cabeçalho entra com atraso (a capa ainda está sumindo); ao voltar, ele sai logo */
+header.top,nav.toc{position:relative;z-index:3;transition:opacity .5s ease .3s,visibility 0s linear .3s}
+header.top{
+  background:linear-gradient(180deg,rgba(6,11,30,.66),rgba(6,11,30,.12));
+  border-bottom:1px solid var(--tm-linha);padding:11px 30px;
+}
+header.top::after{content:"";position:absolute;left:0;bottom:-1px;width:84px;height:2px;background:var(--accent)}
+header.top .brand{font:600 11px var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--tm-ink-2)}
+header.top .meta{font:500 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--tm-ink-3)}
+
+nav.toc{background:transparent;border-bottom:1px solid var(--tm-linha);padding:8px 30px;
+  scrollbar-width:none}
+nav.toc::-webkit-scrollbar{display:none}
+nav.toc a{font:500 10px var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--tm-ink-3);
+  margin-right:14px;transition:color .25s,border-color .25s}
+nav.toc a b{color:var(--accent);font-weight:600}
+nav.toc a:hover{color:var(--tm-ink)}
+nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:600}
+.toc-mod{font:600 10px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--tm-ink-2);
+  padding:4px 9px;background:transparent;border:1px solid var(--tm-linha);border-radius:2px;
+  transition:color .25s,border-color .25s,background-color .25s}
+.toc-mod u{color:var(--tm-ink-3);font-weight:500}
+.toc-mod:hover{border-color:var(--accent-line);color:var(--tm-ink)}
+.toc-mod.on{background:var(--accent-dim);color:var(--tm-ink);border-color:var(--accent)}
+.toc-mod.on u{color:var(--accent)}
+.toc-sep{background:var(--tm-linha);margin:0 12px}
+.toc-dica{font:italic 400 12px var(--f-serif);color:var(--tm-ink-3)}
+
+/* na capa o cabeçalho e o índice saem de cena (a capa tem o próprio topo); continuam
+   ocupando o lugar, então as outras páginas não se deslocam ao entrar e sair */
+.tema-ok.na-capa header.top,.tema-ok.na-capa nav.toc{opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .3s ease,visibility 0s linear .3s}
+
+.deck-nav{
+  background:linear-gradient(0deg,rgba(6,11,30,.72),rgba(6,11,30,.12));
+  border-top:1px solid var(--tm-linha);padding:8px 26px;gap:16px;
+}
+.deck-nav > button{font:500 11px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--tm-ink-2);
+  background:transparent;border:1px solid var(--tm-linha-2);border-radius:2px;padding:6px 14px;
+  transition:color .25s,border-color .25s,background-color .25s}
+.deck-nav > button:hover:not(:disabled){color:var(--tm-ink);border-color:var(--accent);background:var(--accent-dim)}
+.deck-nav > button:disabled{opacity:.28}
+.deck-nav .deck-dots button{width:7px;height:7px;background:rgba(174,187,216,.30);
+  transition:background-color .25s,transform .25s,box-shadow .25s}
+.deck-nav .deck-dots button:hover{background:rgba(174,187,216,.62)}
+.deck-nav .deck-dots button.on{background:var(--accent);transform:scale(1.55);box-shadow:0 0 10px var(--accent-line)}
+.deck-count{font:500 11px var(--f-mono);letter-spacing:.14em;color:var(--tm-ink-3)}
+.deck-hint{font:400 10.5px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--tm-ink-3)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- páginas de conteúdo: tipografia e superfícies ---------- */
+.s-eyebrow{display:flex;align-items:center;gap:12px;font-family:var(--f-mono);font-weight:600;
+  letter-spacing:.22em;color:var(--accent)}
+.s-eyebrow::before{content:"";width:26px;height:2px;background:var(--accent);flex:none}
+.s-title{font-family:var(--f-display);font-weight:700;letter-spacing:-.018em;line-height:1.08;text-wrap:balance}
+.s-sub{font-family:var(--f-serif);color:var(--tm-ink-2);line-height:1.5}
+
+.s-chip{position:relative;overflow:hidden;border-radius:3px;border:1px solid var(--tm-linha-2);background:rgba(255,255,255,.035)}
+.s-chip::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--accent)}
+.s-chip .v{font-family:var(--f-display);letter-spacing:-.02em}
+.s-toggle{border-radius:3px;border-color:var(--tm-linha-2)}
+.s-toggle button{transition:background-color .25s,color .25s}
+.s-toggle button.on{background:var(--accent);color:#0A1330}
+.s-sel,.msel-btn{border-radius:3px;border-color:var(--tm-linha-2);transition:border-color .25s}
+.s-sel:hover,.msel-btn:hover{border-color:var(--accent)}
+.s-sel:focus{outline-color:var(--accent)}
+.s-legend{letter-spacing:.01em}
+.s-legend .lg svg rect:not([stroke]){stroke:rgba(255,255,255,.30);stroke-width:1}
+
+.s-card{
+  border-radius:4px;border:1px solid rgba(255,255,255,.16);
+  box-shadow:inset 0 2px 0 var(--accent),0 28px 70px -12px rgba(0,0,0,.58),0 0 90px -34px var(--accent-glow);
+}
+.s-insight{background:rgba(255,255,255,.035);border-left:3px solid var(--accent);border-radius:0 3px 3px 0}
+.s-insight .sep{color:var(--tm-ink-3)}
+
+.ind{border-radius:3px;background:rgba(255,255,255,.03);border-color:var(--tm-linha);
+  transition:background-color .25s,border-color .25s}
+.ind:hover{border-color:var(--accent-line)}
+.ind.on{background:var(--accent-dim);border-color:var(--accent)}
+.ind.on .ind-k,.ind .iv.on i,.ind:hover .ind-lupa,.ind.on .ind-lupa{color:var(--accent)}
+.ind .iv.on b{font-family:var(--f-display);letter-spacing:-.02em}
+.ind.lam:hover{border-color:var(--tm-linha)}
+
+.mf-caixa{border-radius:4px}
+.mf-topo{border-bottom-color:var(--accent)}
+.mf-fechar{border-radius:2px}
+.msel-pop{border-radius:4px}
+
+/* ---------- capa ---------- */
+.tema-ok .capa-selo{font-family:var(--f-mono);letter-spacing:.24em;color:var(--accent)}
+.tema-ok .capa-selo::before{background:var(--accent)}
+.slide-cover h1{font-family:var(--f-display);letter-spacing:-.035em}
+.slide-cover h1 em{font-family:var(--f-serif);font-style:italic;font-weight:400;letter-spacing:0;color:var(--tm-ink-2)}
+.slide-cover p.sub{font-family:var(--f-serif)}
+.capa-aviso{font-family:var(--f-mono);letter-spacing:.08em;text-transform:uppercase;border-radius:2px}
+.capa-aviso i{background:var(--accent)}
+.capa-meta-k{font-family:var(--f-mono);color:var(--accent)}
+.capa-meta-v{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--tm-ink-2)}
+.curva-t{font-family:var(--f-mono);letter-spacing:.2em}
+.capa-kpis{border-radius:4px;border-color:var(--tm-linha-2)}
+.capa-kpi-num{font-family:var(--f-display)}
+.capa-kpi-lab{font-family:var(--f-mono);letter-spacing:.1em;text-transform:uppercase}
+.capa-kpi-lab em{font-family:var(--f-serif);text-transform:none;letter-spacing:0;font-size:1.12em}
+
+/* ---------- movimento ---------- */
+.slide{transform:none;transition:opacity .62s ease,visibility .62s}
+.slide.slide-cover{transition:opacity .4s ease,visibility .4s}
+@keyframes tema-sobe{from{opacity:0;transform:translateY(22px)}}
+@keyframes tema-varre{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes tema-surge{from{opacity:0}}
+/* cada elemento da página entra em sequência quando ela abre; fill-mode backwards
+   (e não both) para nada ficar preso depois da animação, nem camada de empilhamento */
+.slide-dark.active .s-eyebrow{animation:tema-sobe .7s var(--ease) .06s backwards}
+.slide-dark.active .s-title{animation:tema-sobe .7s var(--ease) .14s backwards}
+.slide-dark.active .s-sub{animation:tema-sobe .7s var(--ease) .22s backwards}
+.slide-dark.active .s-toggle,.slide-dark.active .s-sel,.slide-dark.active .msel{animation:tema-sobe .7s var(--ease) .28s backwards}
+.slide-dark.active .s-chip{animation:tema-sobe .65s var(--ease) backwards}
+.slide-dark.active .s-chip:nth-child(1){animation-delay:.30s}
+.slide-dark.active .s-chip:nth-child(2){animation-delay:.38s}
+.slide-dark.active .s-chip:nth-child(3){animation-delay:.46s}
+.slide-dark.active .s-chip:nth-child(n+4){animation-delay:.54s}
+.slide-dark.active .s-legend{animation:tema-sobe .7s var(--ease) .36s backwards}
+.slide-dark.active .ind{animation:tema-sobe .65s var(--ease) backwards}
+.slide-dark.active .ind:nth-child(1){animation-delay:.36s}
+.slide-dark.active .ind:nth-child(2){animation-delay:.41s}
+.slide-dark.active .ind:nth-child(3){animation-delay:.46s}
+.slide-dark.active .ind:nth-child(4){animation-delay:.51s}
+.slide-dark.active .ind:nth-child(5){animation-delay:.56s}
+.slide-dark.active .ind:nth-child(6){animation-delay:.61s}
+.slide-dark.active .ind:nth-child(n+7){animation-delay:.66s}
+.slide-dark.active .s-card{animation:tema-sobe .8s var(--ease) .42s backwards}
+.slide-dark.active .s-card > svg{animation:tema-varre 1.05s var(--ease) .66s backwards}
+.slide-dark.active .s-insight{animation:tema-sobe .7s var(--ease) .78s backwards}
+
+/* janela de detalhe e lista de seleção abrem em fade */
+.mf:not([hidden]) .mf-fundo{animation:tema-surge .35s ease backwards}
+.mf:not([hidden]) .mf-caixa{animation:tema-sobe .5s var(--ease) backwards}
+.msel-pop:not([hidden]){animation:tema-surge .22s ease backwards}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important}
+  .slide{transition:opacity 1ms,visibility 1ms}
+  html{transition:none}
+}
+</style>
+</head><body>
+
+<header class="top">
+<div class="brand">UGS — Unidade Gestão Suporte &nbsp;|&nbsp; Indicadores Grupo Japungu</div>
+<div class="meta" id="meta-periodo">Tratos culturais</div>
+</header>
+
+<!-- os números das páginas (<b>) são preenchidos pelo script, na ordem do deck; as
+     páginas de cada operação (frente) entram no lugar de toc-frentes -->
+<nav class="toc">
+<a href="#capa">Capa</a>
+<a href="#resumo"><b></b> Resumo da semana</a>
+<a href="#pordia"><b></b> Resumo por dia</a>
+<a href="#eficiencia"><b></b> Eficiência</a>
+<a href="#mes"><b></b> Mês e histórico</a>
+<span id="toc-frentes"></span>
+<a href="#programas"><b></b> Andamento dos programas</a>
+<a href="#blocos"><b></b> Saldo por bloco</a>
+<a href="#atencao"><b></b> Pontos de atenção</a>
+</nav>
+
+<div class="deck" id="deck">
+
+<!-- ================= CAPA ================= -->
+<article class="slide slide-cover" id="capa" data-title="Capa">
+
+<div class="capa-topo">
+<!-- LOGO: a mesma da apresentação comparativo_moagem (logo azul oficial da CRV Industrial,
+     interior da moldura preenchido de branco, WebP sem perda), embutida para o index.html
+     continuar sendo um arquivo só. Para trocar, substitua o src do <img> por outro data URI. -->
+<div class="capa-placa"><img class="capa-logo-img" alt="CRV Industrial — Açúcar, Etanol e Energia" width="640" height="191" src="data:image/webp;base64,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"></div>
+<div class="capa-meta">
+<span class="capa-meta-k">Indicadores Grupo Japungu</span>
+<span class="capa-meta-v">UGS — Unidade Gestão Suporte</span>
+<span class="capa-meta-v" id="capa-atualizacao">–</span>
+</div>
+</div>
+
+<div class="capa-meio">
+<div class="capa-texto">
+<div class="capa-selo"><span>Reunião semanal &middot; <span class="js-periodo">–</span></span></div>
+<h1>Tratos<br>Culturais<em>Operações e indicadores da semana</em></h1>
+<p class="sub">Meta e realizado por operação e por dia, eficiência por equipamento e pessoa, o mês até aqui e o andamento dos programas da safra.</p>
+<span class="capa-aviso"><i></i><span id="capa-aviso">–</span></span>
+</div>
+<figure class="capa-curva">
+<figcaption>
+<span class="curva-t">Realizado acumulado na semana</span>
+<span class="curva-u">hectares, atividades em operação</span>
+<div class="s-legend" id="capa-legend"></div>
+</figcaption>
+<div class="curva-svg" id="capa-card"><svg role="img" aria-label="Realizado acumulado contra a meta acumulada na semana"></svg></div>
+</figure>
+</div>
+
+<div class="capa-base">
+<div class="capa-kpis">
+<div class="capa-kpi"><div class="capa-kpi-num" id="kpi-real">–</div><div class="capa-kpi-lab">Realizado na semana<em id="kpi-real-sub"></em></div></div>
+<div class="capa-kpi"><div class="capa-kpi-num" id="kpi-pct">–</div><div class="capa-kpi-lab">Da meta da semana<em id="kpi-pct-sub"></em></div></div>
+<div class="capa-kpi"><div class="capa-kpi-num" id="kpi-ef">–</div><div class="capa-kpi-lab">Eficiência por equipamento/pessoa<em id="kpi-ef-sub"></em></div></div>
+<div class="capa-kpi"><div class="capa-kpi-num" id="kpi-mes">–</div><div class="capa-kpi-lab">Meta do mês<em id="kpi-mes-sub"></em></div></div>
+</div>
+</div>
+
+</article>
+
+<!-- ================= RESUMO DA SEMANA ================= -->
+<article class="slide slide-dark" id="resumo" data-title="Resumo da semana">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Resumo da semana</div>
+<h2 class="s-title">Meta e realizado por operação</h2>
+</div>
+</div>
+<div class="s-card tb-card" id="rs-card"><div class="tb-rolo" id="rs-tabela"></div></div>
+</article>
+
+<!-- ================= RESUMO POR DIA ================= -->
+<article class="slide slide-dark" id="pordia" data-title="Resumo por dia">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Resumo por dia</div>
+<h2 class="s-title">Realizado × meta do dia, por operação</h2>
+</div>
+</div>
+<div class="s-legend" id="pd-legend"></div>
+<div class="s-card tb-card" id="pd-card"><div class="tb-rolo" id="pd-tabela"></div></div>
+</article>
+
+<!-- ================= EFICIÊNCIA ================= -->
+<article class="slide slide-dark" id="eficiencia" data-title="Eficiência">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Eficiência por equipamento e pessoa</div>
+<h2 class="s-title">Hectares por equipamento ou pessoa, por dia operado</h2>
+</div>
+</div>
+<div class="s-legend" id="ef-legend"></div>
+<div class="s-card s-grid c32" id="ef-card"></div>
+</article>
+
+<!-- ================= MÊS E HISTÓRICO ================= -->
+<article class="slide slide-dark" id="mes" data-title="Mês e histórico">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Mês e histórico</div>
+<h2 class="s-title" id="mes-titulo">O mês até aqui</h2>
+</div>
+<div class="s-right">
+<div class="s-chips">
+<div class="s-chip"><div class="v" id="mes-chip-real">–</div><div class="k" id="mes-chip-real-k">Realizado no mês</div></div>
+<div class="s-chip"><div class="v" id="mes-chip-pct">–</div><div class="k">Da meta do mês</div></div>
+<div class="s-chip"><div class="v" id="mes-chip-ritmo">–</div><div class="k">Ritmo esperado</div></div>
+</div>
+</div>
+</div>
+<div class="s-legend" id="mes-legend"></div>
+<div class="s-card s-grid c32" id="mes-card"></div>
+</article>
+
+<!-- páginas de cada operação (uma por frente): montadas pelo script, a partir das
+     frentes que existem nos dados, logo antes deste marcador -->
+<div id="frente-slots" hidden></div>
+
+<!-- ================= ANDAMENTO DOS PROGRAMAS ================= -->
+<article class="slide slide-dark" id="programas" data-title="Andamento dos programas">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra</div>
+<h2 class="s-title">Andamento dos programas de tratos</h2>
+</div>
+<div class="s-right">
+<div class="s-chips">
+<div class="s-chip"><div class="v" id="pg-chip-aReal">–</div><div class="k">Maior saldo a realizar</div></div>
+<div class="s-chip"><div class="v" id="pg-chip-atras">–</div><div class="k">1ª catação com mais de 20 dias</div></div>
+<div class="s-chip"><div class="v" id="pg-chip-data">–</div><div class="k">Planilha atualizada em</div></div>
+</div>
+</div>
+</div>
+<div class="s-legend" id="pg-legend"></div>
+<div class="s-card" id="pg-card"></div>
+</article>
+
+<!-- ================= SALDO POR BLOCO ================= -->
+<article class="slide slide-dark" id="blocos" data-title="Saldo por bloco">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra</div>
+<h2 class="s-title">Onde está o saldo a realizar (ha)</h2>
+</div>
+<div class="s-right">
+<div class="s-chips">
+<div class="s-chip"><div class="v" id="bl-chip-top">–</div><div class="k" id="bl-chip-top-k">Bloco com maior saldo</div></div>
+<div class="s-chip"><div class="v" id="bl-chip-n">–</div><div class="k">Blocos com saldo</div></div>
+</div>
+</div>
+</div>
+<div class="s-card" id="bl-card"><div id="bl-tabela"></div></div>
+</article>
+
+<!-- ================= PONTOS DE ATENÇÃO ================= -->
+<article class="slide slide-dark" id="atencao" data-title="Pontos de atenção">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Pontos de atenção</div>
+<h2 class="s-title">O que pede ação</h2>
+</div>
+</div>
+<div class="at-grid" id="at-grid"></div>
+</article>
+
+</div><!-- /deck -->
+
+<!-- painel de detalhe: de onde saiu o número que foi clicado -->
+<div class="mf" id="mf" hidden>
+<div class="mf-fundo" id="mf-fundo"></div>
+<div class="mf-caixa" role="dialog" aria-modal="true" aria-labelledby="mf-titulo">
+<div class="mf-topo">
+<button type="button" class="mf-voltar" id="mf-voltar" hidden>&lsaquo; Voltar</button>
+<div><div class="mf-titulo" id="mf-titulo"></div><div class="mf-sub" id="mf-sub"></div></div>
+<button type="button" class="mf-fechar" id="mf-fechar">Fechar &times;</button>
+</div>
+<div class="mf-conta" id="mf-conta"></div>
+<div class="mf-corpo" id="mf-corpo"></div>
+</div>
+</div>
+
+<div class="deck-nav">
+<button id="deck-prev" type="button">&lsaquo; Anterior</button>
+<div class="deck-dots" id="deck-dots"></div>
+<span class="deck-hint">Trocar de página: botões, bolinhas ou &larr; &rarr;</span>
+<button id="deck-next" type="button">Próxima &rsaquo;</button>
+<span class="deck-count" id="deck-count">–</span>
+</div>
+
+<!-- ============================================================
+     DADOS — tratos culturais da semana e programas da safra.
+     Fonte: as duas planilhas de Operações Tratos Culturais na pasta
+     dados/. NÃO edite à mão: rode atualizar_tratos.py, que regrava o
+     bloco entre os marcadores DADOS-INICIO e DADOS-FIM.
+     ============================================================ -->
+<script>
+/*DADOS-INICIO*/
+window.TRATOS = {"fonte":{"semana":"2. Operações Tratos Culturais - 2025-2026 - (1).xlsb","programas":"1. Operações Tratos Culturais - SAFRA 2026 - Atual 2.xlsx","atualizacaoProgramas":"2026-10-13"},"semana":{"diaRef":"2026-10-10","qtdDias":6,"dias":["2026-10-05","2026-10-06","2026-10-07","2026-10-08","2026-10-09","2026-10-10"],"diasAnt":["2026-09-28","2026-09-29","2026-09-30","2026-10-01","2026-10-02","2026-10-03"],"meses":["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"]},"frentes":[{"id":"manual","nome":"Manual e semi-mecanizada","titulo":"APLICAÇÃO MANUAL E SEMI-MECANIZADA","atividades":[{"nome":"Catação Manual","linha":11,"equip":48.0,"metaUnid":1.2,"metaDia":57.6,"metaSemana":345.6,"metaMes":1555.2,"dias":[17.54,45.83,58.99,39.75,73.8,19.93],"ant":[65.01,84.11,84.1,79.14,89.35,85.11],"pessoas":[43.0,42.0,44.0,43.0,44.0,39.0],"pessoasPlan":48.0,"metaPessoa":1.2,"mes":{"2026-01":940.18,"2026-02":410.74,"2026-03":95.14,"2026-04":284.34,"2026-05":633.89,"2026-06":753.47,"2026-07":857.96,"2026-08":627.46,"2026-09":1149.69,"2026-10":509.44}},{"nome":"Colheitabilidade","linha":12,"equip":12.0,"metaUnid":2.0,"metaDia":24.0,"metaSemana":144.0,"metaMes":648.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":928.3,"2026-05":898.67,"2026-06":555.31,"2026-07":593.35,"2026-08":322.13,"2026-09":58.61,"2026-10":0}},{"nome":"Plantio Manual - Experimento Iran","linha":13,"equip":0.0,"metaUnid":0.0,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0.83,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Quadriciclo","linha":16,"equip":1.0,"metaUnid":10.0,"metaDia":10.0,"metaSemana":60.0,"metaMes":270.0,"dias":[2.19,19.55,54.25,22.26,27.5,5.0],"ant":[null,null,null,null,null,null],"pessoas":[1.0,2.0,2.0,2.0,2.0,2.0],"pessoasPlan":1.0,"metaPessoa":10.0,"mes":{"2026-01":31.67,"2026-02":123.34,"2026-03":22.31,"2026-04":0,"2026-05":300.64,"2026-06":196.96,"2026-07":14.1,"2026-08":0,"2026-09":0,"2026-10":130.75}},{"nome":"Retampa","linha":17,"equip":20.0,"metaUnid":1.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":392.12,"2026-02":1056.98,"2026-03":1799.27,"2026-04":396.71,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Replanta","linha":18,"equip":18.0,"metaUnid":0.3,"metaDia":5.4,"metaSemana":32.4,"metaMes":145.8,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":22.87,"2026-02":0,"2026-03":35.51,"2026-04":95.05,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Kit Aceiro - Herbicat","linha":19,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":70.5,"2026-02":88.0,"2026-03":0,"2026-04":1282.53,"2026-05":565.15,"2026-06":1036.46,"2026-07":988.92,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Mangueirão","linha":20,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":2102.99,"2026-02":6517.76,"2026-03":4437.13,"2026-04":1289.15,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Cata Mato","linha":23,"equip":10.0,"metaUnid":12.0,"metaDia":120.0,"metaSemana":720.0,"metaMes":3240.0,"dias":[14.61,112.19,105.7,118.6,96.54,42.86],"ant":[35.5,42.55,30.39,30.0,21.89,10.86],"pessoas":[8.0,26.0,27.0,26.0,24.0,26.0],"pessoasPlan":15.0,"metaPessoa":8.0,"mes":{"2026-01":2589.46,"2026-02":88.47,"2026-03":0,"2026-04":552.88,"2026-05":887.35,"2026-06":1243.42,"2026-07":2030.4,"2026-08":1886.1,"2026-09":1021.5,"2026-10":553.25}},{"nome":"Catação de Formiga","linha":26,"equip":1.0,"metaUnid":20.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,34.08,25.61,21.93,24.48,70.08],"ant":[22.1,24.0,30.86,27.38,null,19.51],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":112.24,"2026-02":61.42,"2026-03":514.28,"2026-04":891.81,"2026-05":580.83,"2026-06":359.61,"2026-07":643.48,"2026-08":556.53,"2026-09":899.53,"2026-10":223.07}}]},{"id":"uniport","nome":"Uniport","titulo":"APLICAÇÕES TERRESTRES - UNIPORT","atividades":[{"nome":"Uniport Barra Total - Terceiro","linha":31,"equip":null,"metaUnid":null,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":18.83,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Próprio","linha":32,"equip":1.0,"metaUnid":80.0,"metaDia":80.0,"metaSemana":480.0,"metaMes":2160.0,"dias":[null,null,93.3,105.48,null,45.0],"ant":[null,null,null,null,177.6,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":332.14,"2026-02":923.91,"2026-03":1461.85,"2026-04":703.09,"2026-05":1369.34,"2026-06":1574.19,"2026-07":2025.3,"2026-08":1781.94,"2026-09":888.77,"2026-10":421.38}},{"nome":"Uniport Próprio - Dessecação","linha":33,"equip":1.0,"metaUnid":70.0,"metaDia":70.0,"metaSemana":420.0,"metaMes":1890.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":438.1,"2026-02":4.0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Broto - Terceiro","linha":34,"equip":2.0,"metaUnid":70.0,"metaDia":140.0,"metaSemana":840.0,"metaMes":3780.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Terceiro","linha":35,"equip":3.0,"metaUnid":60.0,"metaDia":180.0,"metaSemana":1080.0,"metaMes":4860.0,"dias":[null,56.64,139.37,99.6,82.7,103.2],"ant":[56.61,null,258.76,120.1,135.72,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":521.63,"2026-02":502.2,"2026-03":788.89,"2026-04":1759.2,"2026-05":1668.89,"2026-06":1814.06,"2026-07":1771.44,"2026-08":2217.19,"2026-09":2309.14,"2026-10":737.33}},{"nome":"Uniport Pingente-Terceiro","linha":36,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Terceiro - Dessecação","linha":38,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":105.4,"2026-02":5.0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Pingente-Próprio","linha":39,"equip":1.0,"metaUnid":50.0,"metaDia":50.0,"metaSemana":300.0,"metaMes":1350.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Terceira Molécula-Terceiro","linha":40,"equip":1.0,"metaUnid":10.0,"metaDia":10.0,"metaSemana":60.0,"metaMes":270.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Terceira Molécula-Próprio","linha":41,"equip":1.0,"metaUnid":20.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}}]},{"id":"aerea","nome":"Aérea e monitoramento","titulo":"APLICAÇÃO AÉREA E MONITORAMENTO","atividades":[{"nome":"Drone - Próprio","linha":46,"equip":1.0,"metaUnid":20.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":216.24,"2026-02":517.78,"2026-03":622.63,"2026-04":507.83,"2026-05":312.06,"2026-06":450.96,"2026-07":342.35,"2026-08":7.52,"2026-09":20.26,"2026-10":0}},{"nome":"Drone Dessecação - Próprio","linha":47,"equip":1.0,"metaUnid":30.0,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":12.79,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Drone Terceiro","linha":48,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[262.64,null,505.29,100.0,null,null],"ant":[null,295.32,null,363.57,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":1006.68,"2026-03":485.64,"2026-04":1423.38,"2026-05":241.35,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":2479.05,"2026-10":1231.5}},{"nome":"Drone Dessecação-Terceiro","linha":49,"equip":1.0,"metaUnid":5.0,"metaDia":5.0,"metaSemana":10.0,"metaMes":135.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Área Monitoramento","linha":50,"equip":2.0,"metaUnid":300.0,"metaDia":600.0,"metaSemana":3600.0,"metaMes":16200.0,"dias":[null,204.16,239.93,653.12,309.72,262.33],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":509.99,"2026-02":3570.86,"2026-03":5377.19,"2026-04":2972.59,"2026-05":1699.65,"2026-06":2997.82,"2026-07":5064.12,"2026-08":2632.79,"2026-09":1670.18,"2026-10":1669.26}}]},{"id":"cocho","nome":"Adubação com cocho","titulo":"ADUBAÇÃO COM COCHO","atividades":[{"nome":"Adubação Socaria - Fábio do Prado","linha":67,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,52.38,53.22,84.43,56.86,80.74],"ant":[53.67,49.84,null,null,55.02,67.9],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":427.27,"2026-07":973.5,"2026-08":700.6,"2026-09":1452.01,"2026-10":450.55}},{"nome":"Adubação Socaria - Alencar","linha":68,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,80.0,81.83,59.16,90.03,36.4],"ant":[76.3,72.0,61.95,70.5,75.0,70.17],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":368.18,"2026-07":1017.16,"2026-08":900.26,"2026-09":1686.63,"2026-10":563.09}}]}],"avisos":["Cata Mato: o \"Rendimento H/Dia\" da planilha está como pessoas ÷ ha; na apresentação o rendimento é ha ÷ pessoa.","Colheitabilidade: de 28/09 a 03/10 a linha repete pessoas/rendimento de outra atividade (6 dias) — valores fora da conta, conferir a planilha.","Plantio Manual - Experimento Iran: de 28/09 a 03/10 a linha repete pessoas/rendimento de outra atividade (6 dias) — valores fora da conta, conferir a planilha."],"programas":[{"id":"pre","nome":"Pré-emergente cana soca","base":17950.23,"baseRot":"área colhida","reforma":318.14,"realizado":17043.63,"aRealizar":664.99,"blocos":{"USINA":53.04,"MARCO AMUY":83.84,"BURITI":0.0,"BEBEDOURO":27.7,"154":0.0,"DO CRISTO":0.0,"SHEKINAH I":128.22,"SAUL":54.15,"CANOA":0.0,"NILSON":130.59,"BAÚ":50.08,"PEQUI":22.93,"CAJAMANGA":0.0,"69":0.0,"NILSON CASAGRANDE":0.0,"BERTONI":114.44},"regioes":{"1":379.54,"3":22.93,"2":262.52}},{"id":"queima","nome":"Pré-emergente área de queima","base":1460.37,"baseRot":"área queimada","realizado":350.19,"aRealizar":1110.18,"blocos":{"SAMIR":362.22,"SHEKINAH I":490.4,"BAÚ":38.46,"CAJAMANGA":131.25,"154":27.29,"DO CRISTO":27.01,"BURITI":0.24,"SÁVIO":33.31}},{"id":"mol3","nome":"3ª molécula (bordadura)","base":856.8,"baseRot":"área aberta","realizado":703.03,"aRealizar":153.77,"blocos":{"USINA":8.67,"SHEKINAH I":42.58,"DO CRISTO":22.78,"BEBEDOURO":6.55,"CAJAMANGA":0.86,"CANOA":2.76,"SAUL":18.08,"NILSON":14.16,"BAÚ":4.14,"PEQUI":28.57,"NILSON CASAGRANDE":4.62}},{"id":"cat1","nome":"1ª catação química","base":17043.63,"baseRot":"área aberta","reforma":218.32,"realizado":10250.38,"mec":7092.51,"man":3157.87,"aRealizar":6574.93,"atrasado":5748.28,"blocos":{"USINA":1132.4,"BERTONI":69.44,"SHEKINAH I":849.82,"SÁVIO":268.34,"SAMIR":1179.32,"BURITI":78.49,"SÃO JOSÉ":114.2,"BAÚ":523.25,"CAJAMANGA":25.89,"CANOA":46.97,"SAUL":306.17,"NILSON":309.54,"BEBEDOURO":229.28,"PEQUI":1059.44,"69":144.98,"ELISETE":19.55,"SANTA VITÓRIA":151.83,"NILSON CASAGRANDE":66.02},"blocosAtrasado":{"USINA":1100.31,"BERTONI":69.44,"SHEKINAH I":731.96,"SÁVIO":268.34,"SAMIR":1179.32,"BURITI":78.49,"SÃO JOSÉ":114.2,"BAÚ":464.12,"CAJAMANGA":25.89,"CANOA":46.97,"SAUL":306.17,"NILSON":61.1,"BEBEDOURO":135.68,"PEQUI":849.93,"69":144.98,"ELISETE":19.55,"SANTA VITÓRIA":151.83}},{"id":"cat2","nome":"2ª catação química","base":6195.32,"baseRot":"programado","reforma":152.89,"realizado":567.03,"aRealizar":5536.61,"blocos":{"BERTONI":511.26,"USINA":326.06,"BURITI":1199.27,"69":123.81,"SAMIR":580.94,"SHEKINAH I":652.75,"CANOA":181.62,"BAÚ":314.72,"MARCO AMUY":359.93,"CAJAMANGA":277.76,"NILSON":138.14,"154":167.32,"BASTOS":-24.09,"PEQUI":58.53,"SCALON SETE PLACAS":480.71,"ELISETE":187.88}},{"id":"loc","nome":"Adubação localizada","base":6341.93,"baseRot":"área com ordem","reforma":203.08,"realizado":3266.2,"aRealizar":2768.21,"blocos":{"154":115.32,"BURITI":54.32,"CAJAMANGA":291.31,"CANOA":48.78,"NILSON":301.69,"SAMIR":93.31,"SAUL":256.12,"SÁVIO":439.71,"SHEKINAH I":471.03,"USINA":696.62}},{"id":"cocho","nome":"Adubação com cocho","base":2817.44,"baseRot":"área com ordem","reforma":190.99,"realizado":652.07,"aRealizar":1974.38,"blocos":{"BASTOS":44.71,"PEQUI":1227.55,"SCALON SETE PLACAS":702.12}}],"nomesMes":["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],"locais":{"fazendas":{"9006":"Faz. Córrego das Flores II","9014":"Faz. Córrego do Açude","9321":"Faz. Santa Rita de Cassia","9442":"Faz. Pantano ou Mariano","9476":"Jupatis","9539":"Faz. Ipanema"},"linhas":[{"f":"uniport","a":null,"d":"2026-10-05","faz":9006,"t":"5","ht":13.12,"ha":0.6,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":8,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9006,"t":"6","ht":16.59,"ha":0.51,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":8,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9006,"t":"7","ht":4.01,"ha":0.31,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":8,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9006,"t":"11","ht":5.49,"ha":0.6,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":8,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9006,"t":"12","ht":19.09,"ha":0.71,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":8,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9006,"t":"20","ht":2.64,"ha":0.21,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":8,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9014,"t":"1","ht":29.34,"ha":0.73,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":9,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9014,"t":"2","ht":33.48,"ha":0.73,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":8,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9014,"t":"3","ht":34.36,"ha":0.73,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":8,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9014,"t":"4","ht":5.22,"ha":0.88,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":6,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9321,"t":"1","ht":37.44,"ha":0.84,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":9,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9321,"t":"2","ht":20.69,"ha":0.65,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":9,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9321,"t":"3","ht":35.64,"ha":0.89,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":9,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9321,"t":"4","ht":22.98,"ha":0.57,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":9,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9321,"t":"5","ht":23.34,"ha":0.59,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":9,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9321,"t":"6","ht":23.01,"ha":0.61,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":9,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9321,"t":"7","ht":23.53,"ha":0.61,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":9,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9321,"t":"8","ht":27.16,"ha":0.69,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":9,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9321,"t":"9","ht":38.56,"ha":0.79,"os":6051,"op":"3ª molécula · Uniport bordadura","corte":9,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9442,"t":"1","ht":4.66,"ha":1.06,"os":6049,"op":"3ª molécula · Uniport bordadura","corte":6,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9442,"t":"2","ht":8.51,"ha":0.47,"os":6049,"op":"3ª molécula · Uniport bordadura","corte":6,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9442,"t":"3","ht":6.74,"ha":0.43,"os":6049,"op":"3ª molécula · Uniport bordadura","corte":6,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9442,"t":"4","ht":8.79,"ha":0.45,"os":6049,"op":"3ª molécula · Uniport bordadura","corte":6,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9442,"t":"6","ht":11.19,"ha":0.65,"os":6049,"op":"3ª molécula · Uniport bordadura","corte":6,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9442,"t":"7","ht":14.39,"ha":0.69,"os":6049,"op":"3ª molécula · Uniport bordadura","corte":6,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9442,"t":"8","ht":5.33,"ha":0.41,"os":6049,"op":"3ª molécula · Uniport bordadura","corte":6,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9442,"t":"9","ht":15.42,"ha":0.72,"os":6049,"op":"3ª molécula · Uniport bordadura","corte":6,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9442,"t":"10","ht":8.94,"ha":0.58,"os":6049,"op":"3ª molécula · Uniport bordadura","corte":6,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9442,"t":"31","ht":19.19,"ha":0.67,"os":6049,"op":"3ª molécula · Uniport bordadura","corte":5,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9442,"t":"32","ht":10.15,"ha":0.81,"os":6049,"op":"3ª molécula · Uniport bordadura","corte":5,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9442,"t":"33","ht":3.23,"ha":0.3,"os":6049,"op":"3ª molécula · Uniport bordadura","corte":5,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9476,"t":"4","ht":4.03,"ha":0.41,"os":6050,"op":"3ª molécula · Uniport bordadura","corte":4,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9476,"t":"9","ht":7.72,"ha":0.54,"os":6050,"op":"3ª molécula · Uniport bordadura","corte":4,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9476,"t":"10","ht":21.31,"ha":0.88,"os":6050,"op":"3ª molécula · Uniport bordadura","corte":4,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9476,"t":"11","ht":28.06,"ha":0.96,"os":6050,"op":"3ª molécula · Uniport bordadura","corte":4,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9476,"t":"12","ht":12.89,"ha":0.68,"os":6050,"op":"3ª molécula · Uniport bordadura","corte":4,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9476,"t":"13","ht":6.6,"ha":0.48,"os":6050,"op":"3ª molécula · Uniport bordadura","corte":4,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9476,"t":"14","ht":10.41,"ha":0.77,"os":6050,"op":"3ª molécula · Uniport bordadura","corte":4,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9476,"t":"15","ht":34.72,"ha":0.99,"os":6050,"op":"3ª molécula · Uniport bordadura","corte":4,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9476,"t":"16","ht":3.41,"ha":0.34,"os":6050,"op":"3ª molécula · Uniport bordadura","corte":4,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9476,"t":"17","ht":3.07,"ha":0.46,"os":6050,"op":"3ª molécula · Uniport bordadura","corte":4,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9539,"t":"2","ht":2.55,"ha":0.38,"os":6075,"op":"3ª molécula · Uniport bordadura","corte":3,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9539,"t":"3","ht":0.47,"ha":0.12,"os":6075,"op":"3ª molécula · Uniport bordadura","corte":3,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9539,"t":"4","ht":1.27,"ha":0.2,"os":6075,"op":"3ª molécula · Uniport bordadura","corte":3,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9539,"t":"5","ht":1.15,"ha":0.18,"os":6075,"op":"3ª molécula · Uniport bordadura","corte":3,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9539,"t":"8","ht":6.05,"ha":0.41,"os":6075,"op":"3ª molécula · Uniport bordadura","corte":3,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9539,"t":"9","ht":5.73,"ha":0.53,"os":6075,"op":"3ª molécula · Uniport bordadura","corte":3,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9539,"t":"10","ht":19.69,"ha":0.85,"os":6075,"op":"3ª molécula · Uniport bordadura","corte":3,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9539,"t":"11","ht":44.75,"ha":1.12,"os":6075,"op":"3ª molécula · Uniport bordadura","corte":3,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9539,"t":"12","ht":22.15,"ha":0.76,"os":6075,"op":"3ª molécula · Uniport bordadura","corte":3,"prod":[]},{"f":"uniport","a":null,"d":"2026-10-05","faz":9539,"t":"13","ht":17.36,"ha":0.68,"os":6075,"op":"3ª molécula · Uniport bordadura","corte":3,"prod":[]}],"fontes":["Realizado - 3ª Mol"]}};
+/*DADOS-FIM*/
+</script>
+
+<!-- MOTOR — formatação e desenho em SVG, os mesmos helpers do comparativo -->
+<script>(function(){
+"use strict";
+var NAVY = "#12224A", GOLD = "#C9A227", RED = "#C0392B", GREEN = "#2E7D46";
+var GRAY = "#9AA1AE", GRID = "#E7EAF0", MUT = "#5A6072";
+var C25 = "#B8C0D0";  // safra anterior: cinza-azulado, fica atrás no olhar
+
+/* ---------- formatação ---------- */
+function fmtInt(n){ if(!isFinite(n)) return "–"; return Math.round(n).toLocaleString("pt-BR"); }
+function fmtDec(n,c){ if(!isFinite(n)) return "–"; return n.toLocaleString("pt-BR",{minimumFractionDigits:c,maximumFractionDigits:c}); }
+function fmtMil(n){ return fmtInt(n/1000)+" mil"; }
+function fmtMt(n){ return fmtDec(n/1e6,2)+" Mt"; }
+function fmtMilT(n){ return fmtInt(n/1000)+" mil t"; }
+function pct(n,c){ if(!isFinite(n)) return "–"; return (n>=0?"+":"")+fmtDec(n*100,c==null?1:c)+"%"; }
+function pctAbs(n,c){ return fmtDec(n*100,c==null?1:c)+"%"; }
+function sinalMil(n){ return (n>=0?"+":"−")+fmtInt(Math.abs(n)/1000)+" mil t"; }
+function esc(s){ var d=document.createElement("div"); d.textContent=String(s==null?"":s); return d.innerHTML; }
+function total(arr){ return arr.reduce(function(a,b){return a+b;},0); }
+function acum(arr){ var s=0; return arr.map(function(v){ s+=v; return s; }); }
+
+/* ---------- SVG ---------- */
+function ns(t){ return document.createElementNS("http://www.w3.org/2000/svg",t); }
+function add(p,tag,attrs,text){
+  var e=ns(tag);
+  if(attrs) for(var k in attrs) e.setAttribute(k,attrs[k]);
+  if(text!=null) e.textContent=text;
+  p.appendChild(e); return e;
+}
+function txt(p,x,y,s,a){
+  a=a||{}; a.x=x; a.y=y;
+  if(!a["font-size"]) a["font-size"]="12";
+  if(!a.fill) a.fill="#2B2B2B";
+  return add(p,"text",a,s);
+}
+// passo "redondo" mais próximo de um valor qualquer
+function passoNice(v){
+  if(!(v>0)) return 1;
+  var mag=Math.pow(10,Math.floor(Math.log10(v))), n=v/mag;
+  return (n<=1?1:n<=1.5?1.5:n<=2?2:n<=2.5?2.5:n<=3?3:n<=4?4:n<=5?5:n<=6?6:n<=8?8:10)*mag;
+}
+// escala com passo redondo para o nº de divisões pedido
+function niceAxis(v,ticks){
+  if(!(v>0)) return 1;
+  return passoNice(v/ticks)*ticks;
+}
+// escala que cruza o zero: min e max são múltiplos do MESMO passo redondo,
+// senão o eixo sai com rótulos quebrados (410, 220, 33, -160…)
+function escalaZero(vals,ticks){
+  ticks = ticks||4;
+  var hi=Math.max.apply(null,vals.concat([0])), lo=Math.min.apply(null,vals.concat([0]));
+  var amp=hi-lo; if(!(amp>0)) amp=Math.abs(hi)||1;
+  var step=passoNice(amp/ticks);
+  var max=Math.ceil(hi/step)*step, min=Math.floor(lo/step)*step;
+  if(max===min) max=min+step;
+  return {min:min,max:max,step:step};
+}
+// mede o cartão para o viewBox casar com os pixels reais: texto sai no tamanho pedido
+function medir(card,minW,minH){
+  var r=card.getBoundingClientRect();
+  return { W:Math.max(minW||680,Math.round(r.width)), H:Math.max(minH||260,Math.round(r.height)) };
+}
+function limpa(svg){ while(svg.firstChild) svg.removeChild(svg.firstChild); }
+
+// eixo Y com rótulos; devolve a função de posição.
+// com o.step, as linhas saem de min até max de passo em passo (escala que cruza
+// o zero); sem ele, divide o intervalo em o.ticks partes iguais.
+function eixoY(svg,o){
+  var max=o.max, min=o.min||0, x0=o.x0, x1=o.x1, yTop=o.yTop, yBot=o.yBot;
+  function y(v){ return yBot-((v-min)/(max-min))*(yBot-yTop); }
+  var vals=[];
+  if(o.step>0){ for(var v=min; v<=max+o.step*0.001; v+=o.step) vals.push(Math.abs(v)<o.step*1e-6?0:v); }
+  else { var t=o.ticks||4; for(var i=0;i<=t;i++) vals.push(min+(max-min)*i/t); }
+  vals.forEach(function(v){
+    var yy=y(v), zero=(v===0&&min<0);
+    add(svg,"line",{x1:x0,x2:x1,y1:yy,y2:yy,stroke:zero?"#C3C9D6":GRID,"stroke-width":zero?1.4:1});
+    if(!o.semRotulo) txt(svg,x0-8,yy+4,o.fmt(v),{"text-anchor":"end","font-size":o.fs||11,fill:MUT});
+  });
+  return y;
+}
+// maxW: largura disponível até a borda do painel. Em telas estreitas o título
+// de um painel invadia o do painel vizinho — SVG não quebra nem corta texto
+// sozinho, então a fonte encolhe até caber.
+function tituloSVG(svg,x,y,s,fs,maxW){
+  fs = fs||15;
+  if(maxW>0){
+    var est = s.length*fs*0.52;
+    if(est>maxW) fs = Math.max(10.5, fs*maxW/est);
+  }
+  return txt(svg,x,y,s,{"font-size":fs,"font-weight":"700",fill:NAVY});
+}
+function pilula(svg,cx,cy,texto,cor,fundo){
+  var w=texto.length*6.6+16;
+  add(svg,"rect",{x:cx-w/2,y:cy-10,width:w,height:19,rx:9.5,fill:fundo||"#F1F3F8",stroke:cor,"stroke-width":"1"});
+  txt(svg,cx,cy+4,texto,{"text-anchor":"middle","font-size":11.5,"font-weight":"700",fill:cor});
+}
+function barraTopo(x,y,w,h,r){
+  r=Math.min(r,w/2,Math.max(0,h));
+  return "M"+x+","+(y+h)+" L"+x+","+(y+r)+" Q"+x+","+y+" "+(x+r)+","+y+
+         " L"+(x+w-r)+","+y+" Q"+(x+w)+","+y+" "+(x+w)+","+(y+r)+" L"+(x+w)+","+(y+h)+" Z";
+}
+function corVar(v){ return v>=0?GREEN:RED; }
+
+/* ---------- legendas HTML ---------- */
+function legenda(box,itens){
+  box.innerHTML = itens.map(function(it){
+    var marca;
+    if(it.tipo==="linha"){
+      marca = '<svg width="20" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="'+it.cor+'" stroke-width="2.6"'+
+              (it.tracejada?' stroke-dasharray="5,3"':'')+'/><circle cx="10" cy="5" r="3.6" fill="'+it.cor+'"/></svg>';
+    } else {
+      marca = '<svg width="13" height="13"><rect width="13" height="13" rx="2.5" fill="'+it.cor+'"'+
+              (it.borda?' stroke="'+it.borda+'"':'')+'/></svg>';
+    }
+    return '<span class="lg">'+marca+'<b>'+esc(it.nome)+'</b>'+(it.obs?' '+esc(it.obs):'')+'</span>';
+  }).join("");
+}
+
+
+window.OpEngine = {
+  NAVY:NAVY, GOLD:GOLD, RED:RED, GREEN:GREEN, GRAY:GRAY, GRID:GRID, MUT:MUT, C25:C25,
+  fmtInt:fmtInt, fmtDec:fmtDec, pct:pct, pctAbs:pctAbs, esc:esc, total:total, acum:acum,
+  ns:ns, add:add, txt:txt, passoNice:passoNice, niceAxis:niceAxis, escalaZero:escalaZero,
+  medir:medir, limpa:limpa, eixoY:eixoY, tituloSVG:tituloSVG, pilula:pilula, barraTopo:barraTopo,
+  corVar:corVar, legenda:legenda
+};
+})();
+</script>
+
+<!-- PÁGINAS — cálculos, gráficos e painéis de detalhe -->
+<script>(function(){
+"use strict";
+var E = window.OpEngine, T = window.TRATOS;
+
+/* ============================================================
+   BASE — frentes, atividades e os totais da semana
+   ============================================================ */
+// cor fixa por frente em todas as páginas; frente nova entra com cor de reserva
+var COR_FRENTE = {manual:"#2E86C1", uniport:"#8A6D14", aerea:"#3FA79C", lombo:"#8E6CB8", cocho:"#12224A"};
+var RESERVA = ["#A0522D","#5D6D7E","#B03A7A"];
+// farol da meta: a cor repete o número escrito, nunca o substitui
+var COR_ST = {ok:E.GREEN, medio:"#D68910", baixo:E.RED, sem:"#B8C0D0", parada:"#B8C0D0"};
+var NOME_ST = {ok:"Na meta ou acima", medio:"De 50% a 99% da meta", baixo:"Abaixo de 50% da meta", parada:"Parada na semana (fora da meta)"};
+var COR_REAL = "#2E86C1", COR_SALDO = "#D68910", COR_ATRASO = E.RED;
+
+var SEM = T.semana, DIAS = SEM.dias, ND = DIAS.length, MES_REF = SEM.diaRef.slice(0,7);
+
+function soma(arr,f){ var t=0; for(var i=0;i<arr.length;i++){ var v=f?f(arr[i]):arr[i]; if(v) t+=v; } return t; }
+function status(p){ return p==null ? "sem" : p>=0.995 ? "ok" : p>=0.5 ? "medio" : "baixo"; }
+// tons de uma cor, do cheio ao claro: as atividades dentro da mesma frente
+function tons(hex,n){
+  var c=[1,3,5].map(function(i){ return parseInt(hex.slice(i,i+2),16); }), mix=[0,.35,.55,.7,.8,.86], out=[];
+  for(var i=0;i<n;i++){ var m=mix[Math.min(i,mix.length-1)];
+    out.push("#"+c.map(function(v){ var x=Math.round(v+(255-v)*m).toString(16); return x.length<2?"0"+x:x; }).join("")); }
+  return out;
+}
+
+// Eficiência: hectares por equipamento (ou pessoa) por dia em que a atividade operou,
+// contra a meta por unidade da planilha. Onde há apontamento de pessoas, vale a pessoa
+// apontada no dia; senão, o número de equipamentos/pessoas planejado da atividade.
+function calcEficiencia(a){
+  var temP = !!(a.pessoas && a.pessoas.some(function(p){ return p>0; }));
+  var plan = temP ? (a.pessoasPlan||a.equip) : a.equip;
+  var meta = temP ? (a.metaPessoa||a.metaUnid) : a.metaUnid;
+  var diasOp=0, unidDias=0;
+  a.dias.forEach(function(v,k){ if(v>0){ diasOp++; unidDias += temP ? (a.pessoas[k]||0) : (plan||0); } });
+  var ef = unidDias>0 ? a.sem/unidDias : null;
+  return {temP:temP, base:temP?"pessoas apontadas":"equip. planejados", unid:temP?"pessoa":"equip.", plan:plan,
+          uniMed:diasOp?unidDias/diasOp:null, diasOp:diasOp, unidDias:unidDias, ef:ef, meta:meta,
+          pct:ef!=null && meta>0 ? ef/meta : null};
+}
+// eficiência de um conjunto: realizado ÷ (meta por unidade × unidades-dia operadas)
+function efConjunto(lista){
+  var l=lista.filter(function(a){ return a.ef.ef!=null && a.ef.meta>0; });
+  var esp=soma(l,function(a){ return a.ef.meta*a.ef.unidDias; });
+  return esp>0 ? soma(l,function(a){ return a.sem; })/esp : null;
+}
+
+// Como na planilha: a meta da frente soma só as atividades que operaram na semana
+// (realizado > 0). Atividade sem produção na semana não entra na meta e não aparece
+// em nenhuma tela.
+var ATIV = [];
+T.frentes.forEach(function(f,i){
+  f.cor = COR_FRENTE[f.id] || RESERVA[i%RESERVA.length];
+  f.atividades.forEach(function(a){
+    a.frente = f; a.idx = ATIV.length;
+    a.sem = soma(a.dias);
+    a.semAnt = a.ant.some(function(v){ return v!=null; }) ? soma(a.ant) : null;
+    a.ativa = a.sem>0;
+    a.parada = !a.ativa && a.metaSemana>0;
+    a.pct = a.ativa && a.metaSemana>0 ? a.sem/a.metaSemana : null;
+    a.st = a.parada ? "parada" : status(a.pct);
+    a.mesReal = a.mes[MES_REF] || 0;
+    a.ef = calcEficiencia(a);
+    ATIV.push(a);
+  });
+  var at = f.atividades.filter(function(a){ return a.ativa; });
+  f.ativas = at;
+  f.paradas = f.atividades.filter(function(a){ return a.parada; });
+  var cores = tons(f.cor, at.length);
+  at.forEach(function(a,k){ a.cor = cores[k]; });
+  f.meta = soma(at,function(a){ return a.metaSemana; });
+  f.real = soma(f.atividades,function(a){ return a.sem; });
+  f.ant = soma(f.atividades,function(a){ return a.semAnt; });
+  f.pct = f.meta>0 ? f.real/f.meta : null;
+  f.metaDia = soma(at,function(a){ return a.metaDia; });
+  f.metaMes = soma(at,function(a){ return a.metaMes; });
+  f.mesReal = soma(at,function(a){ return a.mesReal; });
+  f.porDia = DIAS.map(function(_,k){ return soma(f.atividades,function(a){ return a.dias[k]; }); });
+  f.antDia = DIAS.map(function(_,k){ return soma(f.atividades,function(a){ return a.ant[k]; }); });
+  f.ef = efConjunto(at);
+});
+var TOT = {
+  meta:soma(T.frentes,function(f){ return f.meta; }), real:soma(T.frentes,function(f){ return f.real; }),
+  ant:soma(T.frentes,function(f){ return f.ant; }), metaDia:soma(T.frentes,function(f){ return f.metaDia; }),
+  metaMes:soma(T.frentes,function(f){ return f.metaMes; }), mesReal:soma(T.frentes,function(f){ return f.mesReal; }),
+  porDia:DIAS.map(function(_,k){ return soma(T.frentes,function(f){ return f.porDia[k]; }); }),
+  antDia:DIAS.map(function(_,k){ return soma(T.frentes,function(f){ return f.antDia[k]; }); })
+};
+TOT.pct = TOT.meta>0 ? TOT.real/TOT.meta : null;
+var ATIVAS = ATIV.filter(function(a){ return a.ativa; });
+TOT.ef = efConjunto(ATIVAS);
+var COM_META = ATIVAS.filter(function(a){ return a.metaSemana>0; });
+// nenhuma tela traz atividade ou operação sem produção na semana
+var FRENTES = T.frentes.filter(function(f){ return f.real>0; });
+
+// fazendas e talhões trabalhados na semana (relatório de operações do sistema e OS da
+// 3ª molécula): cada linha é de uma frente e, quando o sistema permite, de uma atividade
+var LOC = T.locais || {fazendas:{}, linhas:[], fontes:[]};
+T.frentes.forEach(function(f){
+  f.locais = LOC.linhas.filter(function(l){ return l.f===f.id; });
+  f.atividades.forEach(function(a){ a.locais = f.locais.filter(function(l){ return l.a===a.nome; }); });
+});
+
+// mês de referência: dias trabalhados até o dia de referência (segunda a sábado) e
+// dias da meta do mês (meta mês ÷ meta dia), que é como a planilha chega nela
+var DIAS_MES_UTEIS = (function(){
+  var a = ATIV.filter(function(x){ return x.metaDia>0 && x.metaMes>0; })[0];
+  return a ? Math.round(a.metaMes/a.metaDia) : 26;
+})();
+var DIAS_MES_FEITOS = (function(){
+  var d = new Date(MES_REF+"-01T12:00:00"), f = new Date(SEM.diaRef+"T12:00:00"), n=0;
+  while(d<=f){ if(d.getDay()!==0) n++; d.setDate(d.getDate()+1); }
+  return n;
+})();
+var RITMO = Math.min(1, DIAS_MES_FEITOS/DIAS_MES_UTEIS);
+
+/* ---------- datas e formatação ---------- */
+var DSEM = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+function diaSem(iso){ return DSEM[new Date(iso+"T12:00:00").getDay()]; }
+function dataBR(iso){ return iso.slice(8,10)+"/"+iso.slice(5,7); }
+function dataLonga(iso){ return dataBR(iso)+"/"+iso.slice(0,4); }
+function diaRot(iso){ return diaSem(iso)+" "+dataBR(iso); }
+function periodo(){ var a=DIAS[0], b=DIAS[ND-1];
+  return a.slice(5,7)===b.slice(5,7) ? a.slice(8,10)+" a "+dataLonga(b) : dataBR(a)+" a "+dataLonga(b); }
+function nomeMes(ym){ return T.nomesMes[+ym.slice(5,7)-1]; }
+function nomeMesLongo(ym){ return ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][+ym.slice(5,7)-1]; }
+function fHa(v){ return v==null ? "–" : Math.abs(v)>=100 ? E.fmtInt(v) : E.fmtDec(v,1); }
+function fHa2(v){ return v==null ? "–" : E.fmtDec(v,2); }
+function fEf(v){ return v==null ? "–" : v>=10 ? E.fmtDec(v,1) : E.fmtDec(v,2); }
+function fPct(p){ return p==null || !isFinite(p) ? "–" : E.pctAbs(p,0); }
+function fVar(p){ return p==null || !isFinite(p) ? "–" : (p>=0?"+":"−")+E.fmtDec(Math.abs(p)*100,0)+"%"; }
+function spanSt(p){ return "<span class='st-"+status(p)+"'>"+fPct(p)+"</span>"; }
+function nomeBloco(b){ return /^\d+$/.test(b) ? "Bloco "+b : b; }
+function listaMax(arr,n){ return arr.length<=n ? arr : arr.slice(0,n).concat(["e mais "+(arr.length-n)]); }
+
+/* ---------- tela e desenho ---------- */
+function estreito(){ return window.innerWidth<760; }
+function minW(n){ return estreito() ? 330 : n; }
+function empilhado(card){ return getComputedStyle(card).gridTemplateColumns.split(" ").length<2; }
+// o texto dos gráficos cresce com a tela (TV de 1920×1080 ≈ 1,3×) e nunca fica abaixo do de notebook
+function escala(){ return estreito() ? 1 : Math.max(1, Math.min(1.4, window.innerWidth/1480, window.innerHeight/830)); }
+function fz(n){ return Math.round(n*escala()*10)/10; }
+function svgNovo(card){ var svg=E.add(card,"svg",{}); svg.setAttribute("preserveAspectRatio","xMidYMid meet"); return svg; }
+function tituloPainel(svg,W,s,direita){
+  E.tituloSVG(svg,16,fz(21),s,fz(15.5),W-32-(direita?direita.length*fz(13)*0.6+12:0));
+  if(direita) E.txt(svg,W-14,fz(21),direita,{"text-anchor":"end","font-size":fz(13.5),"font-weight":"700",fill:E.NAVY});
+  return fz(21)+fz(14);
+}
+function eixo(svg,o){ o.fs=fz(11); return E.eixoY(svg,o); }
+function cabe(s,maxW,fs){ var m=Math.floor(maxW/(fs*0.56)); return s.length<=m ? s : s.slice(0,Math.max(3,m-1))+"…"; }
+function linhaClicavel(svg,x,y,w,h,fn,titulo){
+  var r=E.add(svg,"rect",{x:x,y:y,width:w,height:h,"class":"hit"});
+  if(titulo) E.add(r,"title",{},titulo);
+  r.addEventListener("click",fn);
+  return r;
+}
+function poe(id,texto){
+  var e=document.getElementById(id); if(!e) return;
+  e.textContent=texto;
+  e.classList.toggle("neg", /^[-−]/.test(String(texto).trim()));
+}
+
+/* ---------- células de tabela com gráfico ---------- */
+// barra da parte da meta (escala até 150%), com o traço da meta em 100%
+function barCel(p,cor){
+  if(p==null) return "<span class='st-sem'>–</span>";
+  var st=status(p), w=Math.min(p,1.5)/1.5*100;
+  return "<span class='bc'><span class='trk'><i style='width:"+w.toFixed(1)+"%;background:"+(cor||COR_ST[st])+"'></i>"+
+    "<b style='left:"+(100/1.5).toFixed(1)+"%'></b></span><em class='st-"+st+"'>"+fPct(p)+"</em></span>";
+}
+// célula do dia: realizado, com o fundo e o percentual da meta do dia
+function diaCel(v,meta){
+  if(!(v>0)) return "<td class='d zero'>–</td>";
+  if(!(meta>0)) return "<td class='d'>"+fHa(v)+"</td>";
+  var p=v/meta;
+  return "<td class='d "+status(p)+"' title='"+fPct(p)+" da meta do dia ("+fHa(meta)+" ha)'>"+fHa(v)+"<small>"+fPct(p)+"</small></td>";
+}
+// tabela do tamanho do espaço: a letra cresce até a tabela ocupar a altura do cartão
+// (até 1,8× o tamanho de base, sem passar da largura) e diminui se ela não couber (até 11 px)
+function ajustaTabela(rolo){
+  var tb=rolo && rolo.querySelector("table"); if(!tb || estreito()) return;
+  tb.style.fontSize="";
+  var f=parseFloat(getComputedStyle(tb).fontSize), max=f*1.8;
+  function cabe(){ return tb.offsetHeight<=rolo.clientHeight+1 && tb.offsetWidth<=rolo.clientWidth+1; }
+  if(cabe()){
+    while(f+0.5<=max){ tb.style.fontSize=(f+0.5)+"px"; if(!cabe()){ tb.style.fontSize=f+"px"; break; } f+=0.5; }
+  } else {
+    while(f>11 && !cabe()){ f-=0.5; tb.style.fontSize=f+"px"; }
+  }
+}
+function liga(box,sel,fn){
+  Array.prototype.forEach.call(box.querySelectorAll(sel),function(el){ el.addEventListener("click",function(){ fn(el); }); });
+}
+function cabDias(){ return DIAS.map(function(d){ return "<th class='c'>"+diaSem(d)+"<u>"+dataBR(d)+"</u></th>"; }).join(""); }
+
+/* ---------- painel de detalhe ---------- */
+// níveis do painel: quem abre o próximo nível (entra) guarda o atual, e o Voltar refaz
+var MF_PILHA = [], MF_ATUAL = null;
+function marca(fn){ MF_ATUAL = fn; }
+function entra(fn){ MF_PILHA.push(MF_ATUAL); fn(); }
+function abreCaixa(titulo, sub, conta, corpo){
+  if(document.getElementById("mf").hidden) MF_PILHA = [];
+  document.getElementById("mf-voltar").hidden = !MF_PILHA.length;
+  document.getElementById("mf-titulo").textContent = titulo;
+  document.getElementById("mf-sub").textContent = sub;
+  document.getElementById("mf-conta").innerHTML = conta;
+  document.getElementById("mf-corpo").innerHTML = corpo;
+  document.getElementById("mf-corpo").scrollTop = 0;
+  document.getElementById("mf").hidden = false;
+}
+function fechaCaixa(){ document.getElementById("mf").hidden = true; MF_PILHA = []; }
+document.getElementById("mf-voltar").addEventListener("click",function(){ var fn=MF_PILHA.pop(); if(fn) fn(); });
+document.getElementById("mf-fechar").addEventListener("click",fechaCaixa);
+document.getElementById("mf-fundo").addEventListener("click",fechaCaixa);
+document.addEventListener("keydown",function(e){ if(e.key==="Escape") fechaCaixa(); });
+function tabela(cols, linhas, total, nota){
+  function cel(tag,c,v){ return "<"+tag+" class='"+(c.l?"l":"")+(c.key?" key":"")+"'>"+v+"</"+tag+">"; }
+  return "<table><thead><tr>"+cols.map(function(c){ return cel("th",c,c.t); }).join("")+"</tr></thead><tbody>"+
+    linhas.map(function(r){ return "<tr>"+r.map(function(v,i){ return cel("td",cols[i],v); }).join("")+"</tr>"; }).join("")+
+    (total ? "<tr class='tot'>"+total.map(function(v,i){ return cel("td",cols[i],v); }).join("")+"</tr>" : "")+
+    "</tbody></table>"+(nota ? "<p class='mf-nota'>"+nota+"</p>" : "");
+}
+function historico(a){
+  return SEM.meses.slice(-6).map(function(ym){
+    return nomeMes(ym)+(ym===MES_REF?" (até "+dataBR(SEM.diaRef)+")":"")+" <b>"+fHa(a.mes[ym]||0)+"</b>";
+  }).join(" &middot; ");
+}
+function detalheAtividade(a){
+  marca(function(){ detalheAtividade(a); });
+  var e=a.ef, temP=e.temP;
+  // fazendas e talhões: os da própria atividade ou, quando o sistema não separa, os da operação
+  var f=a.frente, loc=a.locais.length ? a : (f.locais.some(function(l){ return !l.a; }) ? null : undefined);
+  var cols=[{t:"Dia",l:true},{t:"Realizado (ha)"},{t:"Meta do dia (ha)"},{t:"% da meta",key:true},
+            {t:temP?"Pessoas":"Equip. planejados"},{t:"ha por "+e.unid}];
+  var linhas=DIAS.map(function(d,k){
+    var v=a.dias[k], u=temP?a.pessoas[k]:(v>0?e.plan:null);
+    return [diaRot(d), fHa2(v), fHa2(a.metaDia), a.metaDia>0&&v!=null?spanSt(v/a.metaDia):"–",
+            u==null?"–":E.fmtInt(u), u&&v?fEf(v/u):"–"];
+  });
+  var tot=["Semana", fHa2(a.sem), fHa2(a.metaSemana), a.parada?"parada":spanSt(a.pct), e.uniMed==null?"–":E.fmtDec(e.uniMed,1)+" por dia", fEf(e.ef)];
+  var conta="<span class='res'>"+(a.parada?"parada":fPct(a.pct))+"</span><span class='op'>=</span><b>"+fHa2(a.sem)+" ha</b><span class='op'>÷</span><b>"+
+    fHa2(a.metaSemana)+" ha</b> de meta"+(a.metaDia?" ("+ND+" dias × "+fHa(a.metaDia)+" ha/dia)":"")+
+    "<em>Eficiência: "+fEf(e.ef)+" ha por "+e.unid+" por dia operado, meta "+fEf(e.meta)+" ("+fPct(e.pct)+") · "+e.diasOp+" de "+ND+" dias com operação · "+
+    "semana anterior: "+(a.semAnt==null?"–":fHa(a.semAnt)+" ha")+" · "+nomeMesLongo(MES_REF)+" até "+dataBR(SEM.diaRef)+": "+fHa(a.mesReal)+" ha</em>";
+  if(loc!==undefined) conta+="<button type='button' class='mf-ir' id='mf-ir'>Fazendas e talhões"+(loc?"":" · "+E.esc(f.nome))+" &rsaquo;</button>";
+  abreCaixa(a.nome+" — "+periodo(), a.frente.nome+" · realizado dia a dia contra a meta", conta,
+    tabela(cols,linhas,tot,"Mês a mês: "+historico(a)+". Eficiência = realizado ÷ "+(temP?"pessoas apontadas no dia":"equipamentos planejados nos dias com operação")+"."));
+  if(loc!==undefined) document.getElementById("mf-ir").addEventListener("click",function(){ entra(function(){ detalheFazendas(f,loc); }); });
+}
+
+/* ---------- fazendas e talhões da semana ---------- */
+function nomeFaz(c){ return c+" · "+(LOC.fazendas[c]||""); }
+function fontesLoc(){
+  return LOC.fontes.map(function(x){ return /^RSC/i.test(x) ? "relatório de operações do sistema" : /3/.test(x) ? "OS da 3ª molécula" : x; }).join(" e ");
+}
+function resumoLocais(lin){
+  var faz={}, tal={}, ht=0;
+  lin.forEach(function(l){ faz[l.faz]=1; var k=l.faz+"/"+l.t; if(!tal[k]){ tal[k]=1; ht+=l.ht||0; } });
+  return {faz:Object.keys(faz).length, tal:Object.keys(tal).length, ht:ht, ha:soma(lin,function(l){ return l.ha; })};
+}
+function tagLocais(lin){
+  if(!lin.length) return "";
+  var r=resumoLocais(lin);
+  return "<span class='loc-tag'>"+r.faz+" faz. · "+r.tal+" talh. &rsaquo;</span>";
+}
+function fDose(v){ return v==null ? "–" : E.fmtDec(v, v<1?3:2); }
+// operação (ou atividade) -> fazendas trabalhadas na semana
+function detalheFazendas(f,a){
+  marca(function(){ detalheFazendas(f,a); });
+  var lin=a?a.locais:f.locais, g={};
+  lin.forEach(function(l){
+    var x=g[l.faz]||(g[l.faz]={faz:l.faz, tal:{}, ht:0, ha:0, dias:{}, ops:{}});
+    if(!x.tal[l.t]){ x.tal[l.t]=1; x.ht+=l.ht||0; }
+    x.ha+=l.ha||0; x.dias[l.d]=1; x.ops[l.op]=1;
+  });
+  var lista=Object.keys(g).map(function(k){ return g[k]; }).sort(function(p,q){ return q.ha-p.ha; });
+  var r=resumoLocais(lin), real=a?a.sem:f.real;
+  var cols=[{t:"Fazenda",l:true},{t:"Talhões"},{t:"Área dos talhões (ha)"},{t:"Aplicado (ha)",key:true},{t:"Dias",l:true},{t:"Operação",l:true}];
+  var linhas=lista.map(function(x){
+    return [E.esc(nomeFaz(x.faz)), Object.keys(x.tal).length, fHa2(x.ht), fHa2(x.ha),
+            Object.keys(x.dias).sort().map(dataBR).join(", "), E.esc(Object.keys(x.ops).join(" · "))];
+  });
+  abreCaixa((a?a.nome:f.nome)+" — fazendas da semana", periodo()+" · "+fontesLoc(),
+    "<span class='res'>"+r.faz+" fazendas</span><span class='op'>·</span><b>"+r.tal+"</b> talhões<span class='op'>·</span><b>"+fHa2(r.ha)+" ha</b> aplicados"+
+    "<em>Realizado da semana na planilha: "+fHa(real)+" ha · com fazenda e talhão identificados: "+fPct(real>0?r.ha/real:null)+"</em>",
+    tabela(cols, linhas, ["Total", r.tal, fHa2(r.ht), fHa2(r.ha), "", ""]));
+  Array.prototype.forEach.call(document.querySelectorAll("#mf-corpo tbody tr:not(.tot)"),function(tr,i){
+    tr.classList.add("clic");
+    tr.addEventListener("click",function(){ entra(function(){ detalheTalhoes(f,a,lista[i].faz); }); });
+  });
+}
+// fazenda -> talhões aplicados na semana
+function detalheTalhoes(f,a,faz){
+  marca(function(){ detalheTalhoes(f,a,faz); });
+  var lin=(a?a.locais:f.locais).filter(function(l){ return l.faz===faz; }).sort(function(p,q){
+    return p.d<q.d ? -1 : p.d>q.d ? 1 : (parseFloat(p.t)||0)-(parseFloat(q.t)||0); });
+  var r=resumoLocais(lin);
+  var temProd=lin.some(function(l){ return l.prod.length; }), temCorte=lin.some(function(l){ return l.corte; });
+  var cols=[{t:"Dia",l:true},{t:"Talhão"},{t:"Área do talhão (ha)"},{t:"Aplicado (ha)",key:true},{t:"Operação",l:true},{t:"OS"}]
+    .concat(temCorte?[{t:"Corte"}]:[]).concat(temProd?[{t:"Produto · dose por ha (real × recomendada)",l:true}]:[]);
+  var linhas=lin.map(function(l){
+    return [diaRot(l.d), E.esc(l.t), fHa2(l.ht), fHa2(l.ha), E.esc(l.op), l.os]
+      .concat(temCorte?[l.corte ? l.corte+"º" : "–"]:[])
+      .concat(temProd?[l.prod.map(function(p){
+        var dif=p[2]>0 && p[1]!=null ? p[1]/p[2]-1 : null;
+        return E.esc(p[0])+" <b>"+fDose(p[1])+"</b> × "+fDose(p[2])+" "+E.esc(p[3])+
+          (dif==null ? "" : " <u class='"+(Math.abs(dif)>0.1?"st-baixo":"")+"'>("+fVar(dif)+")</u>");
+      }).join("<br>")]:[]);
+  });
+  var tot=["Total", r.tal, fHa2(r.ht), fHa2(r.ha), "", ""].concat(temCorte?[""]:[]).concat(temProd?[""]:[]);
+  abreCaixa(nomeFaz(faz)+" — talhões", (a?a.nome:f.nome)+" · "+periodo()+" · "+fontesLoc(),
+    "<span class='res'>"+r.tal+" talhões</span><span class='op'>·</span><b>"+fHa2(r.ha)+" ha</b> aplicados em <b>"+fHa2(r.ht)+" ha</b> de talhões"+
+    "<em>"+lin.map(function(l){ return l.d; }).filter(function(d,i,arr){ return arr.indexOf(d)===i; }).map(diaRot).join(" · ")+"</em>",
+    tabela(cols, linhas, tot));
+  if(temProd) Array.prototype.forEach.call(document.querySelectorAll("#mf-corpo tbody tr"),function(tr){
+    var td=tr.children[cols.length-1]; if(td) td.classList.add("prod"); });
+}
+function detalheDia(f,k){
+  var lista=(f?f.atividades:ATIV).filter(function(a){ return a.dias[k] || (a.ativa && a.metaDia>0); })
+    .sort(function(p,q){ return (q.dias[k]||0)-(p.dias[k]||0); });
+  var real=soma(lista,function(a){ return a.dias[k]; }), meta=soma(lista,function(a){ return a.ativa?a.metaDia:0; });
+  var cols=[{t:"Atividade",l:true}].concat(f?[]:[{t:"Operação",l:true}]).concat([{t:"Realizado (ha)"},{t:"Meta do dia (ha)"},{t:"% da meta",key:true}]);
+  abreCaixa(diaRot(DIAS[k])+" — "+(f?f.nome:"todas as operações"), "Realizado de cada atividade no dia",
+    "<span class='res'>"+fHa2(real)+" ha</span><span class='op'>de</span><b>"+fHa2(meta)+" ha</b> de meta do dia ("+fPct(meta?real/meta:null)+")",
+    tabela(cols, lista.map(function(a){ var v=a.dias[k];
+      return [E.esc(a.nome)].concat(f?[]:[E.esc(a.frente.nome)]).concat([fHa2(v), fHa2(a.metaDia), a.metaDia>0?spanSt((v||0)/a.metaDia):"–"]); }),
+      ["Total"].concat(f?[]:[""]).concat([fHa2(real), fHa2(meta), spanSt(meta?real/meta:null)])));
+}
+
+/* ============================================================
+   CAPA
+   ============================================================ */
+function medeNav(){
+  var nav=document.querySelector(".deck-nav");
+  if(nav) document.documentElement.style.setProperty("--navh", nav.offsetHeight+"px");
+}
+// realizado acumulado da semana contra a meta acumulada — o equivalente, para a
+// semana, da curva de moagem acumulada do comparativo
+function desenhaCapa(){
+  medeNav();
+  var card=document.getElementById("capa-card"), svg=card.querySelector("svg");
+  E.limpa(svg);
+  var r=card.getBoundingClientRect();
+  if(r.width<120 || r.height<120) return;
+  var W=Math.round(r.width), H=Math.round(r.height), f=fz(11);
+  svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  var ac=E.acum(TOT.porDia), meta=DIAS.map(function(_,k){ return TOT.metaDia*(k+1); }), ant=E.acum(TOT.antDia);
+  var padL=6, padR=f*5.4, padT=f*2.2, padB=f*2.8, plotW=W-padL-padR, plotH=H-padT-padB, base=padT+plotH;
+  var maxY=E.niceAxis(Math.max(meta[ND-1],ac[ND-1],ant[ND-1],1)*1.08,4);
+  function Y(v){ return base-v/maxY*plotH; }
+  var slot=plotW/ND;
+  function XC(i){ return padL+slot*i+slot/2; }
+  for(var k=0;k<=4;k++){
+    var yy=Y(maxY*k/4);
+    E.add(svg,"line",{x1:padL,x2:W-padR+6,y1:yy,y2:yy,stroke:"rgba(174,187,216,"+(k?".13":".32")+")"});
+    if(k) E.txt(svg,W-padR+12,yy+4,E.fmtInt(maxY*k/4),{"font-size":f,fill:"#7D8BB0"});
+  }
+  DIAS.forEach(function(d,i){ E.txt(svg,XC(i),base+f*1.7,diaRot(d),{"text-anchor":"middle","font-size":f,fill:"#AEBBD8"}); });
+  function linha(vals,attrs){ return E.add(svg,"path",Object.assign({d:"M"+vals.map(function(v,i){ return XC(i).toFixed(1)+","+Y(v).toFixed(1); }).join(" L"),fill:"none"},attrs)); }
+  linha(meta,{stroke:"rgba(240,223,168,.75)","stroke-width":2,"stroke-dasharray":"7,5"});
+  if(TOT.ant>0) linha(ant,{stroke:"#7D8BB0","stroke-width":2});
+  var defs=E.add(svg,"defs"), cp=E.add(defs,"clipPath",{id:"capa-clip"});
+  E.add(cp,"rect",{"class":"capa-rev",x:0,y:0,width:W,height:H});
+  var lg=E.add(defs,"linearGradient",{id:"capa-grad",x1:0,y1:0,x2:0,y2:1});
+  E.add(lg,"stop",{offset:"0","stop-color":"#C9A227","stop-opacity":".34"});
+  E.add(lg,"stop",{offset:"1","stop-color":"#C9A227","stop-opacity":"0"});
+  var g=E.add(svg,"g",{"clip-path":"url(#capa-clip)"});
+  var pts=ac.map(function(v,i){ return [XC(i),Y(v)]; });
+  var dL="M"+pts.map(function(p){ return p[0].toFixed(1)+","+p[1].toFixed(1); }).join(" L");
+  E.add(g,"path",{d:dL+" L"+pts[ND-1][0].toFixed(1)+","+base+" L"+pts[0][0].toFixed(1)+","+base+" Z",fill:"url(#capa-grad)"});
+  E.add(g,"path",{d:dL,fill:"none",stroke:"#C9A227","stroke-width":3,"stroke-linejoin":"round"});
+  pts.forEach(function(p){ E.add(g,"circle",{cx:p[0],cy:p[1],r:4,fill:"#0A1330",stroke:"#C9A227","stroke-width":2}); });
+  var fim=E.add(svg,"g",{"class":"capa-fim"});
+  E.txt(fim,pts[ND-1][0]+10,pts[ND-1][1]-12,E.fmtInt(ac[ND-1])+" ha",{"text-anchor":"end","font-size":fz(15),"font-weight":"700",fill:"#F0DFA8"});
+  E.txt(fim,XC(ND-1)+10,Y(meta[ND-1])-8,"meta "+E.fmtInt(meta[ND-1]),{"text-anchor":"end","font-size":f,fill:"rgba(240,223,168,.85)"});
+}
+function pintaCapa(){
+  Array.prototype.forEach.call(document.querySelectorAll(".js-periodo"),function(el){ el.textContent=periodo(); });
+  document.getElementById("meta-periodo").textContent = "Tratos culturais · semana "+periodo();
+  document.querySelector("nav.toc").setAttribute("data-periodo", "Tratos culturais · semana "+periodo());
+  document.getElementById("capa-atualizacao").textContent = T.fonte.atualizacaoProgramas ? "Planilhas atualizadas em "+dataLonga(T.fonte.atualizacaoProgramas) : "";
+  document.getElementById("capa-aviso").textContent = ND+" dias trabalhados · referência "+dataBR(SEM.diaRef);
+  document.getElementById("kpi-real").innerHTML = E.fmtInt(TOT.real)+"<small>ha</small>";
+  document.getElementById("kpi-real-sub").textContent = "de "+E.fmtInt(TOT.meta)+" ha de meta";
+  document.getElementById("kpi-pct").textContent = fPct(TOT.pct);
+  document.getElementById("kpi-pct-sub").textContent = TOT.ant ? "semana anterior: "+E.fmtInt(TOT.ant)+" ha ("+fVar(TOT.real/TOT.ant-1)+")" : "";
+  document.getElementById("kpi-ef").textContent = fPct(TOT.ef);
+  document.getElementById("kpi-ef-sub").textContent = "da meta por unidade, nos dias com operação";
+  document.getElementById("kpi-mes").textContent = fPct(TOT.metaMes?TOT.mesReal/TOT.metaMes:null);
+  document.getElementById("kpi-mes-sub").textContent = nomeMesLongo(MES_REF)+" até "+dataBR(SEM.diaRef)+" · ritmo esperado "+fPct(RITMO);
+  E.legenda(document.getElementById("capa-legend"),[
+    {cor:"#C9A227",nome:"Realizado",tipo:"linha"},
+    {cor:"rgba(240,223,168,.75)",nome:"Meta",tipo:"linha",tracejada:true},
+    {cor:"#7D8BB0",nome:"Semana anterior",tipo:"linha"}
+  ]);
+  desenhaCapa();
+}
+
+/* ============================================================
+   RESUMO DA SEMANA — cartões das operações e tabela das atividades
+   ============================================================ */
+function idFrente(f){ return "op-"+f.id; }
+function paginaResumo(){
+  // tabela com gráfico: as operações e, dentro delas, as atividades que operaram
+  var h="<table class='tb'><thead><tr><th class='l'>Operação / atividade</th><th>Meta semana<u>ha</u></th><th>Realizado<u>ha</u></th>"+
+    "<th>% da meta</th><th>Dias com operação</th><th>Eficiência<u>ha/unid./dia · meta</u></th><th>% da meta por unidade</th>"+
+    "<th>Semana anterior<u>ha</u></th><th>Variação</th></tr></thead><tbody>";
+  FRENTES.forEach(function(f){
+    h+="<tr class='fr clic' style='--fr:"+f.cor+"' data-f='"+f.id+"'><td class='l'>"+E.esc(f.nome)+"</td><td>"+fHa(f.meta)+"</td><td>"+fHa(f.real)+"</td>"+
+      "<td>"+barCel(f.pct)+"</td><td>"+f.ativas.length+" ativ.</td><td></td><td>"+barCel(f.ef)+"</td><td>"+(f.ant?fHa(f.ant):"–")+"</td>"+
+      "<td>"+(f.ant?fVar(f.real/f.ant-1):"–")+"</td></tr>";
+    f.ativas.forEach(function(a){
+      h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"</td><td>"+fHa(a.metaSemana)+"</td><td>"+fHa(a.sem)+"</td>"+
+        "<td>"+barCel(a.pct)+"</td><td>"+a.ef.diasOp+" de "+ND+"</td><td>"+fEf(a.ef.ef)+"<u style='font-weight:400;color:#5A6072;margin-left:5px'>de "+fEf(a.ef.meta)+"</u></td>"+
+        "<td>"+barCel(a.ef.pct)+"</td><td>"+(a.semAnt==null?"–":fHa(a.semAnt))+"</td><td>"+(a.semAnt?fVar(a.sem/a.semAnt-1):"–")+"</td></tr>";
+    });
+  });
+  h+="<tr class='tot'><td class='l'>Total</td><td>"+fHa(TOT.meta)+"</td><td>"+fHa(TOT.real)+"</td><td>"+barCel(TOT.pct)+"</td><td>"+ATIVAS.length+" ativ.</td>"+
+    "<td></td><td>"+barCel(TOT.ef)+"</td><td>"+fHa(TOT.ant)+"</td><td>"+(TOT.ant?fVar(TOT.real/TOT.ant-1):"–")+"</td></tr></tbody></table>";
+  var tb=document.getElementById("rs-tabela"); tb.innerHTML=h; ajustaTabela(tb);
+  liga(tb,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
+  liga(tb,"tr[data-f]",function(tr){ window.deckGoTo("op-"+tr.getAttribute("data-f")); });
+}
+
+/* ============================================================
+   RESUMO POR DIA — realizado × meta do dia, por operação e atividade
+   ============================================================ */
+function paginaPorDia(){
+  var h="<table class='tb'><thead><tr><th class='l'>Operação / atividade</th><th>Meta do dia<u>ha</u></th>"+cabDias()+
+    "<th>Semana<u>ha</u></th><th>% da meta da semana</th></tr></thead><tbody>";
+  FRENTES.forEach(function(f){
+    h+="<tr class='fr clic' style='--fr:"+f.cor+"' data-f='"+f.id+"'><td class='l'>"+E.esc(f.nome)+"</td><td>"+fHa(f.metaDia)+"</td>"+
+      f.porDia.map(function(v){ return diaCel(v,f.metaDia); }).join("")+"<td>"+fHa(f.real)+"</td><td>"+barCel(f.pct)+"</td></tr>";
+    f.ativas.forEach(function(a){
+      h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"</td><td>"+fHa(a.metaDia)+"</td>"+
+        a.dias.map(function(v){ return diaCel(v,a.metaDia); }).join("")+"<td>"+fHa(a.sem)+"</td><td>"+barCel(a.pct)+"</td></tr>";
+    });
+  });
+  h+="<tr class='tot'><td class='l'>Total</td><td>"+fHa(TOT.metaDia)+"</td>"+TOT.porDia.map(function(v){
+      return "<td class='d'>"+fHa(v)+"<small>"+fPct(TOT.metaDia?v/TOT.metaDia:null)+"</small></td>"; }).join("")+
+    "<td>"+fHa(TOT.real)+"</td><td>"+barCel(TOT.pct)+"</td></tr></tbody></table>";
+  var tb=document.getElementById("pd-tabela"); tb.innerHTML=h;
+  liga(tb,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
+  liga(tb,"tr[data-f]",function(tr){ window.deckGoTo("op-"+tr.getAttribute("data-f")); });
+  E.legenda(document.getElementById("pd-legend"),[
+    {cor:"#E2F1E6",nome:"Dia na meta ou acima",borda:E.GREEN},{cor:"#FBEEDA",nome:"De 50% a 99% da meta do dia",borda:"#D68910"},
+    {cor:"#FAE1DD",nome:"Abaixo de 50%",borda:E.RED},{cor:E.NAVY,nome:"Meta (100%) na barra",tipo:"linha",tracejada:true}
+  ]);
+  ajustaTabela(tb);
+}
+
+/* ============================================================
+   EFICIÊNCIA POR EQUIPAMENTO E PESSOA
+   ============================================================ */
+function paginaEficiencia(){
+  var card=document.getElementById("ef-card"); card.innerHTML="";
+  E.legenda(document.getElementById("ef-legend"),[
+    {cor:COR_ST.ok,nome:NOME_ST.ok},{cor:COR_ST.medio,nome:NOME_ST.medio},{cor:COR_ST.baixo,nome:NOME_ST.baixo},
+    {cor:E.NAVY,nome:"Meta por unidade (100%)",tipo:"linha",tracejada:true}
+  ]);
+  var lista=ATIVAS.filter(function(a){ return a.ef.ef!=null; }).sort(function(p,q){ return (p.ef.pct==null?9:p.ef.pct)-(q.ef.pct==null?9:q.ef.pct); });
+  // tabela
+  var rolo=document.createElement("div"); rolo.className="tb-rolo"; rolo.style.paddingRight="8px";
+  rolo.innerHTML="<table class='tb'><thead><tr><th class='l'>Atividade</th><th class='l'>Base</th><th>Planejado<u>unid.</u></th>"+
+    "<th>Em campo<u>unid./dia</u></th><th>Dias com operação</th><th>Realizado<u>ha/unid./dia</u></th><th>Meta<u>ha/unid./dia</u></th>"+
+    "<th>Eficiência</th></tr></thead><tbody>"+
+    lista.map(function(a){ var e=a.ef;
+      return "<tr class='clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"<u>"+E.esc(a.frente.nome)+"</u></td><td class='l' style='min-width:0;color:#5A6072;font-weight:400'>"+e.base+"</td>"+
+        "<td>"+(e.plan==null?"–":E.fmtInt(e.plan))+"</td><td>"+(e.uniMed==null?"–":E.fmtDec(e.uniMed,1))+"</td><td>"+e.diasOp+" de "+ND+"</td>"+
+        "<td>"+fEf(e.ef)+"</td><td>"+fEf(e.meta)+"</td><td>"+barCel(e.pct)+"</td></tr>"; }).join("")+
+    "<tr class='tot'><td class='l'>Todas em operação</td><td></td><td></td><td></td><td></td><td></td><td></td><td>"+barCel(TOT.ef)+"</td></tr></tbody></table>";
+  card.appendChild(rolo);
+  ajustaTabela(rolo);
+  liga(rolo,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
+  // gráfico: eficiência de cada atividade, com a meta em 100%
+  var svg=svgNovo(card);
+  var emp=empilhado(card), d=E.medir(card,minW(640),260);
+  var W=emp?d.W-24:Math.round((d.W-24-9)*2/5), H=emp?Math.max(380,90+lista.length*30):d.H-16;
+  if(emp) svg.style.height=H+"px";
+  svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  var padT=tituloPainel(svg,W,"Eficiência × meta por unidade")+fz(12);
+  var rowH=Math.min(fz(44),(H-padT-fz(28))/Math.max(1,lista.length)), fs=Math.min(fz(12.5),Math.max(10,rowH*0.42));
+  var labW=Math.min(W*0.46,Math.max.apply(null,lista.map(function(a){ return a.nome.length; }).concat([10]))*fs*0.56+20);
+  var maxP=Math.max(1.25,Math.min(2.5,Math.max.apply(null,lista.map(function(a){ return a.ef.pct||0; }))*1.05));
+  var x0=labW, x1=W-14-fs*4.2, larg=x1-x0;
+  function X(p){ return x0+larg*Math.min(p,maxP)/maxP; }
+  var yF=padT+rowH*lista.length;
+  E.add(svg,"line",{x1:X(1),x2:X(1),y1:padT-4,y2:yF,stroke:E.NAVY,"stroke-width":1.5,"stroke-dasharray":"5,4",opacity:.6});
+  E.txt(svg,X(1),yF+fz(16),"meta 100%",{"text-anchor":"middle","font-size":fz(11),"font-weight":"700",fill:E.MUT});
+  lista.forEach(function(a,i){
+    var y0=padT+rowH*i, yc=y0+rowH/2, bh=Math.max(6,Math.min(fs*1.5,rowH*0.55)), p=a.ef.pct, st=status(p);
+    linhaClicavel(svg,4,y0,W-8,rowH,function(){ detalheAtividade(a); },a.nome);
+    E.txt(svg,x0-8,yc+fs*0.36,cabe(a.nome,labW-20,fs),{"text-anchor":"end","font-size":fs,"font-weight":"600",fill:E.NAVY,"pointer-events":"none"});
+    E.add(svg,"rect",{x:x0,y:yc-bh/2,width:larg,height:bh,rx:3,fill:"#EEF0F5","pointer-events":"none"});
+    if(p>0) E.add(svg,"rect",{x:x0,y:yc-bh/2,width:Math.max(2,X(p)-x0),height:bh,rx:3,fill:COR_ST[st],"pointer-events":"none"});
+    E.txt(svg,x1+8,yc+fs*0.36,fPct(p),{"font-size":fs+1,"font-weight":"700",fill:st==="medio"?"#A6620A":COR_ST[st],"pointer-events":"none"});
+  });
+}
+
+/* ============================================================
+   UMA PÁGINA POR OPERAÇÃO (frente) — montadas a partir dos dados,
+   antes do marcador frente-slots, como as páginas de frota do comparativo
+   ============================================================ */
+var PAG_FRENTE = [];
+function montaPaginasFrente(){
+  var slot=document.getElementById("frente-slots"), toc=document.getElementById("toc-frentes");
+  function chip(id,k){ return "<div class='s-chip'><div class='v' id='"+id+"'>–</div><div class='k'>"+k+"</div></div>"; }
+  FRENTES.forEach(function(f){
+    var id=idFrente(f);
+    var art=document.createElement("article");
+    art.className="slide slide-dark"; art.id=id; art.setAttribute("data-title",f.nome);
+    art.innerHTML="<div class='s-head'><div><div class='s-eyebrow'><span class='js-num'>–</span> &middot; Por operação</div>"+
+      "<h2 class='s-title'>"+E.esc(f.nome)+"</h2></div><div class='s-right'><div class='s-chips'>"+
+      chip(id+"-real","Realizado na semana")+chip(id+"-meta","Meta da semana")+chip(id+"-pct","Da meta")+
+      chip(id+"-ef","Eficiência")+chip(id+"-ant","Sobre a semana anterior")+
+      "</div></div></div><div class='s-legend' id='"+id+"-legend'></div><div class='s-card op-card' id='"+id+"-card'></div>";
+    slot.parentNode.insertBefore(art,slot);
+    var a=document.createElement("a"); a.href="#"+id; a.innerHTML="<b></b> "+E.esc(f.nome);
+    toc.parentNode.insertBefore(a,toc);
+    PAG_FRENTE.push(id);
+    window.replay[id]=function(){ paginaFrente(f,id); };
+  });
+  toc.parentNode.removeChild(toc);
+  window.PAGINAS_FRENTE_IDS = PAG_FRENTE.slice();
+}
+function barrasFrente(svg,W,H,f){
+  E.limpa(svg); svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  var topo=tituloPainel(svg,W,"Realizado por dia × meta do dia",E.fmtInt(f.real)+" de "+E.fmtInt(f.meta)+" ha · "+fPct(f.pct));
+  var padL=fz(50), padR=fz(14), slot=(W-padL-padR)/ND, padT=topo+fz(14), padB=fz(26), plotH=H-padT-padB, base=padT+plotH;
+  var max=E.niceAxis(Math.max.apply(null,f.porDia.concat([f.metaDia,1]))*1.15,4);
+  var y=eixo(svg,{max:max,min:0,x0:padL,x1:W-padR,yTop:padT,yBot:base,fmt:function(v){ return E.fmtInt(v); }});
+  var bw=Math.min(slot*0.55,fz(110));
+  DIAS.forEach(function(d,k){
+    var cx=padL+slot*k+slot/2, x=cx-bw/2, acc=0, tot=f.porDia[k];
+    E.txt(svg,cx,base+fz(16),diaRot(d),{"text-anchor":"middle","font-size":fz(12),"font-weight":"700",fill:E.NAVY});
+    var vis=f.ativas.filter(function(a){ return a.dias[k]>0; }), ult=vis[vis.length-1];
+    f.ativas.forEach(function(a){
+      var v=a.dias[k]; if(!(v>0)) return;
+      var yT=y(acc+v), h=y(acc)-yT;
+      if(a===ult) E.add(svg,"path",{d:E.barraTopo(x,yT,bw,h,3),fill:a.cor}); else E.add(svg,"rect",{x:x,y:yT,width:bw,height:h,fill:a.cor});
+      acc+=v;
+    });
+    var p=f.metaDia?tot/f.metaDia:null, st=status(p);
+    var t=E.txt(svg,cx,y(tot)-fz(7),tot?E.fmtInt(tot):"0",{"text-anchor":"middle","font-size":fz(13.5),"font-weight":"700",fill:tot?E.NAVY:E.MUT});
+    if(p!=null && tot) E.add(t,"tspan",{"font-size":fz(11),fill:st==="medio"?"#A6620A":COR_ST[st]}," "+fPct(p));
+    linhaClicavel(svg,cx-slot/2+2,padT,slot-4,H-padT-2,function(){ detalheDia(f,k); },diaRot(d)+": "+fHa2(tot)+" ha");
+  });
+  if(f.metaDia>0){
+    var ym=y(f.metaDia);
+    E.add(svg,"line",{x1:padL,x2:W-padR,y1:ym,y2:ym,stroke:E.GOLD,"stroke-width":"2","stroke-dasharray":"7,5","pointer-events":"none"});
+    E.txt(svg,padL+6,ym-fz(5),"meta "+E.fmtInt(f.metaDia)+" ha/dia",{"font-size":fz(11),"font-weight":"700",fill:"#8A6D14","pointer-events":"none"});
+  }
+}
+function paginaFrente(f,id){
+  var card=document.getElementById(id+"-card"); card.innerHTML="";
+  poe(id+"-real", E.fmtInt(f.real)+" ha");
+  poe(id+"-meta", E.fmtInt(f.meta)+" ha");
+  poe(id+"-pct", fPct(f.pct));
+  poe(id+"-ef", fPct(f.ef));
+  poe(id+"-ant", f.ant ? fVar(f.real/f.ant-1) : "–");
+  E.legenda(document.getElementById(id+"-legend"), f.ativas.map(function(a){ return {cor:a.cor, nome:a.nome}; })
+    .concat([{cor:E.GOLD,nome:"Meta do dia",tipo:"linha",tracejada:true}]));
+  var svg=svgNovo(card);
+  var rolo=document.createElement("div"); rolo.className="tb-rolo"; card.appendChild(rolo);
+  var h="<table class='tb'><thead><tr><th class='l'>Atividade</th><th>Equip./pessoas</th><th>Meta do dia<u>ha</u></th>"+cabDias()+
+    "<th>Semana<u>ha</u></th><th>% da meta</th><th>Eficiência<u>ha/unid./dia · meta</u></th></tr></thead><tbody>";
+  f.ativas.forEach(function(a){
+    h+="<tr class='clic' data-a='"+a.idx+"'><td class='l'><i style='display:inline-block;width:.75em;height:.75em;border-radius:2px;margin-right:.5em;background:"+a.cor+"'></i>"+E.esc(a.nome)+tagLocais(a.locais)+"</td>"+
+      "<td>"+(a.ef.plan==null?"–":E.fmtInt(a.ef.plan))+(a.ef.temP?"<u style='color:#5A6072;font-weight:400;margin-left:4px'>pess.</u>":"")+"</td><td>"+fHa(a.metaDia)+"</td>"+
+      a.dias.map(function(v){ return diaCel(v,a.metaDia); }).join("")+"<td>"+fHa(a.sem)+"</td><td>"+barCel(a.pct)+"</td>"+
+      "<td>"+fEf(a.ef.ef)+"<u style='color:#5A6072;font-weight:400;margin-left:4px'>· "+fEf(a.ef.meta)+" ("+fPct(a.ef.pct)+")</u></td></tr>";
+  });
+  h+="<tr class='tot"+(f.locais.length?" clic' data-loc='1":"")+"'><td class='l'>Total da operação"+tagLocais(f.locais)+"</td><td></td><td>"+fHa(f.metaDia)+"</td>"+
+    f.porDia.map(function(v){ return "<td class='d'>"+(v>0?fHa(v)+"<small>"+fPct(f.metaDia?v/f.metaDia:null)+"</small>":"–")+"</td>"; }).join("")+
+    "<td>"+fHa(f.real)+"</td><td>"+barCel(f.pct)+"</td><td>"+fPct(f.ef)+"</td></tr></tbody></table>";
+  rolo.innerHTML=h;
+  ajustaTabela(rolo);
+  liga(rolo,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
+  liga(rolo,"tr[data-loc]",function(){ detalheFazendas(f,null); });
+  var r=svg.getBoundingClientRect(), W=Math.max(minW(600),Math.round(r.width)), H=Math.max(estreito()?300:200,Math.round(r.height));
+  barrasFrente(svg,W,H,f);
+}
+
+/* ============================================================
+   MÊS E HISTÓRICO
+   ============================================================ */
+function graficoMes(){
+  var card=document.getElementById("mes-card"); card.innerHTML="";
+  var svgA=svgNovo(card), svgB=svgNovo(card);
+  var emp=empilhado(card), d=E.medir(card,minW(640),260), H=emp?400:d.H-16;
+  var WA=emp?d.W-24:Math.round((d.W-24-9)*3/5), WB=emp?d.W-24:Math.round((d.W-24-9)*2/5);
+  var rot=nomeMesLongo(MES_REF)+" até "+dataBR(SEM.diaRef);
+  document.getElementById("mes-titulo").textContent = nomeMesLongo(MES_REF)+" até aqui e os meses anteriores";
+
+  /* --- painel A: mês de referência contra a meta do mês, por operação --- */
+  (function(){
+    var svg=svgA, W=WA; svg.setAttribute("viewBox","0 0 "+W+" "+H);
+    var padT=tituloPainel(svg,W,rot+" — realizado × meta do mês")+fz(18);
+    var itens=[{nome:"Todas as operações",cor:"#C9A227",real:TOT.mesReal,meta:TOT.metaMes,tot:true}].concat(
+      FRENTES.map(function(f){ return {nome:f.nome,cor:f.cor,real:f.mesReal,meta:f.metaMes,f:f}; }));
+    var rowH=Math.min(fz(70),(H-padT-fz(30))/itens.length), fs=fz(12.5);
+    var labW=Math.min(W*0.34,Math.max.apply(null,itens.map(function(i){ return i.nome.length; }))*fs*0.58+20);
+    var valW=fs*11, x0=labW, x1=W-16-valW, larg=x1-x0;
+    var maxP=Math.max(1,Math.max.apply(null,itens.map(function(i){ return i.meta?i.real/i.meta:0; })));
+    function X(p){ return x0+larg*Math.min(p,maxP)/maxP; }
+    var yFim=padT+rowH*itens.length;
+    E.add(svg,"line",{x1:X(RITMO),x2:X(RITMO),y1:padT-fz(6),y2:yFim,stroke:E.GOLD,"stroke-width":2,"stroke-dasharray":"7,5"});
+    E.txt(svg,X(RITMO),padT-fz(10),"ritmo esperado "+fPct(RITMO)+" ("+DIAS_MES_FEITOS+" de "+DIAS_MES_UTEIS+" dias)",{"text-anchor":"middle","font-size":fz(11),"font-weight":"700",fill:"#8A6D14"});
+    if(maxP>1) E.add(svg,"line",{x1:X(1),x2:X(1),y1:padT,y2:yFim,stroke:E.NAVY,"stroke-width":1.2,"stroke-dasharray":"4,4",opacity:.5});
+    itens.forEach(function(it,i){
+      var y0=padT+rowH*i, yc=y0+rowH/2, base=yc+fs*0.36, p=it.meta?it.real/it.meta:null;
+      if(it.f) linhaClicavel(svg,4,y0,W-8,rowH,function(){ window.deckGoTo(idFrente(it.f)); },it.nome);
+      E.add(svg,"rect",{x:14,y:yc-fs*0.45,width:fs*0.9,height:fs*0.9,rx:2,fill:it.cor});
+      E.txt(svg,14+fs*1.4,base,it.nome,{"font-size":fs,"font-weight":it.tot?"700":"600",fill:E.NAVY,"pointer-events":"none"});
+      var bh=Math.min(fs*1.7,rowH*0.5);
+      E.add(svg,"rect",{x:x0,y:yc-bh/2,width:larg/maxP,height:bh,rx:3,fill:"#EEF0F5","pointer-events":"none"});
+      if(p>0) E.add(svg,"rect",{x:x0,y:yc-bh/2,width:Math.max(2,X(p)-x0),height:bh,rx:3,fill:it.cor,"pointer-events":"none"});
+      var t=E.txt(svg,x1+10,base,fPct(p),{"font-size":fs+3,"font-weight":"700",fill:E.NAVY,"pointer-events":"none"});
+      E.add(t,"tspan",{fill:E.MUT,"font-weight":"400","font-size":fs*0.9},"  "+E.fmtInt(it.real)+" / "+E.fmtInt(it.meta)+" ha");
+    });
+  })();
+
+  /* --- painel B: meses anteriores, empilhado por operação --- */
+  (function(){
+    var svg=svgB, W=WB; svg.setAttribute("viewBox","0 0 "+W+" "+H);
+    var topo=tituloPainel(svg,W,"Realizado por mês (ha)");
+    var meses=SEM.meses.slice(-6);
+    var tot=meses.map(function(ym){ return soma(T.frentes,function(f){ return soma(f.atividades,function(a){ return a.mes[ym]; }); }); });
+    var padL=fz(52), padR=fz(10), padT=topo+fz(18), padB=fz(38), plotH=H-padT-padB, base=padT+plotH, slot=(W-padL-padR)/meses.length;
+    var max=E.niceAxis(Math.max.apply(null,tot.concat([1]))*1.12,4);
+    var y=eixo(svg,{max:max,min:0,x0:padL,x1:W-padR,yTop:padT,yBot:base,fmt:function(v){ return E.fmtInt(v); }});
+    var bw=Math.min(slot*0.62,fz(64));
+    meses.forEach(function(ym,i){
+      var cx=padL+slot*i+slot/2, acc=0, parcial=ym===MES_REF;
+      T.frentes.forEach(function(f){
+        var v=soma(f.atividades,function(a){ return a.mes[ym]; }); if(!(v>0)) return;
+        var yT=y(acc+v), h=y(acc)-yT;
+        E.add(svg,"rect",{x:cx-bw/2,y:yT,width:bw,height:h,fill:f.cor,opacity:parcial?.6:1});
+        acc+=v;
+      });
+      E.txt(svg,cx,y(tot[i])-fz(6),E.fmtInt(tot[i]),{"text-anchor":"middle","font-size":fz(12.5),"font-weight":"700",fill:E.NAVY});
+      E.txt(svg,cx,base+fz(16),nomeMes(ym),{"text-anchor":"middle","font-size":fz(12),"font-weight":"700",fill:E.NAVY});
+      if(parcial) E.txt(svg,cx,base+fz(30),"até "+dataBR(SEM.diaRef),{"text-anchor":"middle","font-size":fz(10.5),fill:E.MUT});
+    });
+  })();
+
+  poe("mes-chip-real", E.fmtInt(TOT.mesReal)+" ha");
+  document.getElementById("mes-chip-real-k").textContent = "Realizado — "+rot;
+  poe("mes-chip-pct", fPct(TOT.metaMes?TOT.mesReal/TOT.metaMes:null));
+  poe("mes-chip-ritmo", fPct(RITMO));
+  E.legenda(document.getElementById("mes-legend"), T.frentes.filter(function(f){
+      return SEM.meses.slice(-6).some(function(ym){ return soma(f.atividades,function(a){ return a.mes[ym]; })>0; }); })
+    .map(function(f){ return {cor:f.cor, nome:f.nome}; })
+    .concat([{cor:E.GOLD,nome:"Ritmo esperado para a data",tipo:"linha",tracejada:true}]));
+}
+
+/* ============================================================
+   PROGRAMAS DA SAFRA — andamento e saldo por bloco
+   ============================================================ */
+var PROG = T.programas;
+PROG.forEach(function(p){ p.feito = p.realizado/(p.realizado+p.aRealizar||1); });
+var CURTO = {pre:"Pré soca", queima:"Pré queima", mol3:"3ª molécula", cat1:"1ª catação", cat2:"2ª catação", loc:"Adub. localizada", cocho:"Adub. cocho"};
+function curto(p){ return CURTO[p.id] || p.nome; }
+function detalhePrograma(p){
+  var bl=Object.keys(p.blocos).map(function(b){ return {b:b, v:p.blocos[b]}; }).filter(function(x){ return x.v; })
+    .sort(function(x,y){ return y.v-x.v; });
+  var tot=soma(bl,function(x){ return x.v; });
+  abreCaixa(p.nome, "Saldo a realizar por bloco, do maior para o menor",
+    "<span class='res'>"+fPct(p.feito)+" realizado</span><span class='op'>=</span><b>"+fHa2(p.realizado)+" ha</b><span class='op'>÷</span><b>"+
+    fHa2(p.realizado+p.aRealizar)+" ha</b> (realizado + a realizar)<em>"+E.fmtInt(p.base)+" ha de "+p.baseRot+
+    (p.reforma?" · "+fHa(p.reforma)+" ha de reforma":"")+(p.atrasado!=null?" · "+fHa(p.atrasado)+" ha com mais de 20 dias da colheita":"")+
+    (p.mec!=null?" · realizado mecanizado "+fHa(p.mec)+" ha e manual "+fHa(p.man)+" ha":"")+"</em>",
+    tabela([{t:"Bloco",l:true},{t:"A realizar (ha)",key:true},{t:"% do saldo"}],
+      bl.map(function(x){ return [E.esc(nomeBloco(x.b)), fHa2(x.v), E.pctAbs(x.v/tot,1)]; }),
+      ["Total — "+bl.length+" blocos", fHa2(tot), "100,0%"],
+      "Fonte: aba do programa na planilha de tratos da safra"+(T.fonte.atualizacaoProgramas?", atualizada em "+dataLonga(T.fonte.atualizacaoProgramas):"")+"."));
+}
+function graficoProgramas(){
+  var card=document.getElementById("pg-card"); card.innerHTML="";
+  var svg=svgNovo(card), d=E.medir(card,minW(640),260), W=d.W-24, H=estreito()?420:d.H-16;
+  svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  var padT=fz(10), rowH=Math.min(fz(96),(H-padT-8)/PROG.length), fs=Math.min(fz(14),Math.max(11,rowH*0.3));
+  var labW=Math.min(W*0.3,Math.max.apply(null,PROG.map(function(p){ return p.nome.length; }))*fs*0.58+24);
+  var valW=fs*13, x0=labW, x1=W-16-valW, larg=x1-x0;
+  PROG.forEach(function(p,i){
+    var y0=padT+rowH*i, yc=y0+rowH/2, bh=Math.min(fs*2,rowH*0.42);
+    if(i>0) E.add(svg,"line",{x1:10,x2:W-10,y1:y0,y2:y0,stroke:"#E7EAF0"});
+    linhaClicavel(svg,4,y0,W-8,rowH,function(){ detalhePrograma(p); },p.nome+" — clique para ver por bloco");
+    E.txt(svg,16,yc-fs*0.15,cabe(p.nome,labW-24,fs),{"font-size":fs,"font-weight":"700",fill:E.NAVY,"pointer-events":"none"});
+    E.txt(svg,16,yc+fs*1.05,E.fmtInt(p.base)+" ha de "+p.baseRot,{"font-size":fs*0.8,fill:E.MUT,"pointer-events":"none"});
+    var tot=p.realizado+p.aRealizar||1, xr=x0+larg*p.realizado/tot;
+    E.add(svg,"rect",{x:x0,y:yc-bh/2,width:Math.max(0,xr-x0),height:bh,rx:3,fill:COR_REAL,"pointer-events":"none"});
+    if(p.atrasado!=null){
+      var xa=xr+larg*(p.aRealizar-p.atrasado)/tot;
+      E.add(svg,"rect",{x:xr,y:yc-bh/2,width:Math.max(0,xa-xr),height:bh,fill:COR_SALDO,"pointer-events":"none"});
+      E.add(svg,"rect",{x:xa,y:yc-bh/2,width:Math.max(0,x0+larg-xa),height:bh,rx:3,fill:COR_ATRASO,"pointer-events":"none"});
+    } else E.add(svg,"rect",{x:xr,y:yc-bh/2,width:Math.max(0,x0+larg-xr),height:bh,rx:3,fill:COR_SALDO,"pointer-events":"none"});
+    if(xr-x0>fs*6) E.txt(svg,x0+8,yc+fs*0.36,E.fmtInt(p.realizado)+" ha",{"font-size":fs*0.88,"font-weight":"700",fill:"#fff","pointer-events":"none"});
+    var t=E.txt(svg,x1+12,yc-fs*0.1,fPct(p.feito),{"font-size":fs*1.7,"font-weight":"700",fill:p.feito>=0.9?E.GREEN:p.feito<0.5?E.RED:"#A6620A","pointer-events":"none"});
+    E.add(t,"tspan",{"font-size":fs*0.85,"font-weight":"600",fill:E.MUT}," realizado");
+    E.txt(svg,x1+12,yc+fs*1.15,"a realizar "+E.fmtInt(p.aRealizar)+" ha",{"font-size":fs*0.85,"font-weight":"600",fill:E.NAVY,"pointer-events":"none"});
+  });
+  var maior=PROG.slice().sort(function(a,b){ return b.aRealizar-a.aRealizar; })[0];
+  var cat1=PROG.filter(function(p){ return p.atrasado!=null; })[0];
+  poe("pg-chip-aReal", E.fmtInt(maior.aRealizar)+" ha");
+  document.querySelector("#pg-chip-aReal + .k").textContent = "Maior saldo: "+maior.nome;
+  poe("pg-chip-atras", cat1 ? E.fmtInt(cat1.atrasado)+" ha" : "–");
+  poe("pg-chip-data", T.fonte.atualizacaoProgramas ? dataBR(T.fonte.atualizacaoProgramas) : "–");
+  E.legenda(document.getElementById("pg-legend"),[
+    {cor:COR_REAL,nome:"Realizado"},{cor:COR_SALDO,nome:"A realizar"},{cor:COR_ATRASO,nome:"A realizar há mais de 20 dias da colheita",obs:"(1ª catação)"}
+  ]);
+}
+function detalheBloco(b){
+  var linhas=PROG.filter(function(p){ return p.blocos[b]; }).map(function(p){ return [E.esc(p.nome), fHa2(p.blocos[b])]; });
+  var tot=soma(PROG,function(p){ return p.blocos[b]; });
+  abreCaixa(nomeBloco(b)+" — saldo a realizar", "Programas com saldo no bloco",
+    "<span class='res'>"+fHa2(tot)+" ha</span><span class='op'>em</span><b>"+linhas.length+"</b> programas",
+    tabela([{t:"Programa",l:true},{t:"A realizar (ha)",key:true}],linhas,["Total",fHa2(tot)]));
+}
+function tabelaBlocos(){
+  var nomes={};
+  PROG.forEach(function(p){ Object.keys(p.blocos).forEach(function(b){ if(p.blocos[b]) nomes[b]=true; }); });
+  var bl=Object.keys(nomes).map(function(b){ return {b:b, tot:soma(PROG,function(p){ return p.blocos[b]; })}; })
+    .filter(function(x){ return x.tot>0; }).sort(function(x,y){ return y.tot-x.tot; });
+  var maxCol=PROG.map(function(p){ return Math.max.apply(null,bl.map(function(x){ return p.blocos[x.b]||0; }).concat([1])); });
+  function cel(v,k){
+    if(!v) return "<td class='z'>–</td>";
+    var a=(0.08+0.62*v/maxCol[k]).toFixed(2);
+    return "<td style='background:rgba(214,137,16,"+a+")'>"+fHa(v)+"</td>";
+  }
+  var h="<table class='hm'><thead><tr><th class='l'>Bloco</th>"+PROG.map(function(p){ return "<th>"+E.esc(curto(p))+"</th>"; }).join("")+
+    "<th>Total</th></tr></thead><tbody>"+
+    bl.map(function(x){ return "<tr class='clic' data-b='"+E.esc(x.b)+"'><td class='l'>"+E.esc(nomeBloco(x.b))+"</td>"+
+      PROG.map(function(p,k){ return cel(p.blocos[x.b],k); }).join("")+"<td class='tt'>"+fHa(x.tot)+"</td></tr>"; }).join("")+
+    "<tr class='tot'><td class='l'>Total</td>"+PROG.map(function(p){ return "<td>"+fHa(soma(bl,function(x){ return p.blocos[x.b]; }))+"</td>"; }).join("")+
+    "<td>"+fHa(soma(bl,function(x){ return x.tot; }))+"</td></tr></tbody></table>";
+  var box=document.getElementById("bl-tabela"); box.innerHTML=h;
+  liga(box,"tr.clic",function(tr){ detalheBloco(tr.getAttribute("data-b")); });
+  if(bl.length){ poe("bl-chip-top", E.fmtInt(bl[0].tot)+" ha"); document.getElementById("bl-chip-top-k").textContent = "Maior saldo: "+nomeBloco(bl[0].b); }
+  poe("bl-chip-n", String(bl.length));
+}
+
+/* ============================================================
+   PONTOS DE ATENÇÃO — montados a partir dos próprios números
+   ============================================================ */
+function paginaAtencao(){
+  function cartao(cls,k,n,un,itens,texto){
+    return "<div class='at-card "+cls+"'><div class='k'>"+k+"</div><div class='n'>"+n+(un?"<small>"+un+"</small>":"")+"</div>"+
+      (itens&&itens.length ? "<ul>"+itens.map(function(i){ return typeof i==="string" ? "<li><span>"+i+"</span></li>" :
+        "<li><span>"+E.esc(i[0])+"</span><b>"+i[1]+"</b></li>"; }).join("")+"</ul>" : "")+(texto?"<p>"+texto+"</p>":"")+"</div>";
+  }
+  var baixo=COM_META.filter(function(a){ return a.st==="baixo"; }).sort(function(a,b){ return a.pct-b.pct; });
+  var efBaixo=ATIVAS.filter(function(a){ return a.ef.pct!=null && a.ef.pct<0.5; }).sort(function(a,b){ return a.ef.pct-b.ef.pct; });
+  var acima=COM_META.filter(function(a){ return a.st==="ok"; }).sort(function(a,b){ return b.pct-a.pct; });
+  var progBaixo=PROG.filter(function(p){ return p.feito<0.5; }).sort(function(a,b){ return a.feito-b.feito; });
+  var cat1=PROG.filter(function(p){ return p.atrasado!=null; })[0];
+  var html=[
+    cartao("baixo","Abaixo de 50% da meta da semana",baixo.length,"atividades",
+      listaMax(baixo.map(function(a){ return [a.nome, fPct(a.pct)+" · "+fHa(a.sem)+" ha"]; }),6)),
+    cartao("medio","Eficiência abaixo de 50% da meta",efBaixo.length,"atividades",
+      listaMax(efBaixo.map(function(a){ return [a.nome, fEf(a.ef.ef)+" de "+fEf(a.ef.meta)+" ha/"+a.ef.unid]; }),6)),
+    cartao("ok","Na meta ou acima",acima.length,"atividades",
+      listaMax(acima.map(function(a){ return [a.nome, fPct(a.pct)+" · "+fHa(a.sem)+" ha"]; }),6)),
+    cartao("baixo","Programas abaixo de 50% realizado",progBaixo.length,"programas",
+      progBaixo.map(function(p){ return [p.nome, fPct(p.feito)+" · faltam "+E.fmtInt(p.aRealizar)+" ha"]; }))
+  ];
+  if(cat1){
+    var ba=cat1.blocosAtrasado||{};
+    var bl=Object.keys(ba).filter(function(b){ return ba[b]>0; }).sort(function(a,b){ return ba[b]-ba[a]; })
+      .map(function(b){ return [nomeBloco(b), fHa(ba[b])+" ha"]; });
+    html.push(cartao("baixo","1ª catação com mais de 20 dias",E.fmtInt(cat1.atrasado),"ha", listaMax(bl,6)));
+  }
+  if(T.avisos.length) html.push(cartao("info","Conferir na planilha",T.avisos.length,T.avisos.length===1?"item":"itens",null,
+    T.avisos.map(E.esc).join("<br><br>")));
+  document.getElementById("at-grid").innerHTML = html.join("");
+}
+
+/* ============================================================
+   NUMERAÇÃO, REDESENHO E MONTAGEM
+   ============================================================ */
+function numera(){
+  var n=0;
+  Array.prototype.forEach.call(document.querySelectorAll("#deck .slide"),function(s){
+    if(s.id==="capa") return;
+    n++;
+    var e=s.querySelector(".s-eyebrow .js-num"); if(e) e.textContent=(n<10?"0":"")+n;
+    var b=document.querySelector("nav.toc a[href='#"+s.id+"'] b"); if(b) b.textContent=n;
+  });
+}
+function redesenhaTudo(){
+  Object.keys(window.replay).forEach(function(id){
+    var el=document.getElementById(id);
+    if(el && el.classList.contains("active")) window.replay[id]();
+  });
+}
+window.replay = window.replay || {};
+window.replay.capa = desenhaCapa;
+window.replay.resumo = paginaResumo;
+window.replay.pordia = paginaPorDia;
+window.replay.eficiencia = paginaEficiencia;
+window.replay.mes = graficoMes;
+window.replay.programas = graficoProgramas;
+window.replay.blocos = tabelaBlocos;
+window.replay.atencao = paginaAtencao;
+
+montaPaginasFrente();
+numera();
+pintaCapa();
+
+var tmr;
+window.addEventListener("resize",function(){ clearTimeout(tmr); tmr=setTimeout(redesenhaTudo,140); });
+})();
+</script>
+
+<!-- ============================================================
+     MÓDULOS — o menu do topo agrupa as páginas por assunto: Semana, Por
+     operação, Programas da safra e Atenção. Uma página nova entra no módulo pela
+     lista de ids abaixo.
+     ============================================================ -->
+<script>(function(){
+"use strict";
+var MODULOS = [
+  {id:"semana", nome:"Semana", pags:["resumo","pordia","eficiencia","mes"]},
+  // uma página por operação (frente), montadas pelo script das páginas
+  {id:"operacao", nome:"Por operação", pags:window.PAGINAS_FRENTE_IDS || []},
+  {id:"programas", nome:"Programas da safra", pags:["programas","blocos"]},
+  {id:"atencao", nome:"Atenção", pags:["atencao"]}
+];
+function modDe(id){
+  for(var i=0;i<MODULOS.length;i++) if(MODULOS[i].pags.indexOf(id)>=0) return MODULOS[i];
+  return null;
+}
+window.moduloDaPagina = function(id){ var m=modDe(id); return m ? m.nome : null; };
+
+var nav = document.querySelector("nav.toc");
+var links = Array.prototype.slice.call(nav.querySelectorAll("a"));
+var capa = nav.querySelector("a[href='#capa']");
+var mods = document.createElement("span"); mods.className = "toc-mods";
+var sep  = document.createElement("span"); sep.className = "toc-sep";
+var pags = document.createElement("span"); pags.className = "toc-pags";
+var dica = document.createElement("span"); dica.className = "toc-dica"; dica.textContent = "escolha um módulo";
+
+function link(id){ return nav.querySelector("a[href='#"+id+"']"); }
+MODULOS.forEach(function(m){
+  // números da primeira e da última página, tirados do próprio link
+  var nums = m.pags.map(function(id){ var b=link(id)&&link(id).querySelector("b"); return b?b.textContent:""; });
+  var bt = document.createElement("button");
+  bt.type = "button"; bt.className = "toc-mod"; bt.setAttribute("data-mod",m.id);
+  bt.innerHTML = m.nome+" <u>"+nums[0]+(nums.length>1?"–"+nums[nums.length-1]:"")+"</u>";
+  bt.addEventListener("click",function(){ if(window.deckGoTo) window.deckGoTo(m.pags[0]); });
+  mods.appendChild(bt);
+});
+// os links das páginas, na ordem dos módulos e marcados com o módulo
+MODULOS.forEach(function(m){
+  m.pags.forEach(function(id){ var a=link(id); if(a){ a.setAttribute("data-mod",m.id); pags.appendChild(a); } });
+});
+// página sem módulo (se algum dia sobrar) fica no fim, sempre à vista
+links.forEach(function(a){ if(a!==capa && !a.getAttribute("data-mod")) pags.appendChild(a); });
+pags.appendChild(dica);
+while(nav.firstChild) nav.removeChild(nav.firstChild);
+nav.appendChild(capa); nav.appendChild(mods); nav.appendChild(sep); nav.appendChild(pags);
+
+// chamado pelo deck a cada troca de página
+window.aoMudarPagina = function(id){
+  var m = modDe(id), mid = m ? m.id : null;
+  Array.prototype.forEach.call(mods.children,function(b){ b.classList.toggle("on",b.getAttribute("data-mod")===mid); });
+  Array.prototype.forEach.call(pags.querySelectorAll("a[data-mod]"),function(a){ a.hidden = a.getAttribute("data-mod")!==mid; });
+  dica.hidden = !!mid;
+};
+})();
+</script>
+
+<!-- ============================================================
+     DECK — navegação página a página
+     ============================================================ -->
+<script>(function(){
+"use strict";
+var deck=document.getElementById("deck"); if(!deck) return;
+var slides=Array.prototype.slice.call(deck.querySelectorAll(".slide"));
+var dotsBox=document.getElementById("deck-dots");
+var prevBtn=document.getElementById("deck-prev"), nextBtn=document.getElementById("deck-next");
+var countEl=document.getElementById("deck-count");
+var tocLinks=Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+var cur=-1;
+
+function indexOfId(id){ for(var i=0;i<slides.length;i++){ if(slides[i].id===id) return i; } return -1; }
+
+slides.forEach(function(s,i){
+  var b=document.createElement("button");
+  b.type="button";
+  b.title=s.getAttribute("data-title")||("Página "+(i+1));
+  // primeira bolinha de cada módulo ganha um respiro à esquerda
+  var mod = window.moduloDaPagina ? window.moduloDaPagina(s.id) : null;
+  if(mod){
+    b.title = mod+" — "+b.title;
+    if(i>0 && window.moduloDaPagina(slides[i-1].id)!==mod) b.classList.add("mod-ini");
+  }
+  b.setAttribute("aria-label",b.title);
+  b.addEventListener("click",function(){ go(i); });
+  dotsBox.appendChild(b);
+});
+var dots=Array.prototype.slice.call(dotsBox.children);
+
+function go(i,skipHash){
+  i=Math.max(0,Math.min(slides.length-1,i));
+  if(i===cur) return;
+  cur=i;
+  slides.forEach(function(s,k){
+    var on=(k===i);
+    s.classList.toggle("active",on);
+    if(!on) s.scrollTop=0;
+  });
+  dots.forEach(function(d,k){ d.classList.toggle("on",k===i); });
+  var id=slides[i].id;
+  tocLinks.forEach(function(a){ a.classList.toggle("on",a.getAttribute("href")==="#"+id); });
+  if(window.aoMudarPagina) window.aoMudarPagina(id);   // menu mostra o módulo da página
+  prevBtn.disabled=(i===0); nextBtn.disabled=(i===slides.length-1);
+  countEl.textContent=(i+1)+" / "+slides.length;
+  if(!skipHash){ try{ history.replaceState(null,"","#"+id); }catch(e){} }
+  // o SVG só tem tamanho real depois de a página ficar visível: desenha aqui
+  if(window.replay && window.replay[id]) requestAnimationFrame(window.replay[id]);
+}
+function next(){ go(cur+1); }
+function prev(){ go(cur-1); }
+window.deckGoTo=function(id){ var i=indexOfId(id); if(i>=0) go(i); };
+
+nextBtn.addEventListener("click",next);
+prevBtn.addEventListener("click",prev);
+tocLinks.forEach(function(a){
+  a.addEventListener("click",function(e){
+    var i=indexOfId((a.getAttribute("href")||"").slice(1));
+    if(i>=0){ e.preventDefault(); go(i); }
+  });
+});
+
+document.addEventListener("keydown",function(e){
+  var t=e.target, tag=t&&t.tagName;
+  if(tag==="SELECT"||tag==="INPUT"||tag==="TEXTAREA") return;
+  if(e.altKey||e.ctrlKey||e.metaKey) return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"||e.key===" "||e.key==="Spacebar"){ e.preventDefault(); next(); }
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){ e.preventDefault(); prev(); }
+  else if(e.key==="Home"){ e.preventDefault(); go(0); }
+  else if(e.key==="End"){ e.preventDefault(); go(slides.length-1); }
+});
+
+// toque (tablet na sala de reunião): ignora gesto que começou dentro de algo que rola
+var tsX=0,tsY=0,tsOk=false;
+function rolavel(el){
+  while(el&&el!==deck){ if(el.scrollHeight-el.clientHeight>4) return true; el=el.parentElement; }
+  return false;
+}
+deck.addEventListener("touchstart",function(e){
+  tsX=e.touches[0].clientX; tsY=e.touches[0].clientY; tsOk=!rolavel(e.target);
+},{passive:true});
+deck.addEventListener("touchend",function(e){
+  if(!tsOk) return;
+  var dx=e.changedTouches[0].clientX-tsX, dy=e.changedTouches[0].clientY-tsY;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.4){ if(dx<0) next(); else prev(); }
+},{passive:true});
+
+var start=indexOfId((location.hash||"").slice(1));
+go(start>=0?start:0,true);
+})();
+</script>
+
+<script id="tema-js">
+/* ============================================================
+   TEMA — fundo animado e ligação com a troca de página.
+   Camada isolada: só observa o deck (a classe .active da página aberta) e lê
+   window.moduloDaPagina(); não altera nenhuma função do restante do arquivo.
+   Fundo sem partículas: abra o arquivo com ?fundo=off (projetor fraco).
+   ============================================================ */
+(function(){
+"use strict";
+var html = document.documentElement, body = document.body;
+var deck = document.getElementById("deck");
+if(!deck) return;
+
+var reduz = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+var semFundo = /[?&]fundo=off(&|$)/.test(location.search);
+
+/* cores de destaque por módulo: as da paleta do grupo, em versão clara para fundo escuro */
+var ACENTOS = { ouro:[201,162,39], azul:[93,173,226], agua:[88,196,186], creme:[240,223,168] };
+var POR_MODULO = { "Semana":"ouro", "Por operação":"azul", "Programas da safra":"agua", "Atenção":"creme" };
+var cur = ACENTOS.ouro.slice(), tgt = ACENTOS.ouro;
+
+/* ---------- camadas ---------- */
+var vig = document.createElement("div"); vig.id = "tema-vig"; vig.setAttribute("aria-hidden","true");
+var barra = document.createElement("div"); barra.id = "tema-barra"; barra.setAttribute("aria-hidden","true");
+body.insertBefore(vig, body.firstChild);
+body.appendChild(barra);
+
+/* ---------- campo de partículas ---------- */
+var cv = null, ctx = null, W = 0, H = 0, parts = [], mx = 0, my = 0, tx = 0, ty = 0;
+if(!semFundo){
+  cv = document.createElement("canvas"); cv.id = "tema-campo"; cv.setAttribute("aria-hidden","true");
+  ctx = cv.getContext && cv.getContext("2d");
+  if(ctx) body.insertBefore(cv, vig); else cv = null;
+}
+
+function dimensiona(){
+  if(!ctx) return;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  cv.width = Math.floor(W*dpr); cv.height = Math.floor(H*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  var n = Math.min(120, Math.max(44, Math.round(W*H/15000)));
+  parts = [];
+  for(var i=0;i<n;i++){
+    parts.push({
+      x:Math.random()*W, y:Math.random()*H,
+      vx:(Math.random()-.5)*.19, vy:(Math.random()-.5)*.19,
+      r:Math.random()*1.7+.5, a:Math.random()*.42+.16,
+      ph:Math.random()*6.2832, sp:Math.random()*.9+.35,
+      big:Math.random()<.07
+    });
+  }
+  quadro(0);
+}
+
+// um quadro: as ligações entre pontos próximos, depois os pontos (alguns com halo)
+function quadro(t){
+  if(!ctx) return;
+  var R = Math.round(cur[0]), G = Math.round(cur[1]), B = Math.round(cur[2]);
+  var i, j, p, q, dx, dy, d2, al;
+  ctx.clearRect(0,0,W,H);
+  ctx.lineWidth = 1;
+  for(i=0;i<parts.length;i++){
+    p = parts[i];
+    for(j=i+1;j<parts.length;j++){
+      q = parts[j];
+      dx = p.x-q.x; dy = p.y-q.y; d2 = dx*dx+dy*dy;
+      if(d2 < 18000){
+        al = (1-d2/18000)*0.16;
+        ctx.strokeStyle = "rgba("+R+","+G+","+B+","+al.toFixed(3)+")";
+        ctx.beginPath();
+        ctx.moveTo(p.x+tx*p.r*0.5, p.y+ty*p.r*0.5);
+        ctx.lineTo(q.x+tx*q.r*0.5, q.y+ty*q.r*0.5);
+        ctx.stroke();
+      }
+    }
+  }
+  for(i=0;i<parts.length;i++){
+    p = parts[i];
+    if(!reduz){
+      p.x += p.vx; p.y += p.vy;
+      p.y += Math.sin((t/2600)*p.sp+p.ph)*0.09;
+      if(p.x < -20) p.x = W+20; else if(p.x > W+20) p.x = -20;
+      if(p.y < -20) p.y = H+20; else if(p.y > H+20) p.y = -20;
+    }
+    var tw = 0.72+0.28*Math.sin(t/1500*p.sp+p.ph);
+    var px = p.x+tx*p.r*0.8, py = p.y+ty*p.r*0.8;
+    if(p.big){
+      var g = ctx.createRadialGradient(px,py,0,px,py,p.r*11);
+      g.addColorStop(0,"rgba("+R+","+G+","+B+","+(p.a*0.5*tw).toFixed(3)+")");
+      g.addColorStop(1,"rgba("+R+","+G+","+B+",0)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(px,py,p.r*11,0,6.2832); ctx.fill();
+    }
+    ctx.fillStyle = "rgba("+R+","+G+","+B+","+(p.a*tw).toFixed(3)+")";
+    ctx.beginPath(); ctx.arc(px,py,p.r,0,6.2832); ctx.fill();
+  }
+}
+function laco(t){
+  for(var k=0;k<3;k++) cur[k] += (tgt[k]-cur[k])*0.045;   // a cor do módulo entra suavemente
+  tx += (mx-tx)*0.045; ty += (my-ty)*0.045;
+  quadro(t);
+  requestAnimationFrame(laco);
+}
+
+var tr = 0;
+window.addEventListener("resize", function(){ clearTimeout(tr); tr = setTimeout(dimensiona, 120); });
+window.addEventListener("mousemove", function(e){
+  mx = (e.clientX/window.innerWidth-.5)*22;
+  my = (e.clientY/window.innerHeight-.5)*22;
+});
+
+/* ---------- troca de página: cor do módulo, índice e progresso ---------- */
+var slides = Array.prototype.slice.call(deck.querySelectorAll(".slide"));
+var ultimo = null;
+function aplica(){
+  var s = deck.querySelector(".slide.active");
+  if(!s || s.id === ultimo) return;
+  ultimo = s.id;
+  var m = window.moduloDaPagina ? window.moduloDaPagina(s.id) : null;
+  var chave = POR_MODULO[m] || "ouro";
+  html.setAttribute("data-acento", chave);
+  tgt = ACENTOS[chave];
+  if(reduz){ cur = tgt.slice(); quadro(0); }
+  html.classList.toggle("na-capa", s.id === "capa");
+  var toc = document.querySelector("nav.toc"), on = toc && toc.querySelector("a.on");
+  if(on && toc.scrollWidth > toc.clientWidth){      // janela estreita: leva o link ativo para o meio
+    toc.scrollTo({left: on.offsetLeft - toc.clientWidth/2 + on.offsetWidth/2, behavior: reduz ? "auto" : "smooth"});
+  }
+  barra.style.width = ((slides.indexOf(s)+1)/slides.length*100).toFixed(2)+"%";
+}
+new MutationObserver(aplica).observe(deck, {subtree:true, attributes:true, attributeFilter:["class"]});
+
+/* as fontes da web chegam depois da primeira pintura: quando terminam, os
+   gráficos são medidos de novo, porque a altura do cabeçalho pode ter mudado */
+if(document.fonts && document.fonts.addEventListener){
+  var tf = 0;
+  document.fonts.addEventListener("loadingdone", function(){
+    clearTimeout(tf);
+    tf = setTimeout(function(){ window.dispatchEvent(new Event("resize")); }, 90);
+  });
+}
+
+dimensiona();
+if(ctx && !reduz) requestAnimationFrame(laco);
+aplica();
+html.classList.add("tema-ok");
+})();
+</script>
+</body></html>
