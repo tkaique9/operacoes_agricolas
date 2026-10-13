@@ -41,7 +41,12 @@ META_PESSOA = {"Cata Mato": 4.0}
 # nº de equipamentos que vale no lugar do da planilha; a meta do dia, da semana e do
 # mês acompanham (equipamentos × meta por equipamento). Quadriciclo: a planilha traz
 # 1, mas operam 2, com meta de 10 ha cada: 20 ha/dia (corrigido em 13/10/2026).
-EQUIP = {"Quadriciclo": 2}
+# Catação de Formiga: 2 equipamentos de 10 ha cada (a planilha traz 1 de 20 ha), mesma
+# meta de 20 ha/dia (corrigido em 13/10/2026).
+EQUIP = {"Quadriciclo": 2, "Catação de Formiga": 2}
+# meta de hectares por equipamento/dia que vale no lugar da planilha; aplicada antes
+# de EQUIP, que refaz a meta do dia com ela
+META_EQUIP = {"Catação de Formiga": 10.0}
 MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
 
 
@@ -158,6 +163,8 @@ def semana(ws):
             "pessoasPlan": None, "metaPessoa": None,
             "_r": r,
         }
+        if nome in META_EQUIP:
+            a["metaUnid"] = META_EQUIP[nome]
         if nome in EQUIP and a["metaDia"] and a["metaUnid"]:
             fator = EQUIP[nome] * a["metaUnid"] / a["metaDia"]
             a["equip"] = float(EQUIP[nome])
