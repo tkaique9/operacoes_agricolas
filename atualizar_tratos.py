@@ -34,6 +34,10 @@ FRENTES = [
 # lombo saiu a pedido em 13/10/2026: não é aplicação desta operação. Para voltar,
 # tire o id daqui.
 FRENTES_FORA = {"lombo"}
+# meta de hectares por pessoa/dia que vale no lugar da que vem da planilha. Cata Mato:
+# a linha "Pessoas Dia" traz 8 ha (120 ha ÷ 15 pessoas), mas a meta é 4 ha/pessoa
+# (corrigido em 13/10/2026). Para voltar à da planilha, tire a atividade daqui.
+META_PESSOA = {"Cata Mato": 4.0}
 MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
 
 
@@ -174,10 +178,13 @@ def semana(ws):
         if melhor is not None:
             melhor["pessoas"] = pess
             # planejado de pessoas: a linha "Pessoas Dia" pode trazer o próprio quadro de
-            # meta (Cata Mato: 15 pessoas × 8 ha); sem ele, vale o da atividade
+            # meta (Cata Mato: 15 pessoas); sem ele, vale o da atividade. META_PESSOA
+            # tem a palavra final sobre a meta por pessoa
             pp, pm = num(cel(rp, C["equip"])), num(cel(rp, C["metaUnid"]))
             melhor["pessoasPlan"] = r2(pp) if pp else melhor["equip"]
             melhor["metaPessoa"] = r2(pm) if pm else melhor["metaUnid"]
+            if melhor["nome"] in META_PESSOA:
+                melhor["metaPessoa"] = META_PESSOA[melhor["nome"]]
             if invertido:
                 avisos.append(f"{melhor['nome']}: o \"Rendimento H/Dia\" da planilha está como pessoas ÷ ha; "
                               f"na apresentação o rendimento é ha ÷ pessoa.")
