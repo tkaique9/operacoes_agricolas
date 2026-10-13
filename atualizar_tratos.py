@@ -38,6 +38,10 @@ FRENTES_FORA = {"lombo"}
 # a linha "Pessoas Dia" traz 8 ha (120 ha ÷ 15 pessoas), mas a meta é 4 ha/pessoa
 # (corrigido em 13/10/2026). Para voltar à da planilha, tire a atividade daqui.
 META_PESSOA = {"Cata Mato": 4.0}
+# nº de equipamentos que vale no lugar do da planilha; a meta do dia, da semana e do
+# mês acompanham (equipamentos × meta por equipamento). Quadriciclo: a planilha traz
+# 1, mas operam 2, com meta de 10 ha cada: 20 ha/dia (corrigido em 13/10/2026).
+EQUIP = {"Quadriciclo": 2}
 MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
 
 
@@ -154,6 +158,11 @@ def semana(ws):
             "pessoasPlan": None, "metaPessoa": None,
             "_r": r,
         }
+        if nome in EQUIP and a["metaDia"] and a["metaUnid"]:
+            fator = EQUIP[nome] * a["metaUnid"] / a["metaDia"]
+            a["equip"] = float(EQUIP[nome])
+            for k in ("metaDia", "metaSemana", "metaMes"):
+                a[k] *= fator
         atual["atividades"].append(a)
 
     # pessoas/dia: a linha pertence à atividade da mesma frente cujo realizado
@@ -185,6 +194,8 @@ def semana(ws):
             melhor["metaPessoa"] = r2(pm) if pm else melhor["metaUnid"]
             if melhor["nome"] in META_PESSOA:
                 melhor["metaPessoa"] = META_PESSOA[melhor["nome"]]
+            if melhor["nome"] in EQUIP:
+                melhor["pessoasPlan"] = float(EQUIP[melhor["nome"]])
             if invertido:
                 avisos.append(f"{melhor['nome']}: o \"Rendimento H/Dia\" da planilha está como pessoas ÷ ha; "
                               f"na apresentação o rendimento é ha ÷ pessoa.")
