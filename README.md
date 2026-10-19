@@ -67,7 +67,7 @@ esse detalhe. Entram só fazendas e talhões trabalhados nos dias da semana, vin
 - **RSC0819R** (relatório de operações do sistema, `.xlsx`) colocado em `dados/`: o script
   reconhece pelo cabeçalho "Período Acumulado", usa só as OS com data dentro da semana e
   manda cada operação para a frente pela descrição (drone → aérea, Uniport, cocho, manual;
-  formiga → Catação de Formiga; drone → Drone Terceiro). O sistema não separa Uniport
+  formiga → Catação de Formiga; drone → Drone Inseticida, o antigo Drone Terceiro). O sistema não separa Uniport
   próprio de terceiro nem as equipes do cocho, então esses ficam no nível da operação;
 - aba **Realizado - 3ª Mol** da planilha SAFRA: OS da 3ª molécula (Uniport bordadura); a
   coluna "Recom." é a área de borda aplicada no talhão. Entra quando a OS não veio no RSC.

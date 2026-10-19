@@ -396,7 +396,7 @@ def programas(wb):
 #   bordadura), com a área de borda aplicada em cada talhão (coluna "Recom.").
 # A operação do sistema vai para a frente pela descrição; a atividade só quando não
 # há dúvida (o sistema não separa Uniport próprio de terceiro nem as equipes do cocho).
-OPER_FRENTE = [("DRONE", "aerea", "Drone Terceiro"), ("UNIPORT", "uniport", None),
+OPER_FRENTE = [("DRONE", "aerea", "Drone Inseticida"), ("UNIPORT", "uniport", None),
                ("COCHO", "cocho", None), ("FORMIGA", "manual", "Catação de Formiga"),
                ("MANUAL", "manual", None)]
 # rótulo curto das operações mais comuns (o relatório traz a descrição longa e truncada)
