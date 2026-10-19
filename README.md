@@ -30,7 +30,8 @@ python atualizar_tratos.py
 
 O script acha cada planilha pelas abas que ela tem (não pelo nome do arquivo) e regrava o
 bloco entre `DADOS-INICIO` e `DADOS-FIM` do `index.html`. A semana é a do **DIA REF** da aba
-`Semanal-Acumulado` (de segunda até o dia de referência). Precisa de
+`Semanal-Acumulado`: de segunda até o dia de referência e, como a planilha soma, mais o
+domingo (ou outro dia depois do DIA REF) que teve produção. Precisa de
 `pip install openpyxl pyxlsb`. Os avisos que ele imprime também aparecem na página
 "Pontos de atenção".
 
@@ -38,18 +39,20 @@ bloco entre `DADOS-INICIO` e `DADOS-FIM` do `index.html`. A semana é a do **DIA
 
 | Módulo | # | Página | O que mostra |
 |---|---|---|---|
-| — | — | Capa | Realizado acumulado da semana × meta acumulada e semana anterior; realizado, % da meta, eficiência e % da meta do mês |
-| **Semana** | 1 | Resumo da semana | Só a tabela com gráfico, ocupando a página: meta, realizado, barra da % da meta, dias com operação, eficiência e semana anterior, por operação (clique leva à página dela) e atividade, com o total da semana |
-| | 2 | Resumo por dia | Tabela operação/atividade × dia: realizado e % da meta do dia em cada célula (fundo verde, âmbar ou vermelho), com o total da semana |
-| | 3 | Eficiência | Hectares por equipamento ou pessoa por dia operado × meta por unidade, em tabela e gráfico |
-| | 4 | Mês e histórico | O mês até o dia de referência × meta do mês, com o ritmo esperado, e os últimos seis meses |
-| **Por operação** | 5–8 | Uma página por operação | Manual e semi-mecanizada, Uniport, Aérea e monitoramento e Adubação com cocho: gráfico do realizado por dia × meta do dia, empilhado por atividade, e a tabela das atividades dia a dia com % da meta e eficiência |
-| **Programas da safra** | 9 | Andamento dos programas | Realizado e saldo de pré-emergente (soca e área de queima), 3ª molécula, 1ª e 2ª catação e adubação (localizada e cocho) |
-| | 10 | Saldo por bloco | Mapa de calor bloco × programa, em hectares a realizar |
-| **Atenção** | 11 | Pontos de atenção | Abaixo de 50% da meta, eficiência abaixo de 50%, acima da meta, programas abaixo de 50%, 1ª catação com mais de 20 dias e o que conferir na planilha |
+| — | — | Capa | Realizado, % da meta, eficiência e % da meta do mês; realizado acumulado da semana × meta acumulada e semana anterior |
+| **Semana** | 1 | Resumo da semana | Meta, realizado, % da meta, semana anterior e variação, por operação (clique leva à página dela) e atividade, com o total |
+| | 2 | Eficiência | Por operação e atividade: unidades planejadas e em campo, dias com operação, hectares por unidade por dia × meta e % da meta |
+| | 3 | Mês e histórico | O mês até a data × meta do mês, com o ritmo esperado, e os últimos seis meses |
+| **Por operação** | 4–7 | Uma página por operação | Manual e semi-mecanizada, Uniport, Aérea e monitoramento e Adubação com cocho: gráfico do realizado por dia × meta do dia, empilhado por atividade, e a tabela das atividades dia a dia, com a semana e a % da meta |
+| **Programas da safra** | 8 | Andamento dos programas | Realizado e saldo de pré-emergente (soca e área de queima), 3ª molécula, 1ª e 2ª catação e adubação (localizada e cocho) |
+| | 9 | Saldo por bloco | Mapa de calor bloco × programa, em hectares a realizar |
+| **Atenção** | 10 | Pontos de atenção | Só o que pede ação: abaixo de 50% da meta, eficiência abaixo de 50%, programas abaixo de 50%, 1ª catação com mais de 20 dias e o que conferir na planilha (cartão sem item não aparece) |
 
-As páginas **por operação** são montadas pelo script a partir das frentes que existem na
-aba `Semanal-Acumulado` (`montaPaginasFrente`): uma frente nova ganha página sozinha.
+Cada número tem um lugar só: o total da operação fica na última linha da tabela dela (o
+total de cada dia, em cima das barras do gráfico), a eficiência só na página Eficiência e a
+data da planilha só na capa. As páginas **por operação** são montadas pelo script a partir
+das frentes que existem na aba `Semanal-Acumulado` (`montaPaginasFrente`): uma frente nova
+ganha página sozinha.
 Toda tabela rola dentro do próprio cartão, então nada passa da altura da tela, seja a TV ou
 o navegador com a barra do claude.ai em cima.
 
@@ -79,12 +82,12 @@ identificados. Operação sem esse detalhe na semana não mostra etiqueta nem bo
 
 | Indicador | Conta |
 |---|---|
-| Realizado da semana | soma dos dias de segunda até o DIA REF na aba `Semanal-Acumulado` |
-| Meta da semana | meta dia × dias da semana (a coluna "Meta Semana" da planilha) |
+| Realizado da semana | como na planilha: soma dos dias de segunda até o DIA REF na aba `Semanal-Acumulado`, mais o domingo trabalhado (ele aparece como mais uma coluna só quando teve produção) |
+| Meta da semana | meta dia × dias da semana (a coluna "Meta Semana" da planilha); domingo não tem meta |
 | Meta da frente | soma só das atividades que **operaram** na semana (realizado > 0), como faz a planilha. Atividade ou operação **sem produção na semana não aparece em nenhuma tela** |
 | Operações fora | `FRENTES_FORA`, no `atualizar_tratos.py`, tira uma frente inteira da apresentação e dos totais; hoje: Quebra lombo (não é aplicação desta operação) |
 | Semana anterior | os mesmos dias da semana anterior, na mesma aba |
-| Mês | do dia 1 até o DIA REF; ritmo esperado = dias trabalhados até aqui (segunda a sábado) ÷ dias da meta do mês (meta mês ÷ meta dia) |
+| Mês | do dia 1 até o último dia da semana (com o domingo trabalhado, como o "Realizado do Mês" da planilha); ritmo esperado = dias trabalhados até aqui (segunda a sábado) ÷ dias da meta do mês (meta mês ÷ meta dia) |
 | Eficiência por equipamento/pessoa | realizado ÷ unidades-dia nos dias em que a atividade operou. Unidade = pessoa apontada no dia (Catação Manual, Cata Mato, Quadriciclo) ou, sem apontamento, o nº de equipamentos/pessoas planejado. Comparada com a meta por unidade da planilha; o planejado de pessoas e a meta por pessoa vêm da linha "Pessoas Dia" quando ela tem quadro de meta. `META_PESSOA`, no `atualizar_tratos.py`, fixa a meta por pessoa onde a da planilha não vale; hoje: Cata Mato, 4 ha/pessoa (a planilha traz 8). `EQUIP` fixa o nº de equipamentos e refaz a meta do dia, da semana e do mês; hoje: Quadriciclo, 2 × 10 ha = 20 ha/dia (a planilha traz 1), e Catação de Formiga, 2 equipamentos. `META_EQUIP` fixa a meta por equipamento antes disso; hoje: Catação de Formiga, 10 ha/equipamento (a planilha traz 1 de 20 ha; a meta do dia continua 20 ha) |
 | Eficiência da operação | Σ realizado ÷ Σ (meta por unidade × unidades-dia) das atividades que operaram |
 | % realizado do programa | realizado ÷ (realizado + a realizar) |

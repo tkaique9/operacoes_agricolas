@@ -126,8 +126,7 @@ def semana(ws):
     if not dia_ref:
         sys.exit("Semanal-Acumulado: não achei o DIA REF")
     seg = dia_ref - datetime.timedelta(days=dia_ref.weekday())
-    dias = [seg + datetime.timedelta(days=k) for k in range(7) if seg + datetime.timedelta(days=k) <= dia_ref]
-    dias_ant = [d - datetime.timedelta(days=7) for d in dias]
+    semana_toda = [seg + datetime.timedelta(days=k) for k in range(7)]
     col_de = {iso(d): j for j, d in colData.items()}
 
     def valores(r, ds):
@@ -159,7 +158,8 @@ def semana(ws):
             "metaDia": num(cel(r, C["metaDia"])) or 0.0,
             "metaSemana": num(cel(r, C["metaSemana"])) or 0.0,
             "metaMes": num(cel(r, C["metaMes"])) or 0.0,
-            "dias": valores(r, dias), "ant": valores(r, dias_ant), "pessoas": None,
+            "dias": valores(r, semana_toda),
+            "ant": valores(r, [d - datetime.timedelta(days=7) for d in semana_toda]), "pessoas": None,
             "pessoasPlan": None, "metaPessoa": None,
             "_r": r,
         }
@@ -171,6 +171,18 @@ def semana(ws):
             for k in ("metaDia", "metaSemana", "metaMes"):
                 a[k] *= fator
         atual["atividades"].append(a)
+
+    # os valores vêm como a planilha soma: a semana vai de segunda ao DIA REF e leva também
+    # os dias seguintes da semana que tiveram produção (o domingo trabalhado entra na
+    # semana e no mês, sem meta: a meta da semana segue a da planilha)
+    fim = max(k for k, d in enumerate(semana_toda)
+              if d <= dia_ref or any((a["dias"][k] or 0) > 0 for fr in frentes if fr["id"] not in FRENTES_FORA
+                                     for a in fr["atividades"]))
+    dias = semana_toda[:fim + 1]
+    dias_ant = [d - datetime.timedelta(days=7) for d in dias]
+    for fr in frentes:
+        for a in fr["atividades"]:
+            a["dias"], a["ant"] = a["dias"][:fim + 1], a["ant"][:fim + 1]
 
     # pessoas/dia: a linha pertence à atividade da mesma frente cujo realizado
     # dividido pelas pessoas bate com a linha de rendimento logo abaixo
@@ -214,7 +226,7 @@ def semana(ws):
         refs.append(rp)
         if rr:
             refs.append(rr)
-    meses = sorted({(d.year, d.month) for d in colData.values() if d <= dia_ref})
+    meses = sorted({(d.year, d.month) for d in colData.values() if d <= dias[-1]})
     for fr in frentes:
         for a in fr["atividades"]:
             r = a.pop("_r")
@@ -246,7 +258,7 @@ def semana(ws):
             mes = {}
             for (y, m) in meses:
                 tot = sum(num(cel(r, j)) or 0 for j, d in colData.items()
-                          if d.year == y and d.month == m and d <= dia_ref and j not in ruins)
+                          if d.year == y and d.month == m and d <= dias[-1] and j not in ruins)
                 mes[f"{y}-{m:02d}"] = round(tot, 2)
             a["mes"] = mes
             a["dias"] = [r2(v) for v in a["dias"]]

@@ -743,7 +743,6 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <nav class="toc">
 <a href="#capa">Capa</a>
 <a href="#resumo"><b></b> Resumo da semana</a>
-<a href="#pordia"><b></b> Resumo por dia</a>
 <a href="#eficiencia"><b></b> Eficiência</a>
 <a href="#mes"><b></b> Mês e histórico</a>
 <span id="toc-frentes"></span>
@@ -773,8 +772,6 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <div class="capa-texto">
 <div class="capa-selo"><span>Reunião semanal &middot; <span class="js-periodo">–</span></span></div>
 <h1>Tratos<br>Culturais<em>Operações e indicadores da semana</em></h1>
-<p class="sub">Meta e realizado por operação e por dia, eficiência por equipamento e pessoa, o mês até aqui e o andamento dos programas da safra.</p>
-<span class="capa-aviso"><i></i><span id="capa-aviso">–</span></span>
 </div>
 <figure class="capa-curva">
 <figcaption>
@@ -808,18 +805,6 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <div class="s-card tb-card" id="rs-card"><div class="tb-rolo" id="rs-tabela"></div></div>
 </article>
 
-<!-- ================= RESUMO POR DIA ================= -->
-<article class="slide slide-dark" id="pordia" data-title="Resumo por dia">
-<div class="s-head">
-<div>
-<div class="s-eyebrow"><span class="js-num">–</span> &middot; Resumo por dia</div>
-<h2 class="s-title">Realizado × meta do dia, por operação</h2>
-</div>
-</div>
-<div class="s-legend" id="pd-legend"></div>
-<div class="s-card tb-card" id="pd-card"><div class="tb-rolo" id="pd-tabela"></div></div>
-</article>
-
 <!-- ================= EFICIÊNCIA ================= -->
 <article class="slide slide-dark" id="eficiencia" data-title="Eficiência">
 <div class="s-head">
@@ -829,7 +814,7 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 </div>
 </div>
 <div class="s-legend" id="ef-legend"></div>
-<div class="s-card s-grid c32" id="ef-card"></div>
+<div class="s-card tb-card" id="ef-card"><div class="tb-rolo" id="ef-tabela"></div></div>
 </article>
 
 <!-- ================= MÊS E HISTÓRICO ================= -->
@@ -838,13 +823,6 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <div>
 <div class="s-eyebrow"><span class="js-num">–</span> &middot; Mês e histórico</div>
 <h2 class="s-title" id="mes-titulo">O mês até aqui</h2>
-</div>
-<div class="s-right">
-<div class="s-chips">
-<div class="s-chip"><div class="v" id="mes-chip-real">–</div><div class="k" id="mes-chip-real-k">Realizado no mês</div></div>
-<div class="s-chip"><div class="v" id="mes-chip-pct">–</div><div class="k">Da meta do mês</div></div>
-<div class="s-chip"><div class="v" id="mes-chip-ritmo">–</div><div class="k">Ritmo esperado</div></div>
-</div>
 </div>
 </div>
 <div class="s-legend" id="mes-legend"></div>
@@ -862,13 +840,6 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra</div>
 <h2 class="s-title">Andamento dos programas de tratos</h2>
 </div>
-<div class="s-right">
-<div class="s-chips">
-<div class="s-chip"><div class="v" id="pg-chip-aReal">–</div><div class="k">Maior saldo a realizar</div></div>
-<div class="s-chip"><div class="v" id="pg-chip-atras">–</div><div class="k">1ª catação com mais de 20 dias</div></div>
-<div class="s-chip"><div class="v" id="pg-chip-data">–</div><div class="k">Planilha atualizada em</div></div>
-</div>
-</div>
 </div>
 <div class="s-legend" id="pg-legend"></div>
 <div class="s-card" id="pg-card"></div>
@@ -880,12 +851,6 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <div>
 <div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra</div>
 <h2 class="s-title">Onde está o saldo a realizar (ha)</h2>
-</div>
-<div class="s-right">
-<div class="s-chips">
-<div class="s-chip"><div class="v" id="bl-chip-top">–</div><div class="k" id="bl-chip-top-k">Bloco com maior saldo</div></div>
-<div class="s-chip"><div class="v" id="bl-chip-n">–</div><div class="k">Blocos com saldo</div></div>
-</div>
 </div>
 </div>
 <div class="s-card" id="bl-card"><div id="bl-tabela"></div></div>
@@ -934,7 +899,7 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
      ============================================================ -->
 <script>
 /*DADOS-INICIO*/
-window.TRATOS = {"fonte":{"semana":"19.10.2026.pdf","programas":"19.10.2026.pdf","atualizacaoProgramas":"2026-10-19"},"semana":{"diaRef":"2026-10-17","qtdDias":6,"dias":["2026-10-12","2026-10-13","2026-10-14","2026-10-15","2026-10-16","2026-10-17"],"diasAnt":["2026-10-05","2026-10-06","2026-10-07","2026-10-08","2026-10-09","2026-10-10"],"meses":["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"]},"frentes":[{"id":"manual","nome":"Manual e semi-mecanizada","titulo":"APLICAÇÃO MANUAL E SEMI-MECANIZADA","atividades":[{"nome":"Catação Manual","linha":11,"equip":48.0,"metaUnid":1.2,"metaDia":57.6,"metaSemana":345.6,"metaMes":1555.2,"dias":[null,91.28,78.57,68.05,125.61,82.94],"ant":[17.54,45.83,58.99,39.75,73.8,19.93],"pessoas":[null,45.0,46.0,47.0,50.0,27.0],"pessoasPlan":48.0,"metaPessoa":1.2,"mes":{"2026-01":940.18,"2026-02":410.74,"2026-03":95.14,"2026-04":284.34,"2026-05":633.89,"2026-06":753.47,"2026-07":857.96,"2026-08":627.46,"2026-09":1149.69,"2026-10":930.0}},{"nome":"Colheitabilidade","linha":12,"equip":12.0,"metaUnid":2.0,"metaDia":24.0,"metaSemana":144.0,"metaMes":648.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":928.3,"2026-05":898.67,"2026-06":555.31,"2026-07":593.35,"2026-08":322.13,"2026-09":58.61,"2026-10":0}},{"nome":"Plantio Manual - Experimento Iran","linha":13,"equip":0.0,"metaUnid":0.0,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0.83,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Quadriciclo","linha":16,"equip":2.0,"metaUnid":10.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,34.56,33.18,6.45,null],"ant":[2.19,19.55,54.25,22.26,27.5,5.0],"pessoas":[null,null,2.0,2.0,2.0,null],"pessoasPlan":2.0,"metaPessoa":10.0,"mes":{"2026-01":31.67,"2026-02":123.34,"2026-03":22.31,"2026-04":0,"2026-05":300.64,"2026-06":196.96,"2026-07":14.1,"2026-08":0,"2026-09":0,"2026-10":201.71}},{"nome":"Retampa","linha":17,"equip":20.0,"metaUnid":1.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":392.12,"2026-02":1056.98,"2026-03":1799.27,"2026-04":396.71,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Replanta","linha":18,"equip":18.0,"metaUnid":0.3,"metaDia":5.4,"metaSemana":32.4,"metaMes":145.8,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":22.87,"2026-02":0,"2026-03":35.51,"2026-04":95.05,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Kit Aceiro - Herbicat","linha":19,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":70.5,"2026-02":88.0,"2026-03":0,"2026-04":1282.53,"2026-05":565.15,"2026-06":1036.46,"2026-07":988.92,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Mangueirão","linha":20,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":2102.99,"2026-02":6517.76,"2026-03":4437.13,"2026-04":1289.15,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Roço","linha":null,"dias":[null,null,null,null,9.0,null],"pessoas":[null,null,null,null,19.0,null],"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":9.0},"ant":[null,null,null,null,null,null],"equip":null,"metaUnid":null,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"pessoasPlan":null,"metaPessoa":null},{"nome":"Cata Mato","linha":23,"equip":10.0,"metaUnid":12.0,"metaDia":120.0,"metaSemana":720.0,"metaMes":3240.0,"dias":[null,133.86,114.77,79.57,2.56,5.88],"ant":[14.61,112.19,105.7,118.6,96.54,42.86],"pessoas":[null,25.0,30.0,16.0,1.0,26.0],"pessoasPlan":15.0,"metaPessoa":4.0,"mes":{"2026-01":2589.46,"2026-02":88.47,"2026-03":0,"2026-04":552.88,"2026-05":887.35,"2026-06":1243.42,"2026-07":2030.4,"2026-08":1886.1,"2026-09":1021.5,"2026-10":881.46}},{"nome":"Catação de Formiga","linha":26,"equip":2.0,"metaUnid":10.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,5.4,28.02,18.17,43.36,42.72],"ant":[null,34.08,25.61,21.93,24.48,70.08],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":112.24,"2026-02":61.42,"2026-03":514.28,"2026-04":891.81,"2026-05":580.83,"2026-06":359.61,"2026-07":643.48,"2026-08":556.53,"2026-09":899.53,"2026-10":360.74}}]},{"id":"uniport","nome":"Uniport","titulo":"APLICAÇÕES TERRESTRES - UNIPORT","atividades":[{"nome":"Uniport Barra Total - Terceiro","linha":31,"equip":null,"metaUnid":null,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":18.83,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Próprio","linha":32,"equip":1.0,"metaUnid":80.0,"metaDia":80.0,"metaSemana":480.0,"metaMes":2160.0,"dias":[104.14,57.63,55.14,null,33.2,48.2],"ant":[null,null,93.3,105.48,null,45.0],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":332.14,"2026-02":923.91,"2026-03":1461.85,"2026-04":703.09,"2026-05":1369.34,"2026-06":1574.19,"2026-07":2025.3,"2026-08":1781.94,"2026-09":888.77,"2026-10":859.51}},{"nome":"Uniport Próprio - Dessecação","linha":33,"equip":1.0,"metaUnid":70.0,"metaDia":70.0,"metaSemana":420.0,"metaMes":1890.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":438.1,"2026-02":4.0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Broto - Terceiro","linha":34,"equip":2.0,"metaUnid":70.0,"metaDia":140.0,"metaSemana":840.0,"metaMes":3780.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Terceiro","linha":35,"equip":3.0,"metaUnid":60.0,"metaDia":180.0,"metaSemana":1080.0,"metaMes":4860.0,"dias":[null,null,150.45,75.82,161.63,88.33],"ant":[null,56.64,139.37,99.6,82.7,103.2],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":521.63,"2026-02":502.2,"2026-03":788.89,"2026-04":1759.2,"2026-05":1668.89,"2026-06":1814.06,"2026-07":1771.44,"2026-08":2217.19,"2026-09":2309.14,"2026-10":1154.02}},{"nome":"Uniport Pingente-Terceiro","linha":36,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Terceiro - Dessecação","linha":38,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":105.4,"2026-02":5.0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":59.61}},{"nome":"Uniport Pingente-Próprio","linha":39,"equip":1.0,"metaUnid":50.0,"metaDia":50.0,"metaSemana":300.0,"metaMes":1350.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Terceira Molécula-Terceiro","linha":40,"equip":1.0,"metaUnid":10.0,"metaDia":10.0,"metaSemana":60.0,"metaMes":270.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Terceira Molécula-Próprio","linha":41,"equip":1.0,"metaUnid":20.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}}]},{"id":"aerea","nome":"Aérea e monitoramento","titulo":"APLICAÇÃO AÉREA E MONITORAMENTO","atividades":[{"nome":"Drone - Próprio","linha":46,"equip":1.0,"metaUnid":20.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":216.24,"2026-02":517.78,"2026-03":622.63,"2026-04":507.83,"2026-05":312.06,"2026-06":450.96,"2026-07":342.35,"2026-08":7.52,"2026-09":20.26,"2026-10":0}},{"nome":"Drone Dessecação - Próprio","linha":47,"equip":1.0,"metaUnid":30.0,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":12.79,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Drone Inseticida","linha":48,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,362.21,703.9,null,null],"ant":[262.64,null,505.29,100.0,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":1006.68,"2026-03":485.64,"2026-04":1423.38,"2026-05":241.35,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":2479.05,"2026-10":2421.34}},{"nome":"Drone Dessecação-Terceiro","linha":49,"equip":1.0,"metaUnid":5.0,"metaDia":5.0,"metaSemana":10.0,"metaMes":135.0,"dias":[null,null,null,null,null,null],"ant":[null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Área Monitoramento","linha":50,"equip":2.0,"metaUnid":150.0,"metaDia":300.0,"metaSemana":1800.0,"metaMes":8100.0,"dias":[187.16,289.57,null,260.73,267.41,null],"ant":[null,204.16,239.93,653.12,309.72,262.33],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":509.99,"2026-02":3570.86,"2026-03":5377.19,"2026-04":2972.59,"2026-05":1699.65,"2026-06":2997.82,"2026-07":5064.12,"2026-08":2632.79,"2026-09":1670.18,"2026-10":2673.27}}]},{"id":"cocho","nome":"Adubação com cocho","titulo":"ADUBAÇÃO COM COCHO","atividades":[{"nome":"Adubação Socaria - Fábio do Prado","linha":67,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,97.41,88.03,48.2,80.15,68.25],"ant":[null,52.38,53.22,84.43,56.86,80.74],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":427.27,"2026-07":973.5,"2026-08":700.6,"2026-09":1452.01,"2026-10":829.3}},{"nome":"Adubação Socaria - Alencar","linha":68,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[60.83,65.47,65.61,81.5,118.67,42.45],"ant":[null,80.0,81.83,59.16,90.03,36.4],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":368.18,"2026-07":1017.16,"2026-08":900.26,"2026-09":1686.63,"2026-10":984.87}}]}],"avisos":["Colheitabilidade: de 28/09 a 03/10 a linha repete pessoas/rendimento de outra atividade (6 dias) — valores fora da conta, conferir a planilha.","Plantio Manual - Experimento Iran: de 28/09 a 03/10 a linha repete pessoas/rendimento de outra atividade (6 dias) — valores fora da conta, conferir a planilha."],"programas":[{"id":"pre","nome":"Pré-emergente cana soca","base":18770.95,"baseRot":"área colhida","reforma":318.14,"realizado":17674.06,"aRealizar":624.79,"blocos":{"BERTONI":10.98,"USINA":36.39,"SHEKINAH I":104.44,"CAJAMANGA":96.09,"NILSON":138.57,"PEQUI":26.8,"SCALON SETE PLACAS":211.52},"regioes":{"1":151.81,"2":234.66,"3":238.32}},{"id":"queima","nome":"Pré-emergente área de queima","base":1460.37,"baseRot":"área queimada","realizado":350.19,"aRealizar":1110.18,"blocos":{"SAMIR":362.22,"SHEKINAH I":490.4,"BAÚ":38.46,"CAJAMANGA":131.25,"154":27.29,"DO CRISTO":27.01,"BURITI":0.24,"SÁVIO":33.31}},{"id":"mol3","nome":"3ª molécula (bordadura)","base":884.87,"baseRot":"área aberta","realizado":750.19,"aRealizar":134.68,"blocos":{"USINA":3.35,"MARCO AMUY":2.62,"SHEKINAH I":51.01,"DO CRISTO":22.78,"BERTONI":8.01,"BAÚ":8.73,"SAUL":18.22,"NILSON":6.73,"BEBEDOURO":5.69,"CAJAMANGA":0.01,"PEQUI":7.54}},{"id":"cat1","nome":"1ª catação química","base":17674.06,"baseRot":"área aberta","reforma":218.32,"realizado":11067.35,"mec":7350.85,"man":3716.5,"aRealizar":6144.62,"atrasado":5087.46,"blocos":{"USINA":1182.02,"BERTONI":183.88,"SHEKINAH I":949.35,"SÁVIO":98.92,"SAMIR":1033.75,"BURITI":78.41,"BAÚ":340.45,"CAJAMANGA":25.89,"SAUL":225.86,"NILSON":335.55,"BEBEDOURO":272.37,"PEQUI":951.95,"69":144.98,"ELISETE":19.55,"SANTA VITÓRIA":151.83,"MARCO AMUY":83.84,"NILSON CASAGRANDE":66.02},"blocosAtrasado":{"USINA":1081.19,"BERTONI":69.44,"SHEKINAH I":949.35,"SÁVIO":98.92,"SAMIR":1033.75,"BURITI":78.41,"BAÚ":231.24,"CAJAMANGA":25.89,"SAUL":225.86,"NILSON":107.24,"BEBEDOURO":19.67,"PEQUI":850.14,"69":144.98,"ELISETE":19.55,"SANTA VITÓRIA":151.83}},{"id":"cat2","nome":"2ª catação química","base":6195.32,"baseRot":"programado","reforma":152.89,"realizado":567.03,"aRealizar":5536.61,"blocos":{"BERTONI":511.26,"USINA":326.06,"BURITI":1199.27,"69":123.81,"SAMIR":580.94,"SHEKINAH I":652.75,"CANOA":181.62,"BAÚ":314.72,"MARCO AMUY":359.93,"CAJAMANGA":277.76,"NILSON":138.14,"154":167.32,"BASTOS":-24.09,"PEQUI":58.53,"SCALON SETE PLACAS":480.71,"ELISETE":187.88}},{"id":"loc","nome":"Adubação localizada","base":9569.33,"baseRot":"área a tratar","reforma":359.37,"realizado":6653.22,"aRealizar":747.14,"blocos":{"MARCO AMUY":83.84,"SAMIR":113.0,"SHEKINAH I":232.66,"USINA":317.64}},{"id":"cocho","nome":"Adubação com cocho","base":11936.94,"baseRot":"área a tratar","reforma":248.12,"realizado":8800.29,"aRealizar":2794.73,"blocos":{"BERTONI":157.43,"BURITI":106.82,"DO CRISTO":223.97,"SHEKINAH I":603.21,"USINA":52.09,"BEBEDOURO":466.55,"BAÚ":109.21,"CAJAMANGA":197.47,"NILSON":225.1,"SAUL":303.21,"SCALON SETE PLACAS":342.38,"PEQUI":7.29}}],"nomesMes":["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],"locais":{"fazendas":{},"linhas":[],"fontes":[]}};
+window.TRATOS = {"fonte":{"semana":"19.10.2026.pdf","programas":"19.10.2026.pdf","atualizacaoProgramas":"2026-10-19"},"semana":{"diaRef":"2026-10-17","qtdDias":6,"dias":["2026-10-12","2026-10-13","2026-10-14","2026-10-15","2026-10-16","2026-10-17","2026-10-18"],"diasAnt":["2026-10-05","2026-10-06","2026-10-07","2026-10-08","2026-10-09","2026-10-10","2026-10-11"],"meses":["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"]},"frentes":[{"id":"manual","nome":"Manual e semi-mecanizada","titulo":"APLICAÇÃO MANUAL E SEMI-MECANIZADA","atividades":[{"nome":"Catação Manual","linha":11,"equip":48.0,"metaUnid":1.2,"metaDia":57.6,"metaSemana":345.6,"metaMes":1555.2,"dias":[null,91.28,78.57,68.05,125.61,82.94,null],"ant":[17.54,45.83,58.99,39.75,73.8,19.93,null],"pessoas":[null,45.0,46.0,47.0,50.0,27.0,null],"pessoasPlan":48.0,"metaPessoa":1.2,"mes":{"2026-01":940.18,"2026-02":410.74,"2026-03":95.14,"2026-04":284.34,"2026-05":633.89,"2026-06":753.47,"2026-07":857.96,"2026-08":627.46,"2026-09":1149.69,"2026-10":930.0}},{"nome":"Colheitabilidade","linha":12,"equip":12.0,"metaUnid":2.0,"metaDia":24.0,"metaSemana":144.0,"metaMes":648.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":928.3,"2026-05":898.67,"2026-06":555.31,"2026-07":593.35,"2026-08":322.13,"2026-09":58.61,"2026-10":0}},{"nome":"Plantio Manual - Experimento Iran","linha":13,"equip":0.0,"metaUnid":0.0,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0.83,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Quadriciclo","linha":16,"equip":2.0,"metaUnid":10.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,34.56,33.18,6.45,null,null],"ant":[2.19,19.55,54.25,22.26,27.5,5.0,null],"pessoas":[null,null,2.0,2.0,2.0,null,null],"pessoasPlan":2.0,"metaPessoa":10.0,"mes":{"2026-01":31.67,"2026-02":123.34,"2026-03":22.31,"2026-04":0,"2026-05":300.64,"2026-06":196.96,"2026-07":14.1,"2026-08":0,"2026-09":0,"2026-10":201.71}},{"nome":"Retampa","linha":17,"equip":20.0,"metaUnid":1.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":392.12,"2026-02":1056.98,"2026-03":1799.27,"2026-04":396.71,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Replanta","linha":18,"equip":18.0,"metaUnid":0.3,"metaDia":5.4,"metaSemana":32.4,"metaMes":145.8,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":22.87,"2026-02":0,"2026-03":35.51,"2026-04":95.05,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Kit Aceiro - Herbicat","linha":19,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":70.5,"2026-02":88.0,"2026-03":0,"2026-04":1282.53,"2026-05":565.15,"2026-06":1036.46,"2026-07":988.92,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Mangueirão","linha":20,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":2102.99,"2026-02":6517.76,"2026-03":4437.13,"2026-04":1289.15,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Roço","linha":null,"dias":[null,null,null,null,9.0,null,null],"pessoas":[null,null,null,null,19.0,null,null],"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":9.0},"ant":[null,null,null,null,null,null,null],"equip":null,"metaUnid":null,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"pessoasPlan":null,"metaPessoa":null},{"nome":"Cata Mato","linha":23,"equip":10.0,"metaUnid":12.0,"metaDia":120.0,"metaSemana":720.0,"metaMes":3240.0,"dias":[null,133.86,114.77,79.57,2.56,5.88,null],"ant":[14.61,112.19,105.7,118.6,96.54,42.86,null],"pessoas":[null,25.0,30.0,16.0,1.0,26.0,null],"pessoasPlan":15.0,"metaPessoa":4.0,"mes":{"2026-01":2589.46,"2026-02":88.47,"2026-03":0,"2026-04":552.88,"2026-05":887.35,"2026-06":1243.42,"2026-07":2030.4,"2026-08":1886.1,"2026-09":1021.5,"2026-10":881.46}},{"nome":"Catação de Formiga","linha":26,"equip":2.0,"metaUnid":10.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,5.4,28.02,18.17,43.36,42.72,null],"ant":[null,34.08,25.61,21.93,24.48,70.08,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":112.24,"2026-02":61.42,"2026-03":514.28,"2026-04":891.81,"2026-05":580.83,"2026-06":359.61,"2026-07":643.48,"2026-08":556.53,"2026-09":899.53,"2026-10":360.74}}]},{"id":"uniport","nome":"Uniport","titulo":"APLICAÇÕES TERRESTRES - UNIPORT","atividades":[{"nome":"Uniport Barra Total - Terceiro","linha":31,"equip":null,"metaUnid":null,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":18.83,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Próprio","linha":32,"equip":1.0,"metaUnid":80.0,"metaDia":80.0,"metaSemana":480.0,"metaMes":2160.0,"dias":[104.14,57.63,55.14,null,33.2,48.2,null],"ant":[null,null,93.3,105.48,null,45.0,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":332.14,"2026-02":923.91,"2026-03":1461.85,"2026-04":703.09,"2026-05":1369.34,"2026-06":1574.19,"2026-07":2025.3,"2026-08":1781.94,"2026-09":888.77,"2026-10":859.51}},{"nome":"Uniport Próprio - Dessecação","linha":33,"equip":1.0,"metaUnid":70.0,"metaDia":70.0,"metaSemana":420.0,"metaMes":1890.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":438.1,"2026-02":4.0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Broto - Terceiro","linha":34,"equip":2.0,"metaUnid":70.0,"metaDia":140.0,"metaSemana":840.0,"metaMes":3780.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Terceiro","linha":35,"equip":3.0,"metaUnid":60.0,"metaDia":180.0,"metaSemana":1080.0,"metaMes":4860.0,"dias":[null,null,150.45,75.82,161.63,88.33,null],"ant":[null,56.64,139.37,99.6,82.7,103.2,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":521.63,"2026-02":502.2,"2026-03":788.89,"2026-04":1759.2,"2026-05":1668.89,"2026-06":1814.06,"2026-07":1771.44,"2026-08":2217.19,"2026-09":2309.14,"2026-10":1154.02}},{"nome":"Uniport Pingente-Terceiro","linha":36,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Terceiro - Dessecação","linha":38,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":105.4,"2026-02":5.0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":59.61}},{"nome":"Uniport Pingente-Próprio","linha":39,"equip":1.0,"metaUnid":50.0,"metaDia":50.0,"metaSemana":300.0,"metaMes":1350.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Terceira Molécula-Terceiro","linha":40,"equip":1.0,"metaUnid":10.0,"metaDia":10.0,"metaSemana":60.0,"metaMes":270.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Terceira Molécula-Próprio","linha":41,"equip":1.0,"metaUnid":20.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}}]},{"id":"aerea","nome":"Aérea e monitoramento","titulo":"APLICAÇÃO AÉREA E MONITORAMENTO","atividades":[{"nome":"Drone - Próprio","linha":46,"equip":1.0,"metaUnid":20.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":216.24,"2026-02":517.78,"2026-03":622.63,"2026-04":507.83,"2026-05":312.06,"2026-06":450.96,"2026-07":342.35,"2026-08":7.52,"2026-09":20.26,"2026-10":0}},{"nome":"Drone Dessecação - Próprio","linha":47,"equip":1.0,"metaUnid":30.0,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":12.79,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Drone Inseticida","linha":48,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,362.21,703.9,null,null,null],"ant":[262.64,null,505.29,100.0,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":1006.68,"2026-03":485.64,"2026-04":1423.38,"2026-05":241.35,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":2479.05,"2026-10":2421.34}},{"nome":"Drone Dessecação-Terceiro","linha":49,"equip":1.0,"metaUnid":5.0,"metaDia":5.0,"metaSemana":10.0,"metaMes":135.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Área Monitoramento","linha":50,"equip":2.0,"metaUnid":150.0,"metaDia":300.0,"metaSemana":1800.0,"metaMes":8100.0,"dias":[187.16,289.57,null,260.73,267.41,null,null],"ant":[null,204.16,239.93,653.12,309.72,262.33,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":509.99,"2026-02":3570.86,"2026-03":5377.19,"2026-04":2972.59,"2026-05":1699.65,"2026-06":2997.82,"2026-07":5064.12,"2026-08":2632.79,"2026-09":1670.18,"2026-10":2673.27}}]},{"id":"cocho","nome":"Adubação com cocho","titulo":"ADUBAÇÃO COM COCHO","atividades":[{"nome":"Adubação Socaria - Fábio do Prado","linha":67,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,97.41,88.03,48.2,80.15,68.25,66.02],"ant":[null,52.38,53.22,84.43,56.86,80.74,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":427.27,"2026-07":973.5,"2026-08":700.6,"2026-09":1452.01,"2026-10":895.32}},{"nome":"Adubação Socaria - Alencar","linha":68,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[60.83,65.47,65.61,81.5,118.67,42.45,null],"ant":[null,80.0,81.83,59.16,90.03,36.4,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":368.18,"2026-07":1017.16,"2026-08":900.26,"2026-09":1686.63,"2026-10":984.87}}]}],"avisos":["Colheitabilidade: de 28/09 a 03/10 a linha repete pessoas/rendimento de outra atividade (6 dias) — valores fora da conta, conferir a planilha.","Plantio Manual - Experimento Iran: de 28/09 a 03/10 a linha repete pessoas/rendimento de outra atividade (6 dias) — valores fora da conta, conferir a planilha."],"programas":[{"id":"pre","nome":"Pré-emergente cana soca","base":18770.95,"baseRot":"área colhida","reforma":318.14,"realizado":17674.06,"aRealizar":624.79,"blocos":{"BERTONI":10.98,"USINA":36.39,"SHEKINAH I":104.44,"CAJAMANGA":96.09,"NILSON":138.57,"PEQUI":26.8,"SCALON SETE PLACAS":211.52},"regioes":{"1":151.81,"2":234.66,"3":238.32}},{"id":"queima","nome":"Pré-emergente área de queima","base":1460.37,"baseRot":"área queimada","realizado":350.19,"aRealizar":1110.18,"blocos":{"SAMIR":362.22,"SHEKINAH I":490.4,"BAÚ":38.46,"CAJAMANGA":131.25,"154":27.29,"DO CRISTO":27.01,"BURITI":0.24,"SÁVIO":33.31}},{"id":"mol3","nome":"3ª molécula (bordadura)","base":884.87,"baseRot":"área aberta","realizado":750.19,"aRealizar":134.68,"blocos":{"USINA":3.35,"MARCO AMUY":2.62,"SHEKINAH I":51.01,"DO CRISTO":22.78,"BERTONI":8.01,"BAÚ":8.73,"SAUL":18.22,"NILSON":6.73,"BEBEDOURO":5.69,"CAJAMANGA":0.01,"PEQUI":7.54}},{"id":"cat1","nome":"1ª catação química","base":17674.06,"baseRot":"área aberta","reforma":218.32,"realizado":11067.35,"mec":7350.85,"man":3716.5,"aRealizar":6144.62,"atrasado":5087.46,"blocos":{"USINA":1182.02,"BERTONI":183.88,"SHEKINAH I":949.35,"SÁVIO":98.92,"SAMIR":1033.75,"BURITI":78.41,"BAÚ":340.45,"CAJAMANGA":25.89,"SAUL":225.86,"NILSON":335.55,"BEBEDOURO":272.37,"PEQUI":951.95,"69":144.98,"ELISETE":19.55,"SANTA VITÓRIA":151.83,"MARCO AMUY":83.84,"NILSON CASAGRANDE":66.02},"blocosAtrasado":{"USINA":1081.19,"BERTONI":69.44,"SHEKINAH I":949.35,"SÁVIO":98.92,"SAMIR":1033.75,"BURITI":78.41,"BAÚ":231.24,"CAJAMANGA":25.89,"SAUL":225.86,"NILSON":107.24,"BEBEDOURO":19.67,"PEQUI":850.14,"69":144.98,"ELISETE":19.55,"SANTA VITÓRIA":151.83}},{"id":"cat2","nome":"2ª catação química","base":6195.32,"baseRot":"programado","reforma":152.89,"realizado":567.03,"aRealizar":5536.61,"blocos":{"BERTONI":511.26,"USINA":326.06,"BURITI":1199.27,"69":123.81,"SAMIR":580.94,"SHEKINAH I":652.75,"CANOA":181.62,"BAÚ":314.72,"MARCO AMUY":359.93,"CAJAMANGA":277.76,"NILSON":138.14,"154":167.32,"BASTOS":-24.09,"PEQUI":58.53,"SCALON SETE PLACAS":480.71,"ELISETE":187.88}},{"id":"loc","nome":"Adubação localizada","base":9569.33,"baseRot":"área a tratar","reforma":359.37,"realizado":6653.22,"aRealizar":747.14,"blocos":{"MARCO AMUY":83.84,"SAMIR":113.0,"SHEKINAH I":232.66,"USINA":317.64}},{"id":"cocho","nome":"Adubação com cocho","base":11936.94,"baseRot":"área a tratar","reforma":248.12,"realizado":8800.29,"aRealizar":2794.73,"blocos":{"BERTONI":157.43,"BURITI":106.82,"DO CRISTO":223.97,"SHEKINAH I":603.21,"USINA":52.09,"BEBEDOURO":466.55,"BAÚ":109.21,"CAJAMANGA":197.47,"NILSON":225.1,"SAUL":303.21,"SCALON SETE PLACAS":342.38,"PEQUI":7.29}}],"nomesMes":["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],"locais":{"fazendas":{},"linhas":[],"fontes":[]}};
 /*DADOS-FIM*/
 </script>
 
@@ -1083,6 +1048,13 @@ var NOME_ST = {ok:"Na meta ou acima", medio:"De 50% a 99% da meta", baixo:"Abaix
 var COR_REAL = "#2E86C1", COR_SALDO = "#D68910", COR_ATRASO = E.RED;
 
 var SEM = T.semana, DIAS = SEM.dias, ND = DIAS.length, MES_REF = SEM.diaRef.slice(0,7);
+// os valores vêm como na planilha: o domingo trabalhado entra na semana e no mês, mas
+// não tem meta (a meta da semana é de segunda a sábado)
+function temMeta(iso){ return new Date(iso+"T12:00:00").getDay()!==0; }
+var ATE = DIAS[ND-1], ND_META = DIAS.filter(temMeta).length;
+// dias que um gráfico ou tabela mostra: os que têm meta e os que tiveram produção
+function diasVisiveis(porDia){ return DIAS.map(function(_,k){ return k; }).filter(function(k){ return temMeta(DIAS[k]) || porDia[k]>0; }); }
+function metaDoDia(a,k){ return temMeta(DIAS[k]) ? a.metaDia : 0; }
 
 function soma(arr,f){ var t=0; for(var i=0;i<arr.length;i++){ var v=f?f(arr[i]):arr[i]; if(v) t+=v; } return t; }
 function status(p){ return p==null ? "sem" : p>=0.995 ? "ok" : p>=0.5 ? "medio" : "baixo"; }
@@ -1144,7 +1116,9 @@ T.frentes.forEach(function(f,i){
   f.pct = f.meta>0 ? f.real/f.meta : null;
   f.metaDia = soma(at,function(a){ return a.metaDia; });
   f.metaMes = soma(at,function(a){ return a.metaMes; });
-  f.mesReal = soma(at,function(a){ return a.mesReal; });
+  // realizado do mês como a planilha soma: todas as atividades da frente, mesmo as
+  // paradas na semana (a meta do mês segue a da planilha: só as que operaram)
+  f.mesReal = soma(f.atividades,function(a){ return a.mesReal; });
   f.porDia = DIAS.map(function(_,k){ return soma(f.atividades,function(a){ return a.dias[k]; }); });
   f.antDia = DIAS.map(function(_,k){ return soma(f.atividades,function(a){ return a.ant[k]; }); });
   f.ef = efConjunto(at);
@@ -1178,7 +1152,7 @@ var DIAS_MES_UTEIS = (function(){
   return a ? Math.round(a.metaMes/a.metaDia) : 26;
 })();
 var DIAS_MES_FEITOS = (function(){
-  var d = new Date(MES_REF+"-01T12:00:00"), f = new Date(SEM.diaRef+"T12:00:00"), n=0;
+  var d = new Date(MES_REF+"-01T12:00:00"), f = new Date(ATE+"T12:00:00"), n=0;
   while(d<=f){ if(d.getDay()!==0) n++; d.setDate(d.getDate()+1); }
   return n;
 })();
@@ -1261,7 +1235,7 @@ function ajustaTabela(rolo){
 function liga(box,sel,fn){
   Array.prototype.forEach.call(box.querySelectorAll(sel),function(el){ el.addEventListener("click",function(){ fn(el); }); });
 }
-function cabDias(){ return DIAS.map(function(d){ return "<th class='c'>"+diaSem(d)+"<u>"+dataBR(d)+"</u></th>"; }).join(""); }
+function cabDias(ks){ return ks.map(function(k){ var d=DIAS[k]; return "<th class='c'>"+diaSem(d)+"<u>"+dataBR(d)+"</u></th>"; }).join(""); }
 
 /* ---------- painel de detalhe ---------- */
 // níveis do painel: quem abre o próximo nível (entra) guarda o atual, e o Voltar refaz
@@ -1292,7 +1266,7 @@ function tabela(cols, linhas, total, nota){
 }
 function historico(a){
   return SEM.meses.slice(-6).map(function(ym){
-    return nomeMes(ym)+(ym===MES_REF?" (até "+dataBR(SEM.diaRef)+")":"")+" <b>"+fHa(a.mes[ym]||0)+"</b>";
+    return nomeMes(ym)+(ym===MES_REF?" (até "+dataBR(ATE)+")":"")+" <b>"+fHa(a.mes[ym]||0)+"</b>";
   }).join(" &middot; ");
 }
 function detalheAtividade(a){
@@ -1302,16 +1276,16 @@ function detalheAtividade(a){
   var f=a.frente, loc=a.locais.length ? a : (f.locais.some(function(l){ return !l.a; }) ? null : undefined);
   var cols=[{t:"Dia",l:true},{t:"Realizado (ha)"},{t:"Meta do dia (ha)"},{t:"% da meta",key:true},
             {t:temP?"Pessoas":"Equip. planejados"},{t:"ha por "+e.unid}];
-  var linhas=DIAS.map(function(d,k){
-    var v=a.dias[k], u=temP?a.pessoas[k]:(v>0?e.plan:null);
-    return [diaRot(d), fHa2(v), fHa2(a.metaDia), a.metaDia>0&&v!=null?spanSt(v/a.metaDia):"–",
+  var linhas=diasVisiveis(f.porDia).map(function(k){
+    var v=a.dias[k], u=temP?a.pessoas[k]:(v>0?e.plan:null), m=metaDoDia(a,k);
+    return [diaRot(DIAS[k]), fHa2(v), m?fHa2(m):"–", m>0&&v!=null?spanSt(v/m):"–",
             u==null?"–":E.fmtInt(u), u&&v?fEf(v/u):"–"];
   });
   var tot=["Semana", fHa2(a.sem), fHa2(a.metaSemana), a.parada?"parada":spanSt(a.pct), e.uniMed==null?"–":E.fmtDec(e.uniMed,1)+" por dia", fEf(e.ef)];
   var conta="<span class='res'>"+(a.parada?"parada":fPct(a.pct))+"</span><span class='op'>=</span><b>"+fHa2(a.sem)+" ha</b><span class='op'>÷</span><b>"+
-    fHa2(a.metaSemana)+" ha</b> de meta"+(a.metaDia?" ("+ND+" dias × "+fHa(a.metaDia)+" ha/dia)":"")+
-    "<em>Eficiência: "+fEf(e.ef)+" ha por "+e.unid+" por dia operado, meta "+fEf(e.meta)+" ("+fPct(e.pct)+") · "+e.diasOp+" de "+ND+" dias com operação · "+
-    "semana anterior: "+(a.semAnt==null?"–":fHa(a.semAnt)+" ha")+" · "+nomeMesLongo(MES_REF)+" até "+dataBR(SEM.diaRef)+": "+fHa(a.mesReal)+" ha</em>";
+    fHa2(a.metaSemana)+" ha</b> de meta"+(a.metaDia?" ("+ND_META+" dias × "+fHa(a.metaDia)+" ha/dia)":"")+
+    "<em>Eficiência: "+fEf(e.ef)+" ha por "+e.unid+" por dia operado, meta "+fEf(e.meta)+" ("+fPct(e.pct)+") · "+e.diasOp+" dias com operação · "+
+    "semana anterior: "+(a.semAnt==null?"–":fHa(a.semAnt)+" ha")+" · "+nomeMesLongo(MES_REF)+" até "+dataBR(ATE)+": "+fHa(a.mesReal)+" ha</em>";
   if(loc!==undefined) conta+="<button type='button' class='mf-ir' id='mf-ir'>Fazendas e talhões"+(loc?"":" · "+E.esc(f.nome))+" &rsaquo;</button>";
   abreCaixa(a.nome+" — "+periodo(), a.frente.nome+" · realizado dia a dia contra a meta", conta,
     tabela(cols,linhas,tot,"Mês a mês: "+historico(a)+". Eficiência = realizado ÷ "+(temP?"pessoas apontadas no dia":"equipamentos planejados nos dias com operação")+"."));
@@ -1386,15 +1360,15 @@ function detalheTalhoes(f,a,faz){
     var td=tr.children[cols.length-1]; if(td) td.classList.add("prod"); });
 }
 function detalheDia(f,k){
-  var lista=(f?f.atividades:ATIV).filter(function(a){ return a.dias[k] || (a.ativa && a.metaDia>0); })
+  var lista=(f?f.atividades:ATIV).filter(function(a){ return a.dias[k] || (a.ativa && metaDoDia(a,k)>0); })
     .sort(function(p,q){ return (q.dias[k]||0)-(p.dias[k]||0); });
-  var real=soma(lista,function(a){ return a.dias[k]; }), meta=soma(lista,function(a){ return a.ativa?a.metaDia:0; });
+  var real=soma(lista,function(a){ return a.dias[k]; }), meta=soma(lista,function(a){ return a.ativa?metaDoDia(a,k):0; });
   var cols=[{t:"Atividade",l:true}].concat(f?[]:[{t:"Operação",l:true}]).concat([{t:"Realizado (ha)"},{t:"Meta do dia (ha)"},{t:"% da meta",key:true}]);
   abreCaixa(diaRot(DIAS[k])+" — "+(f?f.nome:"todas as operações"), "Realizado de cada atividade no dia",
-    "<span class='res'>"+fHa2(real)+" ha</span><span class='op'>de</span><b>"+fHa2(meta)+" ha</b> de meta do dia ("+fPct(meta?real/meta:null)+")",
-    tabela(cols, lista.map(function(a){ var v=a.dias[k];
-      return [E.esc(a.nome)].concat(f?[]:[E.esc(a.frente.nome)]).concat([fHa2(v), fHa2(a.metaDia), a.metaDia>0?spanSt((v||0)/a.metaDia):"–"]); }),
-      ["Total"].concat(f?[]:[""]).concat([fHa2(real), fHa2(meta), spanSt(meta?real/meta:null)])));
+    "<span class='res'>"+fHa2(real)+" ha</span>"+(meta?"<span class='op'>de</span><b>"+fHa2(meta)+" ha</b> de meta do dia ("+fPct(real/meta)+")":" · domingo, sem meta"),
+    tabela(cols, lista.map(function(a){ var v=a.dias[k], m=metaDoDia(a,k);
+      return [E.esc(a.nome)].concat(f?[]:[E.esc(a.frente.nome)]).concat([fHa2(v), m?fHa2(m):"–", m>0?spanSt((v||0)/m):"–"]); }),
+      ["Total"].concat(f?[]:[""]).concat([fHa2(real), meta?fHa2(meta):"–", meta?spanSt(real/meta):"–"])));
 }
 
 /* ============================================================
@@ -1414,18 +1388,21 @@ function desenhaCapa(){
   if(r.width<120 || r.height<120) return;
   var W=Math.round(r.width), H=Math.round(r.height), f=fz(11);
   svg.setAttribute("viewBox","0 0 "+W+" "+H);
-  var ac=E.acum(TOT.porDia), meta=DIAS.map(function(_,k){ return TOT.metaDia*(k+1); }), ant=E.acum(TOT.antDia);
+  // acumulados nos dias mostrados; domingo soma o realizado mas não soma meta
+  var ks=diasVisiveis(TOT.porDia), nv=ks.length, mt=0;
+  var acD=E.acum(TOT.porDia), antD=E.acum(TOT.antDia), metaD=DIAS.map(function(d){ if(temMeta(d)) mt+=TOT.metaDia; return mt; });
+  var ac=ks.map(function(k){ return acD[k]; }), meta=ks.map(function(k){ return metaD[k]; }), ant=ks.map(function(k){ return antD[k]; });
   var padL=6, padR=f*5.4, padT=f*2.2, padB=f*2.8, plotW=W-padL-padR, plotH=H-padT-padB, base=padT+plotH;
-  var maxY=E.niceAxis(Math.max(meta[ND-1],ac[ND-1],ant[ND-1],1)*1.08,4);
+  var maxY=E.niceAxis(Math.max(meta[nv-1],ac[nv-1],ant[nv-1],1)*1.08,4);
   function Y(v){ return base-v/maxY*plotH; }
-  var slot=plotW/ND;
+  var slot=plotW/nv;
   function XC(i){ return padL+slot*i+slot/2; }
   for(var k=0;k<=4;k++){
     var yy=Y(maxY*k/4);
     E.add(svg,"line",{x1:padL,x2:W-padR+6,y1:yy,y2:yy,stroke:"rgba(174,187,216,"+(k?".13":".32")+")"});
     if(k) E.txt(svg,W-padR+12,yy+4,E.fmtInt(maxY*k/4),{"font-size":f,fill:"#7D8BB0"});
   }
-  DIAS.forEach(function(d,i){ E.txt(svg,XC(i),base+f*1.7,diaRot(d),{"text-anchor":"middle","font-size":f,fill:"#AEBBD8"}); });
+  ks.forEach(function(k,i){ E.txt(svg,XC(i),base+f*1.7,diaRot(DIAS[k]),{"text-anchor":"middle","font-size":f,fill:"#AEBBD8"}); });
   function linha(vals,attrs){ return E.add(svg,"path",Object.assign({d:"M"+vals.map(function(v,i){ return XC(i).toFixed(1)+","+Y(v).toFixed(1); }).join(" L"),fill:"none"},attrs)); }
   linha(meta,{stroke:"rgba(240,223,168,.75)","stroke-width":2,"stroke-dasharray":"7,5"});
   if(TOT.ant>0) linha(ant,{stroke:"#7D8BB0","stroke-width":2});
@@ -1437,27 +1414,23 @@ function desenhaCapa(){
   var g=E.add(svg,"g",{"clip-path":"url(#capa-clip)"});
   var pts=ac.map(function(v,i){ return [XC(i),Y(v)]; });
   var dL="M"+pts.map(function(p){ return p[0].toFixed(1)+","+p[1].toFixed(1); }).join(" L");
-  E.add(g,"path",{d:dL+" L"+pts[ND-1][0].toFixed(1)+","+base+" L"+pts[0][0].toFixed(1)+","+base+" Z",fill:"url(#capa-grad)"});
+  E.add(g,"path",{d:dL+" L"+pts[nv-1][0].toFixed(1)+","+base+" L"+pts[0][0].toFixed(1)+","+base+" Z",fill:"url(#capa-grad)"});
   E.add(g,"path",{d:dL,fill:"none",stroke:"#C9A227","stroke-width":3,"stroke-linejoin":"round"});
   pts.forEach(function(p){ E.add(g,"circle",{cx:p[0],cy:p[1],r:4,fill:"#0A1330",stroke:"#C9A227","stroke-width":2}); });
-  var fim=E.add(svg,"g",{"class":"capa-fim"});
-  E.txt(fim,pts[ND-1][0]+10,pts[ND-1][1]-12,E.fmtInt(ac[ND-1])+" ha",{"text-anchor":"end","font-size":fz(15),"font-weight":"700",fill:"#F0DFA8"});
-  E.txt(fim,XC(ND-1)+10,Y(meta[ND-1])-8,"meta "+E.fmtInt(meta[ND-1]),{"text-anchor":"end","font-size":f,fill:"rgba(240,223,168,.85)"});
+  // sem rótulos no fim das linhas: o realizado e a meta já estão nos números da capa
 }
 function pintaCapa(){
   Array.prototype.forEach.call(document.querySelectorAll(".js-periodo"),function(el){ el.textContent=periodo(); });
   document.getElementById("meta-periodo").textContent = "Tratos culturais · semana "+periodo();
   document.querySelector("nav.toc").setAttribute("data-periodo", "Tratos culturais · semana "+periodo());
   document.getElementById("capa-atualizacao").textContent = T.fonte.atualizacaoProgramas ? "Planilhas atualizadas em "+dataLonga(T.fonte.atualizacaoProgramas) : "";
-  document.getElementById("capa-aviso").textContent = ND+" dias trabalhados · referência "+dataBR(SEM.diaRef);
   document.getElementById("kpi-real").innerHTML = E.fmtInt(TOT.real)+"<small>ha</small>";
   document.getElementById("kpi-real-sub").textContent = "de "+E.fmtInt(TOT.meta)+" ha de meta";
   document.getElementById("kpi-pct").textContent = fPct(TOT.pct);
   document.getElementById("kpi-pct-sub").textContent = TOT.ant ? "semana anterior: "+E.fmtInt(TOT.ant)+" ha ("+fVar(TOT.real/TOT.ant-1)+")" : "";
   document.getElementById("kpi-ef").textContent = fPct(TOT.ef);
-  document.getElementById("kpi-ef-sub").textContent = "da meta por unidade, nos dias com operação";
   document.getElementById("kpi-mes").textContent = fPct(TOT.metaMes?TOT.mesReal/TOT.metaMes:null);
-  document.getElementById("kpi-mes-sub").textContent = nomeMesLongo(MES_REF)+" até "+dataBR(SEM.diaRef)+" · ritmo esperado "+fPct(RITMO);
+  document.getElementById("kpi-mes-sub").textContent = nomeMesLongo(MES_REF)+" até "+dataBR(ATE)+" · ritmo esperado "+fPct(RITMO);
   E.legenda(document.getElementById("capa-legend"),[
     {cor:"#C9A227",nome:"Realizado",tipo:"linha"},
     {cor:"rgba(240,223,168,.75)",nome:"Meta",tipo:"linha",tracejada:true},
@@ -1471,100 +1444,51 @@ function pintaCapa(){
    ============================================================ */
 function idFrente(f){ return "op-"+f.id; }
 function paginaResumo(){
-  // tabela com gráfico: as operações e, dentro delas, as atividades que operaram
+  // a semana contra a meta e contra a semana anterior, por operação e atividade; o dia a
+  // dia fica na página de cada operação e a eficiência, na página dela
   var h="<table class='tb'><thead><tr><th class='l'>Operação / atividade</th><th>Meta semana<u>ha</u></th><th>Realizado<u>ha</u></th>"+
-    "<th>% da meta</th><th>Dias com operação</th><th>Eficiência<u>ha/unid./dia · meta</u></th><th>% da meta por unidade</th>"+
-    "<th>Semana anterior<u>ha</u></th><th>Variação</th></tr></thead><tbody>";
+    "<th>% da meta</th><th>Semana anterior<u>ha</u></th><th>Variação</th></tr></thead><tbody>";
   FRENTES.forEach(function(f){
     h+="<tr class='fr clic' style='--fr:"+f.cor+"' data-f='"+f.id+"'><td class='l'>"+E.esc(f.nome)+"</td><td>"+fHa(f.meta)+"</td><td>"+fHa(f.real)+"</td>"+
-      "<td>"+barCel(f.pct)+"</td><td>"+f.ativas.length+" ativ.</td><td></td><td>"+barCel(f.ef)+"</td><td>"+(f.ant?fHa(f.ant):"–")+"</td>"+
-      "<td>"+(f.ant?fVar(f.real/f.ant-1):"–")+"</td></tr>";
+      "<td>"+barCel(f.pct)+"</td><td>"+(f.ant?fHa(f.ant):"–")+"</td><td>"+(f.ant?fVar(f.real/f.ant-1):"–")+"</td></tr>";
     f.ativas.forEach(function(a){
-      h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"</td><td>"+fHa(a.metaSemana)+"</td><td>"+fHa(a.sem)+"</td>"+
-        "<td>"+barCel(a.pct)+"</td><td>"+a.ef.diasOp+" de "+ND+"</td><td>"+fEf(a.ef.ef)+"<u style='font-weight:400;color:#5A6072;margin-left:5px'>de "+fEf(a.ef.meta)+"</u></td>"+
-        "<td>"+barCel(a.ef.pct)+"</td><td>"+(a.semAnt==null?"–":fHa(a.semAnt))+"</td><td>"+(a.semAnt?fVar(a.sem/a.semAnt-1):"–")+"</td></tr>";
+      h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"</td><td>"+(a.metaSemana?fHa(a.metaSemana):"–")+"</td><td>"+fHa(a.sem)+"</td>"+
+        "<td>"+barCel(a.pct)+"</td><td>"+(a.semAnt==null?"–":fHa(a.semAnt))+"</td><td>"+(a.semAnt?fVar(a.sem/a.semAnt-1):"–")+"</td></tr>";
     });
   });
-  h+="<tr class='tot'><td class='l'>Total</td><td>"+fHa(TOT.meta)+"</td><td>"+fHa(TOT.real)+"</td><td>"+barCel(TOT.pct)+"</td><td>"+ATIVAS.length+" ativ.</td>"+
-    "<td></td><td>"+barCel(TOT.ef)+"</td><td>"+fHa(TOT.ant)+"</td><td>"+(TOT.ant?fVar(TOT.real/TOT.ant-1):"–")+"</td></tr></tbody></table>";
+  h+="<tr class='tot'><td class='l'>Total</td><td>"+fHa(TOT.meta)+"</td><td>"+fHa(TOT.real)+"</td><td>"+barCel(TOT.pct)+"</td>"+
+    "<td>"+fHa(TOT.ant)+"</td><td>"+(TOT.ant?fVar(TOT.real/TOT.ant-1):"–")+"</td></tr></tbody></table>";
   var tb=document.getElementById("rs-tabela"); tb.innerHTML=h; ajustaTabela(tb);
   liga(tb,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
   liga(tb,"tr[data-f]",function(tr){ window.deckGoTo("op-"+tr.getAttribute("data-f")); });
 }
 
 /* ============================================================
-   RESUMO POR DIA — realizado × meta do dia, por operação e atividade
-   ============================================================ */
-function paginaPorDia(){
-  var h="<table class='tb'><thead><tr><th class='l'>Operação / atividade</th><th>Meta do dia<u>ha</u></th>"+cabDias()+
-    "<th>Semana<u>ha</u></th><th>% da meta da semana</th></tr></thead><tbody>";
-  FRENTES.forEach(function(f){
-    h+="<tr class='fr clic' style='--fr:"+f.cor+"' data-f='"+f.id+"'><td class='l'>"+E.esc(f.nome)+"</td><td>"+fHa(f.metaDia)+"</td>"+
-      f.porDia.map(function(v){ return diaCel(v,f.metaDia); }).join("")+"<td>"+fHa(f.real)+"</td><td>"+barCel(f.pct)+"</td></tr>";
-    f.ativas.forEach(function(a){
-      h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"</td><td>"+fHa(a.metaDia)+"</td>"+
-        a.dias.map(function(v){ return diaCel(v,a.metaDia); }).join("")+"<td>"+fHa(a.sem)+"</td><td>"+barCel(a.pct)+"</td></tr>";
-    });
-  });
-  h+="<tr class='tot'><td class='l'>Total</td><td>"+fHa(TOT.metaDia)+"</td>"+TOT.porDia.map(function(v){
-      return "<td class='d'>"+fHa(v)+"<small>"+fPct(TOT.metaDia?v/TOT.metaDia:null)+"</small></td>"; }).join("")+
-    "<td>"+fHa(TOT.real)+"</td><td>"+barCel(TOT.pct)+"</td></tr></tbody></table>";
-  var tb=document.getElementById("pd-tabela"); tb.innerHTML=h;
-  liga(tb,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
-  liga(tb,"tr[data-f]",function(tr){ window.deckGoTo("op-"+tr.getAttribute("data-f")); });
-  E.legenda(document.getElementById("pd-legend"),[
-    {cor:"#E2F1E6",nome:"Dia na meta ou acima",borda:E.GREEN},{cor:"#FBEEDA",nome:"De 50% a 99% da meta do dia",borda:"#D68910"},
-    {cor:"#FAE1DD",nome:"Abaixo de 50%",borda:E.RED},{cor:E.NAVY,nome:"Meta (100%) na barra",tipo:"linha",tracejada:true}
-  ]);
-  ajustaTabela(tb);
-}
-
-/* ============================================================
-   EFICIÊNCIA POR EQUIPAMENTO E PESSOA
+   EFICIÊNCIA POR EQUIPAMENTO E PESSOA — o único lugar da eficiência por
+   atividade e por operação
    ============================================================ */
 function paginaEficiencia(){
-  var card=document.getElementById("ef-card"); card.innerHTML="";
   E.legenda(document.getElementById("ef-legend"),[
     {cor:COR_ST.ok,nome:NOME_ST.ok},{cor:COR_ST.medio,nome:NOME_ST.medio},{cor:COR_ST.baixo,nome:NOME_ST.baixo},
     {cor:E.NAVY,nome:"Meta por unidade (100%)",tipo:"linha",tracejada:true}
   ]);
-  var lista=ATIVAS.filter(function(a){ return a.ef.ef!=null; }).sort(function(p,q){ return (p.ef.pct==null?9:p.ef.pct)-(q.ef.pct==null?9:q.ef.pct); });
-  // tabela
-  var rolo=document.createElement("div"); rolo.className="tb-rolo"; rolo.style.paddingRight="8px";
-  rolo.innerHTML="<table class='tb'><thead><tr><th class='l'>Atividade</th><th class='l'>Base</th><th>Planejado<u>unid.</u></th>"+
-    "<th>Em campo<u>unid./dia</u></th><th>Dias com operação</th><th>Realizado<u>ha/unid./dia</u></th><th>Meta<u>ha/unid./dia</u></th>"+
-    "<th>Eficiência</th></tr></thead><tbody>"+
-    lista.map(function(a){ var e=a.ef;
-      return "<tr class='clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"<u>"+E.esc(a.frente.nome)+"</u></td><td class='l' style='min-width:0;color:#5A6072;font-weight:400'>"+e.base+"</td>"+
-        "<td>"+(e.plan==null?"–":E.fmtInt(e.plan))+"</td><td>"+(e.uniMed==null?"–":E.fmtDec(e.uniMed,1))+"</td><td>"+e.diasOp+" de "+ND+"</td>"+
-        "<td>"+fEf(e.ef)+"</td><td>"+fEf(e.meta)+"</td><td>"+barCel(e.pct)+"</td></tr>"; }).join("")+
-    "<tr class='tot'><td class='l'>Todas em operação</td><td></td><td></td><td></td><td></td><td></td><td></td><td>"+barCel(TOT.ef)+"</td></tr></tbody></table>";
-  card.appendChild(rolo);
-  ajustaTabela(rolo);
-  liga(rolo,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
-  // gráfico: eficiência de cada atividade, com a meta em 100%
-  var svg=svgNovo(card);
-  var emp=empilhado(card), d=E.medir(card,minW(640),260);
-  var W=emp?d.W-24:Math.round((d.W-24-9)*2/5), H=emp?Math.max(380,90+lista.length*30):d.H-16;
-  if(emp) svg.style.height=H+"px";
-  svg.setAttribute("viewBox","0 0 "+W+" "+H);
-  var padT=tituloPainel(svg,W,"Eficiência × meta por unidade")+fz(12);
-  var rowH=Math.min(fz(44),(H-padT-fz(28))/Math.max(1,lista.length)), fs=Math.min(fz(12.5),Math.max(10,rowH*0.42));
-  var labW=Math.min(W*0.46,Math.max.apply(null,lista.map(function(a){ return a.nome.length; }).concat([10]))*fs*0.56+20);
-  var maxP=Math.max(1.25,Math.min(2.5,Math.max.apply(null,lista.map(function(a){ return a.ef.pct||0; }))*1.05));
-  var x0=labW, x1=W-14-fs*4.2, larg=x1-x0;
-  function X(p){ return x0+larg*Math.min(p,maxP)/maxP; }
-  var yF=padT+rowH*lista.length;
-  E.add(svg,"line",{x1:X(1),x2:X(1),y1:padT-4,y2:yF,stroke:E.NAVY,"stroke-width":1.5,"stroke-dasharray":"5,4",opacity:.6});
-  E.txt(svg,X(1),yF+fz(16),"meta 100%",{"text-anchor":"middle","font-size":fz(11),"font-weight":"700",fill:E.MUT});
-  lista.forEach(function(a,i){
-    var y0=padT+rowH*i, yc=y0+rowH/2, bh=Math.max(6,Math.min(fs*1.5,rowH*0.55)), p=a.ef.pct, st=status(p);
-    linhaClicavel(svg,4,y0,W-8,rowH,function(){ detalheAtividade(a); },a.nome);
-    E.txt(svg,x0-8,yc+fs*0.36,cabe(a.nome,labW-20,fs),{"text-anchor":"end","font-size":fs,"font-weight":"600",fill:E.NAVY,"pointer-events":"none"});
-    E.add(svg,"rect",{x:x0,y:yc-bh/2,width:larg,height:bh,rx:3,fill:"#EEF0F5","pointer-events":"none"});
-    if(p>0) E.add(svg,"rect",{x:x0,y:yc-bh/2,width:Math.max(2,X(p)-x0),height:bh,rx:3,fill:COR_ST[st],"pointer-events":"none"});
-    E.txt(svg,x1+8,yc+fs*0.36,fPct(p),{"font-size":fs+1,"font-weight":"700",fill:st==="medio"?"#A6620A":COR_ST[st],"pointer-events":"none"});
+  function unid(v,e){ return v==null ? "–" : v+"<u style='text-decoration:none;color:#5A6072;font-weight:400;margin-left:4px'>"+(e.temP?"pess.":"equip.")+"</u>"; }
+  var h="<table class='tb'><thead><tr><th class='l'>Operação / atividade</th><th>Planejado</th><th>Em campo<u>média por dia</u></th>"+
+    "<th>Dias com operação</th><th>Realizado<u>ha/unid./dia</u></th><th>Meta<u>ha/unid./dia</u></th><th>Eficiência</th></tr></thead><tbody>";
+  FRENTES.forEach(function(f){
+    var lista=f.ativas.filter(function(a){ return a.ef.ef!=null; });
+    if(!lista.length) return;
+    h+="<tr class='fr clic' style='--fr:"+f.cor+"' data-f='"+f.id+"'><td class='l'>"+E.esc(f.nome)+"</td><td></td><td></td><td></td><td></td><td></td><td>"+barCel(f.ef)+"</td></tr>";
+    lista.forEach(function(a){ var e=a.ef;
+      h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"</td><td>"+unid(e.plan==null?null:E.fmtInt(e.plan),e)+"</td>"+
+        "<td>"+unid(e.uniMed==null?null:E.fmtDec(e.uniMed,1),e)+"</td><td>"+e.diasOp+"</td>"+
+        "<td>"+fEf(e.ef)+"</td><td>"+fEf(e.meta)+"</td><td>"+barCel(e.pct)+"</td></tr>";
+    });
   });
+  h+="<tr class='tot'><td class='l'>Todas em operação</td><td></td><td></td><td></td><td></td><td></td><td>"+barCel(TOT.ef)+"</td></tr></tbody></table>";
+  var tb=document.getElementById("ef-tabela"); tb.innerHTML=h; ajustaTabela(tb);
+  liga(tb,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
+  liga(tb,"tr[data-f]",function(tr){ window.deckGoTo("op-"+tr.getAttribute("data-f")); });
 }
 
 /* ============================================================
@@ -1574,16 +1498,14 @@ function paginaEficiencia(){
 var PAG_FRENTE = [];
 function montaPaginasFrente(){
   var slot=document.getElementById("frente-slots"), toc=document.getElementById("toc-frentes");
-  function chip(id,k){ return "<div class='s-chip'><div class='v' id='"+id+"'>–</div><div class='k'>"+k+"</div></div>"; }
   FRENTES.forEach(function(f){
     var id=idFrente(f);
     var art=document.createElement("article");
     art.className="slide slide-dark"; art.id=id; art.setAttribute("data-title",f.nome);
+    // sem cartões nem legenda: o total está na última linha da tabela e a cor de cada
+    // atividade, na própria linha dela
     art.innerHTML="<div class='s-head'><div><div class='s-eyebrow'><span class='js-num'>–</span> &middot; Por operação</div>"+
-      "<h2 class='s-title'>"+E.esc(f.nome)+"</h2></div><div class='s-right'><div class='s-chips'>"+
-      chip(id+"-real","Realizado na semana")+chip(id+"-meta","Meta da semana")+chip(id+"-pct","Da meta")+
-      chip(id+"-ef","Eficiência")+chip(id+"-ant","Sobre a semana anterior")+
-      "</div></div></div><div class='s-legend' id='"+id+"-legend'></div><div class='s-card op-card' id='"+id+"-card'></div>";
+      "<h2 class='s-title'>"+E.esc(f.nome)+"</h2></div></div><div class='s-card op-card' id='"+id+"-card'></div>";
     slot.parentNode.insertBefore(art,slot);
     var a=document.createElement("a"); a.href="#"+id; a.innerHTML="<b></b> "+E.esc(f.nome);
     toc.parentNode.insertBefore(a,toc);
@@ -1595,13 +1517,14 @@ function montaPaginasFrente(){
 }
 function barrasFrente(svg,W,H,f){
   E.limpa(svg); svg.setAttribute("viewBox","0 0 "+W+" "+H);
-  var topo=tituloPainel(svg,W,"Realizado por dia × meta do dia",E.fmtInt(f.real)+" de "+E.fmtInt(f.meta)+" ha · "+fPct(f.pct));
-  var padL=fz(50), padR=fz(14), slot=(W-padL-padR)/ND, padT=topo+fz(14), padB=fz(26), plotH=H-padT-padB, base=padT+plotH;
+  var topo=tituloPainel(svg,W,"Realizado por dia × meta do dia");
+  var ks=diasVisiveis(f.porDia);
+  var padL=fz(50), padR=fz(14), slot=(W-padL-padR)/ks.length, padT=topo+fz(14), padB=fz(26), plotH=H-padT-padB, base=padT+plotH;
   var max=E.niceAxis(Math.max.apply(null,f.porDia.concat([f.metaDia,1]))*1.15,4);
   var y=eixo(svg,{max:max,min:0,x0:padL,x1:W-padR,yTop:padT,yBot:base,fmt:function(v){ return E.fmtInt(v); }});
   var bw=Math.min(slot*0.55,fz(110));
-  DIAS.forEach(function(d,k){
-    var cx=padL+slot*k+slot/2, x=cx-bw/2, acc=0, tot=f.porDia[k];
+  ks.forEach(function(k,i){
+    var d=DIAS[k], cx=padL+slot*i+slot/2, x=cx-bw/2, acc=0, tot=f.porDia[k];
     E.txt(svg,cx,base+fz(16),diaRot(d),{"text-anchor":"middle","font-size":fz(12),"font-weight":"700",fill:E.NAVY});
     var vis=f.ativas.filter(function(a){ return a.dias[k]>0; }), ult=vis[vis.length-1];
     f.ativas.forEach(function(a){
@@ -1610,7 +1533,7 @@ function barrasFrente(svg,W,H,f){
       if(a===ult) E.add(svg,"path",{d:E.barraTopo(x,yT,bw,h,3),fill:a.cor}); else E.add(svg,"rect",{x:x,y:yT,width:bw,height:h,fill:a.cor});
       acc+=v;
     });
-    var p=f.metaDia?tot/f.metaDia:null, st=status(p);
+    var p=f.metaDia&&temMeta(d)?tot/f.metaDia:null, st=status(p);
     var t=E.txt(svg,cx,y(tot)-fz(7),tot?E.fmtInt(tot):"0",{"text-anchor":"middle","font-size":fz(13.5),"font-weight":"700",fill:tot?E.NAVY:E.MUT});
     if(p!=null && tot) E.add(t,"tspan",{"font-size":fz(11),fill:st==="medio"?"#A6620A":COR_ST[st]}," "+fPct(p));
     linhaClicavel(svg,cx-slot/2+2,padT,slot-4,H-padT-2,function(){ detalheDia(f,k); },diaRot(d)+": "+fHa2(tot)+" ha");
@@ -1623,26 +1546,19 @@ function barrasFrente(svg,W,H,f){
 }
 function paginaFrente(f,id){
   var card=document.getElementById(id+"-card"); card.innerHTML="";
-  poe(id+"-real", E.fmtInt(f.real)+" ha");
-  poe(id+"-meta", E.fmtInt(f.meta)+" ha");
-  poe(id+"-pct", fPct(f.pct));
-  poe(id+"-ef", fPct(f.ef));
-  poe(id+"-ant", f.ant ? fVar(f.real/f.ant-1) : "–");
-  E.legenda(document.getElementById(id+"-legend"), f.ativas.map(function(a){ return {cor:a.cor, nome:a.nome}; })
-    .concat([{cor:E.GOLD,nome:"Meta do dia",tipo:"linha",tracejada:true}]));
   var svg=svgNovo(card);
   var rolo=document.createElement("div"); rolo.className="tb-rolo"; card.appendChild(rolo);
-  var h="<table class='tb'><thead><tr><th class='l'>Atividade</th><th>Equip./pessoas</th><th>Meta do dia<u>ha</u></th>"+cabDias()+
-    "<th>Semana<u>ha</u></th><th>% da meta</th><th>Eficiência<u>ha/unid./dia · meta</u></th></tr></thead><tbody>";
+  // o dia a dia de cada atividade; o total de cada dia está no gráfico, em cima das barras
+  var ks=diasVisiveis(f.porDia);
+  var h="<table class='tb'><thead><tr><th class='l'>Atividade</th><th>Meta do dia<u>ha</u></th>"+cabDias(ks)+
+    "<th>Semana<u>ha</u></th><th>% da meta</th></tr></thead><tbody>";
   f.ativas.forEach(function(a){
     h+="<tr class='clic' data-a='"+a.idx+"'><td class='l'><i style='display:inline-block;width:.75em;height:.75em;border-radius:2px;margin-right:.5em;background:"+a.cor+"'></i>"+E.esc(a.nome)+tagLocais(a.locais)+"</td>"+
-      "<td>"+(a.ef.plan==null?"–":E.fmtInt(a.ef.plan))+(a.ef.temP?"<u style='color:#5A6072;font-weight:400;margin-left:4px'>pess.</u>":"")+"</td><td>"+fHa(a.metaDia)+"</td>"+
-      a.dias.map(function(v){ return diaCel(v,a.metaDia); }).join("")+"<td>"+fHa(a.sem)+"</td><td>"+barCel(a.pct)+"</td>"+
-      "<td>"+fEf(a.ef.ef)+"<u style='color:#5A6072;font-weight:400;margin-left:4px'>· "+fEf(a.ef.meta)+" ("+fPct(a.ef.pct)+")</u></td></tr>";
+      "<td>"+(a.metaDia?fHa(a.metaDia):"–")+"</td>"+ks.map(function(k){ return diaCel(a.dias[k],metaDoDia(a,k)); }).join("")+
+      "<td>"+fHa(a.sem)+"</td><td>"+barCel(a.pct)+"</td></tr>";
   });
-  h+="<tr class='tot"+(f.locais.length?" clic' data-loc='1":"")+"'><td class='l'>Total da operação"+tagLocais(f.locais)+"</td><td></td><td>"+fHa(f.metaDia)+"</td>"+
-    f.porDia.map(function(v){ return "<td class='d'>"+(v>0?fHa(v)+"<small>"+fPct(f.metaDia?v/f.metaDia:null)+"</small>":"–")+"</td>"; }).join("")+
-    "<td>"+fHa(f.real)+"</td><td>"+barCel(f.pct)+"</td><td>"+fPct(f.ef)+"</td></tr></tbody></table>";
+  h+="<tr class='tot"+(f.locais.length?" clic' data-loc='1":"")+"'><td class='l'>Total da operação"+tagLocais(f.locais)+"</td><td>"+fHa(f.metaDia)+"</td>"+
+    "<td colspan='"+ks.length+"'></td><td>"+fHa(f.real)+"</td><td>"+barCel(f.pct)+"</td></tr></tbody></table>";
   rolo.innerHTML=h;
   ajustaTabela(rolo);
   liga(rolo,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
@@ -1659,7 +1575,7 @@ function graficoMes(){
   var svgA=svgNovo(card), svgB=svgNovo(card);
   var emp=empilhado(card), d=E.medir(card,minW(640),260), H=emp?400:d.H-16;
   var WA=emp?d.W-24:Math.round((d.W-24-9)*3/5), WB=emp?d.W-24:Math.round((d.W-24-9)*2/5);
-  var rot=nomeMesLongo(MES_REF)+" até "+dataBR(SEM.diaRef);
+  var rot=nomeMesLongo(MES_REF)+" até "+dataBR(ATE);
   document.getElementById("mes-titulo").textContent = nomeMesLongo(MES_REF)+" até aqui e os meses anteriores";
 
   /* --- painel A: mês de referência contra a meta do mês, por operação --- */
@@ -1710,14 +1626,10 @@ function graficoMes(){
       });
       E.txt(svg,cx,y(tot[i])-fz(6),E.fmtInt(tot[i]),{"text-anchor":"middle","font-size":fz(12.5),"font-weight":"700",fill:E.NAVY});
       E.txt(svg,cx,base+fz(16),nomeMes(ym),{"text-anchor":"middle","font-size":fz(12),"font-weight":"700",fill:E.NAVY});
-      if(parcial) E.txt(svg,cx,base+fz(30),"até "+dataBR(SEM.diaRef),{"text-anchor":"middle","font-size":fz(10.5),fill:E.MUT});
+      if(parcial) E.txt(svg,cx,base+fz(30),"até "+dataBR(ATE),{"text-anchor":"middle","font-size":fz(10.5),fill:E.MUT});
     });
   })();
 
-  poe("mes-chip-real", E.fmtInt(TOT.mesReal)+" ha");
-  document.getElementById("mes-chip-real-k").textContent = "Realizado — "+rot;
-  poe("mes-chip-pct", fPct(TOT.metaMes?TOT.mesReal/TOT.metaMes:null));
-  poe("mes-chip-ritmo", fPct(RITMO));
   E.legenda(document.getElementById("mes-legend"), T.frentes.filter(function(f){
       return SEM.meses.slice(-6).some(function(ym){ return soma(f.atividades,function(a){ return a.mes[ym]; })>0; }); })
     .map(function(f){ return {cor:f.cor, nome:f.nome}; })
@@ -1770,12 +1682,6 @@ function graficoProgramas(){
     E.add(t,"tspan",{"font-size":fs*0.85,"font-weight":"600",fill:E.MUT}," realizado");
     E.txt(svg,x1+12,yc+fs*1.15,"a realizar "+E.fmtInt(p.aRealizar)+" ha",{"font-size":fs*0.85,"font-weight":"600",fill:E.NAVY,"pointer-events":"none"});
   });
-  var maior=PROG.slice().sort(function(a,b){ return b.aRealizar-a.aRealizar; })[0];
-  var cat1=PROG.filter(function(p){ return p.atrasado!=null; })[0];
-  poe("pg-chip-aReal", E.fmtInt(maior.aRealizar)+" ha");
-  document.querySelector("#pg-chip-aReal + .k").textContent = "Maior saldo: "+maior.nome;
-  poe("pg-chip-atras", cat1 ? E.fmtInt(cat1.atrasado)+" ha" : "–");
-  poe("pg-chip-data", T.fonte.atualizacaoProgramas ? dataBR(T.fonte.atualizacaoProgramas) : "–");
   E.legenda(document.getElementById("pg-legend"),[
     {cor:COR_REAL,nome:"Realizado"},{cor:COR_SALDO,nome:"A realizar"},{cor:COR_ATRASO,nome:"A realizar há mais de 20 dias da colheita",obs:"(1ª catação)"}
   ]);
@@ -1806,8 +1712,6 @@ function tabelaBlocos(){
     "<td>"+fHa(soma(bl,function(x){ return x.tot; }))+"</td></tr></tbody></table>";
   var box=document.getElementById("bl-tabela"); box.innerHTML=h;
   liga(box,"tr.clic",function(tr){ detalheBloco(tr.getAttribute("data-b")); });
-  if(bl.length){ poe("bl-chip-top", E.fmtInt(bl[0].tot)+" ha"); document.getElementById("bl-chip-top-k").textContent = "Maior saldo: "+nomeBloco(bl[0].b); }
-  poe("bl-chip-n", String(bl.length));
 }
 
 /* ============================================================
@@ -1821,20 +1725,17 @@ function paginaAtencao(){
   }
   var baixo=COM_META.filter(function(a){ return a.st==="baixo"; }).sort(function(a,b){ return a.pct-b.pct; });
   var efBaixo=ATIVAS.filter(function(a){ return a.ef.pct!=null && a.ef.pct<0.5; }).sort(function(a,b){ return a.ef.pct-b.ef.pct; });
-  var acima=COM_META.filter(function(a){ return a.st==="ok"; }).sort(function(a,b){ return b.pct-a.pct; });
   var progBaixo=PROG.filter(function(p){ return p.feito<0.5; }).sort(function(a,b){ return a.feito-b.feito; });
   var cat1=PROG.filter(function(p){ return p.atrasado!=null; })[0];
-  var html=[
-    cartao("baixo","Abaixo de 50% da meta da semana",baixo.length,"atividades",
-      listaMax(baixo.map(function(a){ return [a.nome, fPct(a.pct)+" · "+fHa(a.sem)+" ha"]; }),6)),
-    cartao("medio","Eficiência abaixo de 50% da meta",efBaixo.length,"atividades",
-      listaMax(efBaixo.map(function(a){ return [a.nome, fEf(a.ef.ef)+" de "+fEf(a.ef.meta)+" ha/"+a.ef.unid]; }),6)),
-    cartao("ok","Na meta ou acima",acima.length,"atividades",
-      listaMax(acima.map(function(a){ return [a.nome, fPct(a.pct)+" · "+fHa(a.sem)+" ha"]; }),6)),
-    cartao("baixo","Programas abaixo de 50% realizado",progBaixo.length,"programas",
-      progBaixo.map(function(p){ return [p.nome, fPct(p.feito)+" · faltam "+E.fmtInt(p.aRealizar)+" ha"]; }))
-  ];
-  if(cat1){
+  // só entra cartão que tem o que fazer: lista vazia não ocupa a tela
+  var html=[];
+  if(baixo.length) html.push(cartao("baixo","Abaixo de 50% da meta da semana",baixo.length,"atividades",
+    listaMax(baixo.map(function(a){ return [a.nome, fPct(a.pct)+" · "+fHa(a.sem)+" ha"]; }),6)));
+  if(efBaixo.length) html.push(cartao("medio","Eficiência abaixo de 50% da meta",efBaixo.length,"atividades",
+    listaMax(efBaixo.map(function(a){ return [a.nome, fEf(a.ef.ef)+" de "+fEf(a.ef.meta)+" ha/"+a.ef.unid]; }),6)));
+  if(progBaixo.length) html.push(cartao("baixo","Programas abaixo de 50% realizado",progBaixo.length,"programas",
+    progBaixo.map(function(p){ return [p.nome, fPct(p.feito)+" · faltam "+E.fmtInt(p.aRealizar)+" ha"]; })));
+  if(cat1 && cat1.atrasado>0){
     var ba=cat1.blocosAtrasado||{};
     var bl=Object.keys(ba).filter(function(b){ return ba[b]>0; }).sort(function(a,b){ return ba[b]-ba[a]; })
       .map(function(b){ return [nomeBloco(b), fHa(ba[b])+" ha"]; });
@@ -1842,6 +1743,7 @@ function paginaAtencao(){
   }
   if(T.avisos.length) html.push(cartao("info","Conferir na planilha",T.avisos.length,T.avisos.length===1?"item":"itens",null,
     T.avisos.map(E.esc).join("<br><br>")));
+  if(!html.length) html.push(cartao("ok","Nada fora da meta nesta semana","","",null,null));
   document.getElementById("at-grid").innerHTML = html.join("");
 }
 
@@ -1866,7 +1768,6 @@ function redesenhaTudo(){
 window.replay = window.replay || {};
 window.replay.capa = desenhaCapa;
 window.replay.resumo = paginaResumo;
-window.replay.pordia = paginaPorDia;
 window.replay.eficiencia = paginaEficiencia;
 window.replay.mes = graficoMes;
 window.replay.programas = graficoProgramas;
@@ -1890,7 +1791,7 @@ window.addEventListener("resize",function(){ clearTimeout(tmr); tmr=setTimeout(r
 <script>(function(){
 "use strict";
 var MODULOS = [
-  {id:"semana", nome:"Semana", pags:["resumo","pordia","eficiencia","mes"]},
+  {id:"semana", nome:"Semana", pags:["resumo","eficiencia","mes"]},
   // uma página por operação (frente), montadas pelo script das páginas
   {id:"operacao", nome:"Por operação", pags:window.PAGINAS_FRENTE_IDS || []},
   {id:"programas", nome:"Programas da safra", pags:["programas","blocos"]},
