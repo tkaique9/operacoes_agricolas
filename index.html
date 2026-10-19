@@ -459,6 +459,17 @@ table.tb td u.un{text-decoration:none;color:var(--mut);font-weight:400;font-size
 }
 @media(max-width:760px){ .gr-grid{grid-template-columns:minmax(0,1fr);grid-auto-rows:auto} .gr-graf{flex:none;height:240px} }
 
+/* tabela da Semana: cada grupo de colunas tem título e linha forte à esquerda; as
+   colunas de dentro, linha fina. O cabeçalho de duas linhas fica preso em cima inteiro */
+table.tb.sem thead{position:sticky;top:0;z-index:3}
+table.tb.sem th{position:static}
+table.tb.sem th.grp{text-align:center;background:#0E1A3D;color:var(--gold);font-size:.74em;letter-spacing:.1em;
+  text-transform:uppercase;padding:5px 8px;border-bottom:1px solid rgba(201,162,39,.55)}
+table.tb.sem th+th{border-left:1px solid rgba(255,255,255,.16)}
+table.tb.sem td+td{border-left:1px solid #E1E5ED}
+table.tb.sem th.gi{border-left:2px solid rgba(255,255,255,.6)}
+table.tb.sem td.gi{border-left:2px solid #8D97AE}
+
 /* página da Semana: a seta marca as linhas que abrem o modal da operação */
 table.tb tr.fr.clic td.l::after,table.tb tr.tot.clic td.l::after{content:" \203A";color:var(--gold);font-weight:700}
 
@@ -1494,27 +1505,32 @@ function celDif(e){
   return "<span class='"+(d>=0?"st-ok":"st-baixo")+"'>"+(d>=0?"+":"−")+fEf(Math.abs(d))+"</span>";
 }
 function paginaSemana(){
-  // a semana: realizado × meta, depois o realizado quebrado em rendimento por equipamento
-  // × meta (e a diferença), e então eficiência, semana anterior e mês
-  var vazio="<td></td><td></td><td></td>";
-  var h="<table class='tb'><thead><tr><th class='l'>Operação / atividade</th><th>Meta semana<u>ha</u></th><th>Realizado<u>ha</u></th>"+
-    "<th>% da meta</th><th>Meta por equip.<u>ha/dia</u></th><th>Rendimento por equip.<u>ha/dia</u></th><th>Diferença<u>ha/dia</u></th>"+
-    "<th>Eficiência<u>rendimento ÷ meta</u></th><th>Semana anterior<u>ha</u></th><th>Variação</th>"+
-    "<th>"+nomeMesLongo(MES_REF)+"<u>% da meta · ritmo "+fPct(RITMO)+"</u></th></tr></thead><tbody>";
+  // quatro grupos de colunas, cada um com título e linha forte à esquerda: a semana
+  // (meta × realizado), o rendimento por equipamento × meta (diferença e eficiência), a
+  // semana anterior e o mês (o que já foi produzido, a meta do mês e a %)
+  function c(v,gi){ return "<td"+(gi?" class='gi'":"")+">"+v+"</td>"; }
+  function mes(real,meta){ return c(real>0?fHa(real):"–",1)+c(meta?fHa(meta):"–")+c(spanMes(meta?real/meta:null)); }
+  function ant(v,real){ return c(v?fHa(v):"–",1)+c(v?fVar(real/v-1):"–"); }
+  var vazio=c("",1)+c("")+c("");
+  var h="<table class='tb sem'><thead><tr><th class='l' rowspan='2'>Operação / atividade</th>"+
+    "<th class='grp gi' colspan='3'>Semana</th><th class='grp gi' colspan='4'>Rendimento por equipamento · ha/dia</th>"+
+    "<th class='grp gi' colspan='2'>Semana anterior</th><th class='grp gi' colspan='3'>"+nomeMesLongo(MES_REF)+" até "+dataBR(ATE)+"</th></tr>"+
+    "<tr><th class='gi'>Meta<u>ha</u></th><th>Realizado<u>ha</u></th><th>% da meta</th>"+
+    "<th class='gi'>Meta</th><th>Rendimento</th><th>Diferença</th><th>Eficiência<u>rend. ÷ meta</u></th>"+
+    "<th class='gi'>Realizado<u>ha</u></th><th>Variação</th>"+
+    "<th class='gi'>Realizado<u>ha</u></th><th>Meta do mês<u>ha</u></th><th>% da meta<u>ritmo "+fPct(RITMO)+"</u></th></tr></thead><tbody>";
   FRENTES.forEach(function(f){
-    h+="<tr class='fr clic' style='--fr:"+f.cor+"' data-f='"+f.id+"'><td class='l'>"+E.esc(f.nome)+"</td><td>"+fHa(f.meta)+"</td><td>"+fHa(f.real)+"</td>"+
-      "<td>"+barCel(f.pct)+"</td>"+vazio+"<td>"+spanSt(f.ef)+"</td><td>"+(f.ant?fHa(f.ant):"–")+"</td><td>"+(f.ant?fVar(f.real/f.ant-1):"–")+"</td>"+
-      "<td>"+spanMes(f.metaMes?f.mesReal/f.metaMes:null)+"</td></tr>";
+    h+="<tr class='fr clic' style='--fr:"+f.cor+"' data-f='"+f.id+"'><td class='l'>"+E.esc(f.nome)+"</td>"+
+      c(fHa(f.meta),1)+c(fHa(f.real))+c(barCel(f.pct))+vazio+c(spanSt(f.ef))+ant(f.ant,f.real)+mes(f.mesReal,f.metaMes)+"</tr>";
     f.ativas.forEach(function(a){ var e=a.ef;
-      h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"</td><td>"+(a.metaSemana?fHa(a.metaSemana):"–")+"</td><td>"+fHa(a.sem)+"</td>"+
-        "<td>"+barCel(a.pct)+"</td><td>"+celUnid(e.meta,e)+"</td><td>"+celUnid(e.ef,e)+"</td><td>"+celDif(e)+"</td>"+
-        "<td>"+spanSt(e.pct)+"</td><td>"+(a.semAnt==null?"–":fHa(a.semAnt))+"</td><td>"+(a.semAnt?fVar(a.sem/a.semAnt-1):"–")+"</td>"+
-        "<td>"+spanMes(a.metaMes?a.mesReal/a.metaMes:null)+"</td></tr>";
+      h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"</td>"+
+        c(a.metaSemana?fHa(a.metaSemana):"–",1)+c(fHa(a.sem))+c(barCel(a.pct))+
+        c(celUnid(e.meta,e),1)+c(celUnid(e.ef,e))+c(celDif(e))+c(spanSt(e.pct))+
+        ant(a.semAnt,a.sem)+mes(a.mesReal,a.ativa?a.metaMes:0)+"</tr>";
     });
   });
-  h+="<tr class='tot clic' data-tot='1'><td class='l'>Total</td><td>"+fHa(TOT.meta)+"</td><td>"+fHa(TOT.real)+"</td><td>"+barCel(TOT.pct)+"</td>"+vazio+
-    "<td>"+spanSt(TOT.ef)+"</td><td>"+fHa(TOT.ant)+"</td><td>"+(TOT.ant?fVar(TOT.real/TOT.ant-1):"–")+"</td>"+
-    "<td>"+spanMes(TOT.metaMes?TOT.mesReal/TOT.metaMes:null)+"</td></tr></tbody></table>";
+  h+="<tr class='tot clic' data-tot='1'><td class='l'>Total</td>"+c(fHa(TOT.meta),1)+c(fHa(TOT.real))+c(barCel(TOT.pct))+
+    vazio+c(spanSt(TOT.ef))+ant(TOT.ant,TOT.real)+mes(TOT.mesReal,TOT.metaMes)+"</tr></tbody></table>";
   var tb=document.getElementById("rs-tabela"); tb.innerHTML=h; ajustaTabela(tb);
   liga(tb,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
   liga(tb,"tr[data-f]",function(tr){ detalheOperacao(frenteDe(tr.getAttribute("data-f"))); });
