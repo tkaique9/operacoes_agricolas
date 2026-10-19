@@ -40,19 +40,25 @@ domingo (ou outro dia depois do DIA REF) que teve produção. Precisa de
 | Módulo | # | Página | O que mostra |
 |---|---|---|---|
 | — | — | Capa | Realizado, % da meta, eficiência e % da meta do mês; realizado acumulado da semana × meta acumulada e semana anterior |
-| **Semana** | 1 | Resumo da semana | Meta, realizado, % da meta, semana anterior e variação, por operação (clique leva à página dela) e atividade, com o total |
-| | 2 | Eficiência | Por operação e atividade: unidades planejadas e em campo, dias com operação, hectares por unidade por dia × meta e % da meta |
-| | 3 | Mês e histórico | O mês até a data × meta do mês, com o ritmo esperado, e os últimos seis meses |
-| **Por operação** | 4–7 | Uma página por operação | Manual e semi-mecanizada, Uniport, Aérea e monitoramento e Adubação com cocho: gráfico do realizado por dia × meta do dia, empilhado por atividade, e a tabela das atividades dia a dia, com a semana e a % da meta |
-| **Programas da safra** | 8 | Andamento dos programas | Realizado e saldo de pré-emergente (soca e área de queima), 3ª molécula, 1ª e 2ª catação e adubação (localizada e cocho) |
-| | 9 | Saldo por bloco | Mapa de calor bloco × programa, em hectares a realizar |
-| **Atenção** | 10 | Pontos de atenção | Só o que pede ação: abaixo de 50% da meta, eficiência abaixo de 50%, programas abaixo de 50%, 1ª catação com mais de 20 dias e o que conferir na planilha (cartão sem item não aparece) |
+| **Semana** | 1 | Semana por operação | Uma tabela por operação e atividade: meta, realizado, % da meta, semana anterior e variação, eficiência (% da meta por unidade) e o mês (% da meta, com a cor pelo ritmo esperado). Clicar na operação (›) abre o **modal da operação**; clicar no Total abre o mesmo modal para todas; clicar na atividade abre o dia a dia dela |
+| **Programas da safra** | 2 | Andamento dos programas | Realizado e saldo de pré-emergente (soca e área de queima), 3ª molécula, 1ª e 2ª catação e adubação (localizada e cocho) |
+| | 3 | Saldo por bloco | Mapa de calor bloco × programa, em hectares a realizar |
+| **Atenção** | 4 | Pontos de atenção | Só o que pede ação: abaixo de 50% da meta, eficiência abaixo de 50%, programas abaixo de 50%, 1ª catação com mais de 20 dias e o que conferir na planilha (cartão sem item não aparece) |
 
-Cada número tem um lugar só: o total da operação fica na última linha da tabela dela (o
-total de cada dia, em cima das barras do gráfico), a eficiência só na página Eficiência e a
-data da planilha só na capa. As páginas **por operação** são montadas pelo script a partir
-das frentes que existem na aba `Semanal-Acumulado` (`montaPaginasFrente`): uma frente nova
-ganha página sozinha.
+O **modal da operação** tem três abas:
+
+- **Dia a dia** — gráfico do realizado por dia × meta do dia, empilhado por atividade (no de
+  todas, por operação), e a tabela dia a dia com a semana e a % da meta. Clicar numa barra
+  abre as atividades daquele dia;
+- **Eficiência** — unidades planejadas e em campo, dias com operação, hectares por unidade
+  por dia × meta e % da meta;
+- **Mês e histórico** — os cinco meses anteriores, o mês até a data, a meta do mês e a % da
+  meta, com o traço no ritmo esperado.
+
+Cada número tem um lugar só: na página, o resumo da semana, da eficiência e do mês; no modal,
+o detalhe da operação (o total de cada dia em cima das barras e o da semana na última linha
+da tabela); a data da planilha só na capa. Uma frente nova da aba `Semanal-Acumulado` entra
+sozinha na tabela e ganha o seu modal.
 Toda tabela rola dentro do próprio cartão, então nada passa da altura da tela, seja a TV ou
 o navegador com a barra do claude.ai em cima.
 
@@ -61,8 +67,8 @@ do número (dia a dia da atividade, atividades da frente, blocos do programa…)
 
 ### Até fazenda e talhão (só da semana)
 
-Na página de cada operação, o painel desce em níveis, com **‹ Voltar** entre eles:
-operação (linha "Total da operação") ou atividade → **fazendas da semana** (talhões, área,
+No modal de cada operação (aba Dia a dia), o painel desce em níveis, com **‹ Voltar** entre
+eles: operação (linha "Total") ou atividade → **fazendas da semana** (talhões, área,
 aplicado, dias) → **talhões da fazenda** (dia, talhão, área, aplicado, operação, OS, corte,
 produto e dose real × recomendada). A etiqueta "N faz. · N talh." marca as linhas que têm
 esse detalhe. Entram só fazendas e talhões trabalhados nos dias da semana, vindos de:
