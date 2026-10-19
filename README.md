@@ -40,10 +40,11 @@ domingo (ou outro dia depois do DIA REF) que teve produção. Precisa de
 | Módulo | # | Página | O que mostra |
 |---|---|---|---|
 | — | — | Capa | Realizado, % da meta, eficiência e % da meta do mês; realizado acumulado da semana × meta acumulada e semana anterior |
-| **Semana** | 1 | Semana por operação | Uma tabela por operação e atividade: meta, realizado, % da meta, semana anterior e variação, eficiência (% da meta por unidade) e o mês (% da meta, com a cor pelo ritmo esperado). Clicar na operação (›) abre o **modal da operação**; clicar no Total abre o mesmo modal para todas; clicar na atividade abre o dia a dia dela |
-| **Programas da safra** | 2 | Andamento dos programas | Realizado e saldo de pré-emergente (soca e área de queima), 3ª molécula, 1ª e 2ª catação e adubação (localizada e cocho) |
-| | 3 | Saldo por bloco | Mapa de calor bloco × programa, em hectares a realizar |
-| **Atenção** | 4 | Pontos de atenção | Só o que pede ação: abaixo de 50% da meta, eficiência abaixo de 50%, programas abaixo de 50%, 1ª catação com mais de 20 dias e o que conferir na planilha (cartão sem item não aparece) |
+| **Semana** | 1 | Resumo gráfico | Para a diretoria: um painel por operação (grade 2 × 2) com a % da meta da semana, realizado × meta, a semana anterior (▲/▼), a eficiência, o mês × ritmo e o gráfico do realizado por dia × meta do dia, empilhado por atividade. Clicar no painel abre o **modal da operação**; clicar numa barra, as atividades do dia |
+| | 2 | Semana por operação | Uma tabela por operação e atividade: meta, realizado, % da meta, semana anterior e variação, eficiência (% da meta por unidade) e o mês (% da meta, com a cor pelo ritmo esperado). Clicar na operação (›) abre o **modal da operação**; clicar no Total abre o mesmo modal para todas; clicar na atividade abre o dia a dia dela |
+| **Programas da safra** | 3 | Andamento dos programas | Realizado e saldo de pré-emergente (soca e área de queima), 3ª molécula, 1ª e 2ª catação e adubação (localizada e cocho) |
+| | 4 | Saldo por bloco | Mapa de calor bloco × programa, em hectares a realizar |
+| **Atenção** | 5 | Pontos de atenção | Só o que pede ação: abaixo de 50% da meta, eficiência abaixo de 50%, programas abaixo de 50%, 1ª catação com mais de 20 dias e o que conferir na planilha (cartão sem item não aparece) |
 
 O **modal da operação** tem três abas:
 

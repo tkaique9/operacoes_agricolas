@@ -428,6 +428,29 @@ table.hm tr.tot td{background:#FFF3D0;font-weight:700;color:var(--navy);border-t
 .at-card li b{flex:none;font-variant-numeric:tabular-nums;color:var(--navy)}
 .at-card p{margin:0;font-size:13px;color:var(--mut);line-height:1.45}
 
+/* resumo gráfico: um painel por operação, em grade 2 × 2 */
+.gr-grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:12px}
+.gr-card{min-width:0;min-height:0;display:flex;flex-direction:column;background:#fff;color:var(--ink);border-radius:4px;
+  padding:10px 14px 8px;cursor:pointer;box-shadow:inset 0 3px 0 var(--fr),0 18px 44px -12px rgba(0,0,0,.5)}
+.gr-card:hover,.gr-card:focus-visible{outline:2px solid var(--accent-line);outline-offset:0}
+.gr-topo{display:flex;align-items:baseline;gap:12px;min-width:0}
+.gr-nome{font-size:14px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gr-nome::after{content:" \203A";color:var(--gold)}
+.gr-pct{margin-left:auto;font-family:var(--f-display);font-size:30px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.gr-real{font-size:13px;font-weight:600;color:var(--mut);white-space:nowrap}
+.gr-ind{display:flex;flex-wrap:wrap;gap:2px 18px;margin-top:4px;font-size:12px;color:var(--mut)}
+.gr-ind b{font-weight:700;font-variant-numeric:tabular-nums}
+.gr-graf{flex:1 1 auto;min-height:0;margin-top:2px}
+.gr-graf svg{display:block;width:100%;height:100%}
+.gr-leg{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:11px;color:var(--mut)}
+.gr-leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.gr-leg i.gr-meta{width:18px;height:0;border-radius:0;border-top:2px dashed var(--gold);vertical-align:3px}
+@media(max-height:780px){ .gr-pct{font-size:24px} .gr-ind{font-size:11px} .gr-leg{font-size:10px} }
+@media(min-width:1600px) and (min-height:860px){
+  .gr-nome{font-size:17px} .gr-pct{font-size:42px} .gr-real{font-size:16px} .gr-ind{font-size:15px} .gr-leg{font-size:13px}
+}
+@media(max-width:760px){ .gr-grid{grid-template-columns:minmax(0,1fr);grid-auto-rows:auto} .gr-graf{flex:none;height:240px} }
+
 /* página da Semana: a seta marca as linhas que abrem o modal da operação */
 table.tb tr.fr.clic td.l::after,table.tb tr.tot.clic td.l::after{content:" \203A";color:var(--gold);font-weight:700}
 
@@ -723,6 +746,11 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 .slide-dark.active .s-card{animation:tema-sobe .8s var(--ease) .42s backwards}
 .slide-dark.active .s-card > svg{animation:tema-varre 1.05s var(--ease) .66s backwards}
 .slide-dark.active .s-insight{animation:tema-sobe .7s var(--ease) .78s backwards}
+.slide-dark.active .gr-card{animation:tema-sobe .7s var(--ease) backwards}
+.slide-dark.active .gr-card:nth-child(1){animation-delay:.30s}
+.slide-dark.active .gr-card:nth-child(2){animation-delay:.38s}
+.slide-dark.active .gr-card:nth-child(3){animation-delay:.46s}
+.slide-dark.active .gr-card:nth-child(n+4){animation-delay:.54s}
 
 /* janela de detalhe e lista de seleção abrem em fade */
 .mf:not([hidden]) .mf-fundo{animation:tema-surge .35s ease backwards}
@@ -745,6 +773,7 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <!-- os números das páginas (<b>) são preenchidos pelo script, na ordem do deck -->
 <nav class="toc">
 <a href="#capa">Capa</a>
+<a href="#graficos"><b></b> Resumo gráfico</a>
 <a href="#resumo"><b></b> Semana por operação</a>
 <a href="#programas"><b></b> Andamento dos programas</a>
 <a href="#blocos"><b></b> Saldo por bloco</a>
@@ -792,6 +821,19 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 </div>
 </div>
 
+</article>
+
+<!-- ================= RESUMO GRÁFICO =================
+     um painel por operação: a semana × meta, a semana anterior, a eficiência, o mês e o
+     realizado por dia × meta do dia. Clicar no painel abre o modal da operação -->
+<article class="slide slide-dark" id="graficos" data-title="Resumo gráfico">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Semana</div>
+<h2 class="s-title">Resumo gráfico por operação</h2>
+</div>
+</div>
+<div class="gr-grid" id="gr-grid"></div>
 </article>
 
 <!-- ================= SEMANA (uma página só) =================
@@ -1169,7 +1211,8 @@ function cabe(s,maxW,fs){ var m=Math.floor(maxW/(fs*0.56)); return s.length<=m ?
 function linhaClicavel(svg,x,y,w,h,fn,titulo){
   var r=E.add(svg,"rect",{x:x,y:y,width:w,height:h,"class":"hit"});
   if(titulo) E.add(r,"title",{},titulo);
-  r.addEventListener("click",fn);
+  // o clique fica no gráfico: não chega ao painel em volta (que abre outro detalhe)
+  r.addEventListener("click",function(e){ e.stopPropagation(); fn(e); });
   return r;
 }
 function poe(id,texto){
@@ -1454,6 +1497,30 @@ function paginaSemana(){
   liga(tb,"tr[data-tot]",function(){ detalheOperacao(null); });
 }
 
+/* ---------- resumo gráfico: um painel por operação, para a diretoria ---------- */
+function paginaGraficos(){
+  var box=document.getElementById("gr-grid");
+  box.innerHTML=FRENTES.map(function(f){
+    var va=f.ant?f.real/f.ant-1:null, pm=f.metaMes?f.mesReal/f.metaMes:null;
+    return "<div class='gr-card' role='button' tabindex='0' style='--fr:"+f.cor+"' data-f='"+f.id+"' title='"+E.esc(f.nome)+": dia a dia, eficiência e mês'>"+
+      "<div class='gr-topo'><span class='gr-nome'>"+E.esc(f.nome)+"</span><span class='gr-pct st-"+status(f.pct)+"'>"+fPct(f.pct)+"</span>"+
+        "<span class='gr-real'>"+E.fmtInt(f.real)+" de "+E.fmtInt(f.meta)+" ha</span></div>"+
+      "<div class='gr-ind'>"+
+        "<span>Semana anterior <b class='"+(va==null?"st-sem":va>=0?"st-ok":"st-baixo")+"'>"+(va==null?"–":(va>=0?"▲ ":"▼ ")+E.fmtDec(Math.abs(va)*100,0)+"%")+"</b></span>"+
+        "<span>Eficiência <b class='st-"+status(f.ef)+"'>"+fPct(f.ef)+"</b></span>"+
+        "<span>"+nomeMesLongo(MES_REF)+" <b class='st-"+(pm==null?"sem":status(pm/RITMO))+"'>"+fPct(pm)+"</b> da meta · ritmo "+fPct(RITMO)+"</span></div>"+
+      "<div class='gr-graf'><svg role='img' aria-label='Realizado por dia contra a meta do dia, "+E.esc(f.nome)+"'></svg></div>"+
+      "<div class='gr-leg'>"+f.ativas.map(function(a){ return "<span><i style='background:"+a.cor+"'></i>"+E.esc(a.nome)+"</span>"; }).join("")+
+        "<span><i class='gr-meta'></i>Meta do dia: "+E.fmtInt(f.metaDia)+" ha</span></div></div>";
+  }).join("");
+  Array.prototype.forEach.call(box.querySelectorAll(".gr-card"),function(card){
+    var f=frenteDe(card.getAttribute("data-f")), svg=card.querySelector("svg"), r=svg.getBoundingClientRect();
+    barrasDia(svg,Math.max(estreito()?320:240,Math.round(r.width)),Math.max(150,Math.round(r.height)),grupo(f),{semRotuloMeta:true});
+    card.addEventListener("click",function(){ detalheOperacao(f); });
+    card.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); detalheOperacao(f); } });
+  });
+}
+
 /* ---------- modal da operação: dia a dia, eficiência e mês ---------- */
 // o que o modal mostra de uma operação (f) ou de todas (f nulo): as linhas são as
 // atividades da operação ou as próprias operações
@@ -1466,16 +1533,20 @@ function grupo(f){
             metaSemana:fr.meta, pct:fr.pct, frente:fr, locais:[]}; })};
 }
 // realizado por dia × meta do dia, empilhado por atividade (ou por operação)
-function barrasDia(svg,W,H,g){
+// o.semRotuloMeta: a meta do dia vai na legenda de fora (resumo gráfico), não em cima da linha
+function barrasDia(svg,W,H,g,o){
+  o=o||{};
   E.limpa(svg); svg.setAttribute("viewBox","0 0 "+W+" "+H);
   var ks=diasVisiveis(g.porDia);
   var padL=fz(50), padR=fz(14), slot=(W-padL-padR)/ks.length, padT=fz(18), padB=fz(26), plotH=H-padT-padB, base=padT+plotH;
   var max=E.niceAxis(Math.max.apply(null,g.porDia.concat([g.metaDia,1]))*1.15,4);
   var y=eixo(svg,{max:max,min:0,x0:padL,x1:W-padR,yTop:padT,yBot:base,fmt:function(v){ return E.fmtInt(v); }});
   var bw=Math.min(slot*0.55,fz(110));
+  // painel estreito (resumo gráfico): só o dia da semana e o total, sem a % em cima da barra
+  var compacto=slot<fz(70);
   ks.forEach(function(k,i){
     var d=DIAS[k], cx=padL+slot*i+slot/2, x=cx-bw/2, acc=0, tot=g.porDia[k];
-    E.txt(svg,cx,base+fz(16),diaRot(d),{"text-anchor":"middle","font-size":fz(12),"font-weight":"700",fill:E.NAVY});
+    E.txt(svg,cx,base+fz(16),compacto?diaSem(d):diaRot(d),{"text-anchor":"middle","font-size":fz(12),"font-weight":"700",fill:E.NAVY});
     var vis=g.itens.filter(function(a){ return a.dias[k]>0; }), ult=vis[vis.length-1];
     g.itens.forEach(function(a){
       var v=a.dias[k]; if(!(v>0)) return;
@@ -1484,14 +1555,16 @@ function barrasDia(svg,W,H,g){
       acc+=v;
     });
     var p=g.metaDia&&temMeta(d)?tot/g.metaDia:null, st=status(p);
-    var t=E.txt(svg,cx,y(tot)-fz(7),tot?E.fmtInt(tot):"0",{"text-anchor":"middle","font-size":fz(13.5),"font-weight":"700",fill:tot?E.NAVY:E.MUT});
-    if(p!=null && tot) E.add(t,"tspan",{"font-size":fz(11),fill:st==="medio"?"#A6620A":COR_ST[st]}," "+fPct(p));
-    linhaClicavel(svg,cx-slot/2+2,padT,slot-4,H-padT-2,function(){ entra(function(){ detalheDia(g.f,k); }); },diaRot(d)+": "+fHa2(tot)+" ha");
+    var t=E.txt(svg,cx,y(tot)-fz(7),tot?E.fmtInt(tot):"0",{"text-anchor":"middle","font-size":fz(compacto?12:13.5),"font-weight":"700",
+      fill:compacto&&p!=null&&tot ? (st==="medio"?"#A6620A":COR_ST[st]) : tot?E.NAVY:E.MUT});
+    if(p!=null && tot && !compacto) E.add(t,"tspan",{"font-size":fz(11),fill:st==="medio"?"#A6620A":COR_ST[st]}," "+fPct(p));
+    linhaClicavel(svg,cx-slot/2+2,padT,slot-4,H-padT-2,function(){ entra(function(){ detalheDia(g.f,k); }); },
+      diaRot(d)+": "+fHa2(tot)+" ha"+(p!=null?" ("+fPct(p)+" da meta do dia)":""));
   });
   if(g.metaDia>0){
     var ym=y(g.metaDia);
     E.add(svg,"line",{x1:padL,x2:W-padR,y1:ym,y2:ym,stroke:E.GOLD,"stroke-width":"2","stroke-dasharray":"7,5","pointer-events":"none"});
-    E.txt(svg,padL+6,ym-fz(5),"meta "+E.fmtInt(g.metaDia)+" ha/dia",{"font-size":fz(11),"font-weight":"700",fill:"#8A6D14","pointer-events":"none"});
+    if(!o.semRotuloMeta) E.txt(svg,padL+6,ym-fz(5),"meta "+E.fmtInt(g.metaDia)+" ha/dia",{"font-size":fz(11),"font-weight":"700",fill:"#8A6D14","pointer-events":"none"});
   }
 }
 function marcaCor(cor){ return "<i style='display:inline-block;width:.75em;height:.75em;border-radius:2px;margin-right:.5em;background:"+(cor||"#B8C0D0")+"'></i>"; }
@@ -1718,6 +1791,7 @@ function redesenhaTudo(){
 }
 window.replay = window.replay || {};
 window.replay.capa = desenhaCapa;
+window.replay.graficos = paginaGraficos;
 window.replay.resumo = paginaSemana;
 window.replay.programas = graficoProgramas;
 window.replay.blocos = tabelaBlocos;
@@ -1739,7 +1813,7 @@ window.addEventListener("resize",function(){ clearTimeout(tmr); tmr=setTimeout(r
 <script>(function(){
 "use strict";
 var MODULOS = [
-  {id:"semana", nome:"Semana", pags:["resumo"]},
+  {id:"semana", nome:"Semana", pags:["graficos","resumo"]},
   {id:"programas", nome:"Programas da safra", pags:["programas","blocos"]},
   {id:"atencao", nome:"Atenção", pags:["atencao"]}
 ];
