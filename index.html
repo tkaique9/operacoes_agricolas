@@ -444,10 +444,18 @@ table.hm tr.tot td{background:#FFF3D0;font-weight:700;color:var(--navy);border-t
 .gr-graf svg{display:block;width:100%;height:100%}
 .gr-leg{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:11px;color:var(--mut)}
 .gr-leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
-.gr-leg i.gr-meta{width:18px;height:0;border-radius:0;border-top:2px dashed var(--gold);vertical-align:3px}
+.gr-leg b{font-weight:700;font-variant-numeric:tabular-nums}
+/* barra do topo do painel: realizado × meta da semana (traço = meta, marca cinza = semana anterior) */
+.gr-bar{position:relative;height:10px;border-radius:5px;background:#EEF0F5;margin:7px 0 3px}
+.gr-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:5px}
+.gr-bar b{position:absolute;top:-4px;bottom:-4px;border-left:2px dashed var(--navy);opacity:.6}
+.gr-bar s{position:absolute;top:-3px;bottom:-3px;width:4px;margin-left:-2px;border-radius:2px;background:#7D8BB0}
+/* unidade ao lado do número na tabela (rendimento e meta medidos por pessoa) */
+table.tb td u.un{text-decoration:none;color:var(--mut);font-weight:400;font-size:.78em;margin-left:3px}
 @media(max-height:780px){ .gr-pct{font-size:24px} .gr-ind{font-size:11px} .gr-leg{font-size:10px} }
 @media(min-width:1600px) and (min-height:860px){
-  .gr-nome{font-size:17px} .gr-pct{font-size:42px} .gr-real{font-size:16px} .gr-ind{font-size:15px} .gr-leg{font-size:13px}
+  .gr-nome{font-size:17px} .gr-pct{font-size:42px} .gr-real{font-size:16px} .gr-ind{font-size:15px} .gr-leg{font-size:14px}
+  .gr-bar{height:14px;border-radius:7px} .gr-bar i{border-radius:7px}
 }
 @media(max-width:760px){ .gr-grid{grid-template-columns:minmax(0,1fr);grid-auto-rows:auto} .gr-graf{flex:none;height:240px} }
 
@@ -773,8 +781,8 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <!-- os números das páginas (<b>) são preenchidos pelo script, na ordem do deck -->
 <nav class="toc">
 <a href="#capa">Capa</a>
-<a href="#graficos"><b></b> Resumo gráfico</a>
 <a href="#resumo"><b></b> Semana por operação</a>
+<a href="#graficos"><b></b> Resumo gráfico</a>
 <a href="#programas"><b></b> Andamento dos programas</a>
 <a href="#blocos"><b></b> Saldo por bloco</a>
 <a href="#atencao"><b></b> Pontos de atenção</a>
@@ -823,22 +831,10 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 
 </article>
 
-<!-- ================= RESUMO GRÁFICO =================
-     um painel por operação: a semana × meta, a semana anterior, a eficiência, o mês e o
-     realizado por dia × meta do dia. Clicar no painel abre o modal da operação -->
-<article class="slide slide-dark" id="graficos" data-title="Resumo gráfico">
-<div class="s-head">
-<div>
-<div class="s-eyebrow"><span class="js-num">–</span> &middot; Semana</div>
-<h2 class="s-title">Resumo gráfico por operação</h2>
-</div>
-</div>
-<div class="gr-grid" id="gr-grid"></div>
-</article>
-
-<!-- ================= SEMANA (uma página só) =================
-     a tabela por operação e atividade; clicar na operação abre o modal dela (dia a
-     dia, eficiência, mês e histórico) e clicar no Total abre o de todas -->
+<!-- ================= SEMANA: TABELA =================
+     a tabela por operação e atividade (semana × meta, rendimento × meta por equipamento,
+     eficiência, semana anterior e mês); clicar na operação abre o modal dela (dia a dia,
+     eficiência, mês e histórico) e clicar no Total abre o de todas -->
 <article class="slide slide-dark" id="resumo" data-title="Semana por operação">
 <div class="s-head">
 <div>
@@ -847,6 +843,21 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 </div>
 </div>
 <div class="s-card tb-card" id="rs-card"><div class="tb-rolo" id="rs-tabela"></div></div>
+</article>
+
+<!-- ================= SEMANA: RESUMO GRÁFICO =================
+     um painel por operação: a semana × meta (em número e na barra do topo), a semana
+     anterior, a eficiência, o mês e o realizado por dia × meta do dia, com a linha da
+     semana anterior. Clicar no painel abre o modal da operação -->
+<article class="slide slide-dark" id="graficos" data-title="Resumo gráfico">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Semana</div>
+<h2 class="s-title">Resumo gráfico por operação</h2>
+</div>
+</div>
+<div class="s-legend" id="gr-legend"></div>
+<div class="gr-grid" id="gr-grid"></div>
 </article>
 
 <!-- ================= ANDAMENTO DOS PROGRAMAS ================= -->
@@ -1474,22 +1485,35 @@ function barMes(p){
     "<b style='left:"+(Math.min(RITMO,1)*100).toFixed(1)+"%'></b></span><em class='st-"+st+"'>"+fPct(p)+"</em></span>";
 }
 function frenteDe(id){ return FRENTES.filter(function(f){ return f.id===id; })[0]; }
+// rendimento e meta por equipamento, por dia operado (a.ef); "pess." marca as atividades
+// medidas por pessoa apontada. A diferença é rendimento − meta
+function celUnid(v,e){ return v==null ? "–" : fEf(v)+(e.temP?"<u class='un'>pess.</u>":""); }
+function celDif(e){
+  if(e.ef==null || !(e.meta>0)) return "–";
+  var d=e.ef-e.meta;
+  return "<span class='"+(d>=0?"st-ok":"st-baixo")+"'>"+(d>=0?"+":"−")+fEf(Math.abs(d))+"</span>";
+}
 function paginaSemana(){
+  // a semana: realizado × meta, depois o realizado quebrado em rendimento por equipamento
+  // × meta (e a diferença), e então eficiência, semana anterior e mês
+  var vazio="<td></td><td></td><td></td>";
   var h="<table class='tb'><thead><tr><th class='l'>Operação / atividade</th><th>Meta semana<u>ha</u></th><th>Realizado<u>ha</u></th>"+
-    "<th>% da meta</th><th>Semana anterior<u>ha</u></th><th>Variação</th><th>Eficiência<u>% da meta por unidade</u></th>"+
+    "<th>% da meta</th><th>Meta por equip.<u>ha/dia</u></th><th>Rendimento por equip.<u>ha/dia</u></th><th>Diferença<u>ha/dia</u></th>"+
+    "<th>Eficiência<u>rendimento ÷ meta</u></th><th>Semana anterior<u>ha</u></th><th>Variação</th>"+
     "<th>"+nomeMesLongo(MES_REF)+"<u>% da meta · ritmo "+fPct(RITMO)+"</u></th></tr></thead><tbody>";
   FRENTES.forEach(function(f){
     h+="<tr class='fr clic' style='--fr:"+f.cor+"' data-f='"+f.id+"'><td class='l'>"+E.esc(f.nome)+"</td><td>"+fHa(f.meta)+"</td><td>"+fHa(f.real)+"</td>"+
-      "<td>"+barCel(f.pct)+"</td><td>"+(f.ant?fHa(f.ant):"–")+"</td><td>"+(f.ant?fVar(f.real/f.ant-1):"–")+"</td>"+
-      "<td>"+spanSt(f.ef)+"</td><td>"+spanMes(f.metaMes?f.mesReal/f.metaMes:null)+"</td></tr>";
-    f.ativas.forEach(function(a){
+      "<td>"+barCel(f.pct)+"</td>"+vazio+"<td>"+spanSt(f.ef)+"</td><td>"+(f.ant?fHa(f.ant):"–")+"</td><td>"+(f.ant?fVar(f.real/f.ant-1):"–")+"</td>"+
+      "<td>"+spanMes(f.metaMes?f.mesReal/f.metaMes:null)+"</td></tr>";
+    f.ativas.forEach(function(a){ var e=a.ef;
       h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"</td><td>"+(a.metaSemana?fHa(a.metaSemana):"–")+"</td><td>"+fHa(a.sem)+"</td>"+
-        "<td>"+barCel(a.pct)+"</td><td>"+(a.semAnt==null?"–":fHa(a.semAnt))+"</td><td>"+(a.semAnt?fVar(a.sem/a.semAnt-1):"–")+"</td>"+
-        "<td>"+spanSt(a.ef.pct)+"</td><td>"+spanMes(a.metaMes?a.mesReal/a.metaMes:null)+"</td></tr>";
+        "<td>"+barCel(a.pct)+"</td><td>"+celUnid(e.meta,e)+"</td><td>"+celUnid(e.ef,e)+"</td><td>"+celDif(e)+"</td>"+
+        "<td>"+spanSt(e.pct)+"</td><td>"+(a.semAnt==null?"–":fHa(a.semAnt))+"</td><td>"+(a.semAnt?fVar(a.sem/a.semAnt-1):"–")+"</td>"+
+        "<td>"+spanMes(a.metaMes?a.mesReal/a.metaMes:null)+"</td></tr>";
     });
   });
-  h+="<tr class='tot clic' data-tot='1'><td class='l'>Total</td><td>"+fHa(TOT.meta)+"</td><td>"+fHa(TOT.real)+"</td><td>"+barCel(TOT.pct)+"</td>"+
-    "<td>"+fHa(TOT.ant)+"</td><td>"+(TOT.ant?fVar(TOT.real/TOT.ant-1):"–")+"</td><td>"+spanSt(TOT.ef)+"</td>"+
+  h+="<tr class='tot clic' data-tot='1'><td class='l'>Total</td><td>"+fHa(TOT.meta)+"</td><td>"+fHa(TOT.real)+"</td><td>"+barCel(TOT.pct)+"</td>"+vazio+
+    "<td>"+spanSt(TOT.ef)+"</td><td>"+fHa(TOT.ant)+"</td><td>"+(TOT.ant?fVar(TOT.real/TOT.ant-1):"–")+"</td>"+
     "<td>"+spanMes(TOT.metaMes?TOT.mesReal/TOT.metaMes:null)+"</td></tr></tbody></table>";
   var tb=document.getElementById("rs-tabela"); tb.innerHTML=h; ajustaTabela(tb);
   liga(tb,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
@@ -1499,23 +1523,35 @@ function paginaSemana(){
 
 /* ---------- resumo gráfico: um painel por operação, para a diretoria ---------- */
 function paginaGraficos(){
+  E.legenda(document.getElementById("gr-legend"),[
+    {cor:E.GOLD,nome:"Meta do dia",tipo:"linha",tracejada:true},
+    {cor:"#7D8BB0",nome:"Semana anterior",tipo:"linha"},
+    {cor:"#EEF0F5",borda:"#B7BECC",nome:"Barra do topo:",obs:"realizado × meta da semana (traço = meta, marca cinza = semana anterior)"}
+  ]);
+  // posição na barra do topo: escala até 150% da meta, com a meta em 2/3
+  function pos(p){ return (Math.min(Math.max(p||0,0),1.5)/1.5*100).toFixed(1)+"%"; }
   var box=document.getElementById("gr-grid");
   box.innerHTML=FRENTES.map(function(f){
     var va=f.ant?f.real/f.ant-1:null, pm=f.metaMes?f.mesReal/f.metaMes:null;
+    var barra="<div class='gr-bar'><i style='width:"+pos(f.pct)+";background:"+COR_ST[status(f.pct)]+"'></i><b style='left:"+pos(1)+"'></b>"+
+      (f.ant&&f.meta?"<s style='left:"+pos(f.ant/f.meta)+"' title='Semana anterior: "+E.fmtInt(f.ant)+" ha'></s>":"")+"</div>";
     return "<div class='gr-card' role='button' tabindex='0' style='--fr:"+f.cor+"' data-f='"+f.id+"' title='"+E.esc(f.nome)+": dia a dia, eficiência e mês'>"+
       "<div class='gr-topo'><span class='gr-nome'>"+E.esc(f.nome)+"</span><span class='gr-pct st-"+status(f.pct)+"'>"+fPct(f.pct)+"</span>"+
-        "<span class='gr-real'>"+E.fmtInt(f.real)+" de "+E.fmtInt(f.meta)+" ha</span></div>"+
+        "<span class='gr-real'>"+E.fmtInt(f.real)+" de "+E.fmtInt(f.meta)+" ha</span></div>"+barra+
       "<div class='gr-ind'>"+
         "<span>Semana anterior <b class='"+(va==null?"st-sem":va>=0?"st-ok":"st-baixo")+"'>"+(va==null?"–":(va>=0?"▲ ":"▼ ")+E.fmtDec(Math.abs(va)*100,0)+"%")+"</b></span>"+
         "<span>Eficiência <b class='st-"+status(f.ef)+"'>"+fPct(f.ef)+"</b></span>"+
-        "<span>"+nomeMesLongo(MES_REF)+" <b class='st-"+(pm==null?"sem":status(pm/RITMO))+"'>"+fPct(pm)+"</b> da meta · ritmo "+fPct(RITMO)+"</span></div>"+
+        "<span>"+nomeMesLongo(MES_REF)+" <b class='st-"+(pm==null?"sem":status(pm/RITMO))+"'>"+fPct(pm)+"</b> da meta · ritmo "+fPct(RITMO)+"</span>"+
+        "<span>Meta do dia <b>"+E.fmtInt(f.metaDia)+" ha</b></span></div>"+
       "<div class='gr-graf'><svg role='img' aria-label='Realizado por dia contra a meta do dia, "+E.esc(f.nome)+"'></svg></div>"+
-      "<div class='gr-leg'>"+f.ativas.map(function(a){ return "<span><i style='background:"+a.cor+"'></i>"+E.esc(a.nome)+"</span>"; }).join("")+
-        "<span><i class='gr-meta'></i>Meta do dia: "+E.fmtInt(f.metaDia)+" ha</span></div></div>";
+      // a legenda já diz como cada atividade fechou a semana
+      "<div class='gr-leg'>"+f.ativas.map(function(a){
+        return "<span><i style='background:"+a.cor+"'></i>"+E.esc(a.nome)+(a.pct!=null?" <b class='st-"+status(a.pct)+"'>"+fPct(a.pct)+"</b>":"")+"</span>"; }).join("")+
+      "</div></div>";
   }).join("");
   Array.prototype.forEach.call(box.querySelectorAll(".gr-card"),function(card){
     var f=frenteDe(card.getAttribute("data-f")), svg=card.querySelector("svg"), r=svg.getBoundingClientRect();
-    barrasDia(svg,Math.max(estreito()?320:240,Math.round(r.width)),Math.max(150,Math.round(r.height)),grupo(f),{semRotuloMeta:true});
+    barrasDia(svg,Math.max(estreito()?320:240,Math.round(r.width)),Math.max(150,Math.round(r.height)),grupo(f),{semRotuloMeta:true,anterior:true});
     card.addEventListener("click",function(){ detalheOperacao(f); });
     card.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); detalheOperacao(f); } });
   });
@@ -1525,25 +1561,29 @@ function paginaGraficos(){
 // o que o modal mostra de uma operação (f) ou de todas (f nulo): as linhas são as
 // atividades da operação ou as próprias operações
 function grupo(f){
+  // semana anterior dia a dia: antTem marca os dias que a planilha tem (sem dado, sem ponto)
+  var base=f?f.atividades:ATIV, antTem=DIAS.map(function(_,k){ return base.some(function(a){ return a.ant[k]!=null; }); });
   if(f) return {f:f, nome:f.nome, itens:f.ativas, porDia:f.porDia, metaDia:f.metaDia, real:f.real, meta:f.meta, pct:f.pct,
-                ant:f.ant, ef:f.ef, mesReal:f.mesReal, metaMes:f.metaMes, locais:f.locais};
+                ant:f.ant, antDia:f.antDia, antTem:antTem, ef:f.ef, mesReal:f.mesReal, metaMes:f.metaMes, locais:f.locais};
   return {f:null, nome:"Todas as operações", porDia:TOT.porDia, metaDia:TOT.metaDia, real:TOT.real, meta:TOT.meta, pct:TOT.pct,
-          ant:TOT.ant, ef:TOT.ef, mesReal:TOT.mesReal, metaMes:TOT.metaMes, locais:[],
+          ant:TOT.ant, antDia:TOT.antDia, antTem:antTem, ef:TOT.ef, mesReal:TOT.mesReal, metaMes:TOT.metaMes, locais:[],
           itens:FRENTES.map(function(fr){ return {nome:fr.nome, cor:fr.cor, dias:fr.porDia, metaDia:fr.metaDia, sem:fr.real,
             metaSemana:fr.meta, pct:fr.pct, frente:fr, locais:[]}; })};
 }
 // realizado por dia × meta do dia, empilhado por atividade (ou por operação)
 // o.semRotuloMeta: a meta do dia vai na legenda de fora (resumo gráfico), não em cima da linha
+// o.anterior: linha cinza com o realizado de cada dia da semana anterior
 function barrasDia(svg,W,H,g,o){
   o=o||{};
   E.limpa(svg); svg.setAttribute("viewBox","0 0 "+W+" "+H);
   var ks=diasVisiveis(g.porDia);
   var padL=fz(50), padR=fz(14), slot=(W-padL-padR)/ks.length, padT=fz(18), padB=fz(26), plotH=H-padT-padB, base=padT+plotH;
-  var max=E.niceAxis(Math.max.apply(null,g.porDia.concat([g.metaDia,1]))*1.15,4);
+  var antVis=o.anterior ? ks.filter(function(k){ return g.antTem[k]; }) : [];
+  var max=E.niceAxis(Math.max.apply(null,g.porDia.concat([g.metaDia,1],antVis.map(function(k){ return g.antDia[k]; })))*1.15,4);
   var y=eixo(svg,{max:max,min:0,x0:padL,x1:W-padR,yTop:padT,yBot:base,fmt:function(v){ return E.fmtInt(v); }});
   var bw=Math.min(slot*0.55,fz(110));
   // painel estreito (resumo gráfico): só o dia da semana e o total, sem a % em cima da barra
-  var compacto=slot<fz(70);
+  var compacto=slot<fz(70), rotulos=[];
   ks.forEach(function(k,i){
     var d=DIAS[k], cx=padL+slot*i+slot/2, x=cx-bw/2, acc=0, tot=g.porDia[k];
     E.txt(svg,cx,base+fz(16),compacto?diaSem(d):diaRot(d),{"text-anchor":"middle","font-size":fz(12),"font-weight":"700",fill:E.NAVY});
@@ -1551,13 +1591,13 @@ function barrasDia(svg,W,H,g,o){
     g.itens.forEach(function(a){
       var v=a.dias[k]; if(!(v>0)) return;
       var yT=y(acc+v), h=y(acc)-yT;
-      if(a===ult) E.add(svg,"path",{d:E.barraTopo(x,yT,bw,h,3),fill:a.cor}); else E.add(svg,"rect",{x:x,y:yT,width:bw,height:h,fill:a.cor});
+      // fio branco entre as atividades: os tons da mesma cor se separam
+      var tra={fill:a.cor,stroke:"#fff","stroke-width":1};
+      if(a===ult) E.add(svg,"path",Object.assign({d:E.barraTopo(x,yT,bw,h,3)},tra)); else E.add(svg,"rect",Object.assign({x:x,y:yT,width:bw,height:h},tra));
       acc+=v;
     });
-    var p=g.metaDia&&temMeta(d)?tot/g.metaDia:null, st=status(p);
-    var t=E.txt(svg,cx,y(tot)-fz(7),tot?E.fmtInt(tot):"0",{"text-anchor":"middle","font-size":fz(compacto?12:13.5),"font-weight":"700",
-      fill:compacto&&p!=null&&tot ? (st==="medio"?"#A6620A":COR_ST[st]) : tot?E.NAVY:E.MUT});
-    if(p!=null && tot && !compacto) E.add(t,"tspan",{"font-size":fz(11),fill:st==="medio"?"#A6620A":COR_ST[st]}," "+fPct(p));
+    var p=g.metaDia&&temMeta(d)?tot/g.metaDia:null;
+    rotulos.push({cx:cx, tot:tot, p:p});
     linhaClicavel(svg,cx-slot/2+2,padT,slot-4,H-padT-2,function(){ entra(function(){ detalheDia(g.f,k); }); },
       diaRot(d)+": "+fHa2(tot)+" ha"+(p!=null?" ("+fPct(p)+" da meta do dia)":""));
   });
@@ -1566,6 +1606,20 @@ function barrasDia(svg,W,H,g,o){
     E.add(svg,"line",{x1:padL,x2:W-padR,y1:ym,y2:ym,stroke:E.GOLD,"stroke-width":"2","stroke-dasharray":"7,5","pointer-events":"none"});
     if(!o.semRotuloMeta) E.txt(svg,padL+6,ym-fz(5),"meta "+E.fmtInt(g.metaDia)+" ha/dia",{"font-size":fz(11),"font-weight":"700",fill:"#8A6D14","pointer-events":"none"});
   }
+  if(antVis.length){
+    var pts=antVis.map(function(k){ return [padL+slot*ks.indexOf(k)+slot/2, y(g.antDia[k])]; });
+    E.add(svg,"path",{d:"M"+pts.map(function(q){ return q[0].toFixed(1)+","+q[1].toFixed(1); }).join(" L"),fill:"none",
+      stroke:"#7D8BB0","stroke-width":2,"pointer-events":"none"});
+    pts.forEach(function(q){ E.add(svg,"circle",{cx:q[0],cy:q[1],r:3.5,fill:"#fff",stroke:"#7D8BB0","stroke-width":2,"pointer-events":"none"}); });
+  }
+  // o total de cada dia vem por último, com contorno branco: fica legível por cima das linhas
+  rotulos.forEach(function(r){
+    var st=status(r.p), cor=st==="medio"?"#A6620A":COR_ST[st];
+    var t=E.txt(svg,r.cx,y(r.tot)-fz(7),r.tot?E.fmtInt(r.tot):"0",{"text-anchor":"middle","font-size":fz(compacto?12:13.5),"font-weight":"700",
+      fill:compacto&&r.p!=null&&r.tot ? cor : r.tot?E.NAVY:E.MUT, stroke:"#fff","stroke-width":fz(3.5),"stroke-linejoin":"round",
+      "paint-order":"stroke","pointer-events":"none"});
+    if(r.p!=null && r.tot && !compacto) E.add(t,"tspan",{"font-size":fz(11),fill:cor}," "+fPct(r.p));
+  });
 }
 function marcaCor(cor){ return "<i style='display:inline-block;width:.75em;height:.75em;border-radius:2px;margin-right:.5em;background:"+(cor||"#B8C0D0")+"'></i>"; }
 // dia a dia: o total de cada dia está no gráfico, em cima das barras
@@ -1813,7 +1867,7 @@ window.addEventListener("resize",function(){ clearTimeout(tmr); tmr=setTimeout(r
 <script>(function(){
 "use strict";
 var MODULOS = [
-  {id:"semana", nome:"Semana", pags:["graficos","resumo"]},
+  {id:"semana", nome:"Semana", pags:["resumo","graficos"]},
   {id:"programas", nome:"Programas da safra", pags:["programas","blocos"]},
   {id:"atencao", nome:"Atenção", pags:["atencao"]}
 ];
