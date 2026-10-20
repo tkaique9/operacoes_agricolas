@@ -15,7 +15,12 @@ apresentar, use F11. Para imprimir, os botões **Imprimir página** e **Imprimir
 relatório** da barra de baixo (ou Ctrl+P, que imprime o relatório): A4 deitado, uma
 página por folha, fundo branco, tabelas inteiras (sem rolagem; a letra diminui só se a
 tabela não couber na largura) e gráficos redesenhados no tamanho da folha. A capa não sai
-no papel. Para salvar em PDF, escolha "Salvar como PDF" na janela de impressão. Navegação: setas ←/→, barra de espaço, as bolinhas do rodapé, os
+no papel. Para salvar em PDF, escolha "Salvar como PDF" na janela de impressão.
+No papel as tabelas saem com letra de 8 pt (unidades e subtítulos com 6 pt), o resumo
+gráfico em 2 colunas e o título "Indicadores" sempre junto dos gráficos; o relatório
+inteiro dá 13 folhas. As regras de tamanho de tela (celular, tela baixa, TV) valem só na
+tela (`@media screen and ...`): o Chrome mede a folha como A4 em pé ao imprimir e, sem
+isso, aplicava as de celular no papel. Navegação: setas ←/→, barra de espaço, as bolinhas do rodapé, os
 botões ou o menu de módulos do topo. `?fundo=off` desliga as partículas do fundo.
 
 ## Atualizar a semana

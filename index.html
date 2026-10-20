@@ -673,19 +673,25 @@ html.imprimindo .s-legend,html.imprimindo .s-legend b{color:var(--ink)}
 html.imprimindo .s-card{flex:none;box-shadow:none;border:1px solid var(--line);border-radius:4px}
 html.imprimindo .tb-rolo,html.imprimindo .pg-rolo{flex:none;overflow:visible;max-height:none;height:auto}
 html.imprimindo table.tb th,html.imprimindo table.tb.sem thead{position:static}
-html.imprimindo table.tb{font-size:9.5px!important}
-html.imprimindo table.tb td{height:auto;padding:2px 5px}
+html.imprimindo table.tb{font-size:11px!important}
+html.imprimindo table.tb td{height:auto;padding:1px 4px;line-height:1.18}
+html.imprimindo table.tb td u.un{font-size:.86em}
+html.imprimindo table.tb th u{font-size:.92em}
+html.imprimindo table.tb.pg td.prop{min-width:0}
+html.imprimindo .bc{gap:4px}
+html.imprimindo .bc .trk{min-width:30px;max-width:56px;height:8px}
+html.imprimindo .bc em{min-width:30px}
 html.imprimindo table.tb td.l{min-width:0;white-space:normal}
 html.imprimindo table.tb td.d small{display:block;margin:0;font-size:.85em}
-html.imprimindo table.tb th{padding:4px 5px}
+html.imprimindo table.tb th{padding:3px 4px}
 html.imprimindo table.tb tr{break-inside:avoid;page-break-inside:avoid}
 html.imprimindo .gr-grid,html.imprimindo .gr-grid.tres{flex:none;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:300px}
 html.imprimindo .gr-card{box-shadow:none;border:1px solid var(--line);break-inside:avoid;page-break-inside:avoid}
 html.imprimindo .gr-nome{font-size:13px} html.imprimindo .gr-real{font-size:11px} html.imprimindo .gr-leg{font-size:10.5px}
 html.imprimindo .ind-card{break-inside:avoid;page-break-inside:avoid}
-html.imprimindo .ind-card{height:250px}
+html.imprimindo .ind-card{height:225px}
 html.imprimindo .pg-fim{break-inside:avoid;page-break-inside:avoid}
-html.imprimindo .pg-sep{margin-top:14px}
+html.imprimindo .pg-sep{margin:10px 0 4px}
 
 /* ---------- fundo ---------- */
 html{background:var(--tm-void)}
@@ -2138,11 +2144,14 @@ function graficoColunas(svg,W,H,o){
   var padL=fz(52), padR=fz(12), base=H-fz(temPct?62:40);
   var y=grade(svg,W,padL,padR,top,base,Math.max.apply(null,o.itens.map(somaPartes).concat([1])));
   var slot=(W-padL-padR)/o.itens.length, bw=Math.min(slot*0.56,fz(78));
+  // coluna estreita: o nome (a palavra mais longa cabe na coluna) e o valor diminuem
+  var maior=Math.max.apply(null,o.itens.map(function(it){ return Math.max.apply(null,it.rot.split(" ").map(function(w){ return w.length; })); }));
+  var fsR=Math.max(7,Math.min(fz(11.5),(slot-6)/(maior*0.58))), fsV=Math.max(7.5,Math.min(fz(12.5),(slot-4)/(5*0.62)));
   o.itens.forEach(function(it,i){
     var cx=padL+slot*(i+0.5), v=somaPartes(it);
     barra(svg,cx-bw/2,bw,y,base,it);
-    E.txt(svg,cx,y(v)-fz(7),fVal(v),{"text-anchor":"middle","font-size":fz(12.5),"font-weight":"700",fill:E.NAVY});
-    rotuloQuebrado(svg,cx,base+fz(17),it.rot,slot-6,fz(11.5));
+    E.txt(svg,cx,y(v)-fz(7),fVal(v),{"text-anchor":"middle","font-size":fsV,"font-weight":"700",fill:E.NAVY});
+    rotuloQuebrado(svg,cx,base+fz(17),it.rot,slot-6,fsR);
     if(it.pct!=null) pilulaPct(svg,cx,base+fz(48),it.pct,it.falta,corConc);
   });
 }
@@ -2158,11 +2167,11 @@ function graficoGrupos(svg,W,H,o){
   var slotG=(W-padL-padR)/o.grupos.length;
   o.grupos.forEach(function(g,gi){
     var n=g.barras.length, bw=Math.min(slotG*0.7/n,fz(46)), gap=bw*0.22, larg=n*bw+(n-1)*gap;
-    var cx=padL+slotG*(gi+0.5), x0=cx-larg/2;
+    var cx=padL+slotG*(gi+0.5), x0=cx-larg/2, fsV=Math.max(6.5,Math.min(fz(10.5),(bw+gap)/(5*0.6)));
     g.barras.forEach(function(it,k){
       var x=x0+k*(bw+gap), v=somaPartes(it);
       barra(svg,x,bw,y,base,it);
-      E.txt(svg,x+bw/2,y(v)-fz(6),fVal(v),{"text-anchor":"middle","font-size":fz(10.5),"font-weight":"700",fill:E.NAVY});
+      E.txt(svg,x+bw/2,y(v)-fz(6),fVal(v),{"text-anchor":"middle","font-size":fsV,"font-weight":"700",fill:E.NAVY});
     });
     E.txt(svg,cx,base+fz(18),g.rot,{"text-anchor":"middle","font-size":fz(12.5),"font-weight":"700",fill:"#2B2B2B"});
     if(g.pct!=null) pilulaPct(svg,cx,base+fz(42),g.pct,false,corConc);
