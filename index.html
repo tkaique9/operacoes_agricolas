@@ -501,6 +501,7 @@ table.tb.sem th{position:static}
 table.tb.sem th.grp{text-align:center;background:#0E1A3D;color:var(--gold);font-size:.74em;letter-spacing:.1em;
   text-transform:uppercase;padding:5px 8px;border-bottom:1px solid rgba(201,162,39,.55)}
 table.tb.sem th+th{border-left:1px solid rgba(255,255,255,.16)}
+table.tb.sem th:not(.l){text-align:center}
 table.tb.sem td+td{border-left:1px solid #E1E5ED}
 table.tb.sem th.gi{border-left:2px solid rgba(255,255,255,.6)}
 table.tb.sem td.gi{border-left:2px solid #8D97AE}
@@ -1558,6 +1559,10 @@ function frenteDe(id){ return FRENTES.filter(function(f){ return f.id===id; })[0
 // é rendimento − meta
 function unidRend(e){ return e.porEquip ? "ha/equip/dia" : "ha/h/dia"; }
 function celUnid(v,e){ return v==null ? "–" : fEf(v)+"<u class='un'>"+unidRend(e)+"</u>"; }
+// quantidade de equipamentos ou pessoas: a prevista (planejado da planilha) e a que de
+// fato foi a campo (média por dia operado). A planilha só aponta pessoas por dia; para
+// equipamento não há apontamento e o realizado fica em branco, em vez de repetir o plano
+function celQtd(v,e,dec){ return v==null ? "–" : (dec?E.fmtDec(v,1):E.fmtInt(v))+"<u class='un'>"+(e.porEquip?"equip.":"pess.")+"</u>"; }
 function celDif(e){
   if(e.ef==null || !(e.meta>0)) return "–";
   var d=e.ef-e.meta;
@@ -1570,12 +1575,13 @@ function paginaSemana(){
   function c(v,gi){ return "<td"+(gi?" class='gi'":"")+">"+v+"</td>"; }
   function mes(real,meta){ return c(real>0?fHa(real):"–",1)+c(meta?fHa(meta):"–")+c(spanMes(meta?real/meta:null)); }
   function ant(v,real){ return c(v?fHa(v):"–",1)+c(v?fVar(real/v-1):"–"); }
-  var vazio=c("",1)+c("")+c("");
+  var vazio=c("",1)+c("")+c("")+c("")+c("");
   var h="<table class='tb sem'><thead><tr><th class='l' rowspan='2'>Operação / atividade</th>"+
-    "<th class='grp gi' colspan='3'>Semana</th><th class='grp gi' colspan='4'>Rendimento por homem ou equipamento · por dia</th>"+
+    "<th class='grp gi' colspan='3'>Semana</th><th class='grp gi' colspan='6'>Equipamento ou homem · por dia</th>"+
     "<th class='grp gi' colspan='2'>Semana anterior</th><th class='grp gi' colspan='3'>"+nomeMesLongo(MES_REF)+" até "+dataBR(ATE)+"</th></tr>"+
     "<tr><th class='gi'>Meta<u>ha</u></th><th>Realizado<u>ha</u></th><th>% da meta</th>"+
-    "<th class='gi'>Meta</th><th>Rendimento</th><th>Diferença</th><th>Eficiência<u>rend. ÷ meta</u></th>"+
+    "<th class='gi'>Previsto<u>quantidade</u></th><th>Realizado<u>média em campo</u></th>"+
+    "<th>Meta<u>por equip./homem</u></th><th>Rendimento<u>por equip./homem</u></th><th>Diferença</th><th>Eficiência<u>rend. ÷ meta</u></th>"+
     "<th class='gi'>Realizado<u>ha</u></th><th>Variação</th>"+
     "<th class='gi'>Realizado<u>ha</u></th><th>Meta do mês<u>ha</u></th><th>% da meta<u>ritmo "+fPct(RITMO)+"</u></th></tr></thead><tbody>";
   FRENTES.forEach(function(f){
@@ -1584,7 +1590,8 @@ function paginaSemana(){
     f.ativas.forEach(function(a){ var e=a.ef;
       h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"</td>"+
         c(a.metaSemana?fHa(a.metaSemana):"–",1)+c(fHa(a.sem))+c(barCel(a.pct))+
-        c(celUnid(e.meta,e),1)+c(celUnid(e.ef,e))+c(celDif(e))+c(spanSt(e.pct))+
+        c(celQtd(e.plan,e),1)+c(e.temP?celQtd(e.uniMed,e,1):"–")+
+        c(celUnid(e.meta,e))+c(celUnid(e.ef,e))+c(celDif(e))+c(spanSt(e.pct))+
         ant(a.semAnt,a.sem)+mes(a.mesReal,a.ativa?a.metaMes:0)+"</tr>";
     });
   });
@@ -1925,9 +1932,9 @@ function tabelaProg(p,o){
     return v ? "<td"+c+">"+(k==="corte"?v:fHa2(v))+"</td>" : "<td class='zero"+(gi?" gi":"")+"'>–</td>"; }
   var h="<table class='tb sem pg'><thead><tr>"+
     grupos.map(function(g,i){ return "<th class='grp"+(i?" gi":"")+"' colspan='"+g.cols.length+"'>"+g.t+"</th>"; }).join("")+
-    "<th class='gi' rowspan='2'>% concluído</th>"+(temObs?"<th class='l gi' rowspan='2'>Observação</th>":"")+"</tr><tr>"+
+    "<th class='gi' rowspan='2'>% concluído</th>"+(temObs?"<th class='gi' rowspan='2'>Observação</th>":"")+"</tr><tr>"+
     grupos.map(function(g,i){ return g.cols.map(function(k,j){
-      var cl=(TEXTO_COL[k]==="c"?"c":TEXTO_COL[k]?"l":"")+(i&&!j?" gi":"");
+      var cl=(TEXTO_COL[k]?"c":"")+(i&&!j?" gi":"");
       return "<th class='"+cl+"'>"+TIT[k]+"</th>"; }).join(""); }).join("")+"</tr></thead><tbody>";
   secs.forEach(function(sc){
     if(sc.titulo) h+="<tr class='sec'><td colspan='"+nCol+"'>"+E.esc(nomeSecao(sc.titulo))+"</td></tr>";
