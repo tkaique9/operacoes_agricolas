@@ -56,8 +56,8 @@ impressão e são lidos dos rótulos das barras.
 | Módulo | # | Página | O que mostra |
 |---|---|---|---|
 | — | — | Capa | Realizado, % da meta, eficiência e % da meta do mês; realizado acumulado da semana × meta acumulada e semana anterior |
-| **Semana** | 1 | Semana por operação | Uma tabela por operação e atividade, em quatro grupos de colunas, cada um com título e linha forte à esquerda: **Semana** (meta, realizado e % da meta); **Rendimento por equipamento** (meta, rendimento, diferença e eficiência = rendimento ÷ meta, em ha por dia operado; "pess." marca as atividades medidas por pessoa); **Semana anterior** (realizado e variação); e **o mês até a data** (o que já foi produzido em ha, a meta do mês e a %, com a cor pelo ritmo esperado). Clicar na operação (›) abre o **modal da operação**; clicar no Total abre o mesmo modal para todas; clicar na atividade abre o dia a dia dela |
-| | 2 | Resumo gráfico | Para a diretoria, no padrão dos gráficos do comparativo: um painel por operação (grade 2 × 2). À esquerda, os três indicadores em barra — **meta da semana** (de 0 a 150%, traço da meta e marca cinza da semana anterior), **eficiência** (rendimento ÷ meta, traço da meta) e **o mês até a data** (de 0 a 100% da meta do mês, traço do ritmo esperado), na cor da faixa (vermelho abaixo de 50%, âmbar de 50% a 99%, verde na meta ou acima; no mês, em relação ao ritmo). À direita, as colunas de cada dia: o realizado (dourado) ao lado do mesmo dia da semana anterior (cinza), a linha tracejada da meta do dia e a pílula da % da meta do dia. No topo, a semana anterior (▲/▼) e a meta do dia; embaixo, a % da meta de cada atividade. Clicar no painel abre o **modal da operação** |
+| **Semana** | 1 | Semana por operação | Uma tabela por operação e atividade, em quatro grupos de colunas, cada um com título e linha forte à esquerda: **Semana** (meta, realizado e % da meta); **Rendimento por homem ou equipamento** (meta, rendimento, diferença e eficiência = rendimento ÷ meta, por dia operado; a meta e o rendimento vêm com a unidade: **ha/h/dia** quando a atividade é medida por pessoa apontada e **ha/equip/dia** quando é por equipamento — o Quadriciclo, apontado por operador, conta como equipamento, `ATIV_EQUIPAMENTO` no `index.html`); **Semana anterior** (realizado e variação); e **o mês até a data** (o que já foi produzido em ha, a meta do mês e a %, com a cor pelo ritmo esperado). Clicar na operação (›) abre o **modal da operação**; clicar no Total abre o mesmo modal para todas; clicar na atividade abre o dia a dia dela |
+| | 2 | Resumo gráfico | Para a diretoria, no padrão dos gráficos do comparativo: um painel por operação (grade 2 × 2; com mais de quatro operações, 3 colunas, e a vaga que sobra é o painel de todas as operações). À esquerda, os três indicadores em barra — **meta da semana** (de 0 a 150%, traço da meta e marca cinza da semana anterior), **eficiência** (rendimento ÷ meta, traço da meta) e **o mês até a data** (de 0 a 100% da meta do mês, traço do ritmo esperado), na cor da faixa (vermelho abaixo de 50%, âmbar de 50% a 99%, verde na meta ou acima; no mês, em relação ao ritmo). À direita, as colunas de cada dia: o realizado (dourado) ao lado do mesmo dia da semana anterior (cinza), a linha tracejada da meta do dia e a pílula da % da meta do dia. No topo, a semana anterior (▲/▼) e a meta do dia; embaixo, a % da meta de cada atividade. Clicar no painel abre o **modal da operação** |
 | **Programas da safra** | 3 | Pré-emergência | Uma página com rolagem: a tabela da aba como na impressão (fazendas, subtotal por região e total da safra) e, no fim, os **indicadores** em gráfico (total da safra, por região e ordens encerradas × abertas) |
 | | 4 | Reforço bordadura | Igual: tabela da 3ª molécula e o gráfico do total (aberta, realizada, a realizar) |
 | | 5 | 1ª catação química | Igual: as 71 fazendas numa página com rolagem e, no fim, o total da safra e por região |
@@ -112,7 +112,7 @@ esse detalhe. Entram só fazendas e talhões trabalhados nos dias da semana, vin
 
 - **RSC0819R** (relatório de operações do sistema, `.xlsx`) colocado em `dados/`: o script
   reconhece pelo cabeçalho "Período Acumulado", usa só as OS com data dentro da semana e
-  manda cada operação para a frente pela descrição (drone → aérea, Uniport, cocho, manual;
+  manda cada operação para a frente pela descrição (drone → aplicação com drone, Uniport, cocho, manual;
   formiga → Catação de Formiga; drone → Drone Inseticida, o antigo Drone Terceiro). O sistema não separa Uniport
   próprio de terceiro nem as equipes do cocho, então esses ficam no nível da operação;
 - aba **Realizado - 3ª Mol** da planilha SAFRA: OS da 3ª molécula (Uniport bordadura); a
@@ -129,6 +129,7 @@ identificados. Operação sem esse detalhe na semana não mostra etiqueta nem bo
 | Meta da semana | meta dia × dias da semana (a coluna "Meta Semana" da planilha); domingo não tem meta |
 | Meta da frente | soma só das atividades que **operaram** na semana (realizado > 0), como faz a planilha. Atividade ou operação **sem produção na semana não aparece em nenhuma tela** |
 | Operações fora | `FRENTES_FORA`, no `atualizar_tratos.py`, tira uma frente inteira da apresentação e dos totais; hoje: Quebra lombo (não é aplicação desta operação) |
+| Operações separadas | `SEPARA`, no `atualizar_tratos.py`, tira atividades da frente da planilha e faz delas uma operação própria, logo depois; hoje: a aplicação aérea fica **Aplicação com drone** e a Área Monitoramento vira **Monitoramento com drone** |
 | Semana anterior | os mesmos dias da semana anterior, na mesma aba |
 | Mês | do dia 1 até o último dia da semana (com o domingo trabalhado, como o "Realizado do Mês" da planilha); ritmo esperado = dias trabalhados até aqui (segunda a sábado) ÷ dias da meta do mês (meta mês ÷ meta dia) |
 | Eficiência por equipamento/pessoa | realizado ÷ unidades-dia nos dias em que a atividade operou. Unidade = pessoa apontada no dia (Catação Manual, Cata Mato, Quadriciclo) ou, sem apontamento, o nº de equipamentos/pessoas planejado. Comparada com a meta por unidade da planilha; o planejado de pessoas e a meta por pessoa vêm da linha "Pessoas Dia" quando ela tem quadro de meta. `META_PESSOA`, no `atualizar_tratos.py`, fixa a meta por pessoa onde a da planilha não vale; hoje: Cata Mato, 4 ha/pessoa (a planilha traz 8). `EQUIP` fixa o nº de equipamentos e refaz a meta do dia, da semana e do mês; hoje: Quadriciclo, 2 × 10 ha = 20 ha/dia (a planilha traz 1), e Catação de Formiga, 2 equipamentos. `META_EQUIP` fixa a meta por equipamento antes disso; hoje: Catação de Formiga, 10 ha/equipamento (a planilha traz 1 de 20 ha; a meta do dia continua 20 ha) |
@@ -153,7 +154,7 @@ Nomes de bloco escritos de jeitos diferentes entre as abas são unificados
 
 - Mesmo CSS base, tema, cromo, painel de detalhe e helpers de SVG, copiados de lá.
 - Cor de destaque por módulo: dourado (Semana), verde-água (Programas da safra), azul (Adubação).
-- Cor fixa por frente: Manual azul `#2E86C1`, Uniport oliva `#8A6D14`, Aérea verde-água
-  `#3FA79C`, Cocho navy `#12224A`.
+- Cor fixa por frente: Manual azul `#2E86C1`, Uniport oliva `#8A6D14`, Aplicação com drone
+  verde-água `#3FA79C`, Monitoramento com drone roxo `#8E6CB8`, Cocho navy `#12224A`.
 - Farol da meta: verde na meta ou acima, âmbar de 50% a 99%, vermelho abaixo de 50% — sempre
   com o número escrito ao lado.

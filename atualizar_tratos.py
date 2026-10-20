@@ -26,7 +26,7 @@ EPOCA = datetime.datetime(1899, 12, 30)
 FRENTES = [
     ("APLICAÇÃO MANUAL", "manual", "Manual e semi-mecanizada"),
     ("UNIPORT", "uniport", "Uniport"),
-    ("AÉREA", "aerea", "Aérea e monitoramento"),
+    ("AÉREA", "aerea", "Aplicação com drone"),
     ("QUEBRA LOMBO", "lombo", "Quebra lombo"),
     ("COCHO", "cocho", "Adubação com cocho"),
 ]
@@ -34,6 +34,22 @@ FRENTES = [
 # lombo saiu a pedido em 13/10/2026: não é aplicação desta operação. Para voltar,
 # tire o id daqui.
 FRENTES_FORA = {"lombo"}
+# atividades que saem da frente da planilha e viram uma operação própria, logo depois
+# dela: (frente de origem, trecho do nome da atividade, id, nome, título). O drone de
+# monitoramento saiu da aplicação aérea a pedido em 20/10/2026.
+SEPARA = [("aerea", "monitoramento", "monit", "Monitoramento com drone", "MONITORAMENTO COM DRONE")]
+
+
+def separa_frentes(frentes):
+    for orig, trecho, fid, nome, titulo in SEPARA:
+        i = next((k for k, fr in enumerate(frentes) if fr["id"] == orig), None)
+        if i is None or any(fr["id"] == fid for fr in frentes):
+            continue
+        mov = [a for a in frentes[i]["atividades"] if trecho in a["nome"].lower()]
+        if mov:
+            frentes[i]["atividades"] = [a for a in frentes[i]["atividades"] if a not in mov]
+            frentes.insert(i + 1, {"id": fid, "nome": nome, "titulo": titulo, "atividades": mov})
+    return frentes
 # meta de hectares por pessoa/dia que vale no lugar da que vem da planilha. Cata Mato:
 # a linha "Pessoas Dia" traz 8 ha (120 ha ÷ 15 pessoas), mas a meta é 4 ha/pessoa
 # (corrigido em 13/10/2026). Para voltar à da planilha, tire a atividade daqui.
@@ -267,7 +283,7 @@ def semana(ws):
                 a["pessoas"] = [r2(v) for v in a["pessoas"]]
             for k in ("equip", "metaUnid", "metaDia", "metaSemana", "metaMes"):
                 a[k] = r2(a[k])
-    frentes = [fr for fr in frentes if fr["id"] not in FRENTES_FORA]
+    frentes = separa_frentes([fr for fr in frentes if fr["id"] not in FRENTES_FORA])
     # atividade sem meta e sem nada realizado no ano não entra
     for fr in frentes:
         fr["atividades"] = [a for a in fr["atividades"] if a["metaSemana"] or any(a["mes"].values())]
