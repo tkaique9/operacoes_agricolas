@@ -644,6 +644,47 @@ html[data-acento="azul"]{--accent:#5DADE2}
 html[data-acento="agua"]{--accent:#58C4BA}
 html[data-acento="creme"]{--accent:#F0DFA8}
 
+/* ---------- impressão ----------
+   "Imprimir página" ou "Imprimir relatório" (ou Ctrl+P, que imprime o relatório): as
+   páginas ficam uma embaixo da outra, na largura de uma folha A4 deitada, com fundo
+   branco, as tabelas inteiras (sem rolagem) e os gráficos redesenhados nesse tamanho.
+   A capa não sai no papel. */
+.deck-imp{display:flex;gap:8px}
+.deck-imp button{font:500 11px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--tm-ink-2);
+  background:transparent;border:1px solid var(--tm-linha-2);border-radius:2px;padding:6px 12px;cursor:pointer;
+  transition:color .25s,border-color .25s,background-color .25s}
+.deck-imp button:hover{color:var(--tm-ink);border-color:var(--accent);background:var(--accent-dim)}
+@media(max-width:760px){ .deck-imp{display:none} }
+@page{size:A4 landscape;margin:9mm}
+html.imprimindo,html.imprimindo body{height:auto;overflow:visible;background:#fff!important}
+html.imprimindo body{display:block}
+html.imprimindo *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html.imprimindo #tema-campo,html.imprimindo #tema-vig,html.imprimindo #tema-barra,html.imprimindo header.top,
+html.imprimindo nav.toc,html.imprimindo .deck-nav,html.imprimindo .mf{display:none!important}
+html.imprimindo .deck{width:1060px;position:static;flex:none}
+html.imprimindo .slide{position:relative;inset:auto;opacity:1;visibility:visible;transform:none;transition:none;
+  animation:none;height:auto;min-height:0;overflow:visible;background:#fff!important;color:var(--ink);
+  padding:0 0 6px;gap:8px;break-after:page;page-break-after:always}
+html.imprimindo .slide *{animation:none!important;transition:none!important}
+html.imprimindo .slide.slide-cover,html.imprimindo.imprimir-pagina .slide:not(.active){display:none!important}
+html.imprimindo .s-title{color:var(--navy);font-size:20px}
+html.imprimindo .s-eyebrow{color:#8A6D14}
+html.imprimindo .s-legend,html.imprimindo .s-legend b{color:var(--ink)}
+html.imprimindo .s-card{flex:none;box-shadow:none;border:1px solid var(--line);border-radius:4px}
+html.imprimindo .tb-rolo,html.imprimindo .pg-rolo{flex:none;overflow:visible;max-height:none;height:auto}
+html.imprimindo table.tb th,html.imprimindo table.tb.sem thead{position:static}
+html.imprimindo table.tb{font-size:9.5px!important}
+html.imprimindo table.tb td{height:auto;padding:2px 5px}
+html.imprimindo table.tb td.l{min-width:0;white-space:normal}
+html.imprimindo table.tb td.d small{display:block;margin:0;font-size:.85em}
+html.imprimindo table.tb th{padding:4px 5px}
+html.imprimindo table.tb tr{break-inside:avoid;page-break-inside:avoid}
+html.imprimindo .gr-grid{flex:none;grid-auto-rows:320px}
+html.imprimindo .gr-card{box-shadow:none;border:1px solid var(--line)}
+html.imprimindo .ind-card{height:290px}
+html.imprimindo .pg-sep{break-before:avoid}
+html.imprimindo .pg-ind{break-inside:avoid;page-break-inside:avoid}
+
 /* ---------- fundo ---------- */
 html{background:var(--tm-void)}
 body{
@@ -830,6 +871,7 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <nav class="toc">
 <a href="#capa">Capa</a>
 <a href="#resumo"><b></b> Semana por operação</a>
+<a href="#pordia"><b></b> Semana por dia</a>
 <a href="#graficos"><b></b> Resumo gráfico</a>
 <a href="#pg-pre"><b></b> Pré-emergência</a>
 <a href="#pg-bord"><b></b> Reforço bordadura</a>
@@ -893,6 +935,20 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 </div>
 </div>
 <div class="s-card tb-card" id="rs-card"><div class="tb-rolo" id="rs-tabela"></div></div>
+</article>
+
+<!-- ================= SEMANA: POR DIA =================
+     a mesma tabela da semana, aberta por dia: o realizado de cada dia com a % da meta
+     do dia (fundo verde, âmbar ou vermelho) e o fechamento da semana. O domingo só
+     aparece se alguém trabalhou -->
+<article class="slide slide-dark" id="pordia" data-title="Semana por dia">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Semana</div>
+<h2 class="s-title">Realizado por dia e meta do dia, por operação</h2>
+</div>
+</div>
+<div class="s-card tb-card" id="pd-card"><div class="tb-rolo" id="pd-tabela"></div></div>
 </article>
 
 <!-- ================= SEMANA: RESUMO GRÁFICO =================
@@ -981,6 +1037,7 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <div class="deck-dots" id="deck-dots"></div>
 <span class="deck-hint">Trocar de página: botões, bolinhas ou &larr; &rarr;</span>
 <button id="deck-next" type="button">Próxima &rsaquo;</button>
+<span class="deck-imp"><button type="button" id="imp-pag" title="Imprimir a página aberta">Imprimir página</button><button type="button" id="imp-tudo" title="Imprimir o relatório inteiro, uma página por folha">Imprimir relatório</button></span>
 <span class="deck-count" id="deck-count">–</span>
 </div>
 
@@ -1611,6 +1668,35 @@ function paginaSemana(){
   liga(tb,"tr[data-tot]",function(){ detalheOperacao(null); });
 }
 
+/* ---------- semana por dia: a tabela da semana aberta por dia ---------- */
+function paginaPorDia(){
+  var ks=diasVisiveis(TOT.porDia);
+  function c(v,gi){ return "<td"+(gi?" class='gi'":"")+">"+v+"</td>"; }
+  // célula do dia com a % da meta do dia; a primeira do grupo leva a linha forte
+  function dias(porDia,meta){ return ks.map(function(k,i){
+    var cel=diaCel(porDia[k],meta(k)); return i?cel:cel.replace("<td class='d","<td class='gi d"); }).join(""); }
+  function semana(meta,real,pct){ return c(meta?fHa(meta):"–",1)+c(fHa(real))+c(barCel(pct)); }
+  var h="<table class='tb sem'><thead><tr><th class='l' rowspan='2'>Operação / atividade</th>"+
+    "<th class='grp gi'>Meta</th><th class='grp gi' colspan='"+ks.length+"'>Realizado por dia · ha e % da meta do dia</th>"+
+    "<th class='grp gi' colspan='3'>Semana</th></tr><tr><th class='gi'>Meta do dia<u>ha</u></th>"+
+    cabDias(ks).replace("<th class='c'>","<th class='c gi'>")+
+    "<th class='gi'>Meta<u>ha</u></th><th>Realizado<u>ha</u></th><th>% da meta</th></tr></thead><tbody>";
+  FRENTES.forEach(function(f){
+    h+="<tr class='fr clic' style='--fr:"+f.cor+"' data-f='"+f.id+"'><td class='l'>"+E.esc(f.nome)+"</td>"+c(fHa(f.metaDia),1)+
+      dias(f.porDia,function(k){ return temMeta(DIAS[k])?f.metaDia:0; })+semana(f.meta,f.real,f.pct)+"</tr>";
+    f.ativas.forEach(function(a){
+      h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"</td>"+c(a.metaDia?fHa(a.metaDia):"–",1)+
+        dias(a.dias,function(k){ return metaDoDia(a,k); })+semana(a.metaSemana,a.sem,a.pct)+"</tr>";
+    });
+  });
+  h+="<tr class='tot clic' data-tot='1'><td class='l'>Total</td>"+c(fHa(TOT.metaDia),1)+
+    dias(TOT.porDia,function(k){ return temMeta(DIAS[k])?TOT.metaDia:0; })+semana(TOT.meta,TOT.real,TOT.pct)+"</tr></tbody></table>";
+  var tb=document.getElementById("pd-tabela"); tb.innerHTML=h; ajustaTabela(tb);
+  liga(tb,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
+  liga(tb,"tr[data-f]",function(tr){ detalheOperacao(frenteDe(tr.getAttribute("data-f"))); });
+  liga(tb,"tr[data-tot]",function(){ detalheOperacao(null); });
+}
+
 /* ---------- resumo gráfico: um painel por operação, no padrão dos gráficos da
    diretoria (comparativo): à esquerda os três indicadores em barra — a meta da semana
    (com o traço da meta e a marca cinza da semana anterior), a eficiência e o mês contra
@@ -2217,6 +2303,38 @@ window.replay = window.replay || {};
 window.replay.capa = desenhaCapa;
 window.replay.graficos = paginaGraficos;
 window.replay.resumo = paginaSemana;
+window.replay.pordia = paginaPorDia;
+
+// impressão: liga o modo de impressão, redesenha as páginas no tamanho da folha e,
+// depois de imprimir, volta ao normal
+(function(){
+  var html=document.documentElement, pedido=null;
+  function ativa(){ return document.querySelector("#deck .slide.active"); }
+  function prepara(qual){
+    var s=ativa();
+    if(qual==="pagina" && (!s || s.id==="capa")) qual="tudo";
+    html.classList.add("imprimindo"); html.classList.toggle("imprimir-pagina",qual==="pagina");
+    Array.prototype.forEach.call(document.querySelectorAll("#deck .slide"),function(sl){
+      if(sl.id==="capa" || (qual==="pagina" && sl!==s)) return;
+      if(window.replay[sl.id]) try{ window.replay[sl.id](); }catch(e){}
+    });
+    // na folha, a tabela larga diminui a letra até caber na largura
+    Array.prototype.forEach.call(document.querySelectorAll("#deck .slide table"),function(tb){
+      if(!tb.offsetParent) return;
+      var f=parseFloat(getComputedStyle(tb).fontSize);
+      while(tb.offsetWidth>tb.parentElement.clientWidth+1 && f>6.5){ f-=0.25; tb.style.setProperty("font-size",f+"px","important"); }
+    });
+  }
+  function volta(){
+    html.classList.remove("imprimindo","imprimir-pagina"); pedido=null;
+    var s=ativa(); if(s && window.replay[s.id]) window.replay[s.id]();
+  }
+  window.addEventListener("beforeprint",function(){ if(!pedido) prepara("tudo"); });
+  window.addEventListener("afterprint",volta);
+  function imprime(qual){ pedido=qual; prepara(qual); setTimeout(function(){ window.print(); },60); }
+  document.getElementById("imp-pag").addEventListener("click",function(){ imprime("pagina"); });
+  document.getElementById("imp-tudo").addEventListener("click",function(){ imprime("tudo"); });
+})();
 Object.keys(PAG_PROG).forEach(function(id){ window.replay[id] = function(){ paginaProg(id); }; });
 
 numera();
@@ -2235,7 +2353,7 @@ window.addEventListener("resize",function(){ clearTimeout(tmr); tmr=setTimeout(r
 <script>(function(){
 "use strict";
 var MODULOS = [
-  {id:"semana", nome:"Semana", pags:["resumo","graficos"]},
+  {id:"semana", nome:"Semana", pags:["resumo","pordia","graficos"]},
   {id:"programas", nome:"Programas da safra", pags:["pg-pre","pg-bord","pg-cat1"]},
   {id:"adubacao", nome:"Adubação", pags:["pg-loc","pg-cocho"]}
 ];

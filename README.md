@@ -11,7 +11,11 @@ A versão anterior, montada sobre o relatório RSC0819R, está guardada em `arqu
 ## Como abrir
 
 Basta abrir o `index.html` no navegador — não precisa de servidor nem de internet. Para
-apresentar, use F11. Navegação: setas ←/→, barra de espaço, as bolinhas do rodapé, os
+apresentar, use F11. Para imprimir, os botões **Imprimir página** e **Imprimir
+relatório** da barra de baixo (ou Ctrl+P, que imprime o relatório): A4 deitado, uma
+página por folha, fundo branco, tabelas inteiras (sem rolagem; a letra diminui só se a
+tabela não couber na largura) e gráficos redesenhados no tamanho da folha. A capa não sai
+no papel. Para salvar em PDF, escolha "Salvar como PDF" na janela de impressão. Navegação: setas ←/→, barra de espaço, as bolinhas do rodapé, os
 botões ou o menu de módulos do topo. `?fundo=off` desliga as partículas do fundo.
 
 ## Atualizar a semana
@@ -67,12 +71,13 @@ impressão e são lidos dos rótulos das barras.
 |---|---|---|---|
 | — | — | Capa | Realizado, % da meta, eficiência e % da meta do mês; realizado acumulado da semana × meta acumulada e semana anterior |
 | **Semana** | 1 | Semana por operação | Uma tabela por operação e atividade, em quatro grupos de colunas, cada um com título e linha forte à esquerda: **Semana** (meta, realizado e % da meta); **Equipamento ou homem · por dia** (quantidade **prevista** — o planejado da planilha — e **realizada** — a média de pessoas apontadas em campo por dia operado; para equipamento a planilha não aponta a quantidade do dia e o realizado é o que a conta do rendimento usa, o previsto nos dias com operação, em cinza —, meta e rendimento por equipamento/homem, diferença e eficiência = rendimento ÷ meta, por dia operado; a meta e o rendimento vêm com a unidade: **ha/h/dia** quando a atividade é medida por pessoa apontada e **ha/equip/dia** quando é por equipamento — o Quadriciclo, apontado por operador, conta como equipamento, `ATIV_EQUIPAMENTO` no `index.html`); **Semana anterior** (realizado e variação); e **o mês até a data** (o que já foi produzido em ha, a meta do mês e a %, com a cor pelo ritmo esperado). Clicar na operação (›) abre o **modal da operação**; clicar no Total abre o mesmo modal para todas; clicar na atividade abre o dia a dia dela. Os títulos das colunas são centralizados (em todas as tabelas) |
-| | 2 | Resumo gráfico | Para a diretoria, no padrão dos gráficos do comparativo: um painel por operação (grade 2 × 2; com mais de quatro operações, 3 colunas, e a vaga que sobra é o painel de todas as operações). À esquerda, os três indicadores em barra — **meta da semana** (de 0 a 150%, traço da meta e marca cinza da semana anterior), **eficiência** (rendimento ÷ meta, traço da meta) e **o mês até a data** (de 0 a 100% da meta do mês, traço do ritmo esperado), na cor da faixa (vermelho abaixo de 50%, âmbar de 50% a 99%, verde na meta ou acima; no mês, em relação ao ritmo). À direita, as colunas de cada dia: o realizado (dourado) ao lado do mesmo dia da semana anterior (cinza), a linha tracejada da meta do dia e a pílula da % da meta do dia. No topo, a semana anterior (▲/▼) e a meta do dia; embaixo, a % da meta de cada atividade. Clicar no painel abre o **modal da operação** |
-| **Programas da safra** | 3 | Pré-emergência | Uma página com rolagem: a tabela da aba como na impressão (fazendas, subtotal por região e total da safra) e, no fim, os **indicadores** em gráfico (total da safra, por região e ordens encerradas × abertas) |
-| | 4 | Reforço bordadura | Igual: tabela da 3ª molécula e o gráfico do total (aberta, realizada, a realizar) |
-| | 5 | 1ª catação química | Igual: as 71 fazendas numa página com rolagem e, no fim, o total da safra e por região |
-| **Adubação** | 6 | Adubação localizada | Região 1 + Cargill e área de queima, com subtotal por bloco, total e observação; no fim, o resumo da localizada e da área de queima |
-| | 7 | Adubação com cocho | Alencar (regiões 1 e 2) e Fábio do Prado (região 3), com subtotal por bloco e totais; no fim, o resumo de cada equipe e o resumo final (geral) |
+| | 2 | Semana por dia | A mesma tabela aberta por dia: meta do dia, o realizado de cada dia (segunda a sábado e o domingo, se houve produção) com a % da meta do dia e o fundo verde, âmbar ou vermelho, e o fechamento da semana (meta, realizado e % da meta), por operação e atividade, com o total. Clicar abre os mesmos modais da página 1 |
+| | 3 | Resumo gráfico | Para a diretoria, no padrão dos gráficos do comparativo: um painel por operação (grade 2 × 2; com mais de quatro operações, 3 colunas, e a vaga que sobra é o painel de todas as operações). À esquerda, os três indicadores em barra — **meta da semana** (de 0 a 150%, traço da meta e marca cinza da semana anterior), **eficiência** (rendimento ÷ meta, traço da meta) e **o mês até a data** (de 0 a 100% da meta do mês, traço do ritmo esperado), na cor da faixa (vermelho abaixo de 50%, âmbar de 50% a 99%, verde na meta ou acima; no mês, em relação ao ritmo). À direita, as colunas de cada dia: o realizado (dourado) ao lado do mesmo dia da semana anterior (cinza), a linha tracejada da meta do dia e a pílula da % da meta do dia. No topo, a semana anterior (▲/▼) e a meta do dia; embaixo, a % da meta de cada atividade. Clicar no painel abre o **modal da operação** |
+| **Programas da safra** | 4 | Pré-emergência | Uma página com rolagem: a tabela da aba como na impressão (fazendas, subtotal por região e total da safra) e, no fim, os **indicadores** em gráfico (total da safra, por região e ordens encerradas × abertas) |
+| | 5 | Reforço bordadura | Igual: tabela da 3ª molécula e o gráfico do total (aberta, realizada, a realizar) |
+| | 6 | 1ª catação química | Igual: as 71 fazendas numa página com rolagem e, no fim, o total da safra e por região |
+| **Adubação** | 7 | Adubação localizada | Região 1 + Cargill e área de queima, com subtotal por bloco, total e observação; no fim, o resumo da localizada e da área de queima |
+| | 8 | Adubação com cocho | Alencar (regiões 1 e 2) e Fábio do Prado (região 3), com subtotal por bloco e totais; no fim, o resumo de cada equipe e o resumo final (geral) |
 
 As tabelas dos programas seguem um padrão só: as colunas vêm em grupos com título
 (**Fazenda** — região, cód., bloco, propriedade, colheita e dias de atraso, nessa ordem em
