@@ -486,6 +486,7 @@ table.tb.pg tr.geral .bc .trk{background:rgba(255,255,255,.18)}
 .gr-leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 .gr-leg b{font-weight:700;font-variant-numeric:tabular-nums}
 /* unidade ao lado do número na tabela (rendimento e meta medidos por pessoa) */
+table.tb td .qprev{color:#8F99AD;font-weight:500}
 table.tb td u.un{text-decoration:none;color:var(--mut);font-weight:400;font-size:.78em;margin-left:3px}
 @media(max-height:780px){ .gr-real{font-size:11px} .gr-leg{font-size:10px} }
 @media(min-width:1600px) and (min-height:860px){
@@ -1561,8 +1562,15 @@ function unidRend(e){ return e.porEquip ? "ha/equip/dia" : "ha/h/dia"; }
 function celUnid(v,e){ return v==null ? "–" : fEf(v)+"<u class='un'>"+unidRend(e)+"</u>"; }
 // quantidade de equipamentos ou pessoas: a prevista (planejado da planilha) e a que de
 // fato foi a campo (média por dia operado). A planilha só aponta pessoas por dia; para
-// equipamento não há apontamento e o realizado fica em branco, em vez de repetir o plano
+// equipamento não há apontamento do dia, e o realizado é o que a conta do rendimento usa
+// — o previsto, nos dias com operação —, em cinza, para não se passar por apontado
 function celQtd(v,e,dec){ return v==null ? "–" : (dec?E.fmtDec(v,1):E.fmtInt(v))+"<u class='un'>"+(e.porEquip?"equip.":"pess.")+"</u>"; }
+function celQtdReal(e){
+  if(e.temP) return celQtd(e.uniMed,e,1);
+  if(e.plan==null || !e.diasOp) return "–";
+  return "<span class='qprev' title='Sem apontamento diário de equipamento na planilha: considera o previsto nos dias com operação'>"+
+    celQtd(e.plan,e,1)+"</span>";
+}
 function celDif(e){
   if(e.ef==null || !(e.meta>0)) return "–";
   var d=e.ef-e.meta;
@@ -1590,7 +1598,7 @@ function paginaSemana(){
     f.ativas.forEach(function(a){ var e=a.ef;
       h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+"</td>"+
         c(a.metaSemana?fHa(a.metaSemana):"–",1)+c(fHa(a.sem))+c(barCel(a.pct))+
-        c(celQtd(e.plan,e),1)+c(e.temP?celQtd(e.uniMed,e,1):"–")+
+        c(celQtd(e.plan,e),1)+c(celQtdReal(e))+
         c(celUnid(e.meta,e))+c(celUnid(e.ef,e))+c(celDif(e))+c(spanSt(e.pct))+
         ant(a.semAnt,a.sem)+mes(a.mesReal,a.ativa?a.metaMes:0)+"</tr>";
     });
