@@ -682,7 +682,12 @@ html.imprimindo .bc{gap:4px}
 html.imprimindo .bc .trk{min-width:30px;max-width:56px;height:8px}
 html.imprimindo .bc em{min-width:30px}
 html.imprimindo table.tb td.l{min-width:0;white-space:normal}
-html.imprimindo table.tb td.d small{display:block;margin:0;font-size:.85em}
+html.imprimindo table.tb td.d{min-width:0;text-align:center;line-height:1.1;padding:2px 3px}
+html.imprimindo table.tb td.d small{display:block;margin:1px 0 0;font-size:.8em;font-weight:700;opacity:1}
+html.imprimindo table.tb td.d.ok small{color:var(--green)}
+html.imprimindo table.tb td.d.medio small{color:#A6620A}
+html.imprimindo table.tb td.d.baixo small{color:var(--red)}
+html.imprimindo table.tb td.d.zero{color:#C3C9D6}
 html.imprimindo table.tb th{padding:3px 4px}
 html.imprimindo table.tb tr{break-inside:avoid;page-break-inside:avoid}
 html.imprimindo .gr-grid,html.imprimindo .gr-grid.tres{flex:none;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:300px}
@@ -2322,6 +2327,7 @@ window.replay.pordia = paginaPorDia;
 // depois de imprimir, volta ao normal
 (function(){
   var html=document.documentElement, pedido=null;
+  var FOLHA_ALTURA=700;   // altura útil da folha A4 deitada (margens de 9 mm), em px de tela
   function ativa(){ return document.querySelector("#deck .slide.active"); }
   function prepara(qual){
     var s=ativa();
@@ -2336,6 +2342,16 @@ window.replay.pordia = paginaPorDia;
       if(!tb.offsetParent) return;
       var f=parseFloat(getComputedStyle(tb).fontSize);
       while(tb.offsetWidth>tb.parentElement.clientWidth+1 && f>6.5){ f-=0.25; tb.style.setProperty("font-size",f+"px","important"); }
+    });
+    // as páginas que cabem numa folha (a Semana e a Semana por dia) ocupam a folha toda:
+    // a letra cresce enquanto couber na largura e na altura da folha (A4 deitado)
+    ["resumo","pordia"].forEach(function(id){
+      var sl=document.getElementById(id), tb=sl && sl.querySelector("table");
+      if(!tb || !tb.offsetParent) return;
+      var f=parseFloat(getComputedStyle(tb).fontSize);
+      function cabe(){ return tb.offsetWidth<=tb.parentElement.clientWidth+1 && sl.offsetHeight<=FOLHA_ALTURA; }
+      while(f<15 && cabe()){ f+=0.25; tb.style.setProperty("font-size",f+"px","important"); }
+      while(f>6.5 && !cabe()){ f-=0.25; tb.style.setProperty("font-size",f+"px","important"); }
     });
   }
   function volta(){
