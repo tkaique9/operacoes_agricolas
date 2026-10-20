@@ -151,10 +151,10 @@ header.top,nav.toc{flex:0 0 auto}
 .slide-cover.active .capa-fim{animation:capa-fade .6s ease 2s both}
 
 /* janelas baixas: o parágrafo e os avisos saem para sobrar altura ao título e aos números */
-@media(max-height:640px){ .slide-cover p.sub{display:none} }
-@media(max-height:520px){ .capa-aviso,.capa-meta{display:none} }
+@media screen and (max-height:640px){ .slide-cover p.sub{display:none} }
+@media screen and (max-height:520px){ .capa-aviso,.capa-meta{display:none} }
 /* janelas estreitas (tablet em pé, celular): uma coluna, sem a curva, e a capa rola */
-@media(max-width:900px){
+@media screen and (max-width:900px){
   .slide.slide-cover{grid-template-rows:auto auto auto;overflow-y:auto;overscroll-behavior:contain}
   /* min-height:auto: com 0 o navegador espremeria a linha do meio abaixo do conteúdo */
   .capa-meio{grid-template-columns:minmax(0,1fr);min-height:auto;padding-top:22px;padding-bottom:22px}
@@ -237,7 +237,7 @@ table.ces tr.sel td{background:#FDF2D3}
 .ces-bar::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;border-left:1px solid #B7BECC}
 .ces-bar i{position:absolute;top:0;height:10px;border-radius:2px}
 .ces-nota{font-size:11px;color:var(--mut);line-height:1.45;margin:10px 0 0}
-@media(max-height:780px){ table.ces td{padding:4px 7px} .ces-dir{flex-basis:390px} }
+@media screen and (max-height:780px){ table.ces td{padding:4px 7px} .ces-dir{flex-basis:390px} }
 /* quadro da composição do custo — só aparece no indicador de custo, ao lado do
    gráfico. O SVG passa a dividir a largura do cartão com ele. */
 .s-card.s-quadro{gap:14px}
@@ -259,13 +259,13 @@ table.ces tr.sel td{background:#FDF2D3}
 .q-sub{font-size:calc(11.5px*var(--qf));color:var(--mut);line-height:1.45}
 .q-sub b{color:var(--navy);font-weight:700}
 .q-tot{border-top:1px solid var(--line);padding-top:calc(9px*var(--qf));margin-top:auto}
-@media(max-height:780px){
+@media screen and (max-height:780px){
   .quadro{flex:0 0 206px;padding-left:12px}
 }
 
 /* telas baixas (projetor de sala, janela larga e curta): compacta o cabeçalho
    para sobrar altura ao gráfico */
-@media(max-height:780px){
+@media screen and (max-height:780px){
   .slide-dark{padding:13px 24px 11px;gap:8px}
   .s-title{font-size:21px}
   .s-sub{display:none}
@@ -336,7 +336,7 @@ body nav.toc::after{content:attr(data-periodo);margin-left:auto;padding-left:18p
   letter-spacing:.14em;text-transform:uppercase;color:var(--tm-ink-3);white-space:nowrap}
 body .toc-mod{padding:2px 8px}
 body nav.toc a{padding-bottom:2px}
-@media(max-width:760px){ body nav.toc::after{display:none} }
+@media screen and (max-width:760px){ body nav.toc::after{display:none} }
 
 /* grades de painéis */
 .s-card.s-grid.c32{grid-template-columns:minmax(0,3fr) minmax(0,2fr);grid-template-rows:minmax(0,1fr)}
@@ -462,12 +462,12 @@ table.tb.pg tr.geral .bc .trk{background:rgba(255,255,255,.18)}
 .ind-card{min-width:0;height:360px;padding:4px 6px 0}
 .ind-card+.ind-card{border-left:1px solid var(--line)}
 .ind-card svg{display:block;width:100%;height:100%}
-@media(min-width:1600px) and (min-height:860px){
+@media screen and (min-width:1600px) and (min-height:860px){
   table.tb.pg{font-size:19px}
   .pg-sep{font-size:15px}
   .ind-card{height:450px}
 }
-@media(max-width:760px){ .pg-ind{grid-template-columns:minmax(0,1fr)} .ind-card{height:330px} .ind-card+.ind-card{border-left:0;border-top:1px solid var(--line)} table.tb.pg{font-size:13px} }
+@media screen and (max-width:760px){ .pg-ind{grid-template-columns:minmax(0,1fr)} .ind-card{height:330px} .ind-card+.ind-card{border-left:0;border-top:1px solid var(--line)} table.tb.pg{font-size:13px} }
 
 /* resumo gráfico: um painel por operação, em grade 2 × 2 */
 .gr-grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:12px}
@@ -488,12 +488,12 @@ table.tb.pg tr.geral .bc .trk{background:rgba(255,255,255,.18)}
 /* unidade ao lado do número na tabela (rendimento e meta medidos por pessoa) */
 table.tb td .qprev{color:#8F99AD;font-weight:500}
 table.tb td u.un{text-decoration:none;color:var(--mut);font-weight:400;font-size:.78em;margin-left:3px}
-@media(max-height:780px){ .gr-real{font-size:11px} .gr-leg{font-size:10px} }
-@media(min-width:1600px) and (min-height:860px){
+@media screen and (max-height:780px){ .gr-real{font-size:11px} .gr-leg{font-size:10px} }
+@media screen and (min-width:1600px) and (min-height:860px){
   .gr-nome{font-size:17px} .gr-real{font-size:15px} .gr-leg{font-size:14px}
 }
 .gr-grid.tres{grid-template-columns:repeat(3,minmax(0,1fr))}
-@media(max-width:760px){ .gr-grid,.gr-grid.tres{grid-template-columns:minmax(0,1fr);grid-auto-rows:auto} .gr-pn{flex:none;height:380px} }
+@media screen and (max-width:760px){ .gr-grid,.gr-grid.tres{grid-template-columns:minmax(0,1fr);grid-auto-rows:auto} .gr-pn{flex:none;height:380px} }
 
 /* tabela da Semana: cada grupo de colunas tem título e linha forte à esquerda; as
    colunas de dentro, linha fina. O cabeçalho de duas linhas fica preso em cima inteiro */
@@ -538,7 +538,7 @@ table.tb tr.fr.clic td.l::after,table.tb tr.tot.clic td.l::after{content:" \203A
 
 /* TV da diretoria (1920×1080 e maiores): títulos, números e tabelas crescem para
    serem lidos de longe. O texto dos gráficos cresce no JS (função fz). */
-@media(min-width:1600px) and (min-height:860px){
+@media screen and (min-width:1600px) and (min-height:860px){
   .slide-dark{padding:22px 40px 18px;gap:14px}
   .s-eyebrow{font-size:13px}
   .s-title{font-size:34px}
@@ -572,7 +572,7 @@ table.tb tr.fr.clic td.l::after,table.tb tr.tot.clic td.l::after{content:" \203A
 
 /* telas baixas (navegador com a barra do claude.ai em cima, notebook): linhas e cartões
    mais baixos, para a tabela inteira caber sem rolar */
-@media(max-height:900px) and (min-width:761px){
+@media screen and (max-height:900px) and (min-width:761px){
   .slide-dark{gap:9px}
   .fr-card{padding:7px 12px 8px}
   .fr-card .n{font-size:22px;margin-top:2px}
@@ -584,7 +584,7 @@ table.tb tr.fr.clic td.l::after,table.tb tr.tot.clic td.l::after{content:" \203A
 }
 
 /* celular ou janela estreita: a página rola, os painéis empilham */
-@media(max-width:760px){
+@media screen and (max-width:760px){
   .slide-dark{overflow-y:auto;padding:14px 16px;gap:10px}
   .s-head{flex-direction:column;gap:10px}
   .s-right,.s-chips{margin-left:0;justify-content:flex-start}
@@ -654,14 +654,14 @@ html[data-acento="creme"]{--accent:#F0DFA8}
   background:transparent;border:1px solid var(--tm-linha-2);border-radius:2px;padding:6px 12px;cursor:pointer;
   transition:color .25s,border-color .25s,background-color .25s}
 .deck-imp button:hover{color:var(--tm-ink);border-color:var(--accent);background:var(--accent-dim)}
-@media(max-width:760px){ .deck-imp{display:none} }
+@media screen and (max-width:760px){ .deck-imp{display:none} }
 @page{size:A4 landscape;margin:9mm}
 html.imprimindo,html.imprimindo body{height:auto;overflow:visible;background:#fff!important}
 html.imprimindo body{display:block}
 html.imprimindo *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 html.imprimindo #tema-campo,html.imprimindo #tema-vig,html.imprimindo #tema-barra,html.imprimindo header.top,
 html.imprimindo nav.toc,html.imprimindo .deck-nav,html.imprimindo .mf{display:none!important}
-html.imprimindo .deck{width:1060px;position:static;flex:none}
+html.imprimindo .deck{width:1040px;position:static;flex:none}
 html.imprimindo .slide{position:relative;inset:auto;opacity:1;visibility:visible;transform:none;transition:none;
   animation:none;height:auto;min-height:0;overflow:visible;background:#fff!important;color:var(--ink);
   padding:0 0 6px;gap:8px;break-after:page;page-break-after:always}
@@ -679,11 +679,13 @@ html.imprimindo table.tb td.l{min-width:0;white-space:normal}
 html.imprimindo table.tb td.d small{display:block;margin:0;font-size:.85em}
 html.imprimindo table.tb th{padding:4px 5px}
 html.imprimindo table.tb tr{break-inside:avoid;page-break-inside:avoid}
-html.imprimindo .gr-grid{flex:none;grid-auto-rows:320px}
-html.imprimindo .gr-card{box-shadow:none;border:1px solid var(--line)}
-html.imprimindo .ind-card{height:290px}
-html.imprimindo .pg-sep{break-before:avoid}
-html.imprimindo .pg-ind{break-inside:avoid;page-break-inside:avoid}
+html.imprimindo .gr-grid,html.imprimindo .gr-grid.tres{flex:none;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:300px}
+html.imprimindo .gr-card{box-shadow:none;border:1px solid var(--line);break-inside:avoid;page-break-inside:avoid}
+html.imprimindo .gr-nome{font-size:13px} html.imprimindo .gr-real{font-size:11px} html.imprimindo .gr-leg{font-size:10.5px}
+html.imprimindo .ind-card{break-inside:avoid;page-break-inside:avoid}
+html.imprimindo .ind-card{height:250px}
+html.imprimindo .pg-fim{break-inside:avoid;page-break-inside:avoid}
+html.imprimindo .pg-sep{margin-top:14px}
 
 /* ---------- fundo ---------- */
 html{background:var(--tm-void)}
@@ -1335,7 +1337,9 @@ function estreito(){ return window.innerWidth<760; }
 function minW(n){ return estreito() ? 330 : n; }
 function empilhado(card){ return getComputedStyle(card).gridTemplateColumns.split(" ").length<2; }
 // o texto dos gráficos cresce com a tela (TV de 1920×1080 ≈ 1,3×) e nunca fica abaixo do de notebook
-function escala(){ return estreito() ? 1 : Math.max(1, Math.min(1.4, window.innerWidth/1480, window.innerHeight/830)); }
+// na impressão (folha A4) os gráficos são desenhados na escala 1, qualquer que seja a tela
+function escala(){ return estreito() || document.documentElement.classList.contains("imprimindo") ? 1 :
+  Math.max(1, Math.min(1.4, window.innerWidth/1480, window.innerHeight/830)); }
 function fz(n){ return Math.round(n*escala()*10)/10; }
 function svgNovo(card){ var svg=E.add(card,"svg",{}); svg.setAttribute("preserveAspectRatio","xMidYMid meet"); return svg; }
 function tituloPainel(svg,W,s,direita){
@@ -2267,7 +2271,7 @@ function paginaProg(id){
   var o=PAG_PROG[id], p=progDe(o.p), rolo=document.getElementById(id+"-rolo");
   if(!p){ rolo.innerHTML=""; return; }
   var topo=rolo.scrollTop;
-  rolo.innerHTML=tabelaProg(p,o)+"<div class='pg-sep'>Indicadores</div><div class='pg-ind'></div>";
+  rolo.innerHTML=tabelaProg(p,o)+"<div class='pg-fim'><div class='pg-sep'>Indicadores</div><div class='pg-ind'></div></div>";
   // a altura rola; a largura não: a letra diminui até a tabela caber na largura
   var tb=rolo.querySelector("table"), f=parseFloat(getComputedStyle(tb).fontSize);
   while(tb.offsetWidth>rolo.clientWidth && f>11){ f-=0.5; tb.style.fontSize=f+"px"; }
