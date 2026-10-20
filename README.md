@@ -72,6 +72,14 @@ zebradas; subtotal em cinza, total em amarelo; dias de atraso acima de 20 em ver
 **% concluída** de cada linha em barra. O cabeçalho fica preso no alto enquanto a tabela
 rola, e a letra só diminui se a tabela não couber na largura. Coluna sem nenhum valor
 nos quadros da página não aparece (ex.: cana muda, na adubação).
+
+Os indicadores do fim de cada página seguem o padrão dos gráficos da diretoria (o mesmo
+do `comparativo_moagem`): título dentro do gráfico, grade com eixo, colunas com o topo
+arredondado, valor em cima e a pílula da % sobre a área do programa (verde, âmbar ou
+vermelho, como a meta). Cores fixas: azul-marinho é a área do programa (colhida, aberta,
+a tratar), dourado o que foi feito (realizado/aplicado; dourado-claro a parte manual ou
+a outra aplicação), vermelho o que falta (laranja: a realizar com menos de 20 dias) e
+cinza-azulado o que é contexto (a colher, reforma, fornecedor, cata mato, catação).
 A data de atualização da planilha vai no alto de cada página dos programas.
 
 O **modal da operação** tem três abas:

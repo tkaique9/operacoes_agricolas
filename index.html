@@ -429,44 +429,41 @@ table.hm tr.tot td{background:#FFF3D0;font-weight:700;color:var(--navy);border-t
 .at-card p{margin:0;font-size:13px;color:var(--mut);line-height:1.45}
 
 /* programas da safra e adubação: a página rola (tabela e, no fim, os indicadores); o
-   cabeçalho da tabela fica preso em cima. Colunas em grupos, com linha entre elas */
+   cabeçalho da tabela fica preso em cima. Mesmo padrão da tabela da Semana: grupos de
+   colunas com título, linha entre as colunas, quadro (região, equipe) como as linhas
+   de operação — fundo cinza-claro e faixa à esquerda —, subtotal cinza e total amarelo */
 .pg-card{flex-direction:column;padding:0;min-height:0}
-.pg-rolo{flex:1 1 auto;min-height:0;overflow:auto;padding:0 12px 12px}
+.pg-rolo{flex:1 1 auto;min-height:0;overflow:auto;padding:0 12px 14px}
 table.tb.pg{font-size:15px}
 table.tb.pg td{height:auto;padding:5px 12px;line-height:1.25}
 table.tb.pg th{padding:6px 12px;line-height:1.2}
-table.tb.pg td.tx{text-align:left;color:var(--navy);white-space:nowrap}
-table.tb.pg td.prop{white-space:normal;min-width:170px}
+table.tb.pg td.tx{text-align:left;white-space:nowrap}
+table.tb.pg td.prop{white-space:normal;min-width:170px;color:var(--navy)}
 table.tb.pg td.c{text-align:center}
 table.tb.pg td.atr{color:var(--red);font-weight:700}
 table.tb.pg td.zero{color:#C3C9D6;font-weight:400}
-table.tb.pg td.obs{white-space:normal;font-size:.85em;color:var(--red);font-weight:700;min-width:130px}
-table.tb.pg tbody tr:nth-child(even) td{background:#F6F7FA}
-table.tb.pg tr.sub td{background:#E9EDF5!important;font-weight:700;color:var(--navy);border-top:1px solid #B9C2D4}
-table.tb.pg tr.tot td{background:#FFF3D0!important}
-table.tb.pg tr.sec td{background:#1E3566!important;color:#fff;font-weight:700;text-align:left;letter-spacing:.05em;
-  text-transform:uppercase;font-size:.86em;padding:7px 12px;border-top:10px solid #fff}
-table.tb.pg tbody tr.sec:first-child td{border-top:0}
+table.tb.pg td.obs{white-space:normal;font-size:.86em;color:var(--mut);font-weight:600;min-width:130px}
+table.tb.pg tr.sub td{background:#F7F8FB;font-weight:700;color:var(--navy);border-top:1px solid #C9D0DE}
+table.tb.pg tr.sub td.tx{padding-left:22px}
+table.tb.pg tr.sec td{background:#F1F3F8;font-weight:700;color:var(--navy);border-top:2px solid #D6DAE2;
+  text-align:left;text-transform:uppercase;letter-spacing:.04em;font-size:.92em;box-shadow:inset 5px 0 0 var(--accent);padding-left:15px}
 table.tb.pg .bc .trk{height:11px}
-/* indicadores no fim da página */
-.pg-sep{margin:22px 0 10px;padding-top:12px;border-top:3px solid var(--navy);font-size:12px;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--navy)}
-.pg-ind{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:12px}
-.ind-card{min-width:0;display:flex;flex-direction:column;background:#fff;color:var(--ink);border:1px solid var(--line);
-  border-top:3px solid var(--accent);border-radius:4px;padding:10px 14px 6px;height:340px}
-.ind-t{font-size:14px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ind-s{margin-left:10px;font-weight:600;color:var(--mut);text-transform:none;letter-spacing:0;font-size:.86em}
-.ind-leg{display:flex;flex-wrap:wrap;gap:2px 14px;font-size:11.5px;color:var(--mut);margin-top:3px}
-.ind-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
-.ind-g{flex:1 1 auto;min-height:0}
-.ind-g svg{display:block;width:100%;height:100%}
+/* indicadores no fim da página: painéis lado a lado, separados por linha, cada um com
+   o título dentro do gráfico, como os do comparativo */
+.pg-sep{display:flex;align-items:center;gap:10px;margin:26px 0 6px;font-size:12px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--navy)}
+.pg-sep::before{content:"";width:26px;height:2px;background:var(--accent)}
+.pg-sep::after{content:"";flex:1 1 auto;height:1px;background:var(--line)}
+.pg-ind{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr))}
+.ind-card{min-width:0;height:360px;padding:4px 6px 0}
+.ind-card+.ind-card{border-left:1px solid var(--line)}
+.ind-card svg{display:block;width:100%;height:100%}
 @media(min-width:1600px) and (min-height:860px){
   table.tb.pg{font-size:19px}
   .pg-sep{font-size:15px}
-  .ind-card{height:420px}
-  .ind-t{font-size:17px} .ind-leg{font-size:14px}
+  .ind-card{height:450px}
 }
-@media(max-width:760px){ .pg-ind{grid-template-columns:minmax(0,1fr)} .ind-card{height:320px} table.tb.pg{font-size:13px} }
+@media(max-width:760px){ .pg-ind{grid-template-columns:minmax(0,1fr)} .ind-card{height:330px} .ind-card+.ind-card{border-left:0;border-top:1px solid var(--line)} table.tb.pg{font-size:13px} }
 
 /* resumo gráfico: um painel por operação, em grade 2 × 2 */
 .gr-grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:12px}
@@ -1897,120 +1894,188 @@ function tabelaProg(p,o){
   return h+"</tbody></table>";
 }
 
-/* ---------- indicadores: colunas com o valor em cima, como os gráficos da impressão ---------- */
-var CB = {base:E.NAVY, aColher:"#D68910", reforma:"#9AA3B5", realizada:E.GREEN, aRealizar:E.RED, fornecedor:"#3FA79C",
-          cataMato:"#8CC08B", realMec:"#1E7A4C", catManual:"#D68910", realMan:"#1F5F99", realTotal:"#2E86C1",
-          menor20:"#E5A33A", falta:"#8E2A1E", localizada:"#2E8B57", cocho:"#3FA79C"};
+/* ---------- indicadores no padrão CRV: colunas com topo arredondado sobre a grade,
+   valor em cima, rótulo embaixo e a pílula da % sobre a área do programa. Cores:
+   azul-marinho é a área do programa, dourado o que foi feito, vermelho o que falta e
+   cinza-azulado o que é contexto (a colher, reforma, fornecedor...) ---------- */
+var CB = {area:E.NAVY, feito:E.GOLD, feito2:"#E3CB7E", falta:E.RED, falta2:"#D68910", ctx:E.C25};
 function rotuloQuebrado(svg,cx,y,s,maxW,fs){
   var max=Math.max(4,Math.floor(maxW/(fs*0.56))), l=[""];
   s.split(" ").forEach(function(w){ var c=l[l.length-1];
     if(c && (c+" "+w).length>max && l.length<2) l.push(w); else l[l.length-1]=c?c+" "+w:w; });
-  l.forEach(function(t,k){ E.txt(svg,cx,y+k*fs*1.15,t,{"text-anchor":"middle","font-size":fs,"font-weight":"600",fill:E.NAVY}); });
+  l.forEach(function(t,k){ E.txt(svg,cx,y+k*fs*1.28,t,{"text-anchor":"middle","font-size":fs,"font-weight":"600",fill:"#2B2B2B"}); });
 }
-function colunas(svg,W,H,itens){
-  E.limpa(svg); svg.setAttribute("viewBox","0 0 "+W+" "+H);
-  var fs=fz(12), padT=fs*2, padB=fs*3.2, base=H-padB, alt=base-padT;
-  var max=Math.max.apply(null,itens.map(function(i){ return i.v||0; }).concat([1]));
-  var slot=(W-16)/itens.length, bw=Math.min(slot*0.6,fz(110));
-  E.add(svg,"line",{x1:8,x2:W-8,y1:base,y2:base,stroke:"#C9D0DE"});
-  itens.forEach(function(it,i){
-    var cx=8+slot*(i+0.5), v=it.v||0, h=v>0?Math.max(2,alt*v/max):0;
-    E.add(svg,"rect",{x:cx-bw/2,y:base-h,width:bw,height:h,rx:2,fill:it.cor});
-    E.txt(svg,cx,base-h-fs*0.45,fHa2(v),{"text-anchor":"middle","font-size":fs*1.08,"font-weight":"700",fill:E.NAVY});
-    rotuloQuebrado(svg,cx,base+fs*1.35,it.rot,slot-6,fs);
+function pilulaPct(svg,cx,cy,p,falta){
+  if(p==null || !isFinite(p)) return;
+  var fs=fz(11.5), t=fPct(p), w=t.length*fs*0.62+fs*1.5, h=fs*1.7;
+  var cor = falta ? (p>0?E.RED:E.MUT) : corSt(p), fundo = cor===E.GREEN?"#EAF5EE":cor===E.RED?"#FBEDEB":cor===E.MUT?"#F1F3F8":"#FBF1E1";
+  E.add(svg,"rect",{x:cx-w/2,y:cy-h/2,width:w,height:h,rx:h/2,fill:fundo,stroke:cor,"stroke-width":1});
+  E.txt(svg,cx,cy+fs*0.36,t,{"text-anchor":"middle","font-size":fs,"font-weight":"700",fill:cor});
+}
+function legendaSVG(svg,x,y,itens,maxW){
+  var fs=fz(11), cx=x, cy=y;
+  itens.forEach(function(it){
+    var w=fs*1.3+it.rot.length*fs*0.56+fs*1.3;
+    if(cx>x && cx+w>x+maxW){ cx=x; cy+=fs*1.55; }
+    E.add(svg,"rect",{x:cx,y:cy-fs*0.82,width:fs*0.95,height:fs*0.95,rx:2,fill:it.cor});
+    E.txt(svg,cx+fs*1.3,cy,it.rot,{"font-size":fs,"font-weight":"600",fill:E.MUT});
+    cx+=w;
+  });
+  return cy+fs*0.7;
+}
+function somaPartes(it){ return it.partes ? soma(it.partes,function(q){ return q.v; }) : (it.v||0); }
+function fVal(v){ return v>=100 ? E.fmtInt(v) : E.fmtDec(v||0,v>=10?1:2); }
+// barra (simples ou empilhada) com o topo arredondado na última parte
+function barra(svg,x,bw,y,base,it){
+  var partes=it.partes||[{v:it.v||0,cor:it.cor}], acc=0;
+  partes.forEach(function(q,k){
+    if(!(q.v>0)) return;
+    var y0=y(acc+q.v), y1=y(acc), ultima=!partes.slice(k+1).some(function(r){ return r.v>0; });
+    E.add(svg,"path",{d: ultima ? E.barraTopo(x,y0,bw,y1-y0,4) : "M"+x+","+y1+" L"+x+","+y0+" L"+(x+bw)+","+y0+" L"+(x+bw)+","+y1+" Z", fill:q.cor});
+    acc+=q.v;
   });
 }
-function colunasGrupo(svg,W,H,grupos,series){
+// grade e eixo da esquerda; devolve a posição y de um valor
+function grade(svg,W,padL,padR,top,base,max){
+  var mx=E.niceAxis(max*1.1,4);
+  function y(v){ return base-v/mx*(base-top); }
+  for(var k=0;k<=4;k++){
+    var v=mx*k/4, yy=y(v);
+    E.add(svg,"line",{x1:padL,x2:W-padR,y1:yy,y2:yy,stroke:k?E.GRID:"#C3C9D6"});
+    E.txt(svg,padL-8,yy+fz(4),v>=1000?E.fmtDec(v/1000,v%1000?1:0)+" mil":E.fmtInt(v),{"text-anchor":"end","font-size":fz(10.5),fill:E.MUT});
+  }
+  return y;
+}
+// o.itens: [{rot, v | partes:[{v,cor}], cor, pct, falta}]
+function graficoColunas(svg,W,H,o){
   E.limpa(svg); svg.setAttribute("viewBox","0 0 "+W+" "+H);
-  var fs=fz(11), padT=fs*2, padB=fs*2.2, base=H-padB, alt=base-padT;
-  var max=Math.max.apply(null,[1].concat.apply([1],grupos.map(function(g){ return series.map(function(sr){ return g.v[sr.k]||0; }); })));
-  var slotG=(W-16)/grupos.length, slot=slotG*0.86/series.length, bw=Math.min(slot*0.82,fz(54));
-  E.add(svg,"line",{x1:8,x2:W-8,y1:base,y2:base,stroke:"#C9D0DE"});
-  grupos.forEach(function(g,gi){
-    var x0=8+slotG*gi+slotG*0.07;
-    series.forEach(function(sr,k){
-      var cx=x0+slot*(k+0.5), v=g.v[sr.k]||0, h=v>0?Math.max(2,alt*v/max):0;
-      E.add(svg,"rect",{x:cx-bw/2,y:base-h,width:bw,height:h,rx:2,fill:sr.cor});
-      E.txt(svg,cx,base-h-fs*0.4,fHa(v),{"text-anchor":"middle","font-size":fs,"font-weight":"700",fill:E.NAVY});
+  var top=tituloPainel(svg,W,o.titulo,o.direita);
+  if(o.legenda) top=legendaSVG(svg,16,top+fz(2),o.legenda,W-32);
+  top+=fz(26);
+  var temPct=o.itens.some(function(it){ return it.pct!=null; });
+  var padL=fz(52), padR=fz(12), base=H-fz(temPct?62:40);
+  var y=grade(svg,W,padL,padR,top,base,Math.max.apply(null,o.itens.map(somaPartes).concat([1])));
+  var slot=(W-padL-padR)/o.itens.length, bw=Math.min(slot*0.56,fz(78));
+  o.itens.forEach(function(it,i){
+    var cx=padL+slot*(i+0.5), v=somaPartes(it);
+    barra(svg,cx-bw/2,bw,y,base,it);
+    E.txt(svg,cx,y(v)-fz(7),fVal(v),{"text-anchor":"middle","font-size":fz(12.5),"font-weight":"700",fill:E.NAVY});
+    rotuloQuebrado(svg,cx,base+fz(17),it.rot,slot-6,fz(11.5));
+    if(it.pct!=null) pilulaPct(svg,cx,base+fz(48),it.pct,it.falta);
+  });
+}
+// o.grupos: [{rot, barras:[item], pct}] — as barras de cada grupo lado a lado
+function graficoGrupos(svg,W,H,o){
+  E.limpa(svg); svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  var top=tituloPainel(svg,W,o.titulo,o.direita);
+  if(o.legenda) top=legendaSVG(svg,16,top+fz(2),o.legenda,W-32);
+  top+=fz(24);
+  var padL=fz(52), padR=fz(12), base=H-fz(58);
+  var max=Math.max.apply(null,[1].concat.apply([1],o.grupos.map(function(g){ return g.barras.map(somaPartes); })));
+  var y=grade(svg,W,padL,padR,top,base,max);
+  var slotG=(W-padL-padR)/o.grupos.length;
+  o.grupos.forEach(function(g,gi){
+    var n=g.barras.length, bw=Math.min(slotG*0.7/n,fz(46)), gap=bw*0.22, larg=n*bw+(n-1)*gap;
+    var cx=padL+slotG*(gi+0.5), x0=cx-larg/2;
+    g.barras.forEach(function(it,k){
+      var x=x0+k*(bw+gap), v=somaPartes(it);
+      barra(svg,x,bw,y,base,it);
+      E.txt(svg,x+bw/2,y(v)-fz(6),fVal(v),{"text-anchor":"middle","font-size":fz(10.5),"font-weight":"700",fill:E.NAVY});
     });
-    E.txt(svg,8+slotG*(gi+0.5),base+fs*1.5,g.rot.toUpperCase(),{"text-anchor":"middle","font-size":fs*1.1,"font-weight":"700",fill:E.NAVY,"letter-spacing":".06em"});
-    if(gi) E.add(svg,"line",{x1:8+slotG*gi,x2:8+slotG*gi,y1:padT,y2:base,stroke:"#E7EAF0"});
+    E.txt(svg,cx,base+fz(18),g.rot,{"text-anchor":"middle","font-size":fz(12.5),"font-weight":"700",fill:"#2B2B2B"});
+    if(g.pct!=null) pilulaPct(svg,cx,base+fz(42),g.pct);
   });
 }
-function cartaoInd(box,titulo,sub,leg){
+function cartaoInd(box){
   var d=document.createElement("div"); d.className="ind-card";
-  d.innerHTML="<div class='ind-t'>"+E.esc(titulo)+(sub?"<span class='ind-s'>"+E.esc(sub)+"</span>":"")+"</div>"+
-    (leg?"<div class='ind-leg'>"+leg.map(function(sr){ return "<span><i style='background:"+sr.cor+"'></i>"+E.esc(sr.rot)+"</span>"; }).join("")+"</div>":"")+
-    "<div class='ind-g'><svg role='img' aria-label='"+E.esc(titulo)+"'></svg></div>";
+  d.innerHTML="<svg role='img'></svg>";
   box.appendChild(d);
   return d.querySelector("svg");
 }
-// os cartões entram todos antes de medir, para a grade já ter o tamanho final
+// os painéis entram todos antes de medir, para a grade já ter o tamanho final
 function desenhaCartoes(box,lista){
-  box.style.setProperty("--n", Math.min(3,Math.max(1,lista.length)));
+  box.style.setProperty("--n", Math.min(3,Math.max(2,lista.length)));
+  lista.forEach(function(c){ c[0]=cartaoInd(box); });
   lista.forEach(function(c){ var r=c[0].getBoundingClientRect();
-    c[1](c[0],Math.max(estreito()?320:260,Math.round(r.width)),Math.max(160,Math.round(r.height))); });
+    var W=Math.max(estreito()?320:280,Math.round(r.width)), H=Math.max(220,Math.round(r.height));
+    c[0].setAttribute("aria-label",c[1].titulo);
+    (c[1].grupos?graficoGrupos:graficoColunas)(c[0],W,H,c[1]); });
 }
-function indPre(p,box){
-  var t=ultimaTot(p).v, ex=p.extras||{}, cards=[];
-  cards.push([cartaoInd(box,"Pré-emergência cana soca","total da safra"),function(svg,W,H){ colunas(svg,W,H,[
-    {rot:"Área colhida",v:t.colhida,cor:CB.base},{rot:"Área a colher",v:t.aColher,cor:CB.aColher},
-    {rot:"Área reforma",v:t.reforma,cor:CB.reforma},{rot:"Área realizada",v:t.realizada,cor:CB.realizada},
-    {rot:"A realizar",v:t.aRealizar,cor:CB.aRealizar},{rot:"Área fornecedor",v:t.fornecedor,cor:CB.fornecedor}]); }]);
-  var SER=[{k:"colhida",rot:"Área colhida",cor:CB.base},{k:"aColher",rot:"Área a colher",cor:CB.aColher},
-    {k:"reforma",rot:"Área reforma",cor:CB.reforma},{k:"realizada",rot:"Área realizada",cor:CB.realizada},
-    {k:"aRealizar",rot:"Falta aplicar",cor:CB.aRealizar}];
+function frac(v,b){ return b>0 ? (v||0)/b : null; }
+function indPre(p){
+  var t=ultimaTot(p).v, ex=p.extras||{}, out=[];
+  out.push([null,{titulo:"Pré-emergência — total da safra", itens:[
+    {rot:"Área colhida",v:t.colhida,cor:CB.area},
+    {rot:"Área realizada",v:t.realizada,cor:CB.feito,pct:frac(t.realizada,t.colhida)},
+    {rot:"A realizar",v:t.aRealizar,cor:CB.falta,pct:frac(t.aRealizar,t.colhida),falta:true},
+    {rot:"Área a colher",v:t.aColher,cor:CB.ctx},{rot:"Área reforma",v:t.reforma,cor:CB.ctx},
+    {rot:"Área fornecedor",v:t.fornecedor,cor:CB.ctx}]}]);
   var subs=linhasDe(p,"sub");
-  if(subs.length) cards.push([cartaoInd(box,"Por região","",SER),function(svg,W,H){
-    colunasGrupo(svg,W,H,subs.map(function(l){ return {rot:l.rot.replace(/^Subtotal\s*/i,""), v:l.v}; }),SER); }]);
-  if(ex.Geral) cards.push([cartaoInd(box,"Ordens","encerradas e abertas"),function(svg,W,H){ colunas(svg,W,H,[
-    {rot:"Total encerrado",v:ex["Total Encerrado"],cor:CB.realizada},{rot:"Total aberto",v:ex["Total Aberto"],cor:CB.aColher},
-    {rot:"Geral",v:ex.Geral,cor:CB.base}]); }]);
-  return cards;
+  if(subs.length) out.push([null,{titulo:"Por região", legenda:[{cor:CB.area,rot:"Área colhida"},{cor:CB.feito,rot:"Realizada"},{cor:CB.falta,rot:"A realizar"}],
+    grupos:subs.map(function(l){ return {rot:l.rot.replace(/^Subtotal\s*/i,""), pct:frac(l.v.realizada,l.v.colhida), barras:[
+      {v:l.v.colhida,cor:CB.area},{v:l.v.realizada,cor:CB.feito},{v:l.v.aRealizar,cor:CB.falta}]}; })}]);
+  if(ex.Geral) out.push([null,{titulo:"Ordens de serviço", itens:[
+    {rot:"Geral",v:ex.Geral,cor:CB.area},
+    {rot:"Encerradas",v:ex["Total Encerrado"],cor:CB.feito,pct:frac(ex["Total Encerrado"],ex.Geral)},
+    {rot:"Abertas",v:ex["Total Aberto"],cor:CB.falta,pct:frac(ex["Total Aberto"],ex.Geral),falta:true}]}]);
+  return out;
 }
-function indBord(p,box){
+function indBord(p){
   var b=ultimaTot(p).v;
-  return [[cartaoInd(box,"Reforço bordadura cana soca","total da safra"),function(svg,W,H){ colunas(svg,W,H,[
-    {rot:"Área aberta",v:b.aberta,cor:CB.base},{rot:"Área realizada",v:b.realizada,cor:CB.realizada},
-    {rot:"A realizar",v:b.aRealizar,cor:CB.aRealizar}]); }]];
+  return [[null,{titulo:"Reforço bordadura — total da safra", itens:[
+    {rot:"Área aberta",v:b.aberta,cor:CB.area},
+    {rot:"Área realizada",v:b.realizada,cor:CB.feito,pct:frac(b.realizada,b.aberta)},
+    {rot:"A realizar",v:b.aRealizar,cor:CB.falta,pct:frac(b.aRealizar,b.aberta),falta:true}]}]];
 }
-function indCat1(p,box){
-  var t=ultimaTot(p).v, reg=(p.extras||{}).regioes, cards=[];
-  cards.push([cartaoInd(box,"Catação química cana soca","total da safra"),function(svg,W,H){ colunas(svg,W,H,[
-    {rot:"Área aberta",v:t.aberta,cor:CB.base},{rot:"Cata mato MEC",v:t.cataMatoMec,cor:CB.cataMato},
-    {rot:"Área realizada MEC",v:t.realMec,cor:CB.realMec},{rot:"Catação manual",v:t.catManual,cor:CB.catManual},
-    {rot:"Área realizada MAN",v:t.realMan,cor:CB.realMan},{rot:"Realizado total",v:t.realTotal,cor:CB.realTotal}]); }]);
-  if(reg){
-    var SER=[{k:"colhida",rot:"Área colhida",cor:CB.base},{k:"realizada",rot:"Área realizada",cor:CB.realizada},
-      {k:"menor20",rot:"A realizar < 20 dias",cor:CB.menor20},{k:"maior20",rot:"A realizar > 20 dias",cor:CB.aRealizar},
-      {k:"faltaAplicar",rot:"Falta aplicar",cor:CB.falta}];
-    cards.push([cartaoInd(box,"Por região","",SER),function(svg,W,H){
-      colunasGrupo(svg,W,H,Object.keys(reg).sort().map(function(k){ return {rot:"Região "+k, v:reg[k]}; }),SER); }]);
-  }
-  return cards;
+function indCat1(p){
+  var t=ultimaTot(p).v, reg=(p.extras||{}).regioes, out=[];
+  out.push([null,{titulo:"1ª catação — total da safra",
+    legenda:[{cor:CB.feito,rot:"Mecanizada"},{cor:CB.feito2,rot:"Manual"},{cor:CB.falta,rot:"> 20 dias"},{cor:CB.falta2,rot:"< 20 dias"}],
+    itens:[
+    {rot:"Área aberta",v:t.aberta,cor:CB.area},
+    {rot:"Realizado total",partes:[{v:t.realMec,cor:CB.feito},{v:t.realMan,cor:CB.feito2}],pct:frac(t.realTotal,t.aberta)},
+    {rot:"A realizar",partes:[{v:t.maior20,cor:CB.falta},{v:t.menor20,cor:CB.falta2}],pct:frac((t.maior20||0)+(t.menor20||0),t.aberta),falta:true},
+    {rot:"Cata mato MEC",v:t.cataMatoMec,cor:CB.ctx},{rot:"Catação manual",v:t.catManual,cor:CB.ctx}]}]);
+  if(reg) out.push([null,{titulo:"Por região",
+    legenda:[{cor:CB.area,rot:"Área colhida"},{cor:CB.feito,rot:"Realizada"},{cor:CB.falta,rot:"> 20 dias"},{cor:CB.falta2,rot:"< 20 dias"}],
+    grupos:Object.keys(reg).sort().map(function(k){ var r=reg[k];
+      return {rot:"Região "+k, pct:frac(r.realizada,r.colhida), barras:[
+        {v:r.colhida,cor:CB.area},{v:r.realizada,cor:CB.feito},{partes:[{v:r.maior20,cor:CB.falta},{v:r.menor20,cor:CB.falta2}]}]}; })}]);
+  return out;
 }
-function indLoc(p,box){
-  var loc=ultimaTot(p,/Localizada/i,/LOCALIZADA/), qm=ultimaTot(p,/Queima/i), cards=[];
-  if(loc) cards.push([cartaoInd(box,"Resumo — localizada",""),function(svg,W,H){ colunas(svg,W,H,[
-    {rot:"Área a tratar",v:loc.v.aTratar,cor:CB.base},{rot:"Área de reforma",v:loc.v.reforma,cor:CB.reforma},
-    {rot:"Aplicada localizada",v:loc.v.localizada,cor:CB.localizada},{rot:"A realizar",v:loc.v.aRealizar,cor:CB.aRealizar}]); }]);
-  if(qm) cards.push([cartaoInd(box,"Área de queima",""),function(svg,W,H){ colunas(svg,W,H,[
-    {rot:"Área a tratar",v:qm.v.aTratar,cor:CB.base},{rot:"A realizar",v:qm.v.aRealizar,cor:CB.aRealizar}]); }]);
-  return cards;
+function aplicada(v,cocho){ // a parte principal vem primeiro (embaixo, dourado forte)
+  return cocho ? [{v:v.cocho,cor:CB.feito},{v:v.localizada,cor:CB.feito2},{v:v.canaMuda,cor:CB.ctx}]
+               : [{v:v.localizada,cor:CB.feito},{v:v.cocho,cor:CB.feito2},{v:v.canaMuda,cor:CB.ctx}];
 }
-function indCocho(p,box){
-  var al=ultimaTot(p,/Alencar/i,/ALENCAR/), fb=ultimaTot(p,/F[áa]bio/i), rs=(p.extras||{}).resumo, cards=[];
-  if(al) cards.push([cartaoInd(box,"Resumo Alencar — cocho","regiões 1 e 2"),function(svg,W,H){ colunas(svg,W,H,[
-    {rot:"Área a tratar",v:al.v.aTratar,cor:CB.base},{rot:"Aplicada localizada",v:al.v.localizada,cor:CB.localizada},
-    {rot:"Aplicada cocho",v:al.v.cocho,cor:CB.cocho},{rot:"A realizar",v:al.v.aRealizar,cor:CB.aRealizar}]); }]);
-  if(fb) cards.push([cartaoInd(box,"Resumo Fábio do Prado — cocho","região 3"),function(svg,W,H){ colunas(svg,W,H,[
-    {rot:"Área a tratar",v:fb.v.aTratar,cor:CB.base},{rot:"Aplicada cocho",v:fb.v.cocho,cor:CB.cocho},
-    {rot:"A realizar",v:fb.v.aRealizar,cor:CB.aRealizar}]); }]);
-  if(rs) cards.push([cartaoInd(box,"Geral — resumo final da adubação",""),function(svg,W,H){ colunas(svg,W,H,[
-    {rot:"Área a tratar",v:rs.aTratar,cor:CB.base},{rot:"Área de reforma",v:rs.reforma,cor:CB.reforma},
-    {rot:"Aplicada localizada",v:rs.localizada,cor:CB.localizada},{rot:"Aplicada cocho",v:rs.cocho,cor:CB.cocho},
-    {rot:"A realizar",v:rs.aRealizar,cor:CB.aRealizar}]); }]);
-  return cards;
+function aplicadaTot(v){ return (v.localizada||0)+(v.cocho||0)+(v.canaMuda||0); }
+function indLoc(p){
+  var loc=ultimaTot(p,/Localizada/i,/LOCALIZADA/), qm=ultimaTot(p,/Queima/i), out=[];
+  if(loc){ var v=loc.v;
+    out.push([null,{titulo:"Adubação localizada — total", legenda:[{cor:CB.feito,rot:"Localizada"},{cor:CB.feito2,rot:"Cocho"}], itens:[
+      {rot:"Área a tratar",v:v.aTratar,cor:CB.area},
+      {rot:"Aplicada",partes:aplicada(v,false),pct:frac(aplicadaTot(v),v.aTratar)},
+      {rot:"A realizar",v:v.aRealizar,cor:CB.falta,pct:frac(v.aRealizar,v.aTratar),falta:true},
+      {rot:"Área de reforma",v:v.reforma,cor:CB.ctx}]}]); }
+  if(qm) out.push([null,{titulo:"Área de queima", itens:[
+    {rot:"Área a tratar",v:qm.v.aTratar,cor:CB.area},
+    {rot:"A realizar",v:qm.v.aRealizar,cor:CB.falta,pct:frac(qm.v.aRealizar,qm.v.aTratar),falta:true}]}]);
+  return out;
+}
+function indCocho(p){
+  var al=ultimaTot(p,/Alencar/i,/ALENCAR/), fb=ultimaTot(p,/F[áa]bio/i), rs=(p.extras||{}).resumo, out=[];
+  function painel(titulo,v){ return [null,{titulo:titulo, legenda:[{cor:CB.feito,rot:"Cocho"},{cor:CB.feito2,rot:"Localizada"}], itens:[
+    {rot:"Área a tratar",v:v.aTratar,cor:CB.area},
+    {rot:"Aplicada",partes:aplicada(v,true),pct:frac(aplicadaTot(v),v.aTratar)},
+    {rot:"A realizar",v:v.aRealizar,cor:CB.falta,pct:frac(v.aRealizar,v.aTratar),falta:true},
+    {rot:"Área de reforma",v:v.reforma,cor:CB.ctx}]}]; }
+  if(al) out.push(painel("Alencar — regiões 1 e 2",al.v));
+  if(fb) out.push(painel("Fábio do Prado — região 3",fb.v));
+  if(rs) out.push([null,{titulo:"Geral — resumo final da adubação", legenda:[{cor:CB.feito2,rot:"Localizada"},{cor:CB.feito,rot:"Cocho"}], itens:[
+    {rot:"Área a tratar",v:rs.aTratar,cor:CB.area},
+    {rot:"Aplicada",partes:[{v:rs.cocho,cor:CB.feito},{v:rs.localizada,cor:CB.feito2}],pct:frac((rs.cocho||0)+(rs.localizada||0),rs.aTratar)},
+    {rot:"A realizar",v:rs.aRealizar,cor:CB.falta,pct:frac(rs.aRealizar,rs.aTratar),falta:true},
+    {rot:"Área de reforma",v:rs.reforma,cor:CB.ctx}]}]);
+  return out;
 }
 var PAG_PROG = {
   "pg-pre":  {p:"pre", ind:indPre},
@@ -2029,7 +2094,7 @@ function paginaProg(id){
   var tb=rolo.querySelector("table"), f=parseFloat(getComputedStyle(tb).fontSize);
   while(tb.offsetWidth>rolo.clientWidth && f>11){ f-=0.5; tb.style.fontSize=f+"px"; }
   var box=rolo.querySelector(".pg-ind");
-  desenhaCartoes(box,o.ind(p,box));
+  desenhaCartoes(box,o.ind(p));
   rolo.scrollTop=topo;
 }
 // data de atualização da planilha no alto de cada página dos programas
