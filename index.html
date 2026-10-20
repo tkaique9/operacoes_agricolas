@@ -448,6 +448,10 @@ table.tb.pg tr.sub td.tx{padding-left:22px}
 table.tb.pg tr.sec td{background:#F1F3F8;font-weight:700;color:var(--navy);border-top:2px solid #D6DAE2;
   text-align:left;text-transform:uppercase;letter-spacing:.04em;font-size:.92em;box-shadow:inset 5px 0 0 var(--accent);padding-left:15px}
 table.tb.pg .bc .trk{height:11px}
+table.tb.pg tr.geral td{background:var(--navy);color:#fff;font-weight:700;border-top:3px solid var(--gold)}
+table.tb.pg tr.geral td.zero{color:rgba(255,255,255,.45)}
+table.tb.pg tr.geral td em{color:#fff}
+table.tb.pg tr.geral .bc .trk{background:rgba(255,255,255,.18)}
 /* indicadores no fim da página: painéis lado a lado, separados por linha, cada um com
    o título dentro do gráfico, como os do comparativo */
 .pg-sep{display:flex;align-items:center;gap:10px;margin:26px 0 6px;font-size:12px;font-weight:700;
@@ -475,12 +479,9 @@ table.tb.pg .bc .trk{height:11px}
 .gr-nome::after{content:" \203A";color:var(--gold)}
 .gr-real{margin-left:auto;font-size:12px;font-weight:600;color:var(--mut);white-space:nowrap}
 .gr-real b{font-weight:700;font-variant-numeric:tabular-nums}
-/* três velocímetros: a meta da semana grande à esquerda; eficiência e mês à direita */
-.gr-vel{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);
-  grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:0 10px;margin:2px 0 4px}
-.gr-g{min-width:0;min-height:0}
-.gr-g1{grid-row:1 / span 2;border-right:1px solid var(--line)}
-.gr-g svg{display:block;width:100%;height:100%}
+/* o gráfico do painel: os três indicadores em barra à esquerda e as colunas do dia à direita */
+.gr-pn{flex:1 1 auto;min-height:0;margin:4px 0 4px}
+.gr-pn svg{display:block;width:100%;height:100%}
 .gr-leg{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:11px;color:var(--mut)}
 .gr-leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 .gr-leg b{font-weight:700;font-variant-numeric:tabular-nums}
@@ -490,7 +491,7 @@ table.tb td u.un{text-decoration:none;color:var(--mut);font-weight:400;font-size
 @media(min-width:1600px) and (min-height:860px){
   .gr-nome{font-size:17px} .gr-real{font-size:15px} .gr-leg{font-size:14px}
 }
-@media(max-width:760px){ .gr-grid{grid-template-columns:minmax(0,1fr);grid-auto-rows:auto} .gr-vel{flex:none;height:300px} }
+@media(max-width:760px){ .gr-grid{grid-template-columns:minmax(0,1fr);grid-auto-rows:auto} .gr-pn{flex:none;height:380px} }
 
 /* tabela da Semana: cada grupo de colunas tem título e linha forte à esquerda; as
    colunas de dentro, linha fina. O cabeçalho de duas linhas fica preso em cima inteiro */
@@ -1589,44 +1590,88 @@ function paginaSemana(){
   liga(tb,"tr[data-tot]",function(){ detalheOperacao(null); });
 }
 
-/* ---------- resumo gráfico: um painel por operação, para a diretoria ---------- */
-// velocímetro: meia-lua de 0 a o.max com as faixas de cor (o.zonas), o ponteiro no valor e
-// as marcas (meta, ritmo esperado, semana anterior)
-function velocimetro(svg,W,H,o){
-  E.limpa(svg); svg.setAttribute("viewBox","0 0 "+W+" "+H);
-  var fsT=Math.max(9.5,Math.min(fz(12),W*0.075)), fsV=Math.max(13,Math.min(fz(o.grande?36:22),W*(o.grande?0.16:0.14)));
-  var fsS=Math.max(9,Math.min(fz(11.5),W*0.065)), topo=fsT*1.4, rodape=fsV*1.05+(o.sub?fsS*1.5:0)+2, folga=Math.max(8,fsS*1.6);
-  var r=Math.max(18,Math.min(W/2-folga, H-topo-rodape-folga)), cx=W/2, cy=topo+folga+r, sw=r*0.2;
-  function pt(t,rr){ var a=Math.PI*(1-Math.min(Math.max(t,0),1)); return [cx+rr*Math.cos(a), cy-rr*Math.sin(a)]; }
-  function arco(t0,t1,cor){
-    var p0=pt(t0,r), p1=pt(t1,r);
-    E.add(svg,"path",{d:"M"+p0[0].toFixed(1)+","+p0[1].toFixed(1)+" A"+r.toFixed(1)+","+r.toFixed(1)+" 0 0 1 "+p1[0].toFixed(1)+","+p1[1].toFixed(1),
-      fill:"none",stroke:cor,"stroke-width":sw.toFixed(1)});
-  }
-  E.txt(svg,cx,fsT*1.05,o.titulo,{"text-anchor":"middle","font-size":fsT,"font-weight":"700",fill:E.MUT,"letter-spacing":".06em"});
-  arco(0,1,"#EEF0F5");
-  o.zonas.forEach(function(z){ if(z[1]>z[0]) arco(z[0]/o.max,Math.min(z[1],o.max)/o.max,z[2]); });
+/* ---------- resumo gráfico: um painel por operação, no padrão dos gráficos da
+   diretoria (comparativo): à esquerda os três indicadores em barra — a meta da semana
+   (com o traço da meta e a marca cinza da semana anterior), a eficiência e o mês contra
+   o ritmo esperado —; à direita o realizado de cada dia (dourado) ao lado do mesmo dia
+   da semana anterior (cinza), com a linha da meta do dia e a pílula da % ---------- */
+function corSt(p){ var st=status(p); return st==="medio" ? "#A6620A" : COR_ST[st]; }
+// indicador em barra: rótulo, valor grande, a barra até o valor e os traços das marcas
+function indicadorBarra(svg,x,y,w,o){
+  var fsR=fz(10.5), fsV=fz(22), fsS=fz(11);
+  E.txt(svg,x,y+fsR,o.rot,{"font-size":fsR,"font-weight":"700",fill:E.MUT,"letter-spacing":".08em"});
+  var t=E.txt(svg,x,y+fsR+fsV*1.22,o.valor,{"font-size":fsV,"font-weight":"700",fill:o.cor});
+  if(o.sub && w>=fz(170)) E.add(t,"tspan",{"font-size":fsS,"font-weight":"600",fill:E.MUT,dx:fz(8)},o.sub);
+  var by=y+fsR+fsV*1.22+fz(9), bh=fz(10);
+  E.add(svg,"rect",{x:x,y:by,width:w,height:bh,rx:bh/2,fill:"#EEF0F5"});
+  if(o.p>0) E.add(svg,"rect",{x:x,y:by,width:Math.max(bh,w*Math.min(o.p,o.max)/o.max),height:bh,rx:bh/2,fill:o.cor});
   (o.marcas||[]).forEach(function(m){
     if(m.v==null || !isFinite(m.v)) return;
-    var a=pt(m.v/o.max,r-sw/2-2), b=pt(m.v/o.max,r+sw/2+2);
-    E.add(svg,"line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:m.cor,"stroke-width":m.largura||3});
-    if(m.rotulo){ var c=pt(m.v/o.max,r+sw/2+fsS*0.95); E.txt(svg,c[0],c[1]+fsS*0.35,m.rotulo,{"text-anchor":"middle","font-size":fsS*0.9,"font-weight":"700",fill:m.cor}); }
+    var xm=x+w*Math.min(m.v,o.max)/o.max;
+    E.add(svg,"line",{x1:xm,x2:xm,y1:by-fz(4),y2:by+bh+fz(4),stroke:m.cor,"stroke-width":m.larg||2.5});
+    if(m.rot) E.txt(svg,xm,by+bh+fz(15),m.rot,{"text-anchor":"middle","font-size":fz(10),"font-weight":"700",fill:m.cor});
   });
-  if(o.v!=null && isFinite(o.v)){
-    var p=pt(o.v/o.max,r-sw*0.2);
-    E.add(svg,"line",{x1:cx,y1:cy,x2:p[0],y2:p[1],stroke:E.NAVY,"stroke-width":Math.max(2,r*0.05),"stroke-linecap":"round"});
-  }
-  E.add(svg,"circle",{cx:cx,cy:cy,r:Math.max(3,r*0.08),fill:E.NAVY});
-  E.txt(svg,cx,cy+fsV*1.02,o.valor,{"text-anchor":"middle","font-size":fsV,"font-weight":"700",fill:o.cor||E.NAVY});
-  if(o.sub) E.txt(svg,cx,cy+fsV*1.02+fsS*1.4,o.sub,{"text-anchor":"middle","font-size":fsS,fill:E.MUT});
 }
-function corSt(p){ var st=status(p); return st==="medio" ? "#A6620A" : COR_ST[st]; }
+// colunas do dia: semana anterior (cinza) e a semana (dourado), lado a lado
+function colunasSemana(svg,x0,y0,W,H,f){
+  var ks=diasVisiveis(f.porDia);
+  var padL=fz(44), top=y0+fz(20), base=y0+H-fz(50);
+  var max=E.niceAxis(Math.max.apply(null,f.porDia.concat(f.antDia,[f.metaDia,1]).map(function(v){ return v||0; }))*1.12,4);
+  function y(v){ return base-v/max*(base-top); }
+  for(var k=0;k<=4;k++){
+    var vv=max*k/4, yy=y(vv);
+    E.add(svg,"line",{x1:x0+padL,x2:x0+W-4,y1:yy,y2:yy,stroke:k?E.GRID:"#C3C9D6"});
+    E.txt(svg,x0+padL-7,yy+fz(4),E.fmtInt(vv),{"text-anchor":"end","font-size":fz(10),fill:E.MUT});
+  }
+  var slot=(W-padL-4)/ks.length, bw=Math.min(slot*0.32,fz(34)), gap=Math.min(slot*0.06,fz(5)), curto=slot<fz(70);
+  var rot=[];
+  ks.forEach(function(k,i){
+    var d=DIAS[k], cx=x0+padL+slot*(i+0.5), va=f.antDia[k]||0, v=f.porDia[k]||0;
+    if(va>0) E.add(svg,"path",{d:E.barraTopo(cx-gap/2-bw,y(va),bw,base-y(va),3),fill:E.C25});
+    if(v>0) E.add(svg,"path",{d:E.barraTopo(cx+gap/2,y(v),bw,base-y(v),3),fill:E.GOLD});
+    rot.push([cx+gap/2+bw/2,v]);
+    E.txt(svg,cx,base+fz(16),curto?diaSem(d):diaRot(d),{"text-anchor":"middle","font-size":fz(11),"font-weight":"700",fill:"#2B2B2B"});
+    var pm=f.metaDia&&temMeta(d)?v/f.metaDia:null;
+    if(pm!=null && v>0) pilulaPct(svg,cx,base+fz(36),pm);
+    linhaClicavel(svg,cx-slot/2+2,top,slot-4,base-top,function(){ detalheOperacao(f); },diaRot(d)+": "+fHa2(v)+" ha");
+  });
+  if(f.metaDia>0){
+    var ym=y(f.metaDia);
+    // o valor da meta do dia está no topo do painel; aqui fica só a linha
+    E.add(svg,"line",{x1:x0+padL,x2:x0+W-4,y1:ym,y2:ym,stroke:E.NAVY,"stroke-width":"1.6","stroke-dasharray":"6,4","pointer-events":"none"});
+  }
+  // o valor de cada dia por último, com contorno branco, legível por cima da linha da meta
+  rot.forEach(function(q){
+    if(!q[1]) return;
+    E.txt(svg,q[0],y(q[1])-fz(5),E.fmtInt(q[1]),{"text-anchor":"middle","font-size":fz(11),"font-weight":"700",fill:E.NAVY,
+      stroke:"#fff","stroke-width":fz(3),"stroke-linejoin":"round","paint-order":"stroke","pointer-events":"none"});
+  });
+}
+function painelOperacao(svg,W,H,f){
+  E.limpa(svg); svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  var pm=f.metaMes?f.mesReal/f.metaMes:null;
+  var inds=[
+    {rot:"META DA SEMANA", p:f.pct, max:1.5, valor:fPct(f.pct), cor:corSt(f.pct), sub:E.fmtInt(f.real)+" de "+E.fmtInt(f.meta)+" ha",
+     marcas:[{v:1,cor:E.NAVY,rot:"meta"},{v:f.ant&&f.meta?f.ant/f.meta:null,cor:"#7D8BB0",larg:4}]},
+    {rot:"EFICIÊNCIA", p:f.ef, max:1.5, valor:fPct(f.ef), cor:corSt(f.ef), sub:"rendimento ÷ meta", marcas:[{v:1,cor:E.NAVY,rot:"meta"}]},
+    {rot:nomeMesLongo(MES_REF).toUpperCase()+" ATÉ "+dataBR(ATE), p:pm, max:1, valor:fPct(pm), cor:pm==null?E.MUT:corSt(pm/RITMO),
+     sub:E.fmtInt(f.mesReal)+" de "+E.fmtInt(f.metaMes)+" ha", marcas:[{v:RITMO,cor:E.NAVY,rot:"ritmo"}]}];
+  if(W>=fz(620)){
+    var wl=Math.round(W*0.34), passo=(H-fz(6))/3;
+    inds.forEach(function(o,i){ indicadorBarra(svg,4,fz(4)+passo*i,wl-fz(28),o); });
+    E.add(svg,"line",{x1:wl-fz(10),x2:wl-fz(10),y1:4,y2:H-4,stroke:E.GRID});
+    colunasSemana(svg,wl,0,W-wl,H,f);
+  } else {
+    var wc=(W-fz(28))/3, alt=fz(86);
+    inds.forEach(function(o,i){ indicadorBarra(svg,4+i*(wc+fz(10)),2,wc,o); });
+    colunasSemana(svg,0,alt,W,H-alt,f);
+  }
+}
 function paginaGraficos(){
-  var ZONAS=[[0,0.5,COR_ST.baixo],[0.5,1,COR_ST.medio],[1,1.5,COR_ST.ok]];
   E.legenda(document.getElementById("gr-legend"),[
-    {cor:COR_ST.baixo,nome:"Abaixo de 50%"},{cor:COR_ST.medio,nome:"50% a 99%"},{cor:COR_ST.ok,nome:"Na meta ou acima"},
-    {cor:"#7D8BB0",nome:"Semana anterior",obs:"(marca cinza)"},
-    {cor:E.GOLD,nome:"No mês,",obs:"as faixas são do ritmo esperado ("+fPct(RITMO)+")"}
+    {cor:E.GOLD,nome:"Realizado no dia"},{cor:E.C25,nome:"Mesmo dia da semana anterior"},
+    {cor:E.NAVY,nome:"Meta do dia",tipo:"linha",tracejada:true},
+    {cor:COR_ST.baixo,nome:"Abaixo de 50%"},{cor:COR_ST.medio,nome:"50% a 99%"},{cor:COR_ST.ok,nome:"Na meta ou acima",obs:"(no mês, contra o ritmo de "+fPct(RITMO)+")"}
   ]);
   var box=document.getElementById("gr-grid");
   box.innerHTML=FRENTES.map(function(f){
@@ -1635,27 +1680,16 @@ function paginaGraficos(){
       "<div class='gr-topo'><span class='gr-nome'>"+E.esc(f.nome)+"</span>"+
         "<span class='gr-real'>Semana anterior <b class='"+(va==null?"st-sem":va>=0?"st-ok":"st-baixo")+"'>"+
           (va==null?"–":(va>=0?"▲ ":"▼ ")+E.fmtDec(Math.abs(va)*100,0)+"%")+"</b> · meta do dia <b>"+E.fmtInt(f.metaDia)+" ha</b></span></div>"+
-      "<div class='gr-vel'><div class='gr-g gr-g1'><svg role='img' aria-label='Meta da semana'></svg></div>"+
-        "<div class='gr-g'><svg role='img' aria-label='Eficiência'></svg></div><div class='gr-g'><svg role='img' aria-label='Mês'></svg></div></div>"+
+      "<div class='gr-pn'><svg role='img' aria-label='"+E.esc(f.nome)+": indicadores e realizado por dia'></svg></div>"+
       // a legenda diz como cada atividade fechou a semana
       "<div class='gr-leg'>"+f.ativas.map(function(a){
         return "<span><i style='background:"+a.cor+"'></i>"+E.esc(a.nome)+(a.pct!=null?" <b class='st-"+status(a.pct)+"'>"+fPct(a.pct)+"</b>":"")+"</span>"; }).join("")+
       "</div></div>";
   }).join("");
   Array.prototype.forEach.call(box.querySelectorAll(".gr-card"),function(card){
-    var f=frenteDe(card.getAttribute("data-f")), svgs=card.querySelectorAll("svg"), pm=f.metaMes?f.mesReal/f.metaMes:null;
-    function tam(svg){ var r=svg.getBoundingClientRect(); return [Math.max(120,Math.round(r.width)),Math.max(80,Math.round(r.height))]; }
-    var t0=tam(svgs[0]), t1=tam(svgs[1]), t2=tam(svgs[2]);
-    velocimetro(svgs[0],t0[0],t0[1],{grande:true, titulo:"META DA SEMANA", v:f.pct, max:1.5, zonas:ZONAS, valor:fPct(f.pct), cor:corSt(f.pct),
-      sub:E.fmtInt(f.real)+" de "+E.fmtInt(f.meta)+" ha",
-      marcas:[{v:1,cor:E.NAVY,rotulo:"meta"},{v:f.ant&&f.meta?f.ant/f.meta:null,cor:"#7D8BB0",largura:4}]});
-    velocimetro(svgs[1],t1[0],t1[1],{titulo:"EFICIÊNCIA", v:f.ef, max:1.5, zonas:ZONAS, valor:fPct(f.ef), cor:corSt(f.ef),
-      sub:"rendimento ÷ meta", marcas:[{v:1,cor:E.NAVY,rotulo:"meta"}]});
-    velocimetro(svgs[2],t2[0],t2[1],{titulo:nomeMesLongo(MES_REF).toUpperCase()+" ATÉ "+dataBR(ATE), v:pm, max:1,
-      zonas:[[0,RITMO*0.5,COR_ST.baixo],[RITMO*0.5,RITMO,COR_ST.medio],[RITMO,1,COR_ST.ok]],
-      valor:fPct(pm), cor:pm==null?E.MUT:corSt(pm/RITMO), sub:E.fmtInt(f.mesReal)+" de "+E.fmtInt(f.metaMes)+" ha",
-      marcas:[{v:RITMO,cor:E.NAVY,rotulo:"ritmo"}]});
-    card.addEventListener("click",function(){ detalheOperacao(f); });
+    var f=frenteDe(card.getAttribute("data-f")), svg=card.querySelector("svg"), r=svg.getBoundingClientRect();
+    painelOperacao(svg,Math.max(300,Math.round(r.width)),Math.max(220,Math.round(r.height)),f);
+    card.addEventListener("click",function(e){ if(!e.target.closest("rect.hit")) detalheOperacao(f); });
     card.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); detalheOperacao(f); } });
   });
 }
@@ -1812,6 +1846,17 @@ function detalheOperacao(f,aba){
    ============================================================ */
 var TAB = T.tabelas || {programas:[]};
 function progDe(id){ return TAB.programas.filter(function(p){ return p.id===id; })[0]; }
+// régua do andamento de programa (não é a da meta da semana): verde a partir de 90%,
+// âmbar de 50% a 89%, vermelho abaixo de 50%
+function stConc(p){ return p==null ? "sem" : p>=0.895 ? "ok" : p>=0.5 ? "medio" : "baixo"; }
+function corConc(p){ var st=stConc(p); return st==="medio" ? "#A6620A" : COR_ST[st]; }
+// barra do andamento: de 0 a 100%, na cor da régua de conclusão
+function barConc(p){
+  if(p==null) return "<span class='st-sem'>–</span>";
+  var st=stConc(p);
+  return "<span class='bc'><span class='trk'><i style='width:"+(Math.min(p,1)*100).toFixed(1)+"%;background:"+COR_ST[st]+"'></i></span>"+
+    "<em class='st-"+st+"'>"+fPct(p)+"</em></span>";
+}
 // quanto já está feito: 1 − saldo ÷ área base (colhida, aberta ou a tratar)
 var BASE_PROG = {pre:"colhida", bord:"aberta", cat1:"aberta", adub:"aTratar"};
 function saldoDe(p,v){ return p.id==="cat1" ? (v.maior20||0)+(v.menor20||0) : v.aRealizar; }
@@ -1820,6 +1865,7 @@ function feitoDe(p,v){ var b=v[BASE_PROG[p.id]], sd=saldoDe(p,v); return b>0 && 
 function nomeSecao(t){ return t.replace(/^Adubação\s+/i,"").replace(/^com Cocho\s*-\s*/i,"").replace(/\s+-\s+/g," — "); }
 function nomeProprio(t){ return t.toLowerCase().replace(/(^|\s)(\S)/g,function(m,a,b){ return a+b.toUpperCase(); }).replace(/ (Do|Da|De|Dos|Das) /g,function(m){ return m.toLowerCase(); }); }
 function rotTotal(r,sec){
+  if(r==="Total") return "Total geral";
   if(/^SUBTOTAL\s*-/i.test(r)) return "Subtotal · "+r.replace(/^SUBTOTAL\s*-\s*/i,"");
   if(/C\/\s*COCHO$/i.test(r)) return "Total "+nomeSecao(sec.titulo);
   var m=r.match(/COCHO\s*-\s*(.+)$/i); if(m) return "Total "+nomeProprio(m[1]);
@@ -1882,16 +1928,35 @@ function tabelaProg(p,o){
           if(k==="atraso") return "<td class='c"+(v>20?" atr":"")+"'>"+(v==null?"–":v)+"</td>";
           if(k==="data") v=v?v.slice(0,5):"";
           return "<td class='"+TEXTO_COL[k]+(gi?" gi":"")+"'>"+(v!=null&&v!==""?E.esc(String(v)):"–")+"</td>";
-        }).join(""); }).join("")+"<td class='gi'>"+barCel(feitoDe(p,l.v))+"</td>"+
+        }).join(""); }).join("")+"<td class='gi'>"+barConc(feitoDe(p,l.v))+"</td>"+
         (temObs?"<td class='tx obs gi'>"+E.esc(l.obs||"")+"</td>":"")+"</tr>";
       } else {
         h+="<tr class='"+(l.t==="tot"?"tot":"sub")+"'><td class='tx' colspan='"+nFaz+"'>"+E.esc(rotTotal(l.rot,sc))+"</td>"+
           grupos.slice(1).map(function(g){ return g.cols.map(function(k,j){ return celNum(l,k,!j); }).join(""); }).join("")+
-          "<td class='gi'>"+barCel(feitoDe(p,l.v))+"</td>"+(temObs?"<td class='gi'></td>":"")+"</tr>";
+          "<td class='gi'>"+barConc(feitoDe(p,l.v))+"</td>"+(temObs?"<td class='gi'></td>":"")+"</tr>";
       }
     });
   });
+  // total geral no fim (adubação): o total das equipes e o resumo final da planilha
+  (o.geral ? o.geral(p) : []).forEach(function(g){
+    h+="<tr class='geral'><td class='tx' colspan='"+nFaz+"'>"+E.esc(g.rot)+"</td>"+
+      grupos.slice(1).map(function(gr){ return gr.cols.map(function(k,j){ return celNum(g,k,!j); }).join(""); }).join("")+
+      "<td class='gi'>"+barConc(feitoDe(p,g.v))+"</td>"+(temObs?"<td class='gi'></td>":"")+"</tr>";
+  });
   return h+"</tbody></table>";
+}
+function somaV(lista){
+  var v={}; lista.forEach(function(x){ if(x) Object.keys(x.v).forEach(function(k){ v[k]=(v[k]||0)+(x.v[k]||0); }); });
+  return v;
+}
+// o resumo final da planilha (quadro "RESUMO FINAL ADUBAÇÃO" da impressão)
+function geralAdub(p){
+  var rs=(p.extras||{}).resumo;
+  return rs ? [{rot:"Total geral da adubação · resumo final da planilha", v:rs}] : [];
+}
+function geralCocho(p){
+  var al=ultimaTot(p,/Alencar/i,/ALENCAR/), fb=ultimaTot(p,/F[áa]bio/i);
+  return (al&&fb ? [{rot:"Total com cocho · Alencar + Fábio do Prado", v:somaV([al,fb])}] : []).concat(geralAdub(p));
 }
 
 /* ---------- indicadores no padrão CRV: colunas com topo arredondado sobre a grade,
@@ -1905,10 +1970,10 @@ function rotuloQuebrado(svg,cx,y,s,maxW,fs){
     if(c && (c+" "+w).length>max && l.length<2) l.push(w); else l[l.length-1]=c?c+" "+w:w; });
   l.forEach(function(t,k){ E.txt(svg,cx,y+k*fs*1.28,t,{"text-anchor":"middle","font-size":fs,"font-weight":"600",fill:"#2B2B2B"}); });
 }
-function pilulaPct(svg,cx,cy,p,falta){
+function pilulaPct(svg,cx,cy,p,falta,fcor){
   if(p==null || !isFinite(p)) return;
   var fs=fz(11.5), t=fPct(p), w=t.length*fs*0.62+fs*1.5, h=fs*1.7;
-  var cor = falta ? (p>0?E.RED:E.MUT) : corSt(p), fundo = cor===E.GREEN?"#EAF5EE":cor===E.RED?"#FBEDEB":cor===E.MUT?"#F1F3F8":"#FBF1E1";
+  var cor = falta ? (p>0?E.RED:E.MUT) : (fcor||corSt)(p), fundo = cor===E.GREEN?"#EAF5EE":cor===E.RED?"#FBEDEB":cor===E.MUT?"#F1F3F8":"#FBF1E1";
   E.add(svg,"rect",{x:cx-w/2,y:cy-h/2,width:w,height:h,rx:h/2,fill:fundo,stroke:cor,"stroke-width":1});
   E.txt(svg,cx,cy+fs*0.36,t,{"text-anchor":"middle","font-size":fs,"font-weight":"700",fill:cor});
 }
@@ -1961,7 +2026,7 @@ function graficoColunas(svg,W,H,o){
     barra(svg,cx-bw/2,bw,y,base,it);
     E.txt(svg,cx,y(v)-fz(7),fVal(v),{"text-anchor":"middle","font-size":fz(12.5),"font-weight":"700",fill:E.NAVY});
     rotuloQuebrado(svg,cx,base+fz(17),it.rot,slot-6,fz(11.5));
-    if(it.pct!=null) pilulaPct(svg,cx,base+fz(48),it.pct,it.falta);
+    if(it.pct!=null) pilulaPct(svg,cx,base+fz(48),it.pct,it.falta,corConc);
   });
 }
 // o.grupos: [{rot, barras:[item], pct}] — as barras de cada grupo lado a lado
@@ -1983,7 +2048,7 @@ function graficoGrupos(svg,W,H,o){
       E.txt(svg,x+bw/2,y(v)-fz(6),fVal(v),{"text-anchor":"middle","font-size":fz(10.5),"font-weight":"700",fill:E.NAVY});
     });
     E.txt(svg,cx,base+fz(18),g.rot,{"text-anchor":"middle","font-size":fz(12.5),"font-weight":"700",fill:"#2B2B2B"});
-    if(g.pct!=null) pilulaPct(svg,cx,base+fz(42),g.pct);
+    if(g.pct!=null) pilulaPct(svg,cx,base+fz(42),g.pct,false,corConc);
   });
 }
 function cartaoInd(box){
@@ -2081,8 +2146,8 @@ var PAG_PROG = {
   "pg-pre":  {p:"pre", ind:indPre},
   "pg-bord": {p:"bord", ind:indBord},
   "pg-cat1": {p:"cat1", ind:indCat1},
-  "pg-loc":  {p:"adub", sec:/Localizada|Queima/i, ind:indLoc},
-  "pg-cocho":{p:"adub", sec:/Cocho/i, ind:indCocho}
+  "pg-loc":  {p:"adub", sec:/Localizada|Queima/i, ind:indLoc, geral:geralAdub},
+  "pg-cocho":{p:"adub", sec:/Cocho/i, ind:indCocho, geral:geralCocho}
 };
 // a página: a tabela e, no fim, os indicadores (a rolagem volta para o alto ao entrar)
 function paginaProg(id){
