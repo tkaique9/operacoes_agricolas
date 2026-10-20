@@ -283,6 +283,17 @@ def ler(path):
                 alvo.append(linha_total(lay, ws, "tot"))
             elif any(re.fullmatch(r"9\d{3}", w[4]) for w in ws[:3]) and any(NUM.match(w[4]) for w in ws):
                 alvo.append(linha_fazenda(lay, ws, blocos))
+    # região com erro de fórmula da planilha (#N/D, #REF!...): vale a da fazenda de cima
+    # no mesmo quadro (ex.: a 9849 São João, no meio das áreas Cargill)
+    for p in progs.values():
+        for sec in p["secoes"]:
+            ant = None
+            for l in sec["linhas"]:
+                if l["t"] != "faz":
+                    continue
+                if l["reg"].startswith("#") and ant:
+                    l["reg"] = ant
+                ant = l["reg"] if not l["reg"].startswith("#") else ant
     # nome da coluna para a apresentação
     for p in progs.values():
         p["cols"] = [{"k": k, "t": tt} for k, tt in TEXTO[p["tipo"]]] + \

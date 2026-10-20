@@ -67,7 +67,9 @@ A leitura do PDF fica em `programas_pdf.py`: cada número vai para a coluna cujo
 termina mais perto dele (os números são alinhados à direita), e as linhas são lidas como
 estão — fazendas, subtotais e totais da planilha, sem refazer conta. O nome da
 propriedade que a impressão gruda no bloco ("…ESPERANÇABEBEDOURO") é separado pelos nomes
-de bloco dos subtotais. Os valores da 1ª catação por região só existem no gráfico da
+de bloco dos subtotais. Região com erro de fórmula da planilha (`#N/D`, `#REF!`) fica com a
+região da fazenda de cima no mesmo quadro (ex.: a 9849 São João, no meio das áreas
+Cargill, sai como CARGILL). Os valores da 1ª catação por região só existem no gráfico da
 impressão e são lidos dos rótulos das barras.
 
 ## Páginas
