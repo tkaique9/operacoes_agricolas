@@ -942,7 +942,7 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 
 <!-- ================= SEMANA: TABELA =================
      a tabela por operação e atividade (semana × meta, rendimento × meta por equipamento,
-     eficiência, semana anterior e mês); clicar na operação abre o modal dela (dia a dia,
+     semana anterior e mês); clicar na operação abre o modal dela (dia a dia,
      eficiência, mês e histórico) e clicar no Total abre o de todas -->
 <article class="slide slide-dark" id="resumo" data-title="Semana por operação">
 <div class="s-head">
@@ -969,8 +969,8 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 </article>
 
 <!-- ================= SEMANA: RESUMO GRÁFICO =================
-     um painel por operação com três velocímetros: a meta da semana (com a marca da
-     semana anterior), a eficiência e o mês contra o ritmo esperado. Clicar no painel
+     um painel por operação com dois indicadores: a meta da semana (com a marca da
+     semana anterior) e o mês contra o ritmo esperado. Clicar no painel
      abre o modal da operação -->
 <article class="slide slide-dark" id="graficos" data-title="Resumo gráfico">
 <div class="s-head">
@@ -1665,33 +1665,33 @@ function celDif(e){
 }
 function paginaSemana(){
   // quatro grupos de colunas, cada um com título e linha forte à esquerda: a semana
-  // (meta × realizado), o rendimento por equipamento × meta (diferença e eficiência), a
+  // (meta × realizado), o rendimento por equipamento × meta (e a diferença), a
   // semana anterior e o mês (o que já foi produzido, a meta do mês e a %)
   function c(v,gi){ return "<td"+(gi?" class='gi'":"")+">"+v+"</td>"; }
   function mes(real,meta){ return c(real>0?fHa(real):"–",1)+c(meta?fHa(meta):"–")+c(spanMes(meta?real/meta:null)); }
   function ant(v,real){ return c(v?fHa(v):"–",1)+c(v?fVar(real/v-1):"–"); }
   var vazio=c("",1)+c("")+c("")+c("")+c("");
   var h="<table class='tb sem'><thead><tr><th class='l' rowspan='2'>Operação / atividade</th>"+
-    "<th class='grp gi' colspan='3'>Semana</th><th class='grp gi' colspan='6'>Equipamento ou homem · por dia</th>"+
+    "<th class='grp gi' colspan='3'>Semana</th><th class='grp gi' colspan='5'>Equipamento ou homem · por dia</th>"+
     "<th class='grp gi' colspan='2'>Semana anterior</th><th class='grp gi' colspan='3'>"+nomeMesLongo(MES_REF)+" até "+dataBR(ATE)+"</th></tr>"+
     "<tr><th class='gi'>Meta<u>ha</u></th><th>Realizado<u>ha</u></th><th>% da meta</th>"+
     "<th class='gi'>Previsto<u>quantidade</u></th><th>Realizado<u>média em campo</u></th>"+
-    "<th>Meta<u>por equip./homem</u></th><th>Rendimento<u>por equip./homem</u></th><th>Diferença</th><th>Eficiência<u>rend. ÷ meta</u></th>"+
+    "<th>Meta<u>por equip./homem</u></th><th>Rendimento<u>por equip./homem</u></th><th>Diferença</th>"+
     "<th class='gi'>Realizado<u>ha</u></th><th>Variação</th>"+
     "<th class='gi'>Realizado<u>ha</u></th><th>Meta do mês<u>ha</u></th><th>% da meta<u>ritmo "+fPct(RITMO)+"</u></th></tr></thead><tbody>";
   FRENTES.forEach(function(f){
     h+="<tr class='fr clic' style='--fr:"+f.cor+"' data-f='"+f.id+"'><td class='l'>"+E.esc(f.nome)+"</td>"+
-      c(fHa(f.meta),1)+c(fHa(f.real))+c(barCel(f.pct))+vazio+c(spanSt(f.ef))+ant(f.ant,f.real)+mes(f.mesReal,f.metaMes)+"</tr>";
+      c(fHa(f.meta),1)+c(fHa(f.real))+c(barCel(f.pct))+vazio+ant(f.ant,f.real)+mes(f.mesReal,f.metaMes)+"</tr>";
     f.ativas.forEach(function(a){ var e=a.ef;
       h+="<tr class='at clic' data-a='"+a.idx+"'><td class='l'>"+E.esc(a.nome)+tagNaoPlan(a)+"</td>"+
         c(a.metaSemana?fHa(a.metaSemana):"–",1)+c(fHa(a.sem))+c(barCel(a.pct))+
         c(celQtd(e.plan,e),1)+c(celQtdReal(e))+
-        c(celUnid(e.meta,e))+c(celUnid(e.ef,e))+c(celDif(e))+c(spanSt(e.pct))+
+        c(celUnid(e.meta,e))+c(celUnid(e.ef,e))+c(celDif(e))+
         ant(a.semAnt,a.sem)+mes(a.mesReal,a.ativa?a.metaMes:0)+"</tr>";
     });
   });
   h+="<tr class='tot clic' data-tot='1'><td class='l'>Total</td>"+c(fHa(TOT.meta),1)+c(fHa(TOT.real))+c(barCel(TOT.pct))+
-    vazio+c(spanSt(TOT.ef))+ant(TOT.ant,TOT.real)+mes(TOT.mesReal,TOT.metaMes)+"</tr></tbody></table>";
+    vazio+ant(TOT.ant,TOT.real)+mes(TOT.mesReal,TOT.metaMes)+"</tr></tbody></table>";
   var tb=document.getElementById("rs-tabela"); tb.innerHTML=h; ajustaTabela(tb);
   liga(tb,"tr[data-a]",function(tr){ detalheAtividade(ATIV[+tr.getAttribute("data-a")]); });
   liga(tb,"tr[data-f]",function(tr){ detalheOperacao(frenteDe(tr.getAttribute("data-f"))); });
@@ -1729,8 +1729,8 @@ function paginaPorDia(){
 
 /* ---------- resumo gráfico: um painel por operação, no padrão dos gráficos da
    diretoria (comparativo): à esquerda os três indicadores em barra — a meta da semana
-   (com o traço da meta e a marca cinza da semana anterior), a eficiência e o mês contra
-   o ritmo esperado —; à direita o realizado de cada dia (dourado) ao lado do mesmo dia
+   (com o traço da meta e a marca cinza da semana anterior) e o mês contra o ritmo
+   esperado —; à direita o realizado de cada dia (dourado) ao lado do mesmo dia
    da semana anterior (cinza), com a linha da meta do dia e a pílula da % ---------- */
 function corSt(p){ var st=status(p); return st==="medio" ? "#A6620A" : COR_ST[st]; }
 // indicador em barra: rótulo, valor grande, a barra até o valor e os traços das marcas
@@ -1790,16 +1790,15 @@ function painelOperacao(svg,W,H,f){
   var inds=[
     {rot:"META DA SEMANA", p:f.pct, max:1.5, valor:fPct(f.pct), cor:corSt(f.pct), sub:E.fmtInt(f.real)+" de "+E.fmtInt(f.meta)+" ha",
      marcas:[{v:1,cor:E.NAVY,rot:"meta"},{v:f.ant&&f.meta?f.ant/f.meta:null,cor:"#7D8BB0",larg:4}]},
-    {rot:"EFICIÊNCIA", p:f.ef, max:1.5, valor:fPct(f.ef), cor:corSt(f.ef), sub:"rendimento ÷ meta", marcas:[{v:1,cor:E.NAVY,rot:"meta"}]},
     {rot:nomeMesLongo(MES_REF).toUpperCase()+" ATÉ "+dataBR(ATE), p:pm, max:1, valor:fPct(pm), cor:pm==null?E.MUT:corSt(pm/RITMO),
      sub:E.fmtInt(f.mesReal)+" de "+E.fmtInt(f.metaMes)+" ha", marcas:[{v:RITMO,cor:E.NAVY,rot:"ritmo"}]}];
   if(W>=fz(620)){
-    var wl=Math.round(W*0.34), passo=(H-fz(6))/3;
+    var wl=Math.round(W*0.34), passo=(H-fz(6))/inds.length;
     inds.forEach(function(o,i){ indicadorBarra(svg,4,fz(4)+passo*i,wl-fz(28),o); });
     E.add(svg,"line",{x1:wl-fz(10),x2:wl-fz(10),y1:4,y2:H-4,stroke:E.GRID});
     colunasSemana(svg,wl,0,W-wl,H,f);
   } else {
-    var wc=(W-fz(28))/3, alt=fz(86);
+    var n=inds.length, wc=(W-fz(8)-fz(10)*(n-1))/n, alt=fz(86);
     inds.forEach(function(o,i){ indicadorBarra(svg,4+i*(wc+fz(10)),2,wc,o); });
     colunasSemana(svg,0,alt,W,H-alt,f);
   }
@@ -2082,7 +2081,7 @@ function tabelaProg(p,o){
   });
   // total geral no fim (adubação): o total das equipes e o resumo final da planilha
   (o.geral ? o.geral(p) : []).forEach(function(g){
-    h+="<tr class='"+(g.t==="aparte"?"sub aparte":"geral")+"'><td class='tx' colspan='"+nFaz+"'>"+E.esc(g.rot)+"</td>"+
+    h+="<tr class='"+(g.t==="aparte"?"sub aparte":g.t==="parte"?"tot":"geral")+"'><td class='tx' colspan='"+nFaz+"'>"+E.esc(g.rot)+"</td>"+
       grupos.slice(1).map(function(gr){ return gr.cols.map(function(k,j){ return celNum(g,k,!j); }).join(""); }).join("")+
       "<td class='gi'>"+barConc(feitoDe(p,g.v))+"</td>"+(temObs?"<td class='gi'></td>":"")+"</tr>";
   });
@@ -2105,8 +2104,11 @@ function geralAdub(p){
   return [{rot:"Total geral da adubação (sem Cargill) · localizada + área de queima + Alencar + Fábio do Prado", v:geralTotal(p)}];
 }
 function geralCocho(p){
-  var t=totaisAdub(p);
-  return (t.al&&t.fb ? [{rot:"Total com cocho · Alencar + Fábio do Prado", v:somaV([t.al,t.fb])}] : []).concat(geralAdub(p)).concat(linhaCargill(p));
+  var t=totaisAdub(p), out=[];
+  if(t.loc) out.push({rot:"Total localizada (sem Cargill)", v:t.loc.v, t:"parte"});
+  if(t.qm) out.push({rot:"Total área de queima", v:t.qm.v, t:"parte"});
+  if(t.al&&t.fb) out.push({rot:"Total com cocho · Alencar + Fábio do Prado", v:somaV([t.al,t.fb])});
+  return out.concat(geralAdub(p)).concat(linhaCargill(p));
 }
 
 /* ---------- indicadores no padrão CRV: colunas com topo arredondado sobre a grade,
@@ -2212,7 +2214,7 @@ function cartaoInd(box){
 }
 // os painéis entram todos antes de medir, para a grade já ter o tamanho final
 function desenhaCartoes(box,lista){
-  box.style.setProperty("--n", Math.min(3,Math.max(2,lista.length)));
+  box.style.setProperty("--n", lista.length===4 ? 4 : Math.min(3,Math.max(2,lista.length)));
   lista.forEach(function(c){ c[0]=cartaoInd(box); });
   lista.forEach(function(c){ var r=c[0].getBoundingClientRect();
     var W=Math.max(estreito()?320:280,Math.round(r.width)), H=Math.max(220,Math.round(r.height));
@@ -2284,7 +2286,7 @@ function indLoc(p){
   return out;
 }
 function indCocho(p){
-  var al=ultimaTot(p,/Alencar/i,/ALENCAR/), fb=ultimaTot(p,/F[áa]bio/i), rs=geralTotal(p), out=[];
+  var al=ultimaTot(p,/Alencar/i,/ALENCAR/), fb=ultimaTot(p,/F[áa]bio/i), t=totaisAdub(p), rs=geralTotal(p), out=[];
   function painel(titulo,v){ return [null,{titulo:titulo, legenda:[{cor:CB.feito,rot:"Cocho"},{cor:CB.feito2,rot:"Localizada"}], itens:[
     {rot:"Área a tratar",v:v.aTratar,cor:CB.area},
     {rot:"Aplicada",partes:aplicada(v,true),pct:frac(aplicadaTot(v),v.aTratar)},
@@ -2292,6 +2294,12 @@ function indCocho(p){
     {rot:"Área de reforma",v:v.reforma,cor:CB.ctx}]}]; }
   if(al) out.push(painel("Alencar — regiões 1 e 2",al.v));
   if(fb) out.push(painel("Fábio do Prado — região 3",fb.v));
+  if(t.loc){ var lq=somaV([t.loc,t.qm]);
+    out.push([null,{titulo:t.qm?"Localizada + área de queima — sem Cargill":"Localizada — sem Cargill", legenda:[{cor:CB.feito,rot:"Localizada"},{cor:CB.feito2,rot:"Cocho"}], itens:[
+      {rot:"Área a tratar",v:lq.aTratar,cor:CB.area},
+      {rot:"Aplicada",partes:aplicada(lq,false),pct:frac(aplicadaTot(lq),lq.aTratar)},
+      {rot:"A realizar",v:lq.aRealizar,cor:CB.falta,pct:frac(lq.aRealizar,lq.aTratar),falta:true},
+      {rot:"Área de reforma",v:lq.reforma,cor:CB.ctx}]}]); }
   if(rs) out.push([null,{titulo:"Geral da adubação — sem Cargill", legenda:[{cor:CB.feito2,rot:"Localizada"},{cor:CB.feito,rot:"Cocho"}], itens:[
     {rot:"Área a tratar",v:rs.aTratar,cor:CB.area},
     {rot:"Aplicada",partes:[{v:rs.cocho,cor:CB.feito},{v:rs.localizada,cor:CB.feito2}],pct:frac((rs.cocho||0)+(rs.localizada||0),rs.aTratar)},
