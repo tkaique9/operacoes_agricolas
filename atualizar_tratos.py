@@ -67,6 +67,18 @@ META_EQUIP = {"Catação de Formiga": 10.0}
 # (datetime.weekday). O drone de monitoramento não voa no sábado (20/10/2026): a meta
 # do sábado sai e a da semana e a do mês contam só os dias em que ele voa.
 SEM_META_DIAS = {"Área Monitoramento": [5]}
+# atividades não planejadas: entram com o realizado e as pessoas apontadas, mas sem
+# meta (nem na operação, nem no total). O Roço passou a ser não planejado em 20/10/2026.
+NAO_PLANEJADAS = {"Roço"}
+
+
+def marca_nao_planejada(a):
+    if a["nome"] not in NAO_PLANEJADAS:
+        return
+    a["naoPlanejada"] = True
+    a["equip"] = a["metaUnid"] = a["pessoasPlan"] = a["metaPessoa"] = None
+    a["metaDia"] = a["metaSemana"] = a["metaMes"] = 0.0
+    a.pop("diasSemMeta", None)
 
 
 def ajusta_dias_sem_meta(a, dias, dia_ref):
@@ -306,6 +318,7 @@ def semana(ws):
             for k in ("equip", "metaUnid", "metaDia", "metaSemana", "metaMes"):
                 a[k] = r2(a[k])
             ajusta_dias_sem_meta(a, dias, dia_ref)
+            marca_nao_planejada(a)
     frentes = separa_frentes([fr for fr in frentes if fr["id"] not in FRENTES_FORA])
     # atividade sem meta e sem nada realizado no ano não entra
     for fr in frentes:
@@ -633,9 +646,42 @@ def pdf_dos_programas():
     return pdfs[0] if pdfs else None
 
 
+# Áreas Cargill à parte (pedido em 20/10/2026): fora dos totais da localizada e do total
+# geral, com linha e gráfico próprios. Os totais da planilha ("TOTAL REGIÃO 1 + CARGILL"
+# e "TOTAL LOCALIZADA") trazem a Cargill em todas as colunas; só o saldo a realizar a
+# planilha já soma sem ela (confere com a soma dos outros blocos) — nesse caso ele fica
+# como está, senão a Cargill sai dele também.
+def cargill_a_parte(tab):
+    for p in tab["programas"]:
+        if p["tipo"] != "adub":
+            continue
+        for sec in p["secoes"]:
+            cg = next((l for l in sec["linhas"] if l["t"] == "sub" and "CARGILL" in l["rot"].upper()), None)
+            if not cg:
+                continue
+            outros = sum(l["v"].get("aRealizar", 0) or 0 for l in sec["linhas"] if l["t"] == "sub" and l is not cg)
+            novas = []
+            for l in sec["linhas"]:
+                rot = l.get("rot", "").upper()
+                if l["t"] == "tot" and ("CARGILL" in rot or rot.endswith("LOCALIZADA")):
+                    v = dict(l["v"])
+                    for k, x in cg["v"].items():
+                        if not x:
+                            continue
+                        if k == "aRealizar" and abs((v.get(k) or 0) - outros) <= 0.05:
+                            continue
+                        v[k] = round((v.get(k) or 0) - x, 2)
+                    l = dict(l, v=v, rot=l["rot"].replace(" + CARGILL", "") + " (SEM CARGILL)")
+                novas.append(l)
+            novas.append({"t": "aparte", "rot": "Áreas Cargill · à parte, fora dos totais", "v": dict(cg["v"])})
+            sec["linhas"] = novas
+            p["extras"]["cargill"] = dict(cg["v"])
+
+
 def tabelas_do_pdf(pdf):
     import programas_pdf
     tab = programas_pdf.ler(pdf)
+    cargill_a_parte(tab)
     for p in tab["programas"]:
         n = sum(1 for sec in p["secoes"] for l in sec["linhas"] if l["t"] == "faz")
         print(f"  {p['nome']}: {n} fazenda(s) em {len(p['secoes'])} quadro(s)")
@@ -717,6 +763,7 @@ def semana_do_pdf(dados, pdf):
                     a["pessoasPlan"] = float(EQUIP[nome])
             else:
                 a["pessoasPlan"] = a["metaPessoa"] = None
+            marca_nao_planejada(a)
             a["mes"][ym] = r2(r.get("realMes") or 0.0)
             if r.get("mesAnt") is not None:
                 a["mes"][ym_ant] = r2(r["mesAnt"])

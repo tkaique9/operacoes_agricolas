@@ -152,6 +152,9 @@ identificados. Operação sem esse detalhe na semana não mostra etiqueta nem bo
 | Meta da frente | soma só das atividades que **operaram** na semana (realizado > 0), como faz a planilha. Atividade ou operação **sem produção na semana não aparece em nenhuma tela** |
 | Operações fora | `FRENTES_FORA`, no `atualizar_tratos.py`, tira uma frente inteira da apresentação e dos totais; hoje: Quebra lombo (não é aplicação desta operação) |
 | Dias sem meta | `SEM_META_DIAS`, no `atualizar_tratos.py`, tira a meta de dias da semana de uma atividade, além do domingo; hoje: Área Monitoramento sem meta no sábado (o drone de monitoramento não voa no sábado). A meta da semana conta só os dias com meta (5 × 300 = 1.500 ha) e a do mês também (dias do mês sem sábado e domingo); a meta do dia da operação e do total é a soma das atividades naquele dia |
+| Atividades não planejadas | `NAO_PLANEJADAS`, no `atualizar_tratos.py`: entram com o realizado e as pessoas apontadas, mas sem meta (nem na operação, nem no total) e com a etiqueta "não planejada"; hoje: Roço |
+| Áreas Cargill | ficam à parte (`cargill_a_parte`, no `atualizar_tratos.py`): os totais da localizada saem **sem Cargill** (a planilha traz "Total região 1 + Cargill" e "Total localizada" com a Cargill em todas as colunas, menos no saldo, que ela já soma sem a Cargill), a linha "Áreas Cargill · à parte" vem logo depois e a Cargill tem gráfico próprio |
+| Total geral da adubação | a soma dos totais que as páginas mostram: localizada (sem Cargill) + área de queima + Alencar + Fábio do Prado. O "resumo final" da planilha não é usado: a linha do Alencar nele tem fórmula quebrada (#REF!) e não bate com o total do Alencar |
 | Operações separadas | `SEPARA`, no `atualizar_tratos.py`, tira atividades da frente da planilha e faz delas uma operação própria, logo depois; hoje: a aplicação aérea fica **Aplicação com drone** e a Área Monitoramento vira **Monitoramento com drone** |
 | Semana anterior | os mesmos dias da semana anterior, na mesma aba |
 | Mês | do dia 1 até o último dia da semana (com o domingo trabalhado, como o "Realizado do Mês" da planilha); ritmo esperado = dias trabalhados até aqui (segunda a sábado) ÷ dias da meta do mês (meta mês ÷ meta dia) |
@@ -163,6 +166,19 @@ identificados. Operação sem esse detalhe na semana não mostra etiqueta nem bo
 Nomes de bloco escritos de jeitos diferentes entre as abas são unificados
 (`SHEKINHA-I`/`SHEKINAH l` → SHEKINAH I, `MARCO-AMUY` → MARCO AMUY, `BR-154` → 154,
 `SCALON 7 PLACAS` → SCALON SETE PLACAS) em `SINONIMOS_BLOCO`, no `atualizar_tratos.py`.
+
+## Conferência das contas do PDF
+
+```bash
+python conferir_pdf.py dados/20.10.26.pdf
+```
+
+Lista o que não fecha na impressão das planilhas, sem mudar nada: realizado da semana ×
+soma dos dias, meta do dia = quantidade × meta por unidade, meta da semana = meta do
+dia × 6, total de cada operação = soma das atividades; nos programas, saldo = área −
+realizado em cada linha, total = soma dos subtotais e o resumo final da adubação = soma
+dos totais. A impressão esconde as fazendas e os blocos sem saldo, então em área a tratar
+o total pode ser maior que a soma do que aparece; o saldo a realizar tem de fechar.
 
 ## O que o script confere na planilha
 
