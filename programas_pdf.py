@@ -291,6 +291,70 @@ def ler(path):
     return {"atualizacao": atualizacao, "programas": [progs[k] for k in ordem if k in progs]}
 
 
+# ------------------------------------------------ resumo semanal (página 1)
+# A primeira página do PDF é a aba Semanal-Acumulado impressa: para cada atividade, o
+# realizado de segunda a sábado, o quadro de meta (nº de equipamentos/pessoas, meta por
+# unidade, meta do dia) e os realizados do dia, da semana e do mês, mais o mês anterior.
+# Os dias vão para a coluna da data mais perto; o resto pela borda direita do número,
+# que é sempre a mesma na impressão (conferido: a soma dos dias bate com a semana).
+DIREITA = [("equip", 423), ("metaUnid", 461), ("metaDia", 492), ("realDia", 524), ("_vDia", 548),
+           ("metaSemana", 586), ("realSemana", 624), ("_vSem", 648), ("metaMes", 688),
+           ("realMes", 726), ("_vMes", 751), ("mesAnt", 790), ("_vAnt", 818)]
+NAO_ATIVIDADE = ("PESSOAS DIA", "RENDIMENTO", "OBSERVACAO", "ATIVIDADE", "PAGINA")
+
+
+def ler_semana(path):
+    import datetime
+    import pymupdf
+    doc = pymupdf.open(path)
+    pg = next(p for p in doc if "RESUMO SEMANAL" in sem_acento(p.get_text()))
+    linhas = linhas_da_pagina(pg)
+    texto_pg = sem_acento(" ".join(texto(ws) for _y, ws in linhas[:6]))
+    m = re.search(r"DIA REF:?\s*(\d{2})/(\d{2})/(\d{4})", texto_pg)
+    dia_ref = f"{m.group(3)}-{m.group(2)}-{m.group(1)}" if m else None
+    m = re.search(r"ATUALIZACAO:?\s*(\d{2})/(\d{2})/(\d{4})", texto_pg)
+    atualizacao = f"{m.group(3)}-{m.group(2)}-{m.group(1)}" if m else None
+    ano = int(dia_ref[:4]) if dia_ref else datetime.date.today().year
+    datas = []          # (centro x, data iso) das colunas de dia do bloco corrente
+    frente = None
+    ativs, atual = [], None
+    for _y, ws in linhas:
+        t = sem_acento(texto(ws))
+        dd = [w for w in ws if re.fullmatch(r"\d{2}/\d{2}", w[4]) and 150 < w[0] < 380]
+        if len(dd) >= 5:
+            datas = [((w[0] + w[2]) / 2, f"{ano}-{w[4][3:5]}-{w[4][:2]}") for w in dd]
+            continue
+        nome = " ".join(w[4] for w in ws if w[2] < 160)
+        nums = [w for w in ws if w[0] >= 150 and NUM.match(w[4])]
+        if not nome:
+            continue
+        if not nums:
+            if nome.isupper() and len(nome) > 8:
+                frente = nome
+            continue
+        dias, quadro = {}, {}
+        for w in nums:
+            cx = (w[0] + w[2]) / 2
+            if cx < 380 and datas:
+                d = min(datas, key=lambda c: abs(c[0] - cx))[1]
+                if w[4] != "-":
+                    dias[d] = num(w[4])
+            elif cx >= 380:
+                ref = w[2] if w[4] != "-" else cx
+                k, x = min(DIREITA, key=lambda a: abs(a[1] - ref))
+                if abs(x - ref) <= 14 and not k.startswith("_") and w[4] != "-":
+                    quadro[k] = num(w[4])
+        tn = sem_acento(nome)
+        if tn.startswith("PESSOAS DIA") and atual is not None:
+            atual["pessoas"] = dias
+            atual["pessoasPlan"] = quadro.get("equip")
+            atual["metaPessoa"] = quadro.get("metaUnid")
+        elif not tn.startswith(NAO_ATIVIDADE):
+            atual = {"nome": nome, "frente": frente, "dias": dias, "pessoas": None, **quadro}
+            ativs.append(atual)
+    return {"diaRef": dia_ref, "atualizacao": atualizacao, "datas": [d for _x, d in datas], "atividades": ativs}
+
+
 if __name__ == "__main__":
     import json, sys
     d = ler(sys.argv[1])

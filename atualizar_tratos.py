@@ -635,17 +635,92 @@ def grava(dados):
     open(HTML, "w", encoding="utf-8", newline="\n").write(novo)
 
 
-def so_programas(pdf):
-    """Troca só as tabelas dos programas no index.html, sem mexer na semana."""
+def semana_do_pdf(dados, pdf):
+    """Números da semana a partir da página 1 do PDF (Semanal-Acumulado impressa), para
+    a MESMA semana que já está no index.html: realizado por dia, pessoas, quadro de meta
+    e realizado do mês de cada atividade, achada pelo nome. Semana anterior, histórico
+    dos meses e as atividades que a impressão não traz ficam como estão. As correções de
+    meta (META_EQUIP, EQUIP, META_PESSOA) valem de novo sobre os números da planilha."""
+    import programas_pdf
+    s = programas_pdf.ler_semana(pdf)
+    sem = dados["semana"]
+    if s["diaRef"] != sem["diaRef"]:
+        print(f"semana NÃO atualizada: o PDF é do DIA REF {s['diaRef']} e a apresentação, de {sem['diaRef']} "
+              "(semana nova pede as planilhas e o atualizar_tratos.py completo)")
+        return
+    dias = sem["dias"]
+    ym = sem["diaRef"][:7]
+    y, m = int(ym[:4]), int(ym[5:])
+    ym_ant = f"{y if m > 1 else y - 1}-{(m - 1 or 12):02d}"
+    por_nome = {r["nome"]: r for r in s["atividades"]}
+    usados = set()
+    for fr in dados["frentes"]:
+        for a in fr["atividades"]:
+            r = por_nome.get(a["nome"])
+            if not r:
+                continue
+            usados.add(a["nome"])
+            novo = [r["dias"].get(d) for d in dias]
+            # a impressão esconde o domingo trabalhado, mas a planilha soma: o que faltar
+            # para fechar a semana dela vai para o dia que não foi impresso
+            fora = [k for k, d in enumerate(dias) if d not in s["datas"]]
+            falta = round((r.get("realSemana") or 0) - sum(v for v in novo if v), 2)
+            if falta > 0.01:
+                if len(fora) == 1:
+                    novo[fora[0]] = falta
+                else:
+                    print(f"  aviso: {a['nome']}: {falta} ha da semana fora dos dias impressos")
+            a["dias"] = [r2(v) for v in novo]
+            a["pessoas"] = [r2(r["pessoas"].get(d)) for d in dias] if r["pessoas"] else None
+            for k in ("equip", "metaUnid", "metaDia", "metaSemana", "metaMes"):
+                a[k] = r.get(k) if k in ("equip", "metaUnid") else (r.get(k) or 0.0)
+            nome = a["nome"]
+            if nome in META_EQUIP:
+                a["metaUnid"] = META_EQUIP[nome]
+            if nome in EQUIP and a["metaDia"] and a["metaUnid"]:
+                fator = EQUIP[nome] * a["metaUnid"] / a["metaDia"]
+                a["equip"] = float(EQUIP[nome])
+                for k in ("metaDia", "metaSemana", "metaMes"):
+                    a[k] *= fator
+            for k in ("equip", "metaUnid", "metaDia", "metaSemana", "metaMes"):
+                a[k] = r2(a[k])
+            if a["pessoas"]:
+                a["pessoasPlan"] = r2(r.get("pessoasPlan")) or a["equip"]
+                a["metaPessoa"] = r2(r.get("metaPessoa")) or a["metaUnid"]
+                if nome in META_PESSOA:
+                    a["metaPessoa"] = META_PESSOA[nome]
+                if nome in EQUIP:
+                    a["pessoasPlan"] = float(EQUIP[nome])
+            else:
+                a["pessoasPlan"] = a["metaPessoa"] = None
+            a["mes"][ym] = r2(r.get("realMes") or 0.0)
+            if r.get("mesAnt") is not None:
+                a["mes"][ym_ant] = r2(r["mesAnt"])
+    fora_ap = [r["nome"] for r in s["atividades"] if r["nome"] not in usados and
+               not any(id_ in FRENTES_FORA for t, id_, _n in FRENTES if r["frente"] and t in r["frente"])]
+    for n in fora_ap:
+        print("  aviso: atividade do PDF que não está na apresentação:", n)
+    dados["fonte"]["semana"] = os.path.basename(pdf)
+    if s["atualizacao"]:
+        dados["fonte"]["atualizacaoSemana"] = s["atualizacao"]
+    print(f"semana {dias[0]} a {sem['diaRef']}: {len(usados)} atividade(s) atualizada(s) pelo PDF de {s['atualizacao']}")
+
+
+def pelo_pdf(pdf):
+    """Atualiza os números pelo PDF: tabelas dos programas e, se for a mesma semana, a
+    semana. Layout e regras não mudam."""
     dados = le_dados()
     dados["tabelas"] = tabelas_do_pdf(pdf)
     dados.setdefault("fonte", {})["tabelas"] = os.path.basename(pdf)
+    if dados["tabelas"]["atualizacao"]:
+        dados["fonte"]["atualizacaoProgramas"] = dados["tabelas"]["atualizacao"]
+    semana_do_pdf(dados, pdf)
     grava(dados)
     print("tabelas dos programas de", dados["tabelas"]["atualizacao"], "lidas de", os.path.basename(pdf))
 
 
 if __name__ == "__main__":
     if len(sys.argv) > 2 and sys.argv[1] == "--pdf":
-        so_programas(sys.argv[2])
+        pelo_pdf(sys.argv[2])
     else:
         main()

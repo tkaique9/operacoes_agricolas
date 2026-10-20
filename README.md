@@ -37,11 +37,21 @@ bloco entre `DADOS-INICIO` e `DADOS-FIM` do `index.html`. A semana é a do **DIA
 domingo (ou outro dia depois do DIA REF) que teve produção. Precisa de
 `pip install openpyxl pyxlsb pymupdf`.
 
-Quando só chegou o PDF dos programas (a semana já está no `index.html`), troque só as
-tabelas dos programas, sem mexer no resto:
+Quando chega o PDF (a impressão das planilhas, ex.: `20.10.2026.pdf`), os números são
+atualizados por ele, sem mexer no layout nem nas regras:
+
+- as **tabelas dos programas** e da adubação (sempre);
+- os **números da semana** — realizado por dia, pessoas, quadro de meta (nº de
+  equipamentos/pessoas, meta por unidade, meta do dia, da semana e do mês) e o realizado
+  do mês e do mês anterior de cada atividade, achada pelo nome —, **só se o PDF for da
+  mesma semana** (mesmo DIA REF) que já está na apresentação. Semana anterior, histórico
+  dos meses e atividades que a impressão não traz ficam como estão; as correções de meta
+  (`META_EQUIP`, `EQUIP`, `META_PESSOA`) valem de novo; o domingo que a impressão esconde
+  mas a planilha soma entra pela diferença entre o realizado da semana e os dias impressos.
+  Semana nova pede as planilhas e o `atualizar_tratos.py` completo.
 
 ```bash
-python atualizar_tratos.py --pdf dados/19.10.2026.pdf
+python atualizar_tratos.py --pdf dados/20.10.2026.pdf
 ```
 
 A leitura do PDF fica em `programas_pdf.py`: cada número vai para a coluna cujo título
