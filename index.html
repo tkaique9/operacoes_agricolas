@@ -2115,7 +2115,13 @@ function geralCocho(p){
    valor em cima, rótulo embaixo e a pílula da % sobre a área do programa. Cores:
    azul-marinho é a área do programa, dourado o que foi feito, vermelho o que falta e
    cinza-azulado o que é contexto (a colher, reforma, fornecedor...) ---------- */
-var CB = {area:E.NAVY, feito:E.GOLD, feito2:"#E3CB7E", falta:E.RED, falta2:"#D68910", ctx:E.C25};
+var CB = {area:E.NAVY, feito:E.GOLD, feito2:"#E3CB7E", falta:E.RED, falta2:"#D68910", ctx:E.C25,
+  // adubação: a localizada tem as suas cores (área, aplicada e a realizar); o cocho fica com as do padrão
+  loc:{area:"#5C6FA6", feito:"#8B6914", falta:"#7B241C"}};
+// legenda da adubação: as três cores de cada tipo (área · aplicada · a realizar)
+var LEG_ADUB = [{cores:[CB.area,CB.feito,CB.falta],rot:"Cocho"},{cores:[CB.loc.area,CB.loc.feito,CB.loc.falta],rot:"Localizada"}];
+// texto sobre uma cor: azul-marinho nas claras, branco nas escuras
+function corTexto(c){ var n=parseInt(c.slice(1),16); return (0.299*(n>>16&255)+0.587*(n>>8&255)+0.114*(n&255))>150 ? E.NAVY : "#fff"; }
 function rotuloQuebrado(svg,cx,y,s,maxW,fs){
   var max=Math.max(4,Math.floor(maxW/(fs*0.56))), l=[""];
   s.split(" ").forEach(function(w){ var c=l[l.length-1];
@@ -2132,10 +2138,11 @@ function pilulaPct(svg,cx,cy,p,falta,fcor){
 function legendaSVG(svg,x,y,itens,maxW){
   var fs=fz(11), cx=x, cy=y;
   itens.forEach(function(it){
-    var w=fs*1.3+it.rot.length*fs*0.56+fs*1.3;
+    var cores=it.cores||[it.cor], q=cores.length>1?fs*0.62:fs*0.95, ws=cores.length*q+(cores.length-1)*1.5;
+    var w=ws+fs*0.35+it.rot.length*fs*0.56+fs*1.3;
     if(cx>x && cx+w>x+maxW){ cx=x; cy+=fs*1.55; }
-    E.add(svg,"rect",{x:cx,y:cy-fs*0.82,width:fs*0.95,height:fs*0.95,rx:2,fill:it.cor});
-    E.txt(svg,cx+fs*1.3,cy,it.rot,{"font-size":fs,"font-weight":"600",fill:E.MUT});
+    cores.forEach(function(c,k){ E.add(svg,"rect",{x:cx+k*(q+1.5),y:cy-fs*0.82,width:q,height:fs*0.95,rx:cores.length>1?1:2,fill:c}); });
+    E.txt(svg,cx+ws+fs*0.35,cy,it.rot,{"font-size":fs,"font-weight":"600",fill:E.MUT});
     cx+=w;
   });
   return cy+fs*0.7;
@@ -2150,6 +2157,37 @@ function barra(svg,x,bw,y,base,it){
     var y0=y(acc+q.v), y1=y(acc), ultima=!partes.slice(k+1).some(function(r){ return r.v>0; });
     E.add(svg,"path",{d: ultima ? E.barraTopo(x,y0,bw,y1-y0,4) : "M"+x+","+y1+" L"+x+","+y0+" L"+(x+bw)+","+y0+" L"+(x+bw)+","+y1+" Z", fill:q.cor});
     acc+=q.v;
+  });
+}
+// nome e área de cada parte da barra empilhada: dentro dela quando cabem; a parte fina
+// leva o nome e a área ao lado, à direita (com um traço na cor dela). Barra de uma parte
+// só leva o nome, a área já está no topo
+function rotulosPartes(svg,x,bw,y,it,prox,fs){
+  var partes=(it.partes||[]).filter(function(q){ return q.v>0; });
+  if(!partes.some(function(q){ return q.nome; })) return;
+  var so=partes.length===1, acc=0, fsN=fs*0.85, cx=x+bw/2;
+  partes.forEach(function(q){
+    var y0=y(acc+q.v), y1=y(acc), h=y1-y0, ym=(y0+y1)/2; acc+=q.v;
+    if(!q.nome) return;
+    var tc=corTexto(q.cor), val=fVal(q.v), wN=q.nome.length*fsN*0.56, wV=val.length*fs*0.6;
+    if(so){
+      if(h>=fsN*1.7 && bw>=wN+6) E.txt(svg,cx,ym+fsN*0.36,q.nome,{"text-anchor":"middle","font-size":fsN,"font-weight":"700",fill:tc});
+      return;
+    }
+    if(h>=fs*2.5 && bw>=Math.max(wN,wV)+6){
+      E.txt(svg,cx,ym-fs*0.12,q.nome,{"text-anchor":"middle","font-size":fsN,"font-weight":"600",fill:tc});
+      E.txt(svg,cx,ym+fs*0.98,val,{"text-anchor":"middle","font-size":fs,"font-weight":"700",fill:tc});
+      return;
+    }
+    var livre=!prox || y(somaPartes(prox))>ym+fs;
+    if(livre){
+      var xl=x+bw+fz(6);
+      E.add(svg,"line",{x1:x+bw,x2:xl-2,y1:ym,y2:ym,stroke:q.cor,"stroke-width":3});
+      E.txt(svg,xl,ym+fs*0.34,q.nome+" "+val,{"font-size":fs*0.92,"font-weight":"700",fill:q.cor,
+        stroke:"#fff","stroke-width":fz(3),"stroke-linejoin":"round","paint-order":"stroke"});
+    } else if(h>=fs*1.3 && bw>=wV+4){
+      E.txt(svg,cx,ym+fs*0.36,val,{"text-anchor":"middle","font-size":fs,"font-weight":"700",fill:tc});
+    }
   });
 }
 // grade e eixo da esquerda; devolve a posição y de um valor
@@ -2172,13 +2210,15 @@ function graficoColunas(svg,W,H,o){
   var temPct=o.itens.some(function(it){ return it.pct!=null; });
   var padL=fz(52), padR=fz(12), base=H-fz(temPct?62:40);
   var y=grade(svg,W,padL,padR,top,base,Math.max.apply(null,o.itens.map(somaPartes).concat([1])));
-  var slot=(W-padL-padR)/o.itens.length, bw=Math.min(slot*0.56,fz(78));
+  var comNome=o.itens.some(function(it){ return (it.partes||[]).some(function(q){ return q.nome; }); });
+  var slot=(W-padL-padR)/o.itens.length, bw=Math.min(slot*(comNome?0.74:0.56),fz(comNome?96:78));
   // coluna estreita: o nome (a palavra mais longa cabe na coluna) e o valor diminuem
   var maior=Math.max.apply(null,o.itens.map(function(it){ return Math.max.apply(null,it.rot.split(" ").map(function(w){ return w.length; })); }));
   var fsR=Math.max(7,Math.min(fz(11.5),(slot-6)/(maior*0.58))), fsV=Math.max(7.5,Math.min(fz(12.5),(slot-4)/(5*0.62)));
   o.itens.forEach(function(it,i){
     var cx=padL+slot*(i+0.5), v=somaPartes(it);
     barra(svg,cx-bw/2,bw,y,base,it);
+    rotulosPartes(svg,cx-bw/2,bw,y,it,o.itens[i+1],fsV);
     E.txt(svg,cx,y(v)-fz(7),fVal(v),{"text-anchor":"middle","font-size":fsV,"font-weight":"700",fill:E.NAVY});
     rotuloQuebrado(svg,cx,base+fz(17),it.rot,slot-6,fsR);
     if(it.pct!=null) pilulaPct(svg,cx,base+fz(48),it.pct,it.falta,corConc);
@@ -2263,47 +2303,49 @@ function indCat1(p){
         {v:r.colhida,cor:CB.area},{v:r.realizada,cor:CB.feito},{partes:[{v:r.maior20,cor:CB.falta},{v:r.menor20,cor:CB.falta2}]}]}; })}]);
   return out;
 }
-function aplicada(v,cocho){ // a parte principal vem primeiro (embaixo, dourado forte)
-  return cocho ? [{v:v.cocho,cor:CB.feito},{v:v.localizada,cor:CB.feito2},{v:v.canaMuda,cor:CB.ctx}]
-               : [{v:v.localizada,cor:CB.feito},{v:v.cocho,cor:CB.feito2},{v:v.canaMuda,cor:CB.ctx}];
+function aplicada(v,cocho){ // a parte principal vem primeiro (embaixo); a cor é a do tipo
+  var c={v:v.cocho,cor:CB.feito,nome:"Cocho"}, l={v:v.localizada,cor:CB.loc.feito,nome:"Localizada"}, m={v:v.canaMuda,cor:CB.ctx,nome:"Cana muda"};
+  return cocho ? [c,l,m] : [l,c,m];
 }
+function aRealizar(v,cocho){ return [{v:v.aRealizar,cor:cocho?CB.falta:CB.loc.falta,nome:cocho?"Cocho":"Localizada"}]; }
 function aplicadaTot(v){ return (v.localizada||0)+(v.cocho||0)+(v.canaMuda||0); }
 function indLoc(p){
   var loc=ultimaTot(p,/Localizada/i,/LOCALIZADA/), qm=ultimaTot(p,/Queima/i), cg=(p.extras||{}).cargill, out=[];
   if(loc){ var v=loc.v;
-    out.push([null,{titulo:"Adubação localizada — total sem Cargill", legenda:[{cor:CB.feito,rot:"Localizada"},{cor:CB.feito2,rot:"Cocho"}], itens:[
-      {rot:"Área a tratar",v:v.aTratar,cor:CB.area},
+    out.push([null,{titulo:"Adubação localizada — total sem Cargill", legenda:LEG_ADUB, itens:[
+      {rot:"Área a tratar",v:v.aTratar,cor:CB.loc.area},
       {rot:"Aplicada",partes:aplicada(v,false),pct:frac(aplicadaTot(v),v.aTratar)},
-      {rot:"A realizar",v:v.aRealizar,cor:CB.falta,pct:frac(v.aRealizar,v.aTratar),falta:true},
+      {rot:"A realizar",partes:aRealizar(v,false),pct:frac(v.aRealizar,v.aTratar),falta:true},
       {rot:"Área de reforma",v:v.reforma,cor:CB.ctx}]}]); }
-  if(cg) out.push([null,{titulo:"Áreas Cargill — à parte", itens:[
-    {rot:"Área a tratar",v:cg.aTratar,cor:CB.area},
-    {rot:"Aplicada localizada",v:cg.localizada,cor:CB.feito,pct:frac((cg.localizada||0)+(cg.cocho||0),cg.aTratar)},
-    {rot:"A realizar",v:cg.aRealizar,cor:CB.falta,pct:frac(cg.aRealizar,cg.aTratar),falta:true}]}]);
-  if(qm) out.push([null,{titulo:"Área de queima", itens:[
-    {rot:"Área a tratar",v:qm.v.aTratar,cor:CB.area},
-    {rot:"A realizar",v:qm.v.aRealizar,cor:CB.falta,pct:frac(qm.v.aRealizar,qm.v.aTratar),falta:true}]}]);
+  if(cg) out.push([null,{titulo:"Áreas Cargill — à parte", legenda:[LEG_ADUB[1]], itens:[
+    {rot:"Área a tratar",v:cg.aTratar,cor:CB.loc.area},
+    {rot:"Aplicada localizada",v:cg.localizada,cor:CB.loc.feito,pct:frac((cg.localizada||0)+(cg.cocho||0),cg.aTratar)},
+    {rot:"A realizar",v:cg.aRealizar,cor:CB.loc.falta,pct:frac(cg.aRealizar,cg.aTratar),falta:true}]}]);
+  if(qm) out.push([null,{titulo:"Área de queima", legenda:[LEG_ADUB[1]], itens:[
+    {rot:"Área a tratar",v:qm.v.aTratar,cor:CB.loc.area},
+    {rot:"A realizar",v:qm.v.aRealizar,cor:CB.loc.falta,pct:frac(qm.v.aRealizar,qm.v.aTratar),falta:true}]}]);
   return out;
 }
 function indCocho(p){
   var al=ultimaTot(p,/Alencar/i,/ALENCAR/), fb=ultimaTot(p,/F[áa]bio/i), t=totaisAdub(p), rs=geralTotal(p), out=[];
-  function painel(titulo,v){ return [null,{titulo:titulo, legenda:[{cor:CB.feito,rot:"Cocho"},{cor:CB.feito2,rot:"Localizada"}], itens:[
+  function painel(titulo,v){ return [null,{titulo:titulo, legenda:LEG_ADUB, itens:[
     {rot:"Área a tratar",v:v.aTratar,cor:CB.area},
     {rot:"Aplicada",partes:aplicada(v,true),pct:frac(aplicadaTot(v),v.aTratar)},
-    {rot:"A realizar",v:v.aRealizar,cor:CB.falta,pct:frac(v.aRealizar,v.aTratar),falta:true},
+    {rot:"A realizar",partes:aRealizar(v,true),pct:frac(v.aRealizar,v.aTratar),falta:true},
     {rot:"Área de reforma",v:v.reforma,cor:CB.ctx}]}]; }
   if(al) out.push(painel("Alencar — regiões 1 e 2",al.v));
   if(fb) out.push(painel("Fábio do Prado — região 3",fb.v));
   if(t.loc){ var lq=somaV([t.loc,t.qm]);
-    out.push([null,{titulo:t.qm?"Localizada + área de queima — sem Cargill":"Localizada — sem Cargill", legenda:[{cor:CB.feito,rot:"Localizada"},{cor:CB.feito2,rot:"Cocho"}], itens:[
-      {rot:"Área a tratar",v:lq.aTratar,cor:CB.area},
+    out.push([null,{titulo:t.qm?"Localizada + área de queima — sem Cargill":"Localizada — sem Cargill", legenda:LEG_ADUB, itens:[
+      {rot:"Área a tratar",v:lq.aTratar,cor:CB.loc.area},
       {rot:"Aplicada",partes:aplicada(lq,false),pct:frac(aplicadaTot(lq),lq.aTratar)},
-      {rot:"A realizar",v:lq.aRealizar,cor:CB.falta,pct:frac(lq.aRealizar,lq.aTratar),falta:true},
+      {rot:"A realizar",partes:aRealizar(lq,false),pct:frac(lq.aRealizar,lq.aTratar),falta:true},
       {rot:"Área de reforma",v:lq.reforma,cor:CB.ctx}]}]); }
-  if(rs) out.push([null,{titulo:"Geral da adubação — sem Cargill", legenda:[{cor:CB.feito2,rot:"Localizada"},{cor:CB.feito,rot:"Cocho"}], itens:[
-    {rot:"Área a tratar",v:rs.aTratar,cor:CB.area},
-    {rot:"Aplicada",partes:[{v:rs.cocho,cor:CB.feito},{v:rs.localizada,cor:CB.feito2}],pct:frac((rs.cocho||0)+(rs.localizada||0),rs.aTratar)},
-    {rot:"A realizar",v:rs.aRealizar,cor:CB.falta,pct:frac(rs.aRealizar,rs.aTratar),falta:true},
+  var gc=somaV([t.al,t.fb]), gl=somaV([t.loc,t.qm]);
+  if(rs) out.push([null,{titulo:"Geral da adubação — sem Cargill", legenda:LEG_ADUB, itens:[
+    {rot:"Área a tratar",partes:[{v:gc.aTratar,cor:CB.area,nome:"Cocho"},{v:gl.aTratar,cor:CB.loc.area,nome:"Localizada"}]},
+    {rot:"Aplicada",partes:[{v:rs.cocho,cor:CB.feito,nome:"Cocho"},{v:rs.localizada,cor:CB.loc.feito,nome:"Localizada"}],pct:frac((rs.cocho||0)+(rs.localizada||0),rs.aTratar)},
+    {rot:"A realizar",partes:[{v:gc.aRealizar,cor:CB.falta,nome:"Cocho"},{v:gl.aRealizar,cor:CB.loc.falta,nome:"Localizada"}],pct:frac(rs.aRealizar,rs.aTratar),falta:true},
     {rot:"Área de reforma",v:rs.reforma,cor:CB.ctx}]}]);
   return out;
 }
