@@ -428,6 +428,37 @@ table.hm tr.tot td{background:#FFF3D0;font-weight:700;color:var(--navy);border-t
 .at-card li b{flex:none;font-variant-numeric:tabular-nums;color:var(--navy)}
 .at-card p{margin:0;font-size:13px;color:var(--mut);line-height:1.45}
 
+/* programas da safra: a tabela da planilha, compacta (a 1ª catação tem muitas fazendas) */
+table.tb.pg td{height:auto;padding:1px 6px;line-height:1.15}
+table.tb.pg .bc .trk{height:10px}
+table.tb.pg th{padding:4px 6px;line-height:1.15}
+table.tb.pg td.tx{text-align:left;color:var(--navy);white-space:nowrap}
+table.tb.pg td.prop{white-space:normal;min-width:150px}
+table.tb.pg td.c{text-align:center}
+table.tb.pg td.atr{color:var(--red);font-weight:700}
+table.tb.pg td.zero{color:#C3C9D6;font-weight:400}
+table.tb.pg td.obs{white-space:normal;font-size:.85em;color:var(--red);font-weight:700;min-width:120px}
+table.tb.pg tr.sub td{background:#EEF1F7;font-weight:700;color:var(--navy);border-top:1px solid #C9D0DE}
+table.tb.pg tr.sec td{background:#1E3566;color:#fff;font-weight:700;text-align:left;letter-spacing:.05em;
+  text-transform:uppercase;font-size:.86em;padding:6px 10px;border-top:6px solid #fff}
+table.tb.pg tbody tr.sec:first-child td{border-top:0}
+/* indicadores: um gráfico por cartão, em grade */
+.ind-grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:12px}
+.ind-card{min-width:0;min-height:0;display:flex;flex-direction:column;background:#fff;color:var(--ink);border-radius:4px;
+  padding:10px 14px 6px;box-shadow:inset 0 3px 0 var(--accent),0 18px 44px -12px rgba(0,0,0,.5)}
+.ind-t{font-size:14px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ind-s{margin-left:10px;font-weight:600;color:var(--mut);text-transform:none;letter-spacing:0;font-size:.86em}
+.ind-leg{display:flex;flex-wrap:wrap;gap:2px 14px;font-size:11.5px;color:var(--mut);margin-top:3px}
+.ind-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.ind-g{flex:1 1 auto;min-height:0}
+.ind-g svg{display:block;width:100%;height:100%}
+.slide-dark.active .ind-card{animation:tema-sobe .7s var(--ease) backwards}
+.slide-dark.active .ind-card:nth-child(2){animation-delay:.08s}
+.slide-dark.active .ind-card:nth-child(3){animation-delay:.16s}
+.slide-dark.active .ind-card:nth-child(4){animation-delay:.24s}
+@media(min-width:1600px) and (min-height:860px){ .ind-t{font-size:17px} .ind-leg{font-size:14px} }
+@media(max-width:760px){ .ind-grid{grid-template-columns:minmax(0,1fr);grid-auto-rows:auto} .ind-g{flex:none;height:300px} }
+
 /* resumo gráfico: um painel por operação, em grade 2 × 2 */
 .gr-grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:12px}
 .gr-card{min-width:0;min-height:0;display:flex;flex-direction:column;background:#fff;color:var(--ink);border-radius:4px;
@@ -790,9 +821,16 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <a href="#capa">Capa</a>
 <a href="#resumo"><b></b> Semana por operação</a>
 <a href="#graficos"><b></b> Resumo gráfico</a>
-<a href="#programas"><b></b> Andamento dos programas</a>
-<a href="#blocos"><b></b> Saldo por bloco</a>
-<a href="#atencao"><b></b> Pontos de atenção</a>
+<a href="#pg-pre"><b></b> Pré-emergência</a>
+<a href="#pg-bord"><b></b> Reforço bordadura</a>
+<a href="#pg-cat1a"><b></b> 1ª catação · região 1</a>
+<a href="#pg-cat1b"><b></b> 1ª catação · regiões 2 e 3</a>
+<a href="#pg-loc"><b></b> Adubação localizada</a>
+<a href="#pg-cocho1"><b></b> Cocho · Alencar região 1</a>
+<a href="#pg-cocho2"><b></b> Cocho · Alencar região 2 e Fábio</a>
+<a href="#ind-pre"><b></b> Pré e bordadura</a>
+<a href="#ind-cat1"><b></b> 1ª catação</a>
+<a href="#ind-adub"><b></b> Adubação</a>
 </nav>
 
 <div class="deck" id="deck">
@@ -867,38 +905,107 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <div class="gr-grid" id="gr-grid"></div>
 </article>
 
-<!-- ================= ANDAMENTO DOS PROGRAMAS ================= -->
-<article class="slide slide-dark" id="programas" data-title="Andamento dos programas">
+<!-- ================= PROGRAMAS DA SAFRA =================
+     a tabela de cada programa como sai na impressão da planilha (PDF): fazendas com
+     saldo, subtotal por região e total da safra, mais a % concluída de cada linha.
+     A 1ª catação tem fazendas demais para uma tela e vai em duas páginas, por região -->
+<article class="slide slide-dark" id="pg-pre" data-title="Pré-emergência cana soca">
 <div class="s-head">
 <div>
-<div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra</div>
-<h2 class="s-title">Andamento dos programas de tratos</h2>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra<span class="js-atu"></span></div>
+<h2 class="s-title">Pré-emergência — cana soca</h2>
 </div>
 </div>
-<div class="s-legend" id="pg-legend"></div>
-<div class="s-card" id="pg-card"></div>
+<div class="s-card tb-card"><div class="tb-rolo" id="pg-pre-tb"></div></div>
+</article>
+<article class="slide slide-dark" id="pg-bord" data-title="Reforço bordadura">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra<span class="js-atu"></span></div>
+<h2 class="s-title">Reforço bordadura (3ª molécula) — cana soca</h2>
+</div>
+</div>
+<div class="s-card tb-card"><div class="tb-rolo" id="pg-bord-tb"></div></div>
+</article>
+<article class="slide slide-dark" id="pg-cat1a" data-title="1ª catação · região 1">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra<span class="js-atu"></span></div>
+<h2 class="s-title">1ª catação química — região 1</h2>
+</div>
+</div>
+<div class="s-card tb-card"><div class="tb-rolo" id="pg-cat1a-tb"></div></div>
+</article>
+<article class="slide slide-dark" id="pg-cat1b" data-title="1ª catação · regiões 2 e 3">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra<span class="js-atu"></span></div>
+<h2 class="s-title">1ª catação química — regiões 2 e 3</h2>
+</div>
+</div>
+<div class="s-card tb-card"><div class="tb-rolo" id="pg-cat1b-tb"></div></div>
 </article>
 
-<!-- ================= SALDO POR BLOCO ================= -->
-<article class="slide slide-dark" id="blocos" data-title="Saldo por bloco">
+<!-- ================= ADUBAÇÃO DE SOQUEIRA =================
+     localizada (região 1 + Cargill e área de queima) e com cocho (Alencar por região e
+     Fábio do Prado), em páginas separadas, com os subtotais por bloco da planilha -->
+<article class="slide slide-dark" id="pg-loc" data-title="Adubação localizada">
 <div class="s-head">
 <div>
-<div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra</div>
-<h2 class="s-title">Onde está o saldo a realizar (ha)</h2>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Adubação de soqueira<span class="js-atu"></span></div>
+<h2 class="s-title">Adubação localizada</h2>
 </div>
 </div>
-<div class="s-card" id="bl-card"><div id="bl-tabela"></div></div>
+<div class="s-card tb-card"><div class="tb-rolo" id="pg-loc-tb"></div></div>
+</article>
+<article class="slide slide-dark" id="pg-cocho1" data-title="Cocho · Alencar região 1">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Adubação de soqueira<span class="js-atu"></span></div>
+<h2 class="s-title">Adubação com cocho — Alencar, região 1</h2>
+</div>
+</div>
+<div class="s-card tb-card"><div class="tb-rolo" id="pg-cocho1-tb"></div></div>
+</article>
+<article class="slide slide-dark" id="pg-cocho2" data-title="Cocho · Alencar região 2 e Fábio">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Adubação de soqueira<span class="js-atu"></span></div>
+<h2 class="s-title">Adubação com cocho — Alencar, região 2, e Fábio do Prado, região 3</h2>
+</div>
+</div>
+<div class="s-card tb-card"><div class="tb-rolo" id="pg-cocho2-tb"></div></div>
 </article>
 
-<!-- ================= PONTOS DE ATENÇÃO ================= -->
-<article class="slide slide-dark" id="atencao" data-title="Pontos de atenção">
+<!-- ================= INDICADORES =================
+     os gráficos da impressão: total de cada programa, por região e o resumo final da
+     adubação -->
+<article class="slide slide-dark" id="ind-pre" data-title="Indicadores · pré e bordadura">
 <div class="s-head">
 <div>
-<div class="s-eyebrow"><span class="js-num">–</span> &middot; Pontos de atenção</div>
-<h2 class="s-title">O que pede ação</h2>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Indicadores<span class="js-atu"></span></div>
+<h2 class="s-title">Pré-emergência e reforço bordadura</h2>
 </div>
 </div>
-<div class="at-grid" id="at-grid"></div>
+<div class="ind-grid" id="ind-pre-grid"></div>
+</article>
+<article class="slide slide-dark" id="ind-cat1" data-title="Indicadores · 1ª catação">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Indicadores<span class="js-atu"></span></div>
+<h2 class="s-title">1ª catação química</h2>
+</div>
+</div>
+<div class="ind-grid" id="ind-cat1-grid"></div>
+</article>
+<article class="slide slide-dark" id="ind-adub" data-title="Indicadores · adubação">
+<div class="s-head">
+<div>
+<div class="s-eyebrow"><span class="js-num">–</span> &middot; Indicadores<span class="js-atu"></span></div>
+<h2 class="s-title">Adubação de soqueira — localizada e cocho</h2>
+</div>
+</div>
+<div class="ind-grid" id="ind-adub-grid"></div>
 </article>
 
 </div><!-- /deck -->
@@ -933,7 +1040,7 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
      ============================================================ -->
 <script>
 /*DADOS-INICIO*/
-window.TRATOS = {"fonte":{"semana":"19.10.2026.pdf","programas":"19.10.2026.pdf","atualizacaoProgramas":"2026-10-19"},"semana":{"diaRef":"2026-10-17","qtdDias":6,"dias":["2026-10-12","2026-10-13","2026-10-14","2026-10-15","2026-10-16","2026-10-17","2026-10-18"],"diasAnt":["2026-10-05","2026-10-06","2026-10-07","2026-10-08","2026-10-09","2026-10-10","2026-10-11"],"meses":["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"]},"frentes":[{"id":"manual","nome":"Manual e semi-mecanizada","titulo":"APLICAÇÃO MANUAL E SEMI-MECANIZADA","atividades":[{"nome":"Catação Manual","linha":11,"equip":48.0,"metaUnid":1.2,"metaDia":57.6,"metaSemana":345.6,"metaMes":1555.2,"dias":[null,91.28,78.57,68.05,125.61,82.94,null],"ant":[17.54,45.83,58.99,39.75,73.8,19.93,null],"pessoas":[null,45.0,46.0,47.0,50.0,27.0,null],"pessoasPlan":48.0,"metaPessoa":1.2,"mes":{"2026-01":940.18,"2026-02":410.74,"2026-03":95.14,"2026-04":284.34,"2026-05":633.89,"2026-06":753.47,"2026-07":857.96,"2026-08":627.46,"2026-09":1149.69,"2026-10":930.0}},{"nome":"Colheitabilidade","linha":12,"equip":12.0,"metaUnid":2.0,"metaDia":24.0,"metaSemana":144.0,"metaMes":648.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":928.3,"2026-05":898.67,"2026-06":555.31,"2026-07":593.35,"2026-08":322.13,"2026-09":58.61,"2026-10":0}},{"nome":"Plantio Manual - Experimento Iran","linha":13,"equip":0.0,"metaUnid":0.0,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0.83,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Quadriciclo","linha":16,"equip":2.0,"metaUnid":10.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,34.56,33.18,6.45,null,null],"ant":[2.19,19.55,54.25,22.26,27.5,5.0,null],"pessoas":[null,null,2.0,2.0,2.0,null,null],"pessoasPlan":2.0,"metaPessoa":10.0,"mes":{"2026-01":31.67,"2026-02":123.34,"2026-03":22.31,"2026-04":0,"2026-05":300.64,"2026-06":196.96,"2026-07":14.1,"2026-08":0,"2026-09":0,"2026-10":201.71}},{"nome":"Retampa","linha":17,"equip":20.0,"metaUnid":1.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":392.12,"2026-02":1056.98,"2026-03":1799.27,"2026-04":396.71,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Replanta","linha":18,"equip":18.0,"metaUnid":0.3,"metaDia":5.4,"metaSemana":32.4,"metaMes":145.8,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":22.87,"2026-02":0,"2026-03":35.51,"2026-04":95.05,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Kit Aceiro - Herbicat","linha":19,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":70.5,"2026-02":88.0,"2026-03":0,"2026-04":1282.53,"2026-05":565.15,"2026-06":1036.46,"2026-07":988.92,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Mangueirão","linha":20,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":2102.99,"2026-02":6517.76,"2026-03":4437.13,"2026-04":1289.15,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Roço","linha":null,"dias":[null,null,null,null,9.0,null,null],"pessoas":[null,null,null,null,19.0,null,null],"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":9.0},"ant":[null,null,null,null,null,null,null],"equip":null,"metaUnid":null,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"pessoasPlan":null,"metaPessoa":null},{"nome":"Cata Mato","linha":23,"equip":10.0,"metaUnid":12.0,"metaDia":120.0,"metaSemana":720.0,"metaMes":3240.0,"dias":[null,133.86,114.77,79.57,2.56,5.88,null],"ant":[14.61,112.19,105.7,118.6,96.54,42.86,null],"pessoas":[null,25.0,30.0,16.0,1.0,26.0,null],"pessoasPlan":15.0,"metaPessoa":4.0,"mes":{"2026-01":2589.46,"2026-02":88.47,"2026-03":0,"2026-04":552.88,"2026-05":887.35,"2026-06":1243.42,"2026-07":2030.4,"2026-08":1886.1,"2026-09":1021.5,"2026-10":881.46}},{"nome":"Catação de Formiga","linha":26,"equip":2.0,"metaUnid":10.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,5.4,28.02,18.17,43.36,42.72,null],"ant":[null,34.08,25.61,21.93,24.48,70.08,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":112.24,"2026-02":61.42,"2026-03":514.28,"2026-04":891.81,"2026-05":580.83,"2026-06":359.61,"2026-07":643.48,"2026-08":556.53,"2026-09":899.53,"2026-10":360.74}}]},{"id":"uniport","nome":"Uniport","titulo":"APLICAÇÕES TERRESTRES - UNIPORT","atividades":[{"nome":"Uniport Barra Total - Terceiro","linha":31,"equip":null,"metaUnid":null,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":18.83,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Próprio","linha":32,"equip":1.0,"metaUnid":80.0,"metaDia":80.0,"metaSemana":480.0,"metaMes":2160.0,"dias":[104.14,57.63,55.14,null,33.2,48.2,null],"ant":[null,null,93.3,105.48,null,45.0,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":332.14,"2026-02":923.91,"2026-03":1461.85,"2026-04":703.09,"2026-05":1369.34,"2026-06":1574.19,"2026-07":2025.3,"2026-08":1781.94,"2026-09":888.77,"2026-10":859.51}},{"nome":"Uniport Próprio - Dessecação","linha":33,"equip":1.0,"metaUnid":70.0,"metaDia":70.0,"metaSemana":420.0,"metaMes":1890.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":438.1,"2026-02":4.0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Broto - Terceiro","linha":34,"equip":2.0,"metaUnid":70.0,"metaDia":140.0,"metaSemana":840.0,"metaMes":3780.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Terceiro","linha":35,"equip":3.0,"metaUnid":60.0,"metaDia":180.0,"metaSemana":1080.0,"metaMes":4860.0,"dias":[null,null,150.45,75.82,161.63,88.33,null],"ant":[null,56.64,139.37,99.6,82.7,103.2,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":521.63,"2026-02":502.2,"2026-03":788.89,"2026-04":1759.2,"2026-05":1668.89,"2026-06":1814.06,"2026-07":1771.44,"2026-08":2217.19,"2026-09":2309.14,"2026-10":1154.02}},{"nome":"Uniport Pingente-Terceiro","linha":36,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Terceiro - Dessecação","linha":38,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":105.4,"2026-02":5.0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":59.61}},{"nome":"Uniport Pingente-Próprio","linha":39,"equip":1.0,"metaUnid":50.0,"metaDia":50.0,"metaSemana":300.0,"metaMes":1350.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Terceira Molécula-Terceiro","linha":40,"equip":1.0,"metaUnid":10.0,"metaDia":10.0,"metaSemana":60.0,"metaMes":270.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Terceira Molécula-Próprio","linha":41,"equip":1.0,"metaUnid":20.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}}]},{"id":"aerea","nome":"Aérea e monitoramento","titulo":"APLICAÇÃO AÉREA E MONITORAMENTO","atividades":[{"nome":"Drone - Próprio","linha":46,"equip":1.0,"metaUnid":20.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":216.24,"2026-02":517.78,"2026-03":622.63,"2026-04":507.83,"2026-05":312.06,"2026-06":450.96,"2026-07":342.35,"2026-08":7.52,"2026-09":20.26,"2026-10":0}},{"nome":"Drone Dessecação - Próprio","linha":47,"equip":1.0,"metaUnid":30.0,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":12.79,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Drone Inseticida","linha":48,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,362.21,703.9,null,null,null],"ant":[262.64,null,505.29,100.0,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":1006.68,"2026-03":485.64,"2026-04":1423.38,"2026-05":241.35,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":2479.05,"2026-10":2421.34}},{"nome":"Drone Dessecação-Terceiro","linha":49,"equip":1.0,"metaUnid":5.0,"metaDia":5.0,"metaSemana":10.0,"metaMes":135.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Área Monitoramento","linha":50,"equip":2.0,"metaUnid":150.0,"metaDia":300.0,"metaSemana":1800.0,"metaMes":8100.0,"dias":[187.16,289.57,null,260.73,267.41,null,null],"ant":[null,204.16,239.93,653.12,309.72,262.33,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":509.99,"2026-02":3570.86,"2026-03":5377.19,"2026-04":2972.59,"2026-05":1699.65,"2026-06":2997.82,"2026-07":5064.12,"2026-08":2632.79,"2026-09":1670.18,"2026-10":2673.27}}]},{"id":"cocho","nome":"Adubação com cocho","titulo":"ADUBAÇÃO COM COCHO","atividades":[{"nome":"Adubação Socaria - Fábio do Prado","linha":67,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,97.41,88.03,48.2,80.15,68.25,66.02],"ant":[null,52.38,53.22,84.43,56.86,80.74,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":427.27,"2026-07":973.5,"2026-08":700.6,"2026-09":1452.01,"2026-10":895.32}},{"nome":"Adubação Socaria - Alencar","linha":68,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[60.83,65.47,65.61,81.5,118.67,42.45,null],"ant":[null,80.0,81.83,59.16,90.03,36.4,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":368.18,"2026-07":1017.16,"2026-08":900.26,"2026-09":1686.63,"2026-10":984.87}}]}],"avisos":["Colheitabilidade: de 28/09 a 03/10 a linha repete pessoas/rendimento de outra atividade (6 dias) — valores fora da conta, conferir a planilha.","Plantio Manual - Experimento Iran: de 28/09 a 03/10 a linha repete pessoas/rendimento de outra atividade (6 dias) — valores fora da conta, conferir a planilha."],"programas":[{"id":"pre","nome":"Pré-emergente cana soca","base":18770.95,"baseRot":"área colhida","reforma":318.14,"realizado":17674.06,"aRealizar":624.79,"blocos":{"BERTONI":10.98,"USINA":36.39,"SHEKINAH I":104.44,"CAJAMANGA":96.09,"NILSON":138.57,"PEQUI":26.8,"SCALON SETE PLACAS":211.52},"regioes":{"1":151.81,"2":234.66,"3":238.32}},{"id":"queima","nome":"Pré-emergente área de queima","base":1460.37,"baseRot":"área queimada","realizado":350.19,"aRealizar":1110.18,"blocos":{"SAMIR":362.22,"SHEKINAH I":490.4,"BAÚ":38.46,"CAJAMANGA":131.25,"154":27.29,"DO CRISTO":27.01,"BURITI":0.24,"SÁVIO":33.31}},{"id":"mol3","nome":"3ª molécula (bordadura)","base":884.87,"baseRot":"área aberta","realizado":750.19,"aRealizar":134.68,"blocos":{"USINA":3.35,"MARCO AMUY":2.62,"SHEKINAH I":51.01,"DO CRISTO":22.78,"BERTONI":8.01,"BAÚ":8.73,"SAUL":18.22,"NILSON":6.73,"BEBEDOURO":5.69,"CAJAMANGA":0.01,"PEQUI":7.54}},{"id":"cat1","nome":"1ª catação química","base":17674.06,"baseRot":"área aberta","reforma":218.32,"realizado":11067.35,"mec":7350.85,"man":3716.5,"aRealizar":6144.62,"atrasado":5087.46,"blocos":{"USINA":1182.02,"BERTONI":183.88,"SHEKINAH I":949.35,"SÁVIO":98.92,"SAMIR":1033.75,"BURITI":78.41,"BAÚ":340.45,"CAJAMANGA":25.89,"SAUL":225.86,"NILSON":335.55,"BEBEDOURO":272.37,"PEQUI":951.95,"69":144.98,"ELISETE":19.55,"SANTA VITÓRIA":151.83,"MARCO AMUY":83.84,"NILSON CASAGRANDE":66.02},"blocosAtrasado":{"USINA":1081.19,"BERTONI":69.44,"SHEKINAH I":949.35,"SÁVIO":98.92,"SAMIR":1033.75,"BURITI":78.41,"BAÚ":231.24,"CAJAMANGA":25.89,"SAUL":225.86,"NILSON":107.24,"BEBEDOURO":19.67,"PEQUI":850.14,"69":144.98,"ELISETE":19.55,"SANTA VITÓRIA":151.83}},{"id":"cat2","nome":"2ª catação química","base":6195.32,"baseRot":"programado","reforma":152.89,"realizado":567.03,"aRealizar":5536.61,"blocos":{"BERTONI":511.26,"USINA":326.06,"BURITI":1199.27,"69":123.81,"SAMIR":580.94,"SHEKINAH I":652.75,"CANOA":181.62,"BAÚ":314.72,"MARCO AMUY":359.93,"CAJAMANGA":277.76,"NILSON":138.14,"154":167.32,"BASTOS":-24.09,"PEQUI":58.53,"SCALON SETE PLACAS":480.71,"ELISETE":187.88}},{"id":"loc","nome":"Adubação localizada","base":9569.33,"baseRot":"área a tratar","reforma":359.37,"realizado":6653.22,"aRealizar":747.14,"blocos":{"MARCO AMUY":83.84,"SAMIR":113.0,"SHEKINAH I":232.66,"USINA":317.64}},{"id":"cocho","nome":"Adubação com cocho","base":11936.94,"baseRot":"área a tratar","reforma":248.12,"realizado":8800.29,"aRealizar":2794.73,"blocos":{"BERTONI":157.43,"BURITI":106.82,"DO CRISTO":223.97,"SHEKINAH I":603.21,"USINA":52.09,"BEBEDOURO":466.55,"BAÚ":109.21,"CAJAMANGA":197.47,"NILSON":225.1,"SAUL":303.21,"SCALON SETE PLACAS":342.38,"PEQUI":7.29}}],"nomesMes":["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],"locais":{"fazendas":{},"linhas":[],"fontes":[]}};
+window.TRATOS = {"fonte":{"semana":"19.10.2026.pdf","programas":"19.10.2026.pdf","atualizacaoProgramas":"2026-10-19","tabelas":"19.10.2026.pdf"},"semana":{"diaRef":"2026-10-17","qtdDias":6,"dias":["2026-10-12","2026-10-13","2026-10-14","2026-10-15","2026-10-16","2026-10-17","2026-10-18"],"diasAnt":["2026-10-05","2026-10-06","2026-10-07","2026-10-08","2026-10-09","2026-10-10","2026-10-11"],"meses":["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"]},"frentes":[{"id":"manual","nome":"Manual e semi-mecanizada","titulo":"APLICAÇÃO MANUAL E SEMI-MECANIZADA","atividades":[{"nome":"Catação Manual","linha":11,"equip":48.0,"metaUnid":1.2,"metaDia":57.6,"metaSemana":345.6,"metaMes":1555.2,"dias":[null,91.28,78.57,68.05,125.61,82.94,null],"ant":[17.54,45.83,58.99,39.75,73.8,19.93,null],"pessoas":[null,45.0,46.0,47.0,50.0,27.0,null],"pessoasPlan":48.0,"metaPessoa":1.2,"mes":{"2026-01":940.18,"2026-02":410.74,"2026-03":95.14,"2026-04":284.34,"2026-05":633.89,"2026-06":753.47,"2026-07":857.96,"2026-08":627.46,"2026-09":1149.69,"2026-10":930.0}},{"nome":"Colheitabilidade","linha":12,"equip":12.0,"metaUnid":2.0,"metaDia":24.0,"metaSemana":144.0,"metaMes":648.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":928.3,"2026-05":898.67,"2026-06":555.31,"2026-07":593.35,"2026-08":322.13,"2026-09":58.61,"2026-10":0}},{"nome":"Plantio Manual - Experimento Iran","linha":13,"equip":0.0,"metaUnid":0.0,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0.83,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Quadriciclo","linha":16,"equip":2.0,"metaUnid":10.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,34.56,33.18,6.45,null,null],"ant":[2.19,19.55,54.25,22.26,27.5,5.0,null],"pessoas":[null,null,2.0,2.0,2.0,null,null],"pessoasPlan":2.0,"metaPessoa":10.0,"mes":{"2026-01":31.67,"2026-02":123.34,"2026-03":22.31,"2026-04":0,"2026-05":300.64,"2026-06":196.96,"2026-07":14.1,"2026-08":0,"2026-09":0,"2026-10":201.71}},{"nome":"Retampa","linha":17,"equip":20.0,"metaUnid":1.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":392.12,"2026-02":1056.98,"2026-03":1799.27,"2026-04":396.71,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Replanta","linha":18,"equip":18.0,"metaUnid":0.3,"metaDia":5.4,"metaSemana":32.4,"metaMes":145.8,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":22.87,"2026-02":0,"2026-03":35.51,"2026-04":95.05,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Kit Aceiro - Herbicat","linha":19,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":70.5,"2026-02":88.0,"2026-03":0,"2026-04":1282.53,"2026-05":565.15,"2026-06":1036.46,"2026-07":988.92,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Mangueirão","linha":20,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":2102.99,"2026-02":6517.76,"2026-03":4437.13,"2026-04":1289.15,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Roço","linha":null,"dias":[null,null,null,null,9.0,null,null],"pessoas":[null,null,null,null,19.0,null,null],"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":9.0},"ant":[null,null,null,null,null,null,null],"equip":null,"metaUnid":null,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"pessoasPlan":null,"metaPessoa":null},{"nome":"Cata Mato","linha":23,"equip":10.0,"metaUnid":12.0,"metaDia":120.0,"metaSemana":720.0,"metaMes":3240.0,"dias":[null,133.86,114.77,79.57,2.56,5.88,null],"ant":[14.61,112.19,105.7,118.6,96.54,42.86,null],"pessoas":[null,25.0,30.0,16.0,1.0,26.0,null],"pessoasPlan":15.0,"metaPessoa":4.0,"mes":{"2026-01":2589.46,"2026-02":88.47,"2026-03":0,"2026-04":552.88,"2026-05":887.35,"2026-06":1243.42,"2026-07":2030.4,"2026-08":1886.1,"2026-09":1021.5,"2026-10":881.46}},{"nome":"Catação de Formiga","linha":26,"equip":2.0,"metaUnid":10.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,5.4,28.02,18.17,43.36,42.72,null],"ant":[null,34.08,25.61,21.93,24.48,70.08,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":112.24,"2026-02":61.42,"2026-03":514.28,"2026-04":891.81,"2026-05":580.83,"2026-06":359.61,"2026-07":643.48,"2026-08":556.53,"2026-09":899.53,"2026-10":360.74}}]},{"id":"uniport","nome":"Uniport","titulo":"APLICAÇÕES TERRESTRES - UNIPORT","atividades":[{"nome":"Uniport Barra Total - Terceiro","linha":31,"equip":null,"metaUnid":null,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":18.83,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Próprio","linha":32,"equip":1.0,"metaUnid":80.0,"metaDia":80.0,"metaSemana":480.0,"metaMes":2160.0,"dias":[104.14,57.63,55.14,null,33.2,48.2,null],"ant":[null,null,93.3,105.48,null,45.0,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":332.14,"2026-02":923.91,"2026-03":1461.85,"2026-04":703.09,"2026-05":1369.34,"2026-06":1574.19,"2026-07":2025.3,"2026-08":1781.94,"2026-09":888.77,"2026-10":859.51}},{"nome":"Uniport Próprio - Dessecação","linha":33,"equip":1.0,"metaUnid":70.0,"metaDia":70.0,"metaSemana":420.0,"metaMes":1890.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":438.1,"2026-02":4.0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Broto - Terceiro","linha":34,"equip":2.0,"metaUnid":70.0,"metaDia":140.0,"metaSemana":840.0,"metaMes":3780.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Terceiro","linha":35,"equip":3.0,"metaUnid":60.0,"metaDia":180.0,"metaSemana":1080.0,"metaMes":4860.0,"dias":[null,null,150.45,75.82,161.63,88.33,null],"ant":[null,56.64,139.37,99.6,82.7,103.2,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":521.63,"2026-02":502.2,"2026-03":788.89,"2026-04":1759.2,"2026-05":1668.89,"2026-06":1814.06,"2026-07":1771.44,"2026-08":2217.19,"2026-09":2309.14,"2026-10":1154.02}},{"nome":"Uniport Pingente-Terceiro","linha":36,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Uniport Terceiro - Dessecação","linha":38,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":105.4,"2026-02":5.0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":59.61}},{"nome":"Uniport Pingente-Próprio","linha":39,"equip":1.0,"metaUnid":50.0,"metaDia":50.0,"metaSemana":300.0,"metaMes":1350.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Terceira Molécula-Terceiro","linha":40,"equip":1.0,"metaUnid":10.0,"metaDia":10.0,"metaSemana":60.0,"metaMes":270.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Terceira Molécula-Próprio","linha":41,"equip":1.0,"metaUnid":20.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}}]},{"id":"aerea","nome":"Aérea e monitoramento","titulo":"APLICAÇÃO AÉREA E MONITORAMENTO","atividades":[{"nome":"Drone - Próprio","linha":46,"equip":1.0,"metaUnid":20.0,"metaDia":20.0,"metaSemana":120.0,"metaMes":540.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":216.24,"2026-02":517.78,"2026-03":622.63,"2026-04":507.83,"2026-05":312.06,"2026-06":450.96,"2026-07":342.35,"2026-08":7.52,"2026-09":20.26,"2026-10":0}},{"nome":"Drone Dessecação - Próprio","linha":47,"equip":1.0,"metaUnid":30.0,"metaDia":0.0,"metaSemana":0.0,"metaMes":0.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":12.79,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Drone Inseticida","linha":48,"equip":1.0,"metaUnid":60.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,null,362.21,703.9,null,null,null],"ant":[262.64,null,505.29,100.0,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":1006.68,"2026-03":485.64,"2026-04":1423.38,"2026-05":241.35,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":2479.05,"2026-10":2421.34}},{"nome":"Drone Dessecação-Terceiro","linha":49,"equip":1.0,"metaUnid":5.0,"metaDia":5.0,"metaSemana":10.0,"metaMes":135.0,"dias":[null,null,null,null,null,null,null],"ant":[null,null,null,null,null,null,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":0,"2026-07":0,"2026-08":0,"2026-09":0,"2026-10":0}},{"nome":"Área Monitoramento","linha":50,"equip":2.0,"metaUnid":150.0,"metaDia":300.0,"metaSemana":1800.0,"metaMes":8100.0,"dias":[187.16,289.57,null,260.73,267.41,null,null],"ant":[null,204.16,239.93,653.12,309.72,262.33,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":509.99,"2026-02":3570.86,"2026-03":5377.19,"2026-04":2972.59,"2026-05":1699.65,"2026-06":2997.82,"2026-07":5064.12,"2026-08":2632.79,"2026-09":1670.18,"2026-10":2673.27}}]},{"id":"cocho","nome":"Adubação com cocho","titulo":"ADUBAÇÃO COM COCHO","atividades":[{"nome":"Adubação Socaria - Fábio do Prado","linha":67,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[null,97.41,88.03,48.2,80.15,68.25,66.02],"ant":[null,52.38,53.22,84.43,56.86,80.74,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":427.27,"2026-07":973.5,"2026-08":700.6,"2026-09":1452.01,"2026-10":895.32}},{"nome":"Adubação Socaria - Alencar","linha":68,"equip":2.0,"metaUnid":30.0,"metaDia":60.0,"metaSemana":360.0,"metaMes":1620.0,"dias":[60.83,65.47,65.61,81.5,118.67,42.45,null],"ant":[null,80.0,81.83,59.16,90.03,36.4,null],"pessoas":null,"pessoasPlan":null,"metaPessoa":null,"mes":{"2026-01":0,"2026-02":0,"2026-03":0,"2026-04":0,"2026-05":0,"2026-06":368.18,"2026-07":1017.16,"2026-08":900.26,"2026-09":1686.63,"2026-10":984.87}}]}],"avisos":["Colheitabilidade: de 28/09 a 03/10 a linha repete pessoas/rendimento de outra atividade (6 dias) — valores fora da conta, conferir a planilha.","Plantio Manual - Experimento Iran: de 28/09 a 03/10 a linha repete pessoas/rendimento de outra atividade (6 dias) — valores fora da conta, conferir a planilha."],"programas":[{"id":"pre","nome":"Pré-emergente cana soca","base":18770.95,"baseRot":"área colhida","reforma":318.14,"realizado":17674.06,"aRealizar":624.79,"blocos":{"BERTONI":10.98,"USINA":36.39,"SHEKINAH I":104.44,"CAJAMANGA":96.09,"NILSON":138.57,"PEQUI":26.8,"SCALON SETE PLACAS":211.52},"regioes":{"1":151.81,"2":234.66,"3":238.32}},{"id":"queima","nome":"Pré-emergente área de queima","base":1460.37,"baseRot":"área queimada","realizado":350.19,"aRealizar":1110.18,"blocos":{"SAMIR":362.22,"SHEKINAH I":490.4,"BAÚ":38.46,"CAJAMANGA":131.25,"154":27.29,"DO CRISTO":27.01,"BURITI":0.24,"SÁVIO":33.31}},{"id":"mol3","nome":"3ª molécula (bordadura)","base":884.87,"baseRot":"área aberta","realizado":750.19,"aRealizar":134.68,"blocos":{"USINA":3.35,"MARCO AMUY":2.62,"SHEKINAH I":51.01,"DO CRISTO":22.78,"BERTONI":8.01,"BAÚ":8.73,"SAUL":18.22,"NILSON":6.73,"BEBEDOURO":5.69,"CAJAMANGA":0.01,"PEQUI":7.54}},{"id":"cat1","nome":"1ª catação química","base":17674.06,"baseRot":"área aberta","reforma":218.32,"realizado":11067.35,"mec":7350.85,"man":3716.5,"aRealizar":6144.62,"atrasado":5087.46,"blocos":{"USINA":1182.02,"BERTONI":183.88,"SHEKINAH I":949.35,"SÁVIO":98.92,"SAMIR":1033.75,"BURITI":78.41,"BAÚ":340.45,"CAJAMANGA":25.89,"SAUL":225.86,"NILSON":335.55,"BEBEDOURO":272.37,"PEQUI":951.95,"69":144.98,"ELISETE":19.55,"SANTA VITÓRIA":151.83,"MARCO AMUY":83.84,"NILSON CASAGRANDE":66.02},"blocosAtrasado":{"USINA":1081.19,"BERTONI":69.44,"SHEKINAH I":949.35,"SÁVIO":98.92,"SAMIR":1033.75,"BURITI":78.41,"BAÚ":231.24,"CAJAMANGA":25.89,"SAUL":225.86,"NILSON":107.24,"BEBEDOURO":19.67,"PEQUI":850.14,"69":144.98,"ELISETE":19.55,"SANTA VITÓRIA":151.83}},{"id":"cat2","nome":"2ª catação química","base":6195.32,"baseRot":"programado","reforma":152.89,"realizado":567.03,"aRealizar":5536.61,"blocos":{"BERTONI":511.26,"USINA":326.06,"BURITI":1199.27,"69":123.81,"SAMIR":580.94,"SHEKINAH I":652.75,"CANOA":181.62,"BAÚ":314.72,"MARCO AMUY":359.93,"CAJAMANGA":277.76,"NILSON":138.14,"154":167.32,"BASTOS":-24.09,"PEQUI":58.53,"SCALON SETE PLACAS":480.71,"ELISETE":187.88}},{"id":"loc","nome":"Adubação localizada","base":9569.33,"baseRot":"área a tratar","reforma":359.37,"realizado":6653.22,"aRealizar":747.14,"blocos":{"MARCO AMUY":83.84,"SAMIR":113.0,"SHEKINAH I":232.66,"USINA":317.64}},{"id":"cocho","nome":"Adubação com cocho","base":11936.94,"baseRot":"área a tratar","reforma":248.12,"realizado":8800.29,"aRealizar":2794.73,"blocos":{"BERTONI":157.43,"BURITI":106.82,"DO CRISTO":223.97,"SHEKINAH I":603.21,"USINA":52.09,"BEBEDOURO":466.55,"BAÚ":109.21,"CAJAMANGA":197.47,"NILSON":225.1,"SAUL":303.21,"SCALON SETE PLACAS":342.38,"PEQUI":7.29}}],"nomesMes":["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],"locais":{"fazendas":{},"linhas":[],"fontes":[]},"tabelas":{"atualizacao":"2026-10-19","programas":[{"id":"pre","nome":"Pré-emergência — cana soca","tipo":"pre","secoes":[{"titulo":"","linhas":[{"t":"faz","reg":"1","cod":"9337","bloco":"BERTONI","prop":"MONTE ALEGRE","data":"09/10/2026","atraso":10,"obs":"","v":{"colhida":111.3,"aColher":0.0,"reforma":0.0,"realizada":100.32,"aRealizar":10.98,"fornecedor":0.0}},{"t":"faz","reg":"1","cod":"9343","bloco":"USINA","prop":"BAÚS","data":"18/10/2026","atraso":1,"obs":"","v":{"colhida":13.66,"aColher":0.0,"aRealizar":13.66}},{"t":"faz","reg":"1","cod":"9344","bloco":"USINA","prop":"BAÚ VELHO","data":"18/10/2026","atraso":1,"obs":"","v":{"colhida":18.93,"aColher":0.0,"realizada":15.7,"aRealizar":3.23}},{"t":"faz","reg":"1","cod":"9364","bloco":"USINA","prop":"DOS BAÚ VELHO","data":"18/10/2026","atraso":1,"obs":"","v":{"colhida":8.89,"aColher":0.0,"aRealizar":8.89}},{"t":"faz","reg":"1","cod":"9405","bloco":"SHEKINAH l","prop":"SHEKINAH I","data":"18/10/2026","atraso":1,"obs":"","v":{"colhida":417.18,"aColher":0.0,"reforma":0.0,"realizada":312.74,"aRealizar":104.44}},{"t":"faz","reg":"1","cod":"9416","bloco":"BURITI","prop":"MOSQUITO","data":"18/10/2026","atraso":1,"obs":"","v":{"colhida":0.0,"aColher":92.45,"aRealizar":0.0}},{"t":"faz","reg":"1","cod":"9498","bloco":"USINA","prop":"BAÚ VELHO","data":"18/10/2026","atraso":1,"obs":"","v":{"colhida":10.61,"aColher":0.0,"aRealizar":10.61}},{"t":"sub","rot":"Subtotal Região 1","v":{"colhida":9576.36,"aColher":92.45,"reforma":181.51,"realizada":9243.04,"aRealizar":151.81,"fornecedor":609.78}},{"t":"faz","reg":"2","cod":"9319","bloco":"BEBEDOURO","prop":"RETIRINHO E BOA ESPERANÇA","data":"18/10/2026","atraso":1,"obs":"","v":{"colhida":0.0,"aColher":97.84,"aRealizar":0.0}},{"t":"faz","reg":"2","cod":"9328","bloco":"CAJAMANGA","prop":"BUGRE","data":"18/10/2026","atraso":1,"obs":"","v":{"colhida":96.09,"aColher":0.0,"aRealizar":96.09}},{"t":"faz","reg":"2","cod":"9362","bloco":"CAJAMANGA","prop":"DOS BAÚS","data":"18/10/2026","atraso":1,"obs":"","v":{"colhida":0.0,"aColher":101.38,"aRealizar":0.0}},{"t":"faz","reg":"2","cod":"9376","bloco":"NILSON","prop":"DOS BAÚS OLHOS D' ÁGUA","data":"13/10/2026","atraso":6,"obs":"","v":{"colhida":61.1,"aColher":25.43,"realizada":61.1,"aRealizar":0.0}},{"t":"faz","reg":"2","cod":"9463","bloco":"NILSON","prop":"SANTA CRUZ","data":"15/10/2026","atraso":4,"obs":"","v":{"colhida":138.57,"aColher":0.0,"aRealizar":138.57}},{"t":"faz","reg":"2","cod":"9811","bloco":"CAJAMANGA","prop":"BOM JESUS","data":"18/10/2026","atraso":1,"obs":"","v":{"colhida":0.0,"aColher":27.78,"aRealizar":0.0}},{"t":"sub","rot":"Subtotal Região 2","v":{"colhida":4159.35,"aColher":252.43,"reforma":14.44,"realizada":3754.16,"aRealizar":234.66,"fornecedor":304.85}},{"t":"faz","reg":"3","cod":"9443","bloco":"PEQUI","prop":"PÂNTANO E MARIANO","data":"01/10/2026","atraso":18,"obs":"","v":{"colhida":21.4,"aColher":0.0,"realizada":17.53,"aRealizar":3.87}},{"t":"faz","reg":"3","cod":"9456","bloco":"PEQUI","prop":"PÂNTANO","data":"08/10/2026","atraso":11,"obs":"","v":{"colhida":7.29,"aColher":0.0,"aRealizar":7.29}},{"t":"faz","reg":"3","cod":"9464","bloco":"SCALON SETE PLACAS","prop":"SÃO JOSÉ","data":"18/10/2026","atraso":1,"obs":"","v":{"colhida":211.52,"aColher":130.86,"aRealizar":211.52}},{"t":"faz","reg":"3","cod":"9486","bloco":"PEQUI","prop":"DAS PONTINHAS","data":"04/10/2026","atraso":15,"obs":"","v":{"colhida":41.53,"aColher":0.0,"realizada":25.89,"aRealizar":15.64}},{"t":"sub","rot":"Subtotal Região 3","v":{"colhida":5035.24,"aColher":130.86,"reforma":122.19,"realizada":4676.86,"aRealizar":238.32,"fornecedor":0.0}},{"t":"tot","rot":"Total","v":{"colhida":18770.95,"aColher":837.41,"reforma":318.14,"realizada":17674.06,"aRealizar":624.79,"fornecedor":2579.0}}]}],"extras":{"Total Encerrado":21349.95,"Total Aberto":837.41,"Geral":22187.36},"cols":[{"k":"reg","t":"Região"},{"k":"cod","t":"Cód Faz"},{"k":"bloco","t":"Bloco"},{"k":"prop","t":"Propriedade"},{"k":"data","t":"Data colheita"},{"k":"atraso","t":"Dias de atraso"},{"k":"colhida","t":"Área colhida","n":true},{"k":"aColher","t":"Área a colher","n":true},{"k":"reforma","t":"Área reforma","n":true},{"k":"realizada","t":"Área realizada","n":true},{"k":"aRealizar","t":"A realizar","n":true},{"k":"fornecedor","t":"Área fornecedor","n":true}]},{"id":"bord","nome":"Reforço bordadura (3ª molécula) — cana soca","tipo":"bord","secoes":[{"titulo":"","linhas":[{"t":"faz","reg":"1","cod":"9011","bloco":"USINA","prop":"VARGEM DA BARRIGUDA","data":"30/09/2026","atraso":19,"obs":"","v":{"aberta":2.25,"realizada":0.0,"aRealizar":2.25}},{"t":"faz","reg":"1","cod":"9012","bloco":"MARCO AMUY","prop":"QUILOMBO","data":"12/10/2026","atraso":7,"obs":"","v":{"aberta":2.62,"realizada":0.0,"aRealizar":2.62}},{"t":"faz","reg":"1","cod":"9344","bloco":"USINA","prop":"BAÚ VELHO","data":"18/10/2026","atraso":1,"obs":"","v":{"aberta":1.1,"realizada":0.0,"aRealizar":1.1}},{"t":"faz","reg":"1","cod":"9368","bloco":"SHEKINAH I","prop":"ROSARIO","data":"21/09/2026","atraso":28,"obs":"","v":{"aberta":34.33,"realizada":0.0,"aRealizar":34.33}},{"t":"faz","reg":"1","cod":"9405","bloco":"SHEKINAH l","prop":"SHEKINAH I","data":"18/10/2026","atraso":1,"obs":"","v":{"aberta":15.16,"realizada":6.73,"aRealizar":8.43}},{"t":"faz","reg":"1","cod":"9411","bloco":"DO CRISTO","prop":"SÃO PAULO","data":"14/09/2026","atraso":35,"obs":"","v":{"aberta":16.35,"realizada":2.85,"aRealizar":13.5}},{"t":"faz","reg":"1","cod":"9425","bloco":"SHEKINAH I","prop":"FUNDÃO","data":"27/09/2026","atraso":22,"obs":"","v":{"aberta":8.25,"realizada":0.0,"aRealizar":8.25}},{"t":"faz","reg":"1","cod":"9428","bloco":"BERTONI","prop":"IDEAL","data":"10/10/2026","atraso":9,"obs":"","v":{"aberta":8.01,"realizada":0.0,"aRealizar":8.01}},{"t":"faz","reg":"1","cod":"9536","bloco":"DO CRISTO","prop":"SÃO BENTO","data":"12/09/2026","atraso":37,"obs":"","v":{"aberta":17.67,"realizada":8.39,"aRealizar":9.28}},{"t":"faz","reg":"2","cod":"9350","bloco":"BAÚ","prop":"ITAÚBA","data":"09/10/2026","atraso":10,"obs":"","v":{"aberta":3.51,"realizada":0.0,"aRealizar":3.51}},{"t":"faz","reg":"2","cod":"9365","bloco":"SAUL","prop":"DIVISA","data":"26/09/2026","atraso":23,"obs":"","v":{"aberta":11.84,"realizada":1.22,"aRealizar":10.62}},{"t":"faz","reg":"2","cod":"9386","bloco":"SAUL","prop":"CÓRREGO DA DIVISA","data":"23/09/2026","atraso":26,"obs":"","v":{"aberta":5.21,"realizada":0.0,"aRealizar":5.21}},{"t":"faz","reg":"2","cod":"9388","bloco":"NILSON","prop":"ÁGUA AMARELA","data":"04/10/2026","atraso":15,"obs":"","v":{"aberta":3.09,"realizada":0.0,"aRealizar":3.09}},{"t":"faz","reg":"2","cod":"9389","bloco":"NILSON","prop":"ESTÂNCIA DA SERRA","data":"04/10/2026","atraso":15,"obs":"","v":{"aberta":1.85,"realizada":1.84,"aRealizar":0.01}},{"t":"faz","reg":"2","cod":"9424","bloco":"BEBEDOURO","prop":"CÓRREGO DO AÇUDE E RETI","data":"13/10/2026","atraso":6,"obs":"","v":{"aberta":5.69,"realizada":0.0,"aRealizar":5.69}},{"t":"faz","reg":"2","cod":"9434","bloco":"NILSON","prop":"SERRA DA AROEIRA","data":"10/10/2026","atraso":9,"obs":"","v":{"aberta":3.63,"realizada":0.0,"aRealizar":3.63}},{"t":"faz","reg":"2","cod":"9477","bloco":"SAUL","prop":"ÁGUA AMARELA","data":"17/09/2026","atraso":32,"obs":"","v":{"aberta":2.87,"realizada":0.48,"aRealizar":2.39}},{"t":"faz","reg":"2","cod":"9479","bloco":"BAÚ","prop":"CUPIM GRANDE","data":"01/10/2026","atraso":18,"obs":"","v":{"aberta":1.04,"realizada":0.0,"aRealizar":1.04}},{"t":"faz","reg":"2","cod":"9529","bloco":"BAÚ","prop":"SANTA VITORIA","data":"01/10/2026","atraso":18,"obs":"","v":{"aberta":4.18,"realizada":0.0,"aRealizar":4.18}},{"t":"faz","reg":"2","cod":"9538","bloco":"CAJAMANGA","prop":"SUCURI","data":"15/09/2026","atraso":34,"obs":"","v":{"aberta":0.01,"realizada":0.0,"aRealizar":0.01}},{"t":"faz","reg":"3","cod":"9474","bloco":"PEQUI","prop":"PONTINHAS","data":"24/09/2026","atraso":25,"obs":"","v":{"aberta":7.54,"realizada":0.0,"aRealizar":7.54}},{"t":"tot","rot":"Total","v":{"aberta":884.87,"realizada":750.19,"aRealizar":134.68}}]}],"extras":{},"cols":[{"k":"reg","t":"Região"},{"k":"cod","t":"Cód Faz"},{"k":"bloco","t":"Bloco"},{"k":"prop","t":"Propriedade"},{"k":"data","t":"Data colheita"},{"k":"atraso","t":"Dias de atraso"},{"k":"aberta","t":"Área aberta","n":true},{"k":"realizada","t":"Área realizada","n":true},{"k":"aRealizar","t":"A realizar","n":true}]},{"id":"cat1","nome":"1ª catação química — cana soca","tipo":"cat1","secoes":[{"titulo":"","linhas":[{"t":"faz","reg":"1","cod":"9006","bloco":"USINA","prop":"CÓRREGO DAS FLORES II","data":"11/07/2026","atraso":100,"obs":"","corte":8,"v":{"aberta":620.35,"reforma":0.0,"cataMatoMec":0.0,"realMec":202.02,"catManual":0.0,"realMan":37.61,"realTotal":239.63,"maior20":380.72,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9007","bloco":"USINA","prop":"NOSSA SENHORA APARECIDA","data":"03/08/2026","atraso":77,"obs":"","corte":8,"v":{"aberta":57.01,"reforma":0.0,"realMec":0.0,"realTotal":0.0,"maior20":57.01,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9011","bloco":"USINA","prop":"VARGEM DA BARRIGUDA","data":"30/09/2026","atraso":19,"obs":"","corte":8,"v":{"aberta":32.09,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":32.09}},{"t":"faz","reg":"1","cod":"9012","bloco":"MARCO-AMUY","prop":"QUILOMBO","data":"12/10/2026","atraso":7,"obs":"","corte":7,"v":{"aberta":83.84,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":83.84}},{"t":"faz","reg":"1","cod":"9014","bloco":"USINA","prop":"CÓRREGO DO AÇUDE","data":"18/07/2026","atraso":93,"obs":"","corte":8,"v":{"aberta":163.7,"reforma":0.0,"realMec":0.0,"catManual":102.4,"realMan":61.3,"realTotal":61.3,"maior20":102.4,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9321","bloco":"USINA","prop":"SANTA RITA","data":"22/09/2026","atraso":27,"obs":"","corte":9,"v":{"aberta":252.35,"reforma":0.0,"cataMatoMec":252.35,"realTotal":0.0,"maior20":252.35,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9337","bloco":"BERTONI","prop":"MONTE ALEGRE","data":"04/07/2026","atraso":107,"obs":"","corte":8,"v":{"aberta":100.32,"reforma":73.87,"cataMatoMec":26.45,"realMec":0.0,"realTotal":0.0,"maior20":26.45,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9344","bloco":"USINA","prop":"BAÚ VELHO","data":"18/10/2026","atraso":1,"obs":"","corte":8,"v":{"aberta":15.7,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":15.7}},{"t":"faz","reg":"1","cod":"9347","bloco":"SHEKINHA-I","prop":"LAGOINHA","data":"29/07/2026","atraso":82,"obs":"","corte":2,"v":{"aberta":36.28,"reforma":0.0,"cataMatoMec":36.28,"realMec":0.0,"realMan":15.99,"realTotal":15.99,"maior20":20.29,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9358","bloco":"SÁVIO","prop":"BARREIRINHO","data":"03/06/2026","atraso":138,"obs":"","corte":8,"v":{"aberta":268.34,"reforma":0.0,"cataMatoMec":0.0,"realMec":0.0,"catManual":100.0,"realMan":169.42,"realTotal":169.42,"maior20":98.92,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9366","bloco":"USINA","prop":"MONTE AZUL","data":"21/08/2026","atraso":59,"obs":"","corte":8,"v":{"aberta":128.45,"reforma":0.0,"cataMatoMec":69.97,"realMec":0.0,"catManual":50.0,"realMan":8.48,"realTotal":8.48,"maior20":119.97,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9368","bloco":"SHEKINHA-I","prop":"ROSARIO","data":"26/08/2026","atraso":54,"obs":"","corte":8,"v":{"aberta":490.4,"reforma":0.0,"cataMatoMec":283.76,"realMec":206.64,"realTotal":206.64,"maior20":283.76,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9405","bloco":"SHEKINHA-I","prop":"SHEKINAH I","data":"28/04/2026","atraso":174,"obs":"","corte":6,"v":{"aberta":312.74,"reforma":0.0,"cataMatoMec":128.22,"realMec":184.52,"realTotal":184.52,"maior20":128.22,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9408","bloco":"SAMIR","prop":"CÓRREGO DA LAGOA IV","data":"15/08/2026","atraso":65,"obs":"","corte":5,"v":{"aberta":503.88,"reforma":0.0,"cataMatoMec":0.0,"realMec":0.0,"realMan":123.55,"realTotal":123.55,"maior20":380.33,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9411","bloco":"SAMIR","prop":"SÃO PAULO","data":"14/09/2026","atraso":35,"obs":"","corte":6,"v":{"aberta":274.34,"reforma":0.0,"realMec":40.18,"realTotal":40.18,"maior20":234.16,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9414","bloco":"SHEKINHA-I","prop":"NOSSA SENHORA DO CARMO","data":"30/08/2026","atraso":50,"obs":"","corte":2,"v":{"aberta":297.31,"reforma":0.0,"cataMatoMec":169.75,"realMec":5.88,"catManual":100.0,"realMan":21.68,"realTotal":27.56,"maior20":269.75,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9415","bloco":"SAMIR","prop":"SANTA ROSA","data":"18/05/2026","atraso":154,"obs":"","corte":7,"v":{"aberta":101.59,"reforma":0.0,"cataMatoMec":0.0,"realMec":83.03,"realTotal":83.03,"maior20":18.56,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9425","bloco":"SHEKINHA-I","prop":"FUNDÃO","data":"27/09/2026","atraso":22,"obs":"","corte":5,"v":{"aberta":117.86,"reforma":0.0,"realTotal":0.0,"maior20":117.86,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9428","bloco":"BERTONI","prop":"IDEAL","data":"10/10/2026","atraso":9,"obs":"","corte":6,"v":{"aberta":114.44,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":114.44}},{"t":"faz","reg":"1","cod":"9520","bloco":"USINA","prop":"SANTA CLARA","data":"11/10/2026","atraso":8,"obs":"","corte":4,"v":{"aberta":53.04,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":53.04}},{"t":"faz","reg":"1","cod":"9534","bloco":"BERTONI","prop":"GOAPEVA","data":"16/09/2026","atraso":33,"obs":"","corte":3,"v":{"aberta":23.53,"reforma":0.0,"cataMatoMec":23.53,"realTotal":0.0,"maior20":23.53,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9535","bloco":"BERTONI","prop":"GOAPEVA","data":"15/09/2026","atraso":34,"obs":"","corte":3,"v":{"aberta":19.46,"reforma":0.0,"cataMatoMec":19.46,"realTotal":0.0,"maior20":19.46,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9536","bloco":"SAMIR","prop":"SÃO BENTO","data":"26/07/2026","atraso":85,"obs":"","corte":3,"v":{"aberta":372.28,"reforma":0.0,"cataMatoMec":313.26,"realMec":59.02,"realTotal":59.02,"maior20":313.26,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9541","bloco":"SHEKINHA-I","prop":"LAGOINHA","data":"29/07/2026","atraso":82,"obs":"","corte":2,"v":{"aberta":35.79,"reforma":0.0,"cataMatoMec":35.79,"realMec":0.0,"realTotal":0.0,"maior20":35.79,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9550","bloco":"SHEKINHA-I","prop":"CASCALHO RICO","data":"22/07/2026","atraso":89,"obs":"","corte":2,"v":{"aberta":79.37,"reforma":0.0,"cataMatoMec":0.0,"realMec":57.66,"realTotal":57.66,"maior20":21.71,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9543","bloco":"SAMIR","prop":"TRÊS LAGOAS","data":"08/06/2026","atraso":133,"obs":"","corte":2,"v":{"aberta":89.0,"reforma":0.0,"cataMatoMec":61.13,"realMec":27.87,"realTotal":27.87,"maior20":61.13,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9551","bloco":"SAMIR","prop":"CASCALHO RICO","data":"05/08/2026","atraso":75,"obs":"","corte":2,"v":{"aberta":51.62,"reforma":0.0,"cataMatoMec":23.32,"realMec":28.3,"realTotal":28.3,"maior20":23.32,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9552","bloco":"SAMIR","prop":"FUNDAO","data":"17/07/2026","atraso":94,"obs":"","corte":2,"v":{"aberta":2.99,"reforma":0.0,"realMec":0.0,"realTotal":0.0,"maior20":2.99,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9561","bloco":"BURITI","prop":"ILHA GAUCHO","data":"24/08/2026","atraso":56,"obs":"","corte":2,"v":{"aberta":10.41,"reforma":0.0,"cataMatoMec":10.41,"realMec":0.0,"realTotal":0.0,"maior20":10.41,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9579","bloco":"SHEKINHA-I","prop":"CASCALHO RICO","data":"05/08/2026","atraso":75,"obs":"","corte":2,"v":{"aberta":23.92,"reforma":0.0,"cataMatoMec":23.92,"realMec":0.0,"realTotal":0.0,"maior20":23.92,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9580","bloco":"SHEKINHA-I","prop":"CASCALHO RICO","data":"05/08/2026","atraso":75,"obs":"","corte":2,"v":{"aberta":48.05,"reforma":0.0,"cataMatoMec":48.05,"realMec":0.0,"realTotal":0.0,"maior20":48.05,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9587","bloco":"BURITI","prop":"MOSQUITO","data":"21/08/2026","atraso":59,"obs":"","corte":2,"v":{"aberta":36.98,"reforma":0.0,"cataMatoMec":36.98,"realMec":0.0,"realTotal":0.0,"maior20":36.98,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9599","bloco":"BURITI","prop":"CÓRREGO DO MACACO","data":"22/08/2026","atraso":58,"obs":"","corte":2,"v":{"aberta":19.91,"reforma":0.0,"cataMatoMec":19.91,"realMec":0.0,"realTotal":0.0,"maior20":19.91,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9602","bloco":"USINA","prop":"MONTE AZUL","data":"08/08/2026","atraso":72,"obs":"","corte":2,"v":{"aberta":236.39,"reforma":0.0,"cataMatoMec":0.0,"realMec":0.0,"realMan":67.65,"realTotal":67.65,"maior20":168.74,"menor20":0.0}},{"t":"faz","reg":"1","cod":"9603","bloco":"BURITI","prop":"ILHA GAUCHO","data":"24/08/2026","atraso":56,"obs":"","corte":2,"v":{"aberta":11.11,"reforma":0.0,"cataMatoMec":11.11,"realMec":0.0,"realTotal":0.0,"maior20":11.11,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9302","bloco":"BAÚ","prop":"BELA VISTA","data":"16/08/2026","atraso":64,"obs":"","corte":9,"v":{"aberta":44.89,"reforma":0.0,"realTotal":0.0,"maior20":44.89,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9303","bloco":"BEBEDOURO","prop":"BOA ESPERANÇA","data":"03/10/2026","atraso":16,"obs":"","corte":8,"v":{"aberta":72.33,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":72.33}},{"t":"faz","reg":"2","cod":"9323","bloco":"CAJAMANGA","prop":"SUCURI","data":"13/09/2026","atraso":36,"obs":"","corte":9,"v":{"aberta":17.1,"reforma":0.0,"realTotal":0.0,"maior20":17.1,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9324","bloco":"CAJAMANGA","prop":"SUCURI ll","data":"13/09/2026","atraso":36,"obs":"","corte":9,"v":{"aberta":8.69,"reforma":0.0,"realTotal":0.0,"maior20":8.69,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9350","bloco":"BAÚ","prop":"ITAÚBA","data":"09/10/2026","atraso":10,"obs":"","corte":8,"v":{"aberta":50.08,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":50.08}},{"t":"faz","reg":"2","cod":"9365","bloco":"SAUL","prop":"DIVISA","data":"24/08/2026","atraso":56,"obs":"","corte":8,"v":{"aberta":178.23,"reforma":0.0,"realMec":0.0,"realMan":120.33,"realTotal":120.33,"maior20":57.9,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9367","bloco":"BAÚ","prop":"PONTINHAS","data":"05/08/2026","atraso":75,"obs":"","corte":4,"v":{"aberta":34.17,"reforma":0.0,"realMec":0.0,"realTotal":0.0,"maior20":34.17,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9376","bloco":"NILSON","prop":"DOS BAÚS OLHOS D' ÁGUA","data":"12/09/2026","atraso":37,"obs":"","corte":8,"v":{"aberta":61.1,"reforma":0.0,"realTotal":0.0,"maior20":61.1,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9386","bloco":"SAUL","prop":"CÓRREGO DA DIVISA","data":"07/04/2026","atraso":195,"obs":"","corte":8,"v":{"aberta":114.82,"reforma":14.44,"realMec":0.0,"realTotal":0.0,"maior20":100.38,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9388","bloco":"NILSON","prop":"ÁGUA AMARELA","data":"01/10/2026","atraso":18,"obs":"","corte":7,"v":{"aberta":76.11,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":76.11}},{"t":"faz","reg":"2","cod":"9389","bloco":"NILSON","prop":"ESTÂNCIA DA SERRA","data":"01/10/2026","atraso":18,"obs":"","corte":7,"v":{"aberta":52.73,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":52.73}},{"t":"faz","reg":"2","cod":"9399","bloco":"NILSON","prop":"CÓRREGO DA DIVISA","data":"28/09/2026","atraso":21,"obs":"","corte":7,"v":{"aberta":46.14,"reforma":0.0,"realTotal":0.0,"maior20":46.14,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9424","bloco":"BEBEDOURO","prop":"CÓRREGO DO AÇUDE E RETIR","data":"03/10/2026","atraso":16,"obs":"","corte":7,"v":{"aberta":180.37,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":180.37}},{"t":"faz","reg":"2","cod":"9434","bloco":"NILSON","prop":"SERRA DA AROEIRA","data":"03/10/2026","atraso":16,"obs":"","corte":6,"v":{"aberta":99.47,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":99.47}},{"t":"faz","reg":"2","cod":"9476","bloco":"BAÚ","prop":"JUPATI","data":"05/08/2026","atraso":75,"obs":"","corte":4,"v":{"aberta":253.77,"reforma":0.0,"realMec":101.59,"realTotal":101.59,"maior20":152.18,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9477","bloco":"SAUL","prop":"ÁGUA AMARELA","data":"17/09/2026","atraso":32,"obs":"","corte":7,"v":{"aberta":6.71,"reforma":0.0,"realTotal":0.0,"maior20":6.71,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9479","bloco":"BAÚ","prop":"CUPIM GRANDE","data":"01/10/2026","atraso":18,"obs":"","corte":3,"v":{"aberta":17.48,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":17.48}},{"t":"faz","reg":"2","cod":"9529","bloco":"BAÚ","prop":"SANTA VITORIA","data":"01/10/2026","atraso":18,"obs":"","corte":3,"v":{"aberta":41.65,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":41.65}},{"t":"faz","reg":"2","cod":"9538","bloco":"CAJAMANGA","prop":"SUCURI","data":"15/09/2026","atraso":34,"obs":"","corte":3,"v":{"aberta":0.1,"reforma":0.0,"realTotal":0.0,"maior20":0.1,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9573","bloco":"SAUL","prop":"SANTA EDWIGES","data":"30/08/2026","atraso":50,"obs":"","corte":2,"v":{"aberta":60.87,"reforma":0.0,"realTotal":0.0,"maior20":60.87,"menor20":0.0}},{"t":"faz","reg":"2","cod":"9601","bloco":"BEBEDOURO","prop":"CÓRREGO DO MOSQUITO","data":"18/08/2026","atraso":62,"obs":"","corte":2,"v":{"aberta":19.67,"reforma":0.0,"realMec":0.0,"realTotal":0.0,"maior20":19.67,"menor20":0.0}},{"t":"faz","reg":"3","cod":"9442","bloco":"PEQUI","prop":"PÂNTANO E MARIANO","data":"08/09/2026","atraso":41,"obs":"","corte":5,"v":{"aberta":364.01,"reforma":0.0,"realTotal":0.0,"maior20":364.01,"menor20":0.0}},{"t":"faz","reg":"3","cod":"9443","bloco":"PEQUI","prop":"PÂNTANO E MARIANO","data":"01/10/2026","atraso":18,"obs":"","corte":6,"v":{"aberta":17.53,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":17.53}},{"t":"faz","reg":"3","cod":"9445","bloco":"PEQUI","prop":"SÃO BENTO","data":"30/04/2026","atraso":172,"obs":"","corte":2,"v":{"aberta":1060.61,"reforma":0.0,"cataMatoMec":0.0,"realMec":17.2,"catManual":0.0,"realMan":876.92,"realTotal":894.12,"maior20":166.49,"menor20":0.0}},{"t":"faz","reg":"3","cod":"9457","bloco":"PEQUI","prop":"PÂNTANO","data":"30/09/2026","atraso":19,"obs":"","corte":5,"v":{"aberta":26.72,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":26.72}},{"t":"faz","reg":"3","cod":"9466","bloco":"PEQUI","prop":"PANTANO","data":"08/09/2026","atraso":41,"obs":"","corte":4,"v":{"aberta":29.2,"reforma":0.0,"realTotal":0.0,"maior20":29.2,"menor20":0.0}},{"t":"faz","reg":"3","cod":"9469","bloco":"69","prop":"BURITI DA PRATA","data":"27/07/2026","atraso":84,"obs":"","corte":5,"v":{"aberta":268.79,"reforma":0.0,"realMec":123.81,"realMan":0.0,"realTotal":123.81,"maior20":144.98,"menor20":0.0}},{"t":"faz","reg":"3","cod":"9472","bloco":"PEQUI","prop":"PEQUI","data":"12/09/2026","atraso":37,"obs":"","corte":4,"v":{"aberta":155.42,"reforma":0.0,"realMec":0.0,"realMan":44.53,"realTotal":44.53,"maior20":110.89,"menor20":0.0}},{"t":"faz","reg":"3","cod":"9475","bloco":"PEQUI","prop":"DO SALTO","data":"29/04/2026","atraso":173,"obs":"","corte":4,"v":{"aberta":30.52,"reforma":0.0,"cataMatoMec":0.0,"realMec":7.38,"realTotal":7.38,"maior20":23.14,"menor20":0.0}},{"t":"faz","reg":"3","cod":"9485","bloco":"PEQUI","prop":"PONTINHAS","data":"12/09/2026","atraso":37,"obs":"","corte":4,"v":{"aberta":53.22,"reforma":0.0,"realMec":0.0,"realTotal":0.0,"maior20":53.22,"menor20":0.0}},{"t":"faz","reg":"3","cod":"9486","bloco":"PEQUI","prop":"DAS PONTINHAS","data":"30/09/2026","atraso":19,"obs":"","corte":4,"v":{"aberta":25.89,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":25.89}},{"t":"faz","reg":"3","cod":"9487","bloco":"ELISETE","prop":"NOSSA SENHORA DO CARMO","data":"15/05/2026","atraso":157,"obs":"","corte":4,"v":{"aberta":51.66,"reforma":0.0,"realMec":0.0,"catManual":0.0,"realMan":32.11,"realTotal":32.11,"maior20":19.55,"menor20":0.0}},{"t":"faz","reg":"3","cod":"9490","bloco":"NILSON-CASAGRANDE","prop":"SÃO PEDRO","data":"30/09/2026","atraso":19,"obs":"","corte":4,"v":{"aberta":66.02,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":66.02}},{"t":"faz","reg":"3","cod":"9507","bloco":"PEQUI","prop":"PIMENTA","data":"08/10/2026","atraso":11,"obs":"","corte":4,"v":{"aberta":31.67,"reforma":0.0,"realTotal":0.0,"maior20":0.0,"menor20":31.67}},{"t":"faz","reg":"3","cod":"9508","bloco":"PEQUI","prop":"DOSALTO","data":"13/09/2026","atraso":36,"obs":"","corte":3,"v":{"aberta":103.19,"reforma":0.0,"realTotal":0.0,"maior20":103.19,"menor20":0.0}},{"t":"faz","reg":"3","cod":"9901","bloco":"SANTA VITÓRIA","prop":"PIRATININGA DE MINAS","data":"27/07/2026","atraso":84,"obs":"","corte":3,"v":{"aberta":151.83,"reforma":0.0,"realMec":0.0,"realTotal":0.0,"maior20":151.83,"menor20":0.0}},{"t":"tot","rot":"Total","v":{"aberta":17674.06,"reforma":218.32,"cataMatoMec":1593.73,"realMec":7350.85,"catManual":352.4,"realMan":3716.5,"realTotal":11067.35,"maior20":5087.46,"menor20":1057.16}}]}],"extras":{"regioes":{"1":{"colhida":9243.04,"realizada":5361.72,"menor20":299.11,"maior20":3311.06,"faltaAplicar":3610.17},"2":{"colhida":3754.16,"realizada":2539.6,"menor20":590.22,"maior20":609.9,"faltaAplicar":1200.12},"3":{"colhida":4676.86,"realizada":3166.03,"menor20":167.83,"maior20":1166.5,"faltaAplicar":1334.33}}},"cols":[{"k":"reg","t":"Região"},{"k":"cod","t":"Cód Faz"},{"k":"bloco","t":"Bloco"},{"k":"prop","t":"Propriedade"},{"k":"data","t":"Data colheita"},{"k":"atraso","t":"Dias de atraso"},{"k":"corte","t":"Corte","n":true},{"k":"aberta","t":"Área aberta","n":true},{"k":"reforma","t":"Área reforma","n":true},{"k":"cataMatoMec","t":"Cata mato MEC","n":true},{"k":"realMec","t":"Realizada MEC","n":true},{"k":"catManual","t":"Catação manual","n":true},{"k":"realMan","t":"Realizada MAN","n":true},{"k":"realTotal","t":"Realizado total","n":true},{"k":"maior20","t":"A realizar > 20 dias","n":true},{"k":"menor20","t":"A realizar < 20 dias","n":true}]},{"id":"adub","nome":"Adubação de soqueira","tipo":"adub","secoes":[{"titulo":"Adubação Localizada - Região 1","linhas":[{"t":"faz","reg":"CARGILL","cod":"9840","bloco":"USINA","prop":"QUEIXADA E SERTÃOZINHO","data":"","atraso":null,"obs":"","v":{"aTratar":102.15,"canaMuda":0.0,"reforma":0.0,"localizada":29.12,"aRealizar":73.03}},{"t":"faz","reg":"CARGILL","cod":"9844","bloco":"USINA","prop":"NOSSA SENHORA DA CONCEIÇ","data":"","atraso":null,"obs":"NÃO VAI REALIZAR 100 ha","v":{"aTratar":395.03,"localizada":125.0,"aRealizar":170.03}},{"t":"faz","reg":"CARGILL","cod":"9845","bloco":"BAÚ","prop":"SÃO JOÃO","data":"","atraso":null,"obs":"","v":{"aTratar":227.38,"aRealizar":227.38}},{"t":"faz","reg":"#N/D","cod":"9849","bloco":"154","prop":"SÃO JOÃO","data":"","atraso":null,"obs":"","v":{"aTratar":134.29,"aRealizar":134.29}},{"t":"sub","rot":"SUBTOTAL - ÁREAS CARGILL","v":{"aTratar":2152.95,"canaMuda":0.0,"reforma":0.0,"localizada":779.35,"cocho":0.0,"aRealizar":604.73}},{"t":"faz","reg":"1","cod":"9012","bloco":"MARCO AMUY","prop":"QUILOMBO","data":"","atraso":null,"obs":"","v":{"aTratar":83.84,"aRealizar":83.84}},{"t":"sub","rot":"SUBTOTAL - MARCO AMUY","v":{"aTratar":83.84,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":0.0,"aRealizar":83.84}},{"t":"faz","reg":"1","cod":"9408","bloco":"SAMIR","prop":"CÓRREGO DA LAGOA IV","data":"","atraso":null,"obs":"","v":{"aTratar":503.88,"reforma":190.88,"localizada":200.0,"aRealizar":113.0}},{"t":"sub","rot":"SUBTOTAL - SAMIR","v":{"aTratar":1234.3,"canaMuda":0.0,"reforma":309.99,"localizada":811.31,"cocho":0.0,"aRealizar":113.0}},{"t":"faz","reg":"1","cod":"9405","bloco":"SHEKINAH l","prop":"SHEKINAH I","data":"","atraso":null,"obs":"","v":{"aTratar":417.18,"canaMuda":0.0,"reforma":0.0,"localizada":184.52,"aRealizar":232.66}},{"t":"sub","rot":"SUBTOTAL - SHEKINAH I","v":{"aTratar":597.07,"canaMuda":0.0,"reforma":0.0,"localizada":364.41,"cocho":0.0,"aRealizar":232.66}},{"t":"faz","reg":"1","cod":"9006","bloco":"USINA","prop":"CÓRREGO DAS FLORES II","data":"","atraso":null,"obs":"","v":{"aTratar":620.35,"localizada":307.88,"cocho":79.96,"aRealizar":232.51}},{"t":"faz","reg":"1","cod":"9011","bloco":"USINA","prop":"VARGEM DA BARRIGUDA","data":"","atraso":null,"obs":"","v":{"aTratar":32.09,"aRealizar":32.09}},{"t":"faz","reg":"1","cod":"9602","bloco":"USINA","prop":"MONTE AZUL","data":"","atraso":null,"obs":"","v":{"aTratar":79.07,"localizada":79.07}},{"t":"faz","reg":"1","cod":"9520","bloco":"USINA","prop":"SANTA CLARA","data":"","atraso":null,"obs":"","v":{"aTratar":53.04,"canaMuda":0.0,"reforma":0.0,"aRealizar":53.04}},{"t":"sub","rot":"SUBTOTAL - USINA","v":{"aTratar":1921.19,"canaMuda":0.0,"reforma":6.92,"localizada":1516.67,"cocho":86.88,"aRealizar":317.64}},{"t":"tot","rot":"TOTAL REGIÃO 1 + CARGILL","v":{"aTratar":8200.39,"canaMuda":0.0,"reforma":316.91,"localizada":5651.16,"cocho":86.88,"aRealizar":747.14}},{"t":"tot","rot":"TOTAL LOCALIZADA","v":{"aTratar":9569.33,"canaMuda":0.0,"reforma":359.37,"localizada":6653.22,"cocho":86.88,"aRealizar":747.14}}]},{"titulo":"Área de Queima","linhas":[{"t":"faz","reg":"1","cod":"9337","bloco":"BERTONI","prop":"MONTE ALEGRE","data":"","atraso":null,"obs":"","v":{"aTratar":111.3,"aRealizar":111.3}},{"t":"sub","rot":"SUBTOTAL - BERTONI","v":{"aTratar":111.3,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":0.0,"aRealizar":111.3}},{"t":"faz","reg":"2","cod":"9302","bloco":"BAÚ","prop":"BELA VISTA","data":"","atraso":null,"obs":"","v":{"aTratar":44.89,"aRealizar":44.89}},{"t":"sub","rot":"SUBTOTAL - BAÚ","v":{"aTratar":44.89,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":0.0,"aRealizar":44.89}},{"t":"faz","reg":"2","cod":"9340","bloco":"CANOA","prop":"BOA ESPERANÇA","data":"","atraso":null,"obs":"","v":{"aTratar":54.94,"aRealizar":54.94}},{"t":"sub","rot":"SUBTOTAL - CANOA","v":{"aTratar":54.94,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":0.0,"aRealizar":54.94}},{"t":"tot","rot":"TOTAL ÁREA DE QUEIMA","v":{"aTratar":438.6,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":0.0,"aRealizar":211.13}}]},{"titulo":"Adubação com Cocho - Alencar - Região 1","linhas":[{"t":"faz","reg":"1","cod":"9428","bloco":"BERTONI","prop":"IDEAL","data":"","atraso":null,"obs":"","v":{"aTratar":114.44,"aRealizar":114.44}},{"t":"faz","reg":"1","cod":"9534","bloco":"BERTONI","prop":"GOAPEVA","data":"","atraso":null,"obs":"","v":{"aTratar":23.53,"aRealizar":23.53}},{"t":"faz","reg":"1","cod":"9535","bloco":"BERTONI","prop":"GOAPEVA","data":"","atraso":null,"obs":"","v":{"aTratar":19.46,"aRealizar":19.46}},{"t":"sub","rot":"SUBTOTAL - BERTONI","v":{"aTratar":647.61,"canaMuda":0.0,"reforma":0.0,"localizada":93.72,"cocho":490.18,"aRealizar":157.43}},{"t":"faz","reg":"1","cod":"9416","bloco":"BURITI","prop":"MOSQUITO","data":"","atraso":null,"obs":"","v":{"aTratar":92.45,"aRealizar":92.45}},{"t":"faz","reg":"1","cod":"9437","bloco":"BURITI","prop":"VITÓRIA","data":"","atraso":null,"obs":"","v":{"aTratar":14.37,"aRealizar":14.37}},{"t":"sub","rot":"SUBTOTAL - BURITI","v":{"aTratar":185.23,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":78.41,"aRealizar":106.82}},{"t":"faz","reg":"1","cod":"9536","bloco":"DO CRISTO","prop":"SÃO BENTO","data":"","atraso":null,"obs":"","v":{"aTratar":372.28,"cocho":148.31,"aRealizar":223.97}},{"t":"sub","rot":"SUBTOTAL - DO CRISTO","v":{"aTratar":641.5,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":417.53,"aRealizar":223.97}},{"t":"faz","reg":"1","cod":"9368","bloco":"SHEKINAH I","prop":"ROSARIO","data":"","atraso":null,"obs":"","v":{"aTratar":490.4,"cocho":206.64,"aRealizar":283.76}},{"t":"faz","reg":"1","cod":"9414","bloco":"SHEKINAH I","prop":"NOSSA SENHORA DO CARMO","data":"","atraso":null,"obs":"","v":{"aTratar":297.31,"cocho":95.72,"aRealizar":201.59}},{"t":"faz","reg":"1","cod":"9425","bloco":"SHEKINAH I","prop":"FUNDÃO","data":"","atraso":null,"obs":"","v":{"aTratar":117.86,"aRealizar":117.86}},{"t":"sub","rot":"SUBTOTAL - SHEKINAH I","v":{"aTratar":1353.31,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":750.1,"aRealizar":603.21}},{"t":"faz","reg":"1","cod":"9343","bloco":"USINA","prop":"BAÚS","data":"","atraso":null,"obs":"","v":{"aTratar":13.66,"aRealizar":13.66}},{"t":"faz","reg":"1","cod":"9344","bloco":"USINA","prop":"BAÚ VELHO","data":"","atraso":null,"obs":"","v":{"aTratar":18.93,"aRealizar":18.93}},{"t":"faz","reg":"1","cod":"9364","bloco":"USINA","prop":"DOS BAÚ VELHO","data":"","atraso":null,"obs":"","v":{"aTratar":8.89,"aRealizar":8.89}},{"t":"faz","reg":"1","cod":"9498","bloco":"USINA","prop":"BAÚ VELHO","data":"","atraso":null,"obs":"","v":{"aTratar":10.61,"aRealizar":10.61}},{"t":"sub","rot":"SUBTOTAL - USINA","v":{"aTratar":428.03,"canaMuda":0.0,"reforma":0.0,"localizada":79.07,"cocho":375.94,"aRealizar":52.09}},{"t":"tot","rot":"TOTAL ADUBAÇÃO C/ COCHO","v":{"aTratar":3681.71,"canaMuda":0.0,"reforma":0.0,"localizada":241.04,"cocho":2538.19,"aRealizar":1143.52}}]},{"titulo":"Adubação com Cocho - Alencar - Região 2","linhas":[{"t":"faz","reg":"2","cod":"9303","bloco":"BEBEDOURO","prop":"BOA ESPERANÇA","data":"","atraso":null,"obs":"","v":{"aTratar":72.33,"aRealizar":72.33}},{"t":"faz","reg":"2","cod":"9319","bloco":"BEBEDOURO","prop":"RETIRINHO E BOA ESPERANÇA","data":"","atraso":null,"obs":"","v":{"aTratar":97.84,"aRealizar":97.84}},{"t":"faz","reg":"2","cod":"9424","bloco":"BEBEDOURO","prop":"CÓRREGO DO AÇUDE E RETIR","data":"","atraso":null,"obs":"","v":{"aTratar":180.37,"aRealizar":180.37}},{"t":"faz","reg":"2","cod":"9539","bloco":"BEBEDOURO","prop":"IPANEMA","data":"","atraso":null,"obs":"","v":{"aTratar":116.01,"aRealizar":116.01}},{"t":"sub","rot":"SUBTOTAL - BEBEDOURO","v":{"aTratar":486.22,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":19.67,"aRealizar":466.55}},{"t":"faz","reg":"2","cod":"9350","bloco":"BAÚ","prop":"ITAÚBA","data":"","atraso":null,"obs":"","v":{"aTratar":50.08,"aRealizar":50.08}},{"t":"faz","reg":"2","cod":"9479","bloco":"BAÚ","prop":"CUPIM GRANDE","data":"","atraso":null,"obs":"","v":{"aTratar":17.48,"aRealizar":17.48}},{"t":"faz","reg":"2","cod":"9529","bloco":"BAÚ","prop":"SANTA VITORIA","data":"","atraso":null,"obs":"","v":{"aTratar":41.65,"aRealizar":41.65}},{"t":"sub","rot":"SUBTOTAL - BAÚ","v":{"aTratar":397.15,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":287.94,"aRealizar":109.21}},{"t":"faz","reg":"2","cod":"9328","bloco":"CAJAMANGA","prop":"BUGRE","data":"","atraso":null,"obs":"","v":{"aTratar":96.09,"aRealizar":96.09}},{"t":"faz","reg":"2","cod":"9362","bloco":"CAJAMANGA","prop":"DOS BAÚS","data":"","atraso":null,"obs":"","v":{"aTratar":101.38,"aRealizar":101.38}},{"t":"sub","rot":"SUBTOTAL - CAJAMANGA","v":{"aTratar":742.28,"canaMuda":0.0,"reforma":0.0,"localizada":62.03,"cocho":517.03,"aRealizar":197.47}},{"t":"faz","reg":"2","cod":"9376","bloco":"NILSON","prop":"DOS BAÚS OLHOS D' ÁGUA","data":"","atraso":null,"obs":"","v":{"aTratar":86.53,"cocho":0.0,"aRealizar":86.53}},{"t":"faz","reg":"2","cod":"9463","bloco":"NILSON","prop":"SANTA CRUZ","data":"","atraso":null,"obs":"","v":{"aTratar":138.57,"aRealizar":138.57}},{"t":"sub","rot":"SUBTOTAL - NILSON","v":{"aTratar":591.55,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":366.45,"aRealizar":225.1}},{"t":"faz","reg":"2","cod":"9365","bloco":"SAUL","prop":"DIVISA","data":"","atraso":null,"obs":"","v":{"aTratar":178.23,"aRealizar":178.23}},{"t":"faz","reg":"2","cod":"9386","bloco":"SAUL","prop":"CÓRREGO DA DIVISA","data":"","atraso":null,"obs":"","v":{"aTratar":129.26,"reforma":57.13,"aRealizar":72.13}},{"t":"faz","reg":"2","cod":"9477","bloco":"SAUL","prop":"ÁGUA AMARELA","data":"","atraso":null,"obs":"","v":{"aTratar":6.71,"aRealizar":6.71}},{"t":"faz","reg":"2","cod":"9399","bloco":"SAUL","prop":"CÓRREGO DA DIVISA","data":"","atraso":null,"obs":"","v":{"aTratar":46.14,"aRealizar":46.14}},{"t":"sub","rot":"SUBTOTAL - SAUL","v":{"aTratar":490.37,"canaMuda":0.0,"reforma":57.13,"localizada":0.0,"cocho":130.03,"aRealizar":303.21}},{"t":"tot","rot":"TOTAL ADUBAÇÃO COM COCHO - ALENCAR","v":{"aTratar":6961.83,"canaMuda":0.0,"reforma":248.12,"localizada":335.68,"cocho":4240.87,"aRealizar":2445.06}}]},{"titulo":"Adubação com Cocho - Fábio do Prado - Região 3","linhas":[{"t":"faz","reg":"3","cod":"9464","bloco":"SCALON SETE PLACAS","prop":"SÃO JOSÉ","data":"","atraso":null,"obs":"","v":{"aTratar":342.38,"aRealizar":342.38}},{"t":"sub","rot":"SUBTOTAL - SCALON SETE PLACAS","v":{"aTratar":1371.25,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":1028.87,"aRealizar":342.38}},{"t":"faz","reg":"3","cod":"9456","bloco":"PEQUI","prop":"PÂNTANO","data":"","atraso":null,"obs":"","v":{"aTratar":7.29,"aRealizar":7.29}},{"t":"sub","rot":"SUBTOTAL - PEQUI","v":{"aTratar":2319.7,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":2312.41,"aRealizar":7.29}},{"t":"tot","rot":"TOTAL ADUBAÇÃO C/ COCHO","v":{"aTratar":4975.11,"canaMuda":0.0,"reforma":0.0,"localizada":0.0,"cocho":4559.42,"aRealizar":349.67}}]}],"extras":{"resumo":{"aTratar":22187.36,"reforma":607.49,"localizada":6653.22,"cocho":8887.17,"aRealizar":4500.14}},"cols":[{"k":"reg","t":"Região"},{"k":"cod","t":"Cód Faz"},{"k":"prop","t":"Propriedade"},{"k":"bloco","t":"Bloco"},{"k":"aTratar","t":"Área a tratar","n":true},{"k":"canaMuda","t":"Aplicada cana muda","n":true},{"k":"reforma","t":"Área de reforma","n":true},{"k":"localizada","t":"Aplicada localizada","n":true},{"k":"cocho","t":"Aplicada cocho","n":true},{"k":"aRealizar","t":"A realizar","n":true}]}]}};
 /*DADOS-FIM*/
 </script>
 
@@ -1260,7 +1367,7 @@ function ajustaTabela(rolo){
   var tb=rolo && rolo.querySelector("table"); if(!tb || estreito()) return;
   tb.style.fontSize="";
   var f=parseFloat(getComputedStyle(tb).fontSize), max=f*1.8;
-  function cabe(){ return tb.offsetHeight<=rolo.clientHeight+1 && tb.offsetWidth<=rolo.clientWidth+1; }
+  function cabe(){ return tb.offsetHeight<=rolo.clientHeight+1 && tb.offsetWidth<=rolo.clientWidth+1 && rolo.scrollHeight<=rolo.clientHeight; }
   if(cabe()){
     while(f+0.5<=max){ tb.style.fontSize=(f+0.5)+"px"; if(!cabe()){ tb.style.fontSize=f+"px"; break; } f+=0.5; }
   } else {
@@ -1458,7 +1565,8 @@ function pintaCapa(){
   Array.prototype.forEach.call(document.querySelectorAll(".js-periodo"),function(el){ el.textContent=periodo(); });
   document.getElementById("meta-periodo").textContent = "Tratos culturais · semana "+periodo();
   document.querySelector("nav.toc").setAttribute("data-periodo", "Tratos culturais · semana "+periodo());
-  document.getElementById("capa-atualizacao").textContent = T.fonte.atualizacaoProgramas ? "Planilhas atualizadas em "+dataLonga(T.fonte.atualizacaoProgramas) : "";
+  var atu = (T.tabelas && T.tabelas.atualizacao) || T.fonte.atualizacaoProgramas;
+  document.getElementById("capa-atualizacao").textContent = atu ? "Planilhas atualizadas em "+dataLonga(atu) : "";
   document.getElementById("kpi-real").innerHTML = E.fmtInt(TOT.real)+"<small>ha</small>";
   document.getElementById("kpi-real-sub").textContent = "de "+E.fmtInt(TOT.meta)+" ha de meta";
   document.getElementById("kpi-pct").textContent = fPct(TOT.pct);
@@ -1750,115 +1858,214 @@ function detalheOperacao(f,aba){
 }
 
 /* ============================================================
-   PROGRAMAS DA SAFRA — andamento e saldo por bloco
+   PROGRAMAS DA SAFRA E ADUBAÇÃO — as tabelas das abas da planilha como saem na
+   impressão (PDF): fazendas, subtotal por região ou bloco e total. No fim, os
+   indicadores em gráfico, os mesmos da impressão
    ============================================================ */
-var PROG = T.programas;
-PROG.forEach(function(p){ p.feito = p.realizado/(p.realizado+p.aRealizar||1); });
-var CURTO = {pre:"Pré soca", queima:"Pré queima", mol3:"3ª molécula", cat1:"1ª catação", cat2:"2ª catação", loc:"Adub. localizada", cocho:"Adub. cocho"};
-function curto(p){ return CURTO[p.id] || p.nome; }
-function detalhePrograma(p){
-  var bl=Object.keys(p.blocos).map(function(b){ return {b:b, v:p.blocos[b]}; }).filter(function(x){ return x.v; })
-    .sort(function(x,y){ return y.v-x.v; });
-  var tot=soma(bl,function(x){ return x.v; });
-  abreCaixa(p.nome, "Saldo a realizar por bloco, do maior para o menor",
-    "<span class='res'>"+fPct(p.feito)+" realizado</span><span class='op'>=</span><b>"+fHa2(p.realizado)+" ha</b><span class='op'>÷</span><b>"+
-    fHa2(p.realizado+p.aRealizar)+" ha</b> (realizado + a realizar)<em>"+E.fmtInt(p.base)+" ha de "+p.baseRot+
-    (p.reforma?" · "+fHa(p.reforma)+" ha de reforma":"")+(p.atrasado!=null?" · "+fHa(p.atrasado)+" ha com mais de 20 dias da colheita":"")+
-    (p.mec!=null?" · realizado mecanizado "+fHa(p.mec)+" ha e manual "+fHa(p.man)+" ha":"")+"</em>",
-    tabela([{t:"Bloco",l:true},{t:"A realizar (ha)",key:true},{t:"% do saldo"}],
-      bl.map(function(x){ return [E.esc(nomeBloco(x.b)), fHa2(x.v), E.pctAbs(x.v/tot,1)]; }),
-      ["Total — "+bl.length+" blocos", fHa2(tot), "100,0%"],
-      "Fonte: aba do programa na planilha de tratos da safra"+(T.fonte.atualizacaoProgramas?", atualizada em "+dataLonga(T.fonte.atualizacaoProgramas):"")+"."));
+var TAB = T.tabelas || {programas:[]};
+function progDe(id){ return TAB.programas.filter(function(p){ return p.id===id; })[0]; }
+// quanto já está feito: 1 − saldo ÷ área base (colhida, aberta ou a tratar)
+var BASE_PROG = {pre:"colhida", bord:"aberta", cat1:"aberta", adub:"aTratar"};
+function saldoDe(p,v){ return p.id==="cat1" ? (v.maior20||0)+(v.menor20||0) : v.aRealizar; }
+function feitoDe(p,v){ var b=v[BASE_PROG[p.id]], sd=saldoDe(p,v); return b>0 && sd!=null ? Math.max(0,1-sd/b) : null; }
+// "Adubação com Cocho - Alencar - Região 1" -> "Alencar — Região 1"
+function nomeSecao(t){ return t.replace(/^Adubação\s+/i,"").replace(/^com Cocho\s*-\s*/i,"").replace(/\s+-\s+/g," — "); }
+function nomeProprio(t){ return t.toLowerCase().replace(/(^|\s)(\S)/g,function(m,a,b){ return a+b.toUpperCase(); }).replace(/ (Do|Da|De|Dos|Das) /g,function(m){ return m.toLowerCase(); }); }
+function rotTotal(r,sec){
+  if(/^SUBTOTAL\s*-/i.test(r)) return "Subtotal · "+r.replace(/^SUBTOTAL\s*-\s*/i,"");
+  if(/C\/\s*COCHO$/i.test(r)) return "Total "+nomeSecao(sec.titulo);
+  var m=r.match(/COCHO\s*-\s*(.+)$/i); if(m) return "Total "+nomeProprio(m[1]);
+  if(/^TOTAL\s/.test(r)) return "Total "+r.slice(6).toLowerCase().replace("cargill","Cargill");
+  return r;
 }
-function graficoProgramas(){
-  var card=document.getElementById("pg-card"); card.innerHTML="";
-  var svg=svgNovo(card), d=E.medir(card,minW(640),260), W=d.W-24, H=estreito()?420:d.H-16;
-  svg.setAttribute("viewBox","0 0 "+W+" "+H);
-  var padT=fz(10), rowH=Math.min(fz(96),(H-padT-8)/PROG.length), fs=Math.min(fz(14),Math.max(11,rowH*0.3));
-  var labW=Math.min(W*0.3,Math.max.apply(null,PROG.map(function(p){ return p.nome.length; }))*fs*0.58+24);
-  var valW=fs*13, x0=labW, x1=W-16-valW, larg=x1-x0;
-  PROG.forEach(function(p,i){
-    var y0=padT+rowH*i, yc=y0+rowH/2, bh=Math.min(fs*2,rowH*0.42);
-    if(i>0) E.add(svg,"line",{x1:10,x2:W-10,y1:y0,y2:y0,stroke:"#E7EAF0"});
-    linhaClicavel(svg,4,y0,W-8,rowH,function(){ detalhePrograma(p); },p.nome+" — clique para ver por bloco");
-    E.txt(svg,16,yc-fs*0.15,cabe(p.nome,labW-24,fs),{"font-size":fs,"font-weight":"700",fill:E.NAVY,"pointer-events":"none"});
-    E.txt(svg,16,yc+fs*1.05,E.fmtInt(p.base)+" ha de "+p.baseRot,{"font-size":fs*0.8,fill:E.MUT,"pointer-events":"none"});
-    var tot=p.realizado+p.aRealizar||1, xr=x0+larg*p.realizado/tot;
-    E.add(svg,"rect",{x:x0,y:yc-bh/2,width:Math.max(0,xr-x0),height:bh,rx:3,fill:COR_REAL,"pointer-events":"none"});
-    if(p.atrasado!=null){
-      var xa=xr+larg*(p.aRealizar-p.atrasado)/tot;
-      E.add(svg,"rect",{x:xr,y:yc-bh/2,width:Math.max(0,xa-xr),height:bh,fill:COR_SALDO,"pointer-events":"none"});
-      E.add(svg,"rect",{x:xa,y:yc-bh/2,width:Math.max(0,x0+larg-xa),height:bh,rx:3,fill:COR_ATRASO,"pointer-events":"none"});
-    } else E.add(svg,"rect",{x:xr,y:yc-bh/2,width:Math.max(0,x0+larg-xr),height:bh,rx:3,fill:COR_SALDO,"pointer-events":"none"});
-    if(xr-x0>fs*6) E.txt(svg,x0+8,yc+fs*0.36,E.fmtInt(p.realizado)+" ha",{"font-size":fs*0.88,"font-weight":"700",fill:"#fff","pointer-events":"none"});
-    var t=E.txt(svg,x1+12,yc-fs*0.1,fPct(p.feito),{"font-size":fs*1.7,"font-weight":"700",fill:p.feito>=0.9?E.GREEN:p.feito<0.5?E.RED:"#A6620A","pointer-events":"none"});
-    E.add(t,"tspan",{"font-size":fs*0.85,"font-weight":"600",fill:E.MUT}," realizado");
-    E.txt(svg,x1+12,yc+fs*1.15,"a realizar "+E.fmtInt(p.aRealizar)+" ha",{"font-size":fs*0.85,"font-weight":"600",fill:E.NAVY,"pointer-events":"none"});
-  });
-  E.legenda(document.getElementById("pg-legend"),[
-    {cor:COR_REAL,nome:"Realizado"},{cor:COR_SALDO,nome:"A realizar"},{cor:COR_ATRASO,nome:"A realizar há mais de 20 dias da colheita",obs:"(1ª catação)"}
-  ]);
+function linhasDe(p,t,secRe){
+  var out=[]; p.secoes.forEach(function(sc){ if(secRe && !secRe.test(sc.titulo)) return;
+    sc.linhas.forEach(function(l){ if(l.t===t) out.push(l); }); });
+  return out;
 }
-function detalheBloco(b){
-  var linhas=PROG.filter(function(p){ return p.blocos[b]; }).map(function(p){ return [E.esc(p.nome), fHa2(p.blocos[b])]; });
-  var tot=soma(PROG,function(p){ return p.blocos[b]; });
-  abreCaixa(nomeBloco(b)+" — saldo a realizar", "Programas com saldo no bloco",
-    "<span class='res'>"+fHa2(tot)+" ha</span><span class='op'>em</span><b>"+linhas.length+"</b> programas",
-    tabela([{t:"Programa",l:true},{t:"A realizar (ha)",key:true}],linhas,["Total",fHa2(tot)]));
-}
-function tabelaBlocos(){
-  var nomes={};
-  PROG.forEach(function(p){ Object.keys(p.blocos).forEach(function(b){ if(p.blocos[b]) nomes[b]=true; }); });
-  var bl=Object.keys(nomes).map(function(b){ return {b:b, tot:soma(PROG,function(p){ return p.blocos[b]; })}; })
-    .filter(function(x){ return x.tot>0; }).sort(function(x,y){ return y.tot-x.tot; });
-  var maxCol=PROG.map(function(p){ return Math.max.apply(null,bl.map(function(x){ return p.blocos[x.b]||0; }).concat([1])); });
-  function cel(v,k){
-    if(!v) return "<td class='z'>–</td>";
-    var a=(0.08+0.62*v/maxCol[k]).toFixed(2);
-    return "<td style='background:rgba(214,137,16,"+a+")'>"+fHa(v)+"</td>";
-  }
-  var h="<table class='hm'><thead><tr><th class='l'>Bloco</th>"+PROG.map(function(p){ return "<th>"+E.esc(curto(p))+"</th>"; }).join("")+
-    "<th>Total</th></tr></thead><tbody>"+
-    bl.map(function(x){ return "<tr class='clic' data-b='"+E.esc(x.b)+"'><td class='l'>"+E.esc(nomeBloco(x.b))+"</td>"+
-      PROG.map(function(p,k){ return cel(p.blocos[x.b],k); }).join("")+"<td class='tt'>"+fHa(x.tot)+"</td></tr>"; }).join("")+
-    "<tr class='tot'><td class='l'>Total</td>"+PROG.map(function(p){ return "<td>"+fHa(soma(bl,function(x){ return p.blocos[x.b]; }))+"</td>"; }).join("")+
-    "<td>"+fHa(soma(bl,function(x){ return x.tot; }))+"</td></tr></tbody></table>";
-  var box=document.getElementById("bl-tabela"); box.innerHTML=h;
-  liga(box,"tr.clic",function(tr){ detalheBloco(tr.getAttribute("data-b")); });
+function ultimaTot(p,secRe,rotRe){
+  var l=linhasDe(p,"tot",secRe).filter(function(x){ return !rotRe || rotRe.test(x.rot); });
+  return l[l.length-1];
 }
 
-/* ============================================================
-   PONTOS DE ATENÇÃO — montados a partir dos próprios números
-   ============================================================ */
-function paginaAtencao(){
-  function cartao(cls,k,n,un,itens,texto){
-    return "<div class='at-card "+cls+"'><div class='k'>"+k+"</div><div class='n'>"+n+(un?"<small>"+un+"</small>":"")+"</div>"+
-      (itens&&itens.length ? "<ul>"+itens.map(function(i){ return typeof i==="string" ? "<li><span>"+i+"</span></li>" :
-        "<li><span>"+E.esc(i[0])+"</span><b>"+i[1]+"</b></li>"; }).join("")+"</ul>" : "")+(texto?"<p>"+texto+"</p>":"")+"</div>";
-  }
-  var baixo=COM_META.filter(function(a){ return a.st==="baixo"; }).sort(function(a,b){ return a.pct-b.pct; });
-  var efBaixo=ATIVAS.filter(function(a){ return a.ef.pct!=null && a.ef.pct<0.5; }).sort(function(a,b){ return a.ef.pct-b.ef.pct; });
-  var progBaixo=PROG.filter(function(p){ return p.feito<0.5; }).sort(function(a,b){ return a.feito-b.feito; });
-  var cat1=PROG.filter(function(p){ return p.atrasado!=null; })[0];
-  // só entra cartão que tem o que fazer: lista vazia não ocupa a tela
-  var html=[];
-  if(baixo.length) html.push(cartao("baixo","Abaixo de 50% da meta da semana",baixo.length,"atividades",
-    listaMax(baixo.map(function(a){ return [a.nome, fPct(a.pct)+" · "+fHa(a.sem)+" ha"]; }),6)));
-  if(efBaixo.length) html.push(cartao("medio","Eficiência abaixo de 50% da meta",efBaixo.length,"atividades",
-    listaMax(efBaixo.map(function(a){ return [a.nome, fEf(a.ef.ef)+" de "+fEf(a.ef.meta)+" ha/"+a.ef.unid]; }),6)));
-  if(progBaixo.length) html.push(cartao("baixo","Programas abaixo de 50% realizado",progBaixo.length,"programas",
-    progBaixo.map(function(p){ return [p.nome, fPct(p.feito)+" · faltam "+E.fmtInt(p.aRealizar)+" ha"]; })));
-  if(cat1 && cat1.atrasado>0){
-    var ba=cat1.blocosAtrasado||{};
-    var bl=Object.keys(ba).filter(function(b){ return ba[b]>0; }).sort(function(a,b){ return ba[b]-ba[a]; })
-      .map(function(b){ return [nomeBloco(b), fHa(ba[b])+" ha"]; });
-    html.push(cartao("baixo","1ª catação com mais de 20 dias",E.fmtInt(cat1.atrasado),"ha", listaMax(bl,6)));
-  }
-  if(T.avisos.length) html.push(cartao("info","Conferir na planilha",T.avisos.length,T.avisos.length===1?"item":"itens",null,
-    T.avisos.map(E.esc).join("<br><br>")));
-  if(!html.length) html.push(cartao("ok","Nada fora da meta nesta semana","","",null,null));
-  document.getElementById("at-grid").innerHTML = html.join("");
+// tabela de um programa. o.sec: só as seções cujo título casa; o.regioes: só as fazendas
+// dessas regiões (o total entra se o.total)
+function tabelaProg(p,o){
+  o=o||{};
+  var txt=p.cols.filter(function(c){ return !c.n; });
+  var secs=p.secoes.filter(function(sc){ return !o.sec || o.sec.test(sc.titulo); });
+  // coluna sem valor nenhum nos quadros da página não entra (ex.: cana muda, na adubação)
+  var nums=p.cols.filter(function(c){ return c.n && secs.some(function(sc){ return sc.linhas.some(function(l){ return l.v[c.k]; }); }); });
+  var temObs=secs.some(function(sc){ return sc.linhas.some(function(l){ return l.obs; }); });
+  var nCol=txt.length+nums.length+1+(temObs?1:0);
+  var CL={reg:"c", cod:"c", data:"c", atraso:"c", bloco:"tx", prop:"tx prop"};
+  function numCels(l){ return nums.map(function(c){ var v=l.v[c.k]; return v ? "<td>"+(c.k==="corte"?v:fHa2(v))+"</td>" : "<td class='zero'>–</td>"; }).join(""); }
+  var h="<table class='tb pg'><thead><tr>"+
+    txt.map(function(c){ return "<th class='"+(CL[c.k]==="c"?"c":"l")+"'>"+c.t+"</th>"; }).join("")+
+    nums.map(function(c){ return "<th>"+c.t+(c.k==="corte"?"":"<u>ha</u>")+"</th>"; }).join("")+
+    "<th>% concluído</th>"+(temObs?"<th class='l'>Observação</th>":"")+"</tr></thead><tbody>";
+  p.secoes.forEach(function(sc){
+    if(o.sec && !o.sec.test(sc.titulo)) return;
+    var linhas=sc.linhas.filter(function(l){ return !o.regioes || (l.t==="faz" ? o.regioes.indexOf(l.reg)>=0 : o.total); });
+    if(!linhas.length) return;
+    if(sc.titulo) h+="<tr class='sec'><td colspan='"+nCol+"'>"+E.esc(nomeSecao(sc.titulo))+"</td></tr>";
+    linhas.forEach(function(l){
+      if(l.t==="faz"){
+        h+="<tr>"+txt.map(function(c){
+          var v=l[c.k];
+          if(c.k==="atraso") return "<td class='c"+(v>20?" atr":"")+"'>"+(v==null?"–":v)+"</td>";
+          if(c.k==="data") v=v?v.slice(0,5):"";
+          return "<td class='"+CL[c.k]+"'>"+(v?E.esc(v):"–")+"</td>";
+        }).join("")+numCels(l)+"<td>"+barCel(feitoDe(p,l.v))+"</td>"+
+        (temObs?"<td class='tx obs'>"+E.esc(l.obs||"")+"</td>":"")+"</tr>";
+      } else {
+        h+="<tr class='"+(l.t==="tot"?"tot":"sub")+"'><td class='tx' colspan='"+txt.length+"'>"+E.esc(rotTotal(l.rot,sc))+"</td>"+
+          numCels(l)+"<td>"+barCel(feitoDe(p,l.v))+"</td>"+(temObs?"<td></td>":"")+"</tr>";
+      }
+    });
+  });
+  return h+"</tbody></table>";
 }
+var PAG_PROG = {
+  "pg-pre":  {p:"pre"},
+  "pg-bord": {p:"bord"},
+  "pg-cat1a":{p:"cat1", regioes:["1"]},
+  "pg-cat1b":{p:"cat1", regioes:["2","3"], total:true},
+  "pg-loc":  {p:"adub", sec:/Localizada|Queima/i},
+  "pg-cocho1":{p:"adub", sec:/Alencar - Região 1/i},
+  "pg-cocho2":{p:"adub", sec:/Alencar - Região 2|F[áa]bio/i}
+};
+function paginaProg(id){
+  var o=PAG_PROG[id], p=progDe(o.p), box=document.getElementById(id+"-tb");
+  box.innerHTML = p ? tabelaProg(p,o) : "";
+  ajustaTabela(box);
+}
+
+/* ---------- indicadores: colunas com o valor em cima, como os gráficos da impressão ---------- */
+var CB = {base:E.NAVY, aColher:"#D68910", reforma:"#9AA3B5", realizada:E.GREEN, aRealizar:E.RED, fornecedor:"#3FA79C",
+          cataMato:"#8CC08B", realMec:"#1E7A4C", catManual:"#D68910", realMan:"#1F5F99", realTotal:"#2E86C1",
+          menor20:"#E5A33A", falta:"#8E2A1E", localizada:"#2E8B57", cocho:"#3FA79C"};
+function rotuloQuebrado(svg,cx,y,s,maxW,fs){
+  var max=Math.max(4,Math.floor(maxW/(fs*0.56))), l=[""];
+  s.split(" ").forEach(function(w){ var c=l[l.length-1];
+    if(c && (c+" "+w).length>max && l.length<2) l.push(w); else l[l.length-1]=c?c+" "+w:w; });
+  l.forEach(function(t,k){ E.txt(svg,cx,y+k*fs*1.15,t,{"text-anchor":"middle","font-size":fs,"font-weight":"600",fill:E.NAVY}); });
+}
+function colunas(svg,W,H,itens){
+  E.limpa(svg); svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  var fs=fz(12), padT=fs*2, padB=fs*3.2, base=H-padB, alt=base-padT;
+  var max=Math.max.apply(null,itens.map(function(i){ return i.v||0; }).concat([1]));
+  var slot=(W-16)/itens.length, bw=Math.min(slot*0.6,fz(110));
+  E.add(svg,"line",{x1:8,x2:W-8,y1:base,y2:base,stroke:"#C9D0DE"});
+  itens.forEach(function(it,i){
+    var cx=8+slot*(i+0.5), v=it.v||0, h=v>0?Math.max(2,alt*v/max):0;
+    E.add(svg,"rect",{x:cx-bw/2,y:base-h,width:bw,height:h,rx:2,fill:it.cor});
+    E.txt(svg,cx,base-h-fs*0.45,fHa2(v),{"text-anchor":"middle","font-size":fs*1.08,"font-weight":"700",fill:E.NAVY});
+    rotuloQuebrado(svg,cx,base+fs*1.35,it.rot,slot-6,fs);
+  });
+}
+function colunasGrupo(svg,W,H,grupos,series){
+  E.limpa(svg); svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  var fs=fz(11), padT=fs*2, padB=fs*2.2, base=H-padB, alt=base-padT;
+  var max=Math.max.apply(null,[1].concat.apply([1],grupos.map(function(g){ return series.map(function(sr){ return g.v[sr.k]||0; }); })));
+  var slotG=(W-16)/grupos.length, slot=slotG*0.86/series.length, bw=Math.min(slot*0.82,fz(54));
+  E.add(svg,"line",{x1:8,x2:W-8,y1:base,y2:base,stroke:"#C9D0DE"});
+  grupos.forEach(function(g,gi){
+    var x0=8+slotG*gi+slotG*0.07;
+    series.forEach(function(sr,k){
+      var cx=x0+slot*(k+0.5), v=g.v[sr.k]||0, h=v>0?Math.max(2,alt*v/max):0;
+      E.add(svg,"rect",{x:cx-bw/2,y:base-h,width:bw,height:h,rx:2,fill:sr.cor});
+      E.txt(svg,cx,base-h-fs*0.4,fHa(v),{"text-anchor":"middle","font-size":fs,"font-weight":"700",fill:E.NAVY});
+    });
+    E.txt(svg,8+slotG*(gi+0.5),base+fs*1.5,g.rot.toUpperCase(),{"text-anchor":"middle","font-size":fs*1.1,"font-weight":"700",fill:E.NAVY,"letter-spacing":".06em"});
+    if(gi) E.add(svg,"line",{x1:8+slotG*gi,x2:8+slotG*gi,y1:padT,y2:base,stroke:"#E7EAF0"});
+  });
+}
+function cartaoInd(box,titulo,sub,leg){
+  var d=document.createElement("div"); d.className="ind-card";
+  d.innerHTML="<div class='ind-t'>"+E.esc(titulo)+(sub?"<span class='ind-s'>"+E.esc(sub)+"</span>":"")+"</div>"+
+    (leg?"<div class='ind-leg'>"+leg.map(function(sr){ return "<span><i style='background:"+sr.cor+"'></i>"+E.esc(sr.rot)+"</span>"; }).join("")+"</div>":"")+
+    "<div class='ind-g'><svg role='img' aria-label='"+E.esc(titulo)+"'></svg></div>";
+  box.appendChild(d);
+  return d.querySelector("svg");
+}
+// os cartões entram todos antes de medir, para a grade já ter o tamanho final
+function desenhaCartoes(lista){
+  lista.forEach(function(c){ var r=c[0].getBoundingClientRect();
+    c[1](c[0],Math.max(estreito()?320:260,Math.round(r.width)),Math.max(160,Math.round(r.height))); });
+}
+function indPre(){
+  var box=document.getElementById("ind-pre-grid"); box.innerHTML="";
+  var pre=progDe("pre"), bord=progDe("bord"), cards=[];
+  if(pre){
+    var t=ultimaTot(pre).v, ex=pre.extras||{};
+    cards.push([cartaoInd(box,"Pré-emergência cana soca","total da safra"),function(svg,W,H){ colunas(svg,W,H,[
+      {rot:"Área colhida",v:t.colhida,cor:CB.base},{rot:"Área a colher",v:t.aColher,cor:CB.aColher},
+      {rot:"Área reforma",v:t.reforma,cor:CB.reforma},{rot:"Área realizada",v:t.realizada,cor:CB.realizada},
+      {rot:"A realizar",v:t.aRealizar,cor:CB.aRealizar},{rot:"Área fornecedor",v:t.fornecedor,cor:CB.fornecedor}]); }]);
+    var SER=[{k:"colhida",rot:"Área colhida",cor:CB.base},{k:"aColher",rot:"Área a colher",cor:CB.aColher},
+      {k:"reforma",rot:"Área reforma",cor:CB.reforma},{k:"realizada",rot:"Área realizada",cor:CB.realizada},
+      {k:"aRealizar",rot:"Falta aplicar",cor:CB.aRealizar}];
+    var subs=linhasDe(pre,"sub");
+    cards.push([cartaoInd(box,"Pré-emergência por região","",SER),function(svg,W,H){
+      colunasGrupo(svg,W,H,subs.map(function(l){ return {rot:l.rot.replace(/^Subtotal\s*/i,""), v:l.v}; }),SER); }]);
+    if(ex.Geral) cards.push([cartaoInd(box,"Pré-emergência — ordens","encerradas e abertas"),function(svg,W,H){ colunas(svg,W,H,[
+      {rot:"Total encerrado",v:ex["Total Encerrado"],cor:CB.realizada},{rot:"Total aberto",v:ex["Total Aberto"],cor:CB.aColher},
+      {rot:"Geral",v:ex.Geral,cor:CB.base}]); }]);
+  }
+  if(bord){
+    var b=ultimaTot(bord).v;
+    cards.push([cartaoInd(box,"Reforço bordadura (3ª molécula)","total da safra"),function(svg,W,H){ colunas(svg,W,H,[
+      {rot:"Área aberta",v:b.aberta,cor:CB.base},{rot:"Área realizada",v:b.realizada,cor:CB.realizada},
+      {rot:"A realizar",v:b.aRealizar,cor:CB.aRealizar}]); }]);
+  }
+  desenhaCartoes(cards);
+}
+function indCat1(){
+  var box=document.getElementById("ind-cat1-grid"); box.innerHTML="";
+  var p=progDe("cat1"), cards=[];
+  if(p){
+    var t=ultimaTot(p).v, reg=(p.extras||{}).regioes;
+    cards.push([cartaoInd(box,"Catação química cana soca","total da safra"),function(svg,W,H){ colunas(svg,W,H,[
+      {rot:"Área aberta",v:t.aberta,cor:CB.base},{rot:"Cata mato MEC",v:t.cataMatoMec,cor:CB.cataMato},
+      {rot:"Área realizada MEC",v:t.realMec,cor:CB.realMec},{rot:"Catação manual",v:t.catManual,cor:CB.catManual},
+      {rot:"Área realizada MAN",v:t.realMan,cor:CB.realMan},{rot:"Realizado total",v:t.realTotal,cor:CB.realTotal}]); }]);
+    if(reg){
+      var SER=[{k:"colhida",rot:"Área colhida",cor:CB.base},{k:"realizada",rot:"Área realizada",cor:CB.realizada},
+        {k:"menor20",rot:"A realizar < 20 dias",cor:CB.menor20},{k:"maior20",rot:"A realizar > 20 dias",cor:CB.aRealizar},
+        {k:"faltaAplicar",rot:"Falta aplicar",cor:CB.falta}];
+      cards.push([cartaoInd(box,"Catação química por região","",SER),function(svg,W,H){
+        colunasGrupo(svg,W,H,Object.keys(reg).sort().map(function(k){ return {rot:"Região "+k, v:reg[k]}; }),SER); }]);
+    }
+  }
+  desenhaCartoes(cards);
+}
+function indAdub(){
+  var box=document.getElementById("ind-adub-grid"); box.innerHTML="";
+  var p=progDe("adub"), cards=[];
+  if(p){
+    var loc=ultimaTot(p,/Localizada/i,/LOCALIZADA/), al=ultimaTot(p,/Alencar/i,/ALENCAR/), fb=ultimaTot(p,/F[áa]bio/i), rs=(p.extras||{}).resumo;
+    if(loc) cards.push([cartaoInd(box,"Resumo — localizada",""),function(svg,W,H){ colunas(svg,W,H,[
+      {rot:"Área a tratar",v:loc.v.aTratar,cor:CB.base},{rot:"Aplicada localizada",v:loc.v.localizada,cor:CB.localizada},
+      {rot:"A realizar",v:loc.v.aRealizar,cor:CB.aRealizar}]); }]);
+    if(al) cards.push([cartaoInd(box,"Resumo Alencar — cocho","regiões 1 e 2"),function(svg,W,H){ colunas(svg,W,H,[
+      {rot:"Área a tratar",v:al.v.aTratar,cor:CB.base},{rot:"Aplicada localizada",v:al.v.localizada,cor:CB.localizada},
+      {rot:"Aplicada cocho",v:al.v.cocho,cor:CB.cocho},{rot:"A realizar",v:al.v.aRealizar,cor:CB.aRealizar}]); }]);
+    if(fb) cards.push([cartaoInd(box,"Resumo Fábio do Prado — cocho","região 3"),function(svg,W,H){ colunas(svg,W,H,[
+      {rot:"Área a tratar",v:fb.v.aTratar,cor:CB.base},{rot:"Aplicada cocho",v:fb.v.cocho,cor:CB.cocho},
+      {rot:"A realizar",v:fb.v.aRealizar,cor:CB.aRealizar}]); }]);
+    if(rs) cards.push([cartaoInd(box,"Geral — resumo final da adubação",""),function(svg,W,H){ colunas(svg,W,H,[
+      {rot:"Área a tratar",v:rs.aTratar,cor:CB.base},{rot:"Área de reforma",v:rs.reforma,cor:CB.reforma},
+      {rot:"Aplicada localizada",v:rs.localizada,cor:CB.localizada},{rot:"Aplicada cocho",v:rs.cocho,cor:CB.cocho},
+      {rot:"A realizar",v:rs.aRealizar,cor:CB.aRealizar}]); }]);
+  }
+  desenhaCartoes(cards);
+}
+// data de atualização da planilha no alto de cada página dos programas
+(function(){
+  var d=TAB.atualizacao; if(!d) return;
+  Array.prototype.forEach.call(document.querySelectorAll(".js-atu"),function(e){ e.textContent=" · atualizado em "+dataBR(d); });
+})();
 
 /* ============================================================
    NUMERAÇÃO, REDESENHO E MONTAGEM
@@ -1882,9 +2089,10 @@ window.replay = window.replay || {};
 window.replay.capa = desenhaCapa;
 window.replay.graficos = paginaGraficos;
 window.replay.resumo = paginaSemana;
-window.replay.programas = graficoProgramas;
-window.replay.blocos = tabelaBlocos;
-window.replay.atencao = paginaAtencao;
+Object.keys(PAG_PROG).forEach(function(id){ window.replay[id] = function(){ paginaProg(id); }; });
+window.replay["ind-pre"] = indPre;
+window.replay["ind-cat1"] = indCat1;
+window.replay["ind-adub"] = indAdub;
 
 numera();
 pintaCapa();
@@ -1903,8 +2111,9 @@ window.addEventListener("resize",function(){ clearTimeout(tmr); tmr=setTimeout(r
 "use strict";
 var MODULOS = [
   {id:"semana", nome:"Semana", pags:["resumo","graficos"]},
-  {id:"programas", nome:"Programas da safra", pags:["programas","blocos"]},
-  {id:"atencao", nome:"Atenção", pags:["atencao"]}
+  {id:"programas", nome:"Programas da safra", pags:["pg-pre","pg-bord","pg-cat1a","pg-cat1b"]},
+  {id:"adubacao", nome:"Adubação", pags:["pg-loc","pg-cocho1","pg-cocho2"]},
+  {id:"indicadores", nome:"Indicadores", pags:["ind-pre","ind-cat1","ind-adub"]}
 ];
 function modDe(id){
   for(var i=0;i<MODULOS.length;i++) if(MODULOS[i].pags.indexOf(id)>=0) return MODULOS[i];
@@ -2061,7 +2270,7 @@ var semFundo = /[?&]fundo=off(&|$)/.test(location.search);
 
 /* cores de destaque por módulo: as da paleta do grupo, em versão clara para fundo escuro */
 var ACENTOS = { ouro:[201,162,39], azul:[93,173,226], agua:[88,196,186], creme:[240,223,168] };
-var POR_MODULO = { "Semana":"ouro", "Por operação":"azul", "Programas da safra":"agua", "Atenção":"creme" };
+var POR_MODULO = { "Semana":"ouro", "Programas da safra":"agua", "Adubação":"azul", "Indicadores":"creme" };
 var cur = ACENTOS.ouro.slice(), tgt = ACENTOS.ouro;
 
 /* ---------- camadas ---------- */

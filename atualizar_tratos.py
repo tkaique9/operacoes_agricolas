@@ -570,13 +570,11 @@ def main():
         "semana": sem, "frentes": frentes, "avisos": avisos, "programas": programas(wb_prog),
         "nomesMes": MESES, "locais": locais_semana(wb_prog, rscs, set(sem["dias"])),
     }
-    js = "window.TRATOS = " + json.dumps(dados, ensure_ascii=False, separators=(",", ":"))
-    html = open(HTML, encoding="utf-8").read()
-    novo, n = re.subn(r"(/\*DADOS-INICIO\*/\n).*?(\n/\*DADOS-FIM\*/)",
-                      lambda m: m.group(1) + js + ";" + m.group(2), html, flags=re.S)
-    if n != 1:
-        sys.exit("Marcadores DADOS-INICIO / DADOS-FIM não encontrados no index.html")
-    open(HTML, "w", encoding="utf-8", newline="\n").write(novo)
+    pdf = pdf_dos_programas()
+    if pdf:
+        dados["tabelas"] = tabelas_do_pdf(pdf)
+        dados["fonte"]["tabelas"] = os.path.basename(pdf)
+    grava(dados)
     n_at = sum(len(f["atividades"]) for f in frentes)
     print(f"semana {sem['dias'][0]} a {sem['dias'][-1]} ({sem['qtdDias']} dias) · {len(frentes)} frentes · "
           f"{n_at} atividades · {len(dados['programas'])} programas · {len(avisos)} aviso(s)")
@@ -587,5 +585,51 @@ def main():
         print("  aviso:", a)
 
 
+# ------------------------------------------- tabelas dos programas (PDF)
+# As páginas de cada programa (pré-emergência, reforço bordadura, 1ª catação, adubação
+# localizada e com cocho) e os indicadores do fim saem da impressão das planilhas em
+# PDF, como ela vem toda semana (programas_pdf.py). Fica em dados/; vale o mais novo.
+def pdf_dos_programas():
+    pdfs = sorted(glob.glob(os.path.join(AQUI, "dados", "*.pdf")), key=os.path.getmtime, reverse=True)
+    return pdfs[0] if pdfs else None
+
+
+def tabelas_do_pdf(pdf):
+    import programas_pdf
+    tab = programas_pdf.ler(pdf)
+    for p in tab["programas"]:
+        n = sum(1 for sec in p["secoes"] for l in sec["linhas"] if l["t"] == "faz")
+        print(f"  {p['nome']}: {n} fazenda(s) em {len(p['secoes'])} quadro(s)")
+    return tab
+
+
+def le_dados():
+    html = open(HTML, encoding="utf-8").read()
+    m = re.search(r"/\*DADOS-INICIO\*/\nwindow\.TRATOS = (.*?);\n/\*DADOS-FIM\*/", html, flags=re.S)
+    return json.loads(m.group(1))
+
+
+def grava(dados):
+    js = "window.TRATOS = " + json.dumps(dados, ensure_ascii=False, separators=(",", ":"))
+    html = open(HTML, encoding="utf-8").read()
+    novo, n = re.subn(r"(/\*DADOS-INICIO\*/\n).*?(\n/\*DADOS-FIM\*/)",
+                      lambda m: m.group(1) + js + ";" + m.group(2), html, flags=re.S)
+    if n != 1:
+        sys.exit("Marcadores DADOS-INICIO / DADOS-FIM não encontrados no index.html")
+    open(HTML, "w", encoding="utf-8", newline="\n").write(novo)
+
+
+def so_programas(pdf):
+    """Troca só as tabelas dos programas no index.html, sem mexer na semana."""
+    dados = le_dados()
+    dados["tabelas"] = tabelas_do_pdf(pdf)
+    dados.setdefault("fonte", {})["tabelas"] = os.path.basename(pdf)
+    grava(dados)
+    print("tabelas dos programas de", dados["tabelas"]["atualizacao"], "lidas de", os.path.basename(pdf))
+
+
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 2 and sys.argv[1] == "--pdf":
+        so_programas(sys.argv[2])
+    else:
+        main()
