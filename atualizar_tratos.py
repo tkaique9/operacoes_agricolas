@@ -63,6 +63,28 @@ EQUIP = {"Quadriciclo": 2, "Catação de Formiga": 2}
 # meta de hectares por equipamento/dia que vale no lugar da planilha; aplicada antes
 # de EQUIP, que refaz a meta do dia com ela
 META_EQUIP = {"Catação de Formiga": 10.0}
+# dias da semana sem meta para a atividade, além do domingo (que nunca tem): 5 = sábado
+# (datetime.weekday). O drone de monitoramento não voa no sábado (20/10/2026): a meta
+# do sábado sai e a da semana e a do mês contam só os dias em que ele voa.
+SEM_META_DIAS = {"Área Monitoramento": [5]}
+
+
+def ajusta_dias_sem_meta(a, dias, dia_ref):
+    """Meta da semana e do mês só com os dias que têm meta (a planilha conta todos os
+    dias menos o domingo). dias: os dias da semana (iso ou data); dia_ref: data."""
+    import calendar
+    fora = SEM_META_DIAS.get(a["nome"])
+    if not fora or not a.get("metaDia"):
+        return
+    a["diasSemMeta"] = [(w + 1) % 7 for w in fora]       # no navegador: getDay (0 = domingo)
+    ref = dia_ref.date() if isinstance(dia_ref, datetime.datetime) else dia_ref
+    ds = [d.date() if isinstance(d, datetime.datetime) else
+          (datetime.date.fromisoformat(d) if isinstance(d, str) else d) for d in dias]
+    vale = lambda d: d.weekday() != 6 and d.weekday() not in fora
+    a["metaSemana"] = r2(a["metaDia"] * sum(1 for d in ds if d <= ref and vale(d)))
+    n_mes = sum(1 for k in range(1, calendar.monthrange(ref.year, ref.month)[1] + 1)
+                if vale(datetime.date(ref.year, ref.month, k)))
+    a["metaMes"] = r2(a["metaDia"] * n_mes)
 MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
 
 
@@ -283,6 +305,7 @@ def semana(ws):
                 a["pessoas"] = [r2(v) for v in a["pessoas"]]
             for k in ("equip", "metaUnid", "metaDia", "metaSemana", "metaMes"):
                 a[k] = r2(a[k])
+            ajusta_dias_sem_meta(a, dias, dia_ref)
     frentes = separa_frentes([fr for fr in frentes if fr["id"] not in FRENTES_FORA])
     # atividade sem meta e sem nada realizado no ano não entra
     for fr in frentes:
@@ -684,6 +707,7 @@ def semana_do_pdf(dados, pdf):
                     a[k] *= fator
             for k in ("equip", "metaUnid", "metaDia", "metaSemana", "metaMes"):
                 a[k] = r2(a[k])
+            ajusta_dias_sem_meta(a, dias, datetime.date.fromisoformat(sem["diaRef"]))
             if a["pessoas"]:
                 a["pessoasPlan"] = r2(r.get("pessoasPlan")) or a["equip"]
                 a["metaPessoa"] = r2(r.get("metaPessoa")) or a["metaUnid"]

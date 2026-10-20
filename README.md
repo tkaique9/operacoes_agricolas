@@ -149,6 +149,7 @@ identificados. Operação sem esse detalhe na semana não mostra etiqueta nem bo
 | Meta da semana | meta dia × dias da semana (a coluna "Meta Semana" da planilha); domingo não tem meta |
 | Meta da frente | soma só das atividades que **operaram** na semana (realizado > 0), como faz a planilha. Atividade ou operação **sem produção na semana não aparece em nenhuma tela** |
 | Operações fora | `FRENTES_FORA`, no `atualizar_tratos.py`, tira uma frente inteira da apresentação e dos totais; hoje: Quebra lombo (não é aplicação desta operação) |
+| Dias sem meta | `SEM_META_DIAS`, no `atualizar_tratos.py`, tira a meta de dias da semana de uma atividade, além do domingo; hoje: Área Monitoramento sem meta no sábado (o drone de monitoramento não voa no sábado). A meta da semana conta só os dias com meta (5 × 300 = 1.500 ha) e a do mês também (dias do mês sem sábado e domingo); a meta do dia da operação e do total é a soma das atividades naquele dia |
 | Operações separadas | `SEPARA`, no `atualizar_tratos.py`, tira atividades da frente da planilha e faz delas uma operação própria, logo depois; hoje: a aplicação aérea fica **Aplicação com drone** e a Área Monitoramento vira **Monitoramento com drone** |
 | Semana anterior | os mesmos dias da semana anterior, na mesma aba |
 | Mês | do dia 1 até o último dia da semana (com o domingo trabalhado, como o "Realizado do Mês" da planilha); ritmo esperado = dias trabalhados até aqui (segunda a sábado) ÷ dias da meta do mês (meta mês ÷ meta dia) |
