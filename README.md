@@ -58,16 +58,20 @@ impressão e são lidos dos rótulos das barras.
 | — | — | Capa | Realizado, % da meta, eficiência e % da meta do mês; realizado acumulado da semana × meta acumulada e semana anterior |
 | **Semana** | 1 | Semana por operação | Uma tabela por operação e atividade, em quatro grupos de colunas, cada um com título e linha forte à esquerda: **Semana** (meta, realizado e % da meta); **Rendimento por equipamento** (meta, rendimento, diferença e eficiência = rendimento ÷ meta, em ha por dia operado; "pess." marca as atividades medidas por pessoa); **Semana anterior** (realizado e variação); e **o mês até a data** (o que já foi produzido em ha, a meta do mês e a %, com a cor pelo ritmo esperado). Clicar na operação (›) abre o **modal da operação**; clicar no Total abre o mesmo modal para todas; clicar na atividade abre o dia a dia dela |
 | | 2 | Resumo gráfico | Para a diretoria: um painel por operação (grade 2 × 2) com três **velocímetros** — a meta da semana (grande, de 0 a 150%, com o traço da meta e a marca cinza da semana anterior), a eficiência (rendimento ÷ meta) e o mês até a data (de 0 a 100% da meta do mês, com o traço do ritmo esperado). Faixas: vermelho abaixo de 50%, âmbar de 50% a 99%, verde na meta ou acima (no mês, em relação ao ritmo). No topo, a semana anterior (▲/▼) e a meta do dia; embaixo, a % da meta de cada atividade. Clicar no painel abre o **modal da operação** |
-| **Programas da safra** | 3 | Pré-emergência | A tabela da aba como na impressão: região, cód. fazenda, bloco, propriedade, data de colheita, dias de atraso (vermelho acima de 20), área colhida, a colher, reforma, realizada, a realizar e fornecedor, com subtotal por região e total da safra, mais a **% concluída** de cada linha (1 − a realizar ÷ área colhida) |
-| | 4 | Reforço bordadura | Igual, com área aberta, realizada e a realizar (3ª molécula) |
-| | 5–6 | 1ª catação · região 1 / regiões 2 e 3 | Igual, com corte, área aberta, reforma, cata mato MEC, realizada MEC, catação manual, realizada MAN, realizado total e a realizar acima e abaixo de 20 dias; em duas páginas porque são mais de 70 fazendas |
-| **Adubação** | 7 | Adubação localizada | Região 1 + Cargill e área de queima, com subtotal por bloco, total e observação da planilha |
-| | 8–9 | Cocho · Alencar região 1 / Alencar região 2 e Fábio do Prado | Adubação com cocho por equipe e região, com subtotal por bloco e os totais da planilha |
-| **Indicadores** | 10 | Pré e bordadura | Os gráficos da impressão: pré-emergência no total e por região, ordens encerradas × abertas e reforço bordadura |
-| | 11 | 1ª catação | Total da safra (aberta, cata mato MEC, realizada MEC, catação manual, realizada MAN, realizado total) e por região |
-| | 12 | Adubação | Resumo da localizada, do cocho do Alencar e do Fábio do Prado e o resumo final (geral) |
+| **Programas da safra** | 3 | Pré-emergência | Uma página com rolagem: a tabela da aba como na impressão (fazendas, subtotal por região e total da safra) e, no fim, os **indicadores** em gráfico (total da safra, por região e ordens encerradas × abertas) |
+| | 4 | Reforço bordadura | Igual: tabela da 3ª molécula e o gráfico do total (aberta, realizada, a realizar) |
+| | 5 | 1ª catação química | Igual: as 71 fazendas numa página com rolagem e, no fim, o total da safra e por região |
+| **Adubação** | 6 | Adubação localizada | Região 1 + Cargill e área de queima, com subtotal por bloco, total e observação; no fim, o resumo da localizada e da área de queima |
+| | 7 | Adubação com cocho | Alencar (regiões 1 e 2) e Fábio do Prado (região 3), com subtotal por bloco e totais; no fim, o resumo de cada equipe e o resumo final (geral) |
 
-Coluna sem nenhum valor nos quadros da página não aparece (ex.: cana muda, na adubação).
+As tabelas dos programas seguem um padrão só: as colunas vêm em grupos com título
+(**Fazenda** — região, cód., bloco, propriedade, colheita e dias de atraso, nessa ordem em
+todas; depois **Área**, **Aplicação**/**Aplicada**, **Saldo** ou **A realizar**, conforme o
+programa) e uma linha entre cada coluna, mais forte entre os grupos; as linhas são
+zebradas; subtotal em cinza, total em amarelo; dias de atraso acima de 20 em vermelho e a
+**% concluída** de cada linha em barra. O cabeçalho fica preso no alto enquanto a tabela
+rola, e a letra só diminui se a tabela não couber na largura. Coluna sem nenhum valor
+nos quadros da página não aparece (ex.: cana muda, na adubação).
 A data de atualização da planilha vai no alto de cada página dos programas.
 
 O **modal da operação** tem três abas:
@@ -140,7 +144,7 @@ Nomes de bloco escritos de jeitos diferentes entre as abas são unificados
 ## Convenções mantidas do `comparativo_moagem`
 
 - Mesmo CSS base, tema, cromo, painel de detalhe e helpers de SVG, copiados de lá.
-- Cor de destaque por módulo: dourado (Semana), verde-água (Programas da safra), azul (Adubação), creme (Indicadores).
+- Cor de destaque por módulo: dourado (Semana), verde-água (Programas da safra), azul (Adubação).
 - Cor fixa por frente: Manual azul `#2E86C1`, Uniport oliva `#8A6D14`, Aérea verde-água
   `#3FA79C`, Cocho navy `#12224A`.
 - Farol da meta: verde na meta ou acima, âmbar de 50% a 99%, vermelho abaixo de 50% — sempre

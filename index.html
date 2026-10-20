@@ -428,36 +428,45 @@ table.hm tr.tot td{background:#FFF3D0;font-weight:700;color:var(--navy);border-t
 .at-card li b{flex:none;font-variant-numeric:tabular-nums;color:var(--navy)}
 .at-card p{margin:0;font-size:13px;color:var(--mut);line-height:1.45}
 
-/* programas da safra: a tabela da planilha, compacta (a 1ª catação tem muitas fazendas) */
-table.tb.pg td{height:auto;padding:1px 6px;line-height:1.15}
-table.tb.pg .bc .trk{height:10px}
-table.tb.pg th{padding:4px 6px;line-height:1.15}
+/* programas da safra e adubação: a página rola (tabela e, no fim, os indicadores); o
+   cabeçalho da tabela fica preso em cima. Colunas em grupos, com linha entre elas */
+.pg-card{flex-direction:column;padding:0;min-height:0}
+.pg-rolo{flex:1 1 auto;min-height:0;overflow:auto;padding:0 12px 12px}
+table.tb.pg{font-size:15px}
+table.tb.pg td{height:auto;padding:5px 12px;line-height:1.25}
+table.tb.pg th{padding:6px 12px;line-height:1.2}
 table.tb.pg td.tx{text-align:left;color:var(--navy);white-space:nowrap}
-table.tb.pg td.prop{white-space:normal;min-width:150px}
+table.tb.pg td.prop{white-space:normal;min-width:170px}
 table.tb.pg td.c{text-align:center}
 table.tb.pg td.atr{color:var(--red);font-weight:700}
 table.tb.pg td.zero{color:#C3C9D6;font-weight:400}
-table.tb.pg td.obs{white-space:normal;font-size:.85em;color:var(--red);font-weight:700;min-width:120px}
-table.tb.pg tr.sub td{background:#EEF1F7;font-weight:700;color:var(--navy);border-top:1px solid #C9D0DE}
-table.tb.pg tr.sec td{background:#1E3566;color:#fff;font-weight:700;text-align:left;letter-spacing:.05em;
-  text-transform:uppercase;font-size:.86em;padding:6px 10px;border-top:6px solid #fff}
+table.tb.pg td.obs{white-space:normal;font-size:.85em;color:var(--red);font-weight:700;min-width:130px}
+table.tb.pg tbody tr:nth-child(even) td{background:#F6F7FA}
+table.tb.pg tr.sub td{background:#E9EDF5!important;font-weight:700;color:var(--navy);border-top:1px solid #B9C2D4}
+table.tb.pg tr.tot td{background:#FFF3D0!important}
+table.tb.pg tr.sec td{background:#1E3566!important;color:#fff;font-weight:700;text-align:left;letter-spacing:.05em;
+  text-transform:uppercase;font-size:.86em;padding:7px 12px;border-top:10px solid #fff}
 table.tb.pg tbody tr.sec:first-child td{border-top:0}
-/* indicadores: um gráfico por cartão, em grade */
-.ind-grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:12px}
-.ind-card{min-width:0;min-height:0;display:flex;flex-direction:column;background:#fff;color:var(--ink);border-radius:4px;
-  padding:10px 14px 6px;box-shadow:inset 0 3px 0 var(--accent),0 18px 44px -12px rgba(0,0,0,.5)}
+table.tb.pg .bc .trk{height:11px}
+/* indicadores no fim da página */
+.pg-sep{margin:22px 0 10px;padding-top:12px;border-top:3px solid var(--navy);font-size:12px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--navy)}
+.pg-ind{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:12px}
+.ind-card{min-width:0;display:flex;flex-direction:column;background:#fff;color:var(--ink);border:1px solid var(--line);
+  border-top:3px solid var(--accent);border-radius:4px;padding:10px 14px 6px;height:340px}
 .ind-t{font-size:14px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ind-s{margin-left:10px;font-weight:600;color:var(--mut);text-transform:none;letter-spacing:0;font-size:.86em}
 .ind-leg{display:flex;flex-wrap:wrap;gap:2px 14px;font-size:11.5px;color:var(--mut);margin-top:3px}
 .ind-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 .ind-g{flex:1 1 auto;min-height:0}
 .ind-g svg{display:block;width:100%;height:100%}
-.slide-dark.active .ind-card{animation:tema-sobe .7s var(--ease) backwards}
-.slide-dark.active .ind-card:nth-child(2){animation-delay:.08s}
-.slide-dark.active .ind-card:nth-child(3){animation-delay:.16s}
-.slide-dark.active .ind-card:nth-child(4){animation-delay:.24s}
-@media(min-width:1600px) and (min-height:860px){ .ind-t{font-size:17px} .ind-leg{font-size:14px} }
-@media(max-width:760px){ .ind-grid{grid-template-columns:minmax(0,1fr);grid-auto-rows:auto} .ind-g{flex:none;height:300px} }
+@media(min-width:1600px) and (min-height:860px){
+  table.tb.pg{font-size:19px}
+  .pg-sep{font-size:15px}
+  .ind-card{height:420px}
+  .ind-t{font-size:17px} .ind-leg{font-size:14px}
+}
+@media(max-width:760px){ .pg-ind{grid-template-columns:minmax(0,1fr)} .ind-card{height:320px} table.tb.pg{font-size:13px} }
 
 /* resumo gráfico: um painel por operação, em grade 2 × 2 */
 .gr-grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:12px}
@@ -823,14 +832,9 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <a href="#graficos"><b></b> Resumo gráfico</a>
 <a href="#pg-pre"><b></b> Pré-emergência</a>
 <a href="#pg-bord"><b></b> Reforço bordadura</a>
-<a href="#pg-cat1a"><b></b> 1ª catação · região 1</a>
-<a href="#pg-cat1b"><b></b> 1ª catação · regiões 2 e 3</a>
+<a href="#pg-cat1"><b></b> 1ª catação química</a>
 <a href="#pg-loc"><b></b> Adubação localizada</a>
-<a href="#pg-cocho1"><b></b> Cocho · Alencar região 1</a>
-<a href="#pg-cocho2"><b></b> Cocho · Alencar região 2 e Fábio</a>
-<a href="#ind-pre"><b></b> Pré e bordadura</a>
-<a href="#ind-cat1"><b></b> 1ª catação</a>
-<a href="#ind-adub"><b></b> Adubação</a>
+<a href="#pg-cocho"><b></b> Adubação com cocho</a>
 </nav>
 
 <div class="deck" id="deck">
@@ -905,18 +909,18 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <div class="gr-grid" id="gr-grid"></div>
 </article>
 
-<!-- ================= PROGRAMAS DA SAFRA =================
-     a tabela de cada programa como sai na impressão da planilha (PDF): fazendas com
-     saldo, subtotal por região e total da safra, mais a % concluída de cada linha.
-     A 1ª catação tem fazendas demais para uma tela e vai em duas páginas, por região -->
-<article class="slide slide-dark" id="pg-pre" data-title="Pré-emergência cana soca">
+<!-- ================= PROGRAMAS DA SAFRA E ADUBAÇÃO =================
+     uma página por programa, como a impressão da planilha (PDF): a tabela das fazendas,
+     com subtotal e total, numa área com rolagem e, no fim, os indicadores em gráfico.
+     As colunas vêm em grupos com título e linha entre elas -->
+<article class="slide slide-dark" id="pg-pre" data-title="Pré-emergência">
 <div class="s-head">
 <div>
 <div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra<span class="js-atu"></span></div>
 <h2 class="s-title">Pré-emergência — cana soca</h2>
 </div>
 </div>
-<div class="s-card tb-card"><div class="tb-rolo" id="pg-pre-tb"></div></div>
+<div class="s-card pg-card"><div class="pg-rolo" id="pg-pre-rolo"></div></div>
 </article>
 <article class="slide slide-dark" id="pg-bord" data-title="Reforço bordadura">
 <div class="s-head">
@@ -925,30 +929,17 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <h2 class="s-title">Reforço bordadura (3ª molécula) — cana soca</h2>
 </div>
 </div>
-<div class="s-card tb-card"><div class="tb-rolo" id="pg-bord-tb"></div></div>
+<div class="s-card pg-card"><div class="pg-rolo" id="pg-bord-rolo"></div></div>
 </article>
-<article class="slide slide-dark" id="pg-cat1a" data-title="1ª catação · região 1">
+<article class="slide slide-dark" id="pg-cat1" data-title="1ª catação química">
 <div class="s-head">
 <div>
 <div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra<span class="js-atu"></span></div>
-<h2 class="s-title">1ª catação química — região 1</h2>
+<h2 class="s-title">1ª catação química — cana soca</h2>
 </div>
 </div>
-<div class="s-card tb-card"><div class="tb-rolo" id="pg-cat1a-tb"></div></div>
+<div class="s-card pg-card"><div class="pg-rolo" id="pg-cat1-rolo"></div></div>
 </article>
-<article class="slide slide-dark" id="pg-cat1b" data-title="1ª catação · regiões 2 e 3">
-<div class="s-head">
-<div>
-<div class="s-eyebrow"><span class="js-num">–</span> &middot; Programas da safra<span class="js-atu"></span></div>
-<h2 class="s-title">1ª catação química — regiões 2 e 3</h2>
-</div>
-</div>
-<div class="s-card tb-card"><div class="tb-rolo" id="pg-cat1b-tb"></div></div>
-</article>
-
-<!-- ================= ADUBAÇÃO DE SOQUEIRA =================
-     localizada (região 1 + Cargill e área de queima) e com cocho (Alencar por região e
-     Fábio do Prado), em páginas separadas, com os subtotais por bloco da planilha -->
 <article class="slide slide-dark" id="pg-loc" data-title="Adubação localizada">
 <div class="s-head">
 <div>
@@ -956,56 +947,16 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <h2 class="s-title">Adubação localizada</h2>
 </div>
 </div>
-<div class="s-card tb-card"><div class="tb-rolo" id="pg-loc-tb"></div></div>
+<div class="s-card pg-card"><div class="pg-rolo" id="pg-loc-rolo"></div></div>
 </article>
-<article class="slide slide-dark" id="pg-cocho1" data-title="Cocho · Alencar região 1">
+<article class="slide slide-dark" id="pg-cocho" data-title="Adubação com cocho">
 <div class="s-head">
 <div>
 <div class="s-eyebrow"><span class="js-num">–</span> &middot; Adubação de soqueira<span class="js-atu"></span></div>
-<h2 class="s-title">Adubação com cocho — Alencar, região 1</h2>
+<h2 class="s-title">Adubação com cocho — Alencar e Fábio do Prado</h2>
 </div>
 </div>
-<div class="s-card tb-card"><div class="tb-rolo" id="pg-cocho1-tb"></div></div>
-</article>
-<article class="slide slide-dark" id="pg-cocho2" data-title="Cocho · Alencar região 2 e Fábio">
-<div class="s-head">
-<div>
-<div class="s-eyebrow"><span class="js-num">–</span> &middot; Adubação de soqueira<span class="js-atu"></span></div>
-<h2 class="s-title">Adubação com cocho — Alencar, região 2, e Fábio do Prado, região 3</h2>
-</div>
-</div>
-<div class="s-card tb-card"><div class="tb-rolo" id="pg-cocho2-tb"></div></div>
-</article>
-
-<!-- ================= INDICADORES =================
-     os gráficos da impressão: total de cada programa, por região e o resumo final da
-     adubação -->
-<article class="slide slide-dark" id="ind-pre" data-title="Indicadores · pré e bordadura">
-<div class="s-head">
-<div>
-<div class="s-eyebrow"><span class="js-num">–</span> &middot; Indicadores<span class="js-atu"></span></div>
-<h2 class="s-title">Pré-emergência e reforço bordadura</h2>
-</div>
-</div>
-<div class="ind-grid" id="ind-pre-grid"></div>
-</article>
-<article class="slide slide-dark" id="ind-cat1" data-title="Indicadores · 1ª catação">
-<div class="s-head">
-<div>
-<div class="s-eyebrow"><span class="js-num">–</span> &middot; Indicadores<span class="js-atu"></span></div>
-<h2 class="s-title">1ª catação química</h2>
-</div>
-</div>
-<div class="ind-grid" id="ind-cat1-grid"></div>
-</article>
-<article class="slide slide-dark" id="ind-adub" data-title="Indicadores · adubação">
-<div class="s-head">
-<div>
-<div class="s-eyebrow"><span class="js-num">–</span> &middot; Indicadores<span class="js-atu"></span></div>
-<h2 class="s-title">Adubação de soqueira — localizada e cocho</h2>
-</div>
-</div>
-<div class="ind-grid" id="ind-adub-grid"></div>
+<div class="s-card pg-card"><div class="pg-rolo" id="pg-cocho-rolo"></div></div>
 </article>
 
 </div><!-- /deck -->
@@ -1888,57 +1839,62 @@ function ultimaTot(p,secRe,rotRe){
   return l[l.length-1];
 }
 
-// tabela de um programa. o.sec: só as seções cujo título casa; o.regioes: só as fazendas
-// dessas regiões (o total entra se o.total)
+// colunas de cada programa, em grupos com título (o título da coluna fica curto: o do
+// grupo diz do que se trata). A ordem da fazenda é a mesma em todos: região, cód.,
+// bloco, propriedade, colheita e dias de atraso
+var FAZ = ["reg","cod","bloco","prop","data","atraso"];
+var GRUPOS = {
+  pre:  [["Fazenda",FAZ],["Área (ha)",["colhida","aColher","reforma"]],["Aplicação (ha)",["realizada","aRealizar"]],["Fornecedor",["fornecedor"]]],
+  bord: [["Fazenda",FAZ],["Área (ha)",["aberta"]],["Aplicação (ha)",["realizada","aRealizar"]]],
+  cat1: [["Fazenda",FAZ.concat(["corte"])],["Área (ha)",["aberta","reforma"]],["Mecanizada (ha)",["cataMatoMec","realMec"]],
+         ["Manual (ha)",["catManual","realMan"]],["Realizado (ha)",["realTotal"]],["A realizar (ha)",["maior20","menor20"]]],
+  adub: [["Fazenda",["reg","cod","bloco","prop"]],["Área (ha)",["aTratar","reforma"]],["Aplicada (ha)",["canaMuda","localizada","cocho"]],["Saldo (ha)",["aRealizar"]]]
+};
+var TIT = {reg:"Região", cod:"Cód. faz.", bloco:"Bloco", prop:"Propriedade", data:"Colheita", atraso:"Dias de atraso", corte:"Corte",
+  colhida:"Colhida", aColher:"A colher", reforma:"Reforma", realizada:"Realizada", aRealizar:"A realizar", fornecedor:"Área",
+  aberta:"Aberta", cataMatoMec:"Cata mato", realMec:"Realizada", catManual:"Catação", realMan:"Realizada", realTotal:"Total",
+  maior20:"> 20 dias", menor20:"< 20 dias", aTratar:"A tratar", canaMuda:"Cana muda", localizada:"Localizada", cocho:"Cocho"};
+var TEXTO_COL = {reg:"c", cod:"c", data:"c", atraso:"c", corte:"c", bloco:"tx", prop:"tx prop"};
+
+// tabela de um programa (o.sec: só os quadros cujo título casa)
 function tabelaProg(p,o){
   o=o||{};
-  var txt=p.cols.filter(function(c){ return !c.n; });
   var secs=p.secoes.filter(function(sc){ return !o.sec || o.sec.test(sc.titulo); });
-  // coluna sem valor nenhum nos quadros da página não entra (ex.: cana muda, na adubação)
-  var nums=p.cols.filter(function(c){ return c.n && secs.some(function(sc){ return sc.linhas.some(function(l){ return l.v[c.k]; }); }); });
+  function temValor(k){ return secs.some(function(sc){ return sc.linhas.some(function(l){ return l.v[k] || (l.t==="faz" && l[k]!=null && l[k]!==""); }); }); }
+  // coluna sem valor nenhum nos quadros da página não entra (ex.: cana muda); grupo vazio também não
+  var grupos=GRUPOS[p.id].map(function(g){ return {t:g[0], cols:g[1].filter(function(k){ return g[0]==="Fazenda" ? k!=="corte" || temValor(k) : temValor(k); })}; })
+    .filter(function(g){ return g.cols.length; });
   var temObs=secs.some(function(sc){ return sc.linhas.some(function(l){ return l.obs; }); });
-  var nCol=txt.length+nums.length+1+(temObs?1:0);
-  var CL={reg:"c", cod:"c", data:"c", atraso:"c", bloco:"tx", prop:"tx prop"};
-  function numCels(l){ return nums.map(function(c){ var v=l.v[c.k]; return v ? "<td>"+(c.k==="corte"?v:fHa2(v))+"</td>" : "<td class='zero'>–</td>"; }).join(""); }
-  var h="<table class='tb pg'><thead><tr>"+
-    txt.map(function(c){ return "<th class='"+(CL[c.k]==="c"?"c":"l")+"'>"+c.t+"</th>"; }).join("")+
-    nums.map(function(c){ return "<th>"+c.t+(c.k==="corte"?"":"<u>ha</u>")+"</th>"; }).join("")+
-    "<th>% concluído</th>"+(temObs?"<th class='l'>Observação</th>":"")+"</tr></thead><tbody>";
-  p.secoes.forEach(function(sc){
-    if(o.sec && !o.sec.test(sc.titulo)) return;
-    var linhas=sc.linhas.filter(function(l){ return !o.regioes || (l.t==="faz" ? o.regioes.indexOf(l.reg)>=0 : o.total); });
-    if(!linhas.length) return;
+  var nFaz=grupos[0].cols.length, nCol=grupos.reduce(function(n,g){ return n+g.cols.length; },0)+1+(temObs?1:0);
+  function celNum(l,k,gi){ var v=l.v[k], c=gi?" class='gi'":"";
+    return v ? "<td"+c+">"+(k==="corte"?v:fHa2(v))+"</td>" : "<td class='zero"+(gi?" gi":"")+"'>–</td>"; }
+  var h="<table class='tb sem pg'><thead><tr>"+
+    grupos.map(function(g,i){ return "<th class='grp"+(i?" gi":"")+"' colspan='"+g.cols.length+"'>"+g.t+"</th>"; }).join("")+
+    "<th class='gi' rowspan='2'>% concluído</th>"+(temObs?"<th class='l gi' rowspan='2'>Observação</th>":"")+"</tr><tr>"+
+    grupos.map(function(g,i){ return g.cols.map(function(k,j){
+      var cl=(TEXTO_COL[k]==="c"?"c":TEXTO_COL[k]?"l":"")+(i&&!j?" gi":"");
+      return "<th class='"+cl+"'>"+TIT[k]+"</th>"; }).join(""); }).join("")+"</tr></thead><tbody>";
+  secs.forEach(function(sc){
     if(sc.titulo) h+="<tr class='sec'><td colspan='"+nCol+"'>"+E.esc(nomeSecao(sc.titulo))+"</td></tr>";
-    linhas.forEach(function(l){
+    sc.linhas.forEach(function(l){
       if(l.t==="faz"){
-        h+="<tr>"+txt.map(function(c){
-          var v=l[c.k];
-          if(c.k==="atraso") return "<td class='c"+(v>20?" atr":"")+"'>"+(v==null?"–":v)+"</td>";
-          if(c.k==="data") v=v?v.slice(0,5):"";
-          return "<td class='"+CL[c.k]+"'>"+(v?E.esc(v):"–")+"</td>";
-        }).join("")+numCels(l)+"<td>"+barCel(feitoDe(p,l.v))+"</td>"+
-        (temObs?"<td class='tx obs'>"+E.esc(l.obs||"")+"</td>":"")+"</tr>";
+        h+="<tr>"+grupos.map(function(g,i){ return g.cols.map(function(k,j){
+          var gi=i&&!j;
+          if(!TEXTO_COL[k]) return celNum(l,k,gi);
+          var v=k==="corte" ? l.corte : l[k];
+          if(k==="atraso") return "<td class='c"+(v>20?" atr":"")+"'>"+(v==null?"–":v)+"</td>";
+          if(k==="data") v=v?v.slice(0,5):"";
+          return "<td class='"+TEXTO_COL[k]+(gi?" gi":"")+"'>"+(v!=null&&v!==""?E.esc(String(v)):"–")+"</td>";
+        }).join(""); }).join("")+"<td class='gi'>"+barCel(feitoDe(p,l.v))+"</td>"+
+        (temObs?"<td class='tx obs gi'>"+E.esc(l.obs||"")+"</td>":"")+"</tr>";
       } else {
-        h+="<tr class='"+(l.t==="tot"?"tot":"sub")+"'><td class='tx' colspan='"+txt.length+"'>"+E.esc(rotTotal(l.rot,sc))+"</td>"+
-          numCels(l)+"<td>"+barCel(feitoDe(p,l.v))+"</td>"+(temObs?"<td></td>":"")+"</tr>";
+        h+="<tr class='"+(l.t==="tot"?"tot":"sub")+"'><td class='tx' colspan='"+nFaz+"'>"+E.esc(rotTotal(l.rot,sc))+"</td>"+
+          grupos.slice(1).map(function(g){ return g.cols.map(function(k,j){ return celNum(l,k,!j); }).join(""); }).join("")+
+          "<td class='gi'>"+barCel(feitoDe(p,l.v))+"</td>"+(temObs?"<td class='gi'></td>":"")+"</tr>";
       }
     });
   });
   return h+"</tbody></table>";
-}
-var PAG_PROG = {
-  "pg-pre":  {p:"pre"},
-  "pg-bord": {p:"bord"},
-  "pg-cat1a":{p:"cat1", regioes:["1"]},
-  "pg-cat1b":{p:"cat1", regioes:["2","3"], total:true},
-  "pg-loc":  {p:"adub", sec:/Localizada|Queima/i},
-  "pg-cocho1":{p:"adub", sec:/Alencar - Região 1/i},
-  "pg-cocho2":{p:"adub", sec:/Alencar - Região 2|F[áa]bio/i}
-};
-function paginaProg(id){
-  var o=PAG_PROG[id], p=progDe(o.p), box=document.getElementById(id+"-tb");
-  box.innerHTML = p ? tabelaProg(p,o) : "";
-  ajustaTabela(box);
 }
 
 /* ---------- indicadores: colunas com o valor em cima, como os gráficos da impressão ---------- */
@@ -1990,76 +1946,91 @@ function cartaoInd(box,titulo,sub,leg){
   return d.querySelector("svg");
 }
 // os cartões entram todos antes de medir, para a grade já ter o tamanho final
-function desenhaCartoes(lista){
+function desenhaCartoes(box,lista){
+  box.style.setProperty("--n", Math.min(3,Math.max(1,lista.length)));
   lista.forEach(function(c){ var r=c[0].getBoundingClientRect();
     c[1](c[0],Math.max(estreito()?320:260,Math.round(r.width)),Math.max(160,Math.round(r.height))); });
 }
-function indPre(){
-  var box=document.getElementById("ind-pre-grid"); box.innerHTML="";
-  var pre=progDe("pre"), bord=progDe("bord"), cards=[];
-  if(pre){
-    var t=ultimaTot(pre).v, ex=pre.extras||{};
-    cards.push([cartaoInd(box,"Pré-emergência cana soca","total da safra"),function(svg,W,H){ colunas(svg,W,H,[
-      {rot:"Área colhida",v:t.colhida,cor:CB.base},{rot:"Área a colher",v:t.aColher,cor:CB.aColher},
-      {rot:"Área reforma",v:t.reforma,cor:CB.reforma},{rot:"Área realizada",v:t.realizada,cor:CB.realizada},
-      {rot:"A realizar",v:t.aRealizar,cor:CB.aRealizar},{rot:"Área fornecedor",v:t.fornecedor,cor:CB.fornecedor}]); }]);
-    var SER=[{k:"colhida",rot:"Área colhida",cor:CB.base},{k:"aColher",rot:"Área a colher",cor:CB.aColher},
-      {k:"reforma",rot:"Área reforma",cor:CB.reforma},{k:"realizada",rot:"Área realizada",cor:CB.realizada},
-      {k:"aRealizar",rot:"Falta aplicar",cor:CB.aRealizar}];
-    var subs=linhasDe(pre,"sub");
-    cards.push([cartaoInd(box,"Pré-emergência por região","",SER),function(svg,W,H){
-      colunasGrupo(svg,W,H,subs.map(function(l){ return {rot:l.rot.replace(/^Subtotal\s*/i,""), v:l.v}; }),SER); }]);
-    if(ex.Geral) cards.push([cartaoInd(box,"Pré-emergência — ordens","encerradas e abertas"),function(svg,W,H){ colunas(svg,W,H,[
-      {rot:"Total encerrado",v:ex["Total Encerrado"],cor:CB.realizada},{rot:"Total aberto",v:ex["Total Aberto"],cor:CB.aColher},
-      {rot:"Geral",v:ex.Geral,cor:CB.base}]); }]);
-  }
-  if(bord){
-    var b=ultimaTot(bord).v;
-    cards.push([cartaoInd(box,"Reforço bordadura (3ª molécula)","total da safra"),function(svg,W,H){ colunas(svg,W,H,[
-      {rot:"Área aberta",v:b.aberta,cor:CB.base},{rot:"Área realizada",v:b.realizada,cor:CB.realizada},
-      {rot:"A realizar",v:b.aRealizar,cor:CB.aRealizar}]); }]);
-  }
-  desenhaCartoes(cards);
+function indPre(p,box){
+  var t=ultimaTot(p).v, ex=p.extras||{}, cards=[];
+  cards.push([cartaoInd(box,"Pré-emergência cana soca","total da safra"),function(svg,W,H){ colunas(svg,W,H,[
+    {rot:"Área colhida",v:t.colhida,cor:CB.base},{rot:"Área a colher",v:t.aColher,cor:CB.aColher},
+    {rot:"Área reforma",v:t.reforma,cor:CB.reforma},{rot:"Área realizada",v:t.realizada,cor:CB.realizada},
+    {rot:"A realizar",v:t.aRealizar,cor:CB.aRealizar},{rot:"Área fornecedor",v:t.fornecedor,cor:CB.fornecedor}]); }]);
+  var SER=[{k:"colhida",rot:"Área colhida",cor:CB.base},{k:"aColher",rot:"Área a colher",cor:CB.aColher},
+    {k:"reforma",rot:"Área reforma",cor:CB.reforma},{k:"realizada",rot:"Área realizada",cor:CB.realizada},
+    {k:"aRealizar",rot:"Falta aplicar",cor:CB.aRealizar}];
+  var subs=linhasDe(p,"sub");
+  if(subs.length) cards.push([cartaoInd(box,"Por região","",SER),function(svg,W,H){
+    colunasGrupo(svg,W,H,subs.map(function(l){ return {rot:l.rot.replace(/^Subtotal\s*/i,""), v:l.v}; }),SER); }]);
+  if(ex.Geral) cards.push([cartaoInd(box,"Ordens","encerradas e abertas"),function(svg,W,H){ colunas(svg,W,H,[
+    {rot:"Total encerrado",v:ex["Total Encerrado"],cor:CB.realizada},{rot:"Total aberto",v:ex["Total Aberto"],cor:CB.aColher},
+    {rot:"Geral",v:ex.Geral,cor:CB.base}]); }]);
+  return cards;
 }
-function indCat1(){
-  var box=document.getElementById("ind-cat1-grid"); box.innerHTML="";
-  var p=progDe("cat1"), cards=[];
-  if(p){
-    var t=ultimaTot(p).v, reg=(p.extras||{}).regioes;
-    cards.push([cartaoInd(box,"Catação química cana soca","total da safra"),function(svg,W,H){ colunas(svg,W,H,[
-      {rot:"Área aberta",v:t.aberta,cor:CB.base},{rot:"Cata mato MEC",v:t.cataMatoMec,cor:CB.cataMato},
-      {rot:"Área realizada MEC",v:t.realMec,cor:CB.realMec},{rot:"Catação manual",v:t.catManual,cor:CB.catManual},
-      {rot:"Área realizada MAN",v:t.realMan,cor:CB.realMan},{rot:"Realizado total",v:t.realTotal,cor:CB.realTotal}]); }]);
-    if(reg){
-      var SER=[{k:"colhida",rot:"Área colhida",cor:CB.base},{k:"realizada",rot:"Área realizada",cor:CB.realizada},
-        {k:"menor20",rot:"A realizar < 20 dias",cor:CB.menor20},{k:"maior20",rot:"A realizar > 20 dias",cor:CB.aRealizar},
-        {k:"faltaAplicar",rot:"Falta aplicar",cor:CB.falta}];
-      cards.push([cartaoInd(box,"Catação química por região","",SER),function(svg,W,H){
-        colunasGrupo(svg,W,H,Object.keys(reg).sort().map(function(k){ return {rot:"Região "+k, v:reg[k]}; }),SER); }]);
-    }
-  }
-  desenhaCartoes(cards);
+function indBord(p,box){
+  var b=ultimaTot(p).v;
+  return [[cartaoInd(box,"Reforço bordadura cana soca","total da safra"),function(svg,W,H){ colunas(svg,W,H,[
+    {rot:"Área aberta",v:b.aberta,cor:CB.base},{rot:"Área realizada",v:b.realizada,cor:CB.realizada},
+    {rot:"A realizar",v:b.aRealizar,cor:CB.aRealizar}]); }]];
 }
-function indAdub(){
-  var box=document.getElementById("ind-adub-grid"); box.innerHTML="";
-  var p=progDe("adub"), cards=[];
-  if(p){
-    var loc=ultimaTot(p,/Localizada/i,/LOCALIZADA/), al=ultimaTot(p,/Alencar/i,/ALENCAR/), fb=ultimaTot(p,/F[áa]bio/i), rs=(p.extras||{}).resumo;
-    if(loc) cards.push([cartaoInd(box,"Resumo — localizada",""),function(svg,W,H){ colunas(svg,W,H,[
-      {rot:"Área a tratar",v:loc.v.aTratar,cor:CB.base},{rot:"Aplicada localizada",v:loc.v.localizada,cor:CB.localizada},
-      {rot:"A realizar",v:loc.v.aRealizar,cor:CB.aRealizar}]); }]);
-    if(al) cards.push([cartaoInd(box,"Resumo Alencar — cocho","regiões 1 e 2"),function(svg,W,H){ colunas(svg,W,H,[
-      {rot:"Área a tratar",v:al.v.aTratar,cor:CB.base},{rot:"Aplicada localizada",v:al.v.localizada,cor:CB.localizada},
-      {rot:"Aplicada cocho",v:al.v.cocho,cor:CB.cocho},{rot:"A realizar",v:al.v.aRealizar,cor:CB.aRealizar}]); }]);
-    if(fb) cards.push([cartaoInd(box,"Resumo Fábio do Prado — cocho","região 3"),function(svg,W,H){ colunas(svg,W,H,[
-      {rot:"Área a tratar",v:fb.v.aTratar,cor:CB.base},{rot:"Aplicada cocho",v:fb.v.cocho,cor:CB.cocho},
-      {rot:"A realizar",v:fb.v.aRealizar,cor:CB.aRealizar}]); }]);
-    if(rs) cards.push([cartaoInd(box,"Geral — resumo final da adubação",""),function(svg,W,H){ colunas(svg,W,H,[
-      {rot:"Área a tratar",v:rs.aTratar,cor:CB.base},{rot:"Área de reforma",v:rs.reforma,cor:CB.reforma},
-      {rot:"Aplicada localizada",v:rs.localizada,cor:CB.localizada},{rot:"Aplicada cocho",v:rs.cocho,cor:CB.cocho},
-      {rot:"A realizar",v:rs.aRealizar,cor:CB.aRealizar}]); }]);
+function indCat1(p,box){
+  var t=ultimaTot(p).v, reg=(p.extras||{}).regioes, cards=[];
+  cards.push([cartaoInd(box,"Catação química cana soca","total da safra"),function(svg,W,H){ colunas(svg,W,H,[
+    {rot:"Área aberta",v:t.aberta,cor:CB.base},{rot:"Cata mato MEC",v:t.cataMatoMec,cor:CB.cataMato},
+    {rot:"Área realizada MEC",v:t.realMec,cor:CB.realMec},{rot:"Catação manual",v:t.catManual,cor:CB.catManual},
+    {rot:"Área realizada MAN",v:t.realMan,cor:CB.realMan},{rot:"Realizado total",v:t.realTotal,cor:CB.realTotal}]); }]);
+  if(reg){
+    var SER=[{k:"colhida",rot:"Área colhida",cor:CB.base},{k:"realizada",rot:"Área realizada",cor:CB.realizada},
+      {k:"menor20",rot:"A realizar < 20 dias",cor:CB.menor20},{k:"maior20",rot:"A realizar > 20 dias",cor:CB.aRealizar},
+      {k:"faltaAplicar",rot:"Falta aplicar",cor:CB.falta}];
+    cards.push([cartaoInd(box,"Por região","",SER),function(svg,W,H){
+      colunasGrupo(svg,W,H,Object.keys(reg).sort().map(function(k){ return {rot:"Região "+k, v:reg[k]}; }),SER); }]);
   }
-  desenhaCartoes(cards);
+  return cards;
+}
+function indLoc(p,box){
+  var loc=ultimaTot(p,/Localizada/i,/LOCALIZADA/), qm=ultimaTot(p,/Queima/i), cards=[];
+  if(loc) cards.push([cartaoInd(box,"Resumo — localizada",""),function(svg,W,H){ colunas(svg,W,H,[
+    {rot:"Área a tratar",v:loc.v.aTratar,cor:CB.base},{rot:"Área de reforma",v:loc.v.reforma,cor:CB.reforma},
+    {rot:"Aplicada localizada",v:loc.v.localizada,cor:CB.localizada},{rot:"A realizar",v:loc.v.aRealizar,cor:CB.aRealizar}]); }]);
+  if(qm) cards.push([cartaoInd(box,"Área de queima",""),function(svg,W,H){ colunas(svg,W,H,[
+    {rot:"Área a tratar",v:qm.v.aTratar,cor:CB.base},{rot:"A realizar",v:qm.v.aRealizar,cor:CB.aRealizar}]); }]);
+  return cards;
+}
+function indCocho(p,box){
+  var al=ultimaTot(p,/Alencar/i,/ALENCAR/), fb=ultimaTot(p,/F[áa]bio/i), rs=(p.extras||{}).resumo, cards=[];
+  if(al) cards.push([cartaoInd(box,"Resumo Alencar — cocho","regiões 1 e 2"),function(svg,W,H){ colunas(svg,W,H,[
+    {rot:"Área a tratar",v:al.v.aTratar,cor:CB.base},{rot:"Aplicada localizada",v:al.v.localizada,cor:CB.localizada},
+    {rot:"Aplicada cocho",v:al.v.cocho,cor:CB.cocho},{rot:"A realizar",v:al.v.aRealizar,cor:CB.aRealizar}]); }]);
+  if(fb) cards.push([cartaoInd(box,"Resumo Fábio do Prado — cocho","região 3"),function(svg,W,H){ colunas(svg,W,H,[
+    {rot:"Área a tratar",v:fb.v.aTratar,cor:CB.base},{rot:"Aplicada cocho",v:fb.v.cocho,cor:CB.cocho},
+    {rot:"A realizar",v:fb.v.aRealizar,cor:CB.aRealizar}]); }]);
+  if(rs) cards.push([cartaoInd(box,"Geral — resumo final da adubação",""),function(svg,W,H){ colunas(svg,W,H,[
+    {rot:"Área a tratar",v:rs.aTratar,cor:CB.base},{rot:"Área de reforma",v:rs.reforma,cor:CB.reforma},
+    {rot:"Aplicada localizada",v:rs.localizada,cor:CB.localizada},{rot:"Aplicada cocho",v:rs.cocho,cor:CB.cocho},
+    {rot:"A realizar",v:rs.aRealizar,cor:CB.aRealizar}]); }]);
+  return cards;
+}
+var PAG_PROG = {
+  "pg-pre":  {p:"pre", ind:indPre},
+  "pg-bord": {p:"bord", ind:indBord},
+  "pg-cat1": {p:"cat1", ind:indCat1},
+  "pg-loc":  {p:"adub", sec:/Localizada|Queima/i, ind:indLoc},
+  "pg-cocho":{p:"adub", sec:/Cocho/i, ind:indCocho}
+};
+// a página: a tabela e, no fim, os indicadores (a rolagem volta para o alto ao entrar)
+function paginaProg(id){
+  var o=PAG_PROG[id], p=progDe(o.p), rolo=document.getElementById(id+"-rolo");
+  if(!p){ rolo.innerHTML=""; return; }
+  var topo=rolo.scrollTop;
+  rolo.innerHTML=tabelaProg(p,o)+"<div class='pg-sep'>Indicadores</div><div class='pg-ind'></div>";
+  // a altura rola; a largura não: a letra diminui até a tabela caber na largura
+  var tb=rolo.querySelector("table"), f=parseFloat(getComputedStyle(tb).fontSize);
+  while(tb.offsetWidth>rolo.clientWidth && f>11){ f-=0.5; tb.style.fontSize=f+"px"; }
+  var box=rolo.querySelector(".pg-ind");
+  desenhaCartoes(box,o.ind(p,box));
+  rolo.scrollTop=topo;
 }
 // data de atualização da planilha no alto de cada página dos programas
 (function(){
@@ -2090,9 +2061,6 @@ window.replay.capa = desenhaCapa;
 window.replay.graficos = paginaGraficos;
 window.replay.resumo = paginaSemana;
 Object.keys(PAG_PROG).forEach(function(id){ window.replay[id] = function(){ paginaProg(id); }; });
-window.replay["ind-pre"] = indPre;
-window.replay["ind-cat1"] = indCat1;
-window.replay["ind-adub"] = indAdub;
 
 numera();
 pintaCapa();
@@ -2111,9 +2079,8 @@ window.addEventListener("resize",function(){ clearTimeout(tmr); tmr=setTimeout(r
 "use strict";
 var MODULOS = [
   {id:"semana", nome:"Semana", pags:["resumo","graficos"]},
-  {id:"programas", nome:"Programas da safra", pags:["pg-pre","pg-bord","pg-cat1a","pg-cat1b"]},
-  {id:"adubacao", nome:"Adubação", pags:["pg-loc","pg-cocho1","pg-cocho2"]},
-  {id:"indicadores", nome:"Indicadores", pags:["ind-pre","ind-cat1","ind-adub"]}
+  {id:"programas", nome:"Programas da safra", pags:["pg-pre","pg-bord","pg-cat1"]},
+  {id:"adubacao", nome:"Adubação", pags:["pg-loc","pg-cocho"]}
 ];
 function modDe(id){
   for(var i=0;i<MODULOS.length;i++) if(MODULOS[i].pags.indexOf(id)>=0) return MODULOS[i];
@@ -2270,7 +2237,7 @@ var semFundo = /[?&]fundo=off(&|$)/.test(location.search);
 
 /* cores de destaque por módulo: as da paleta do grupo, em versão clara para fundo escuro */
 var ACENTOS = { ouro:[201,162,39], azul:[93,173,226], agua:[88,196,186], creme:[240,223,168] };
-var POR_MODULO = { "Semana":"ouro", "Programas da safra":"agua", "Adubação":"azul", "Indicadores":"creme" };
+var POR_MODULO = { "Semana":"ouro", "Programas da safra":"agua", "Adubação":"azul" };
 var cur = ACENTOS.ouro.slice(), tgt = ACENTOS.ouro;
 
 /* ---------- camadas ---------- */
