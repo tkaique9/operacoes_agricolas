@@ -1159,10 +1159,14 @@ function voltaImpressao() {
 }
 addEventListener("beforeprint", () => { IMP.viu = true; if (!IMP.pedido) preparaImpressao("tudo"); });
 addEventListener("afterprint", voltaImpressao);
-// no claude.ai a página roda dentro de um quadro que bloqueia a janela de impressão: os botões abrem a cópia publicada
-// no GitHub Pages numa aba nova, com as escolhas feitas aqui, e ela já abre a impressão (e fecha depois)
+// no claude.ai a página roda protegida (num quadro ou em tela inteira) e a janela de impressão é bloqueada: fora do
+// arquivo local e do GitHub Pages, os botões abrem a cópia do GitHub Pages numa aba nova, com as escolhas feitas aqui,
+// e ela já abre a impressão (e fecha depois)
 const PAGINA_IMPRESSAO = "https://tkaique9.github.io/operacoes_agricolas/escalas_out2026/Escalas_por_Departamento_OUT2026.html";
-const EMBUTIDA = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
+const IMPRIME_AQUI = (() => {
+  try { if (window.self !== window.top) return false; } catch (e) { return false; }
+  return location.protocol === "file:" || /(^|\.)github\.io$/.test(location.hostname) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+})();
 const b64 = t => btoa(String.fromCharCode(...new TextEncoder().encode(t))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 const de64 = t => new TextDecoder().decode(Uint8Array.from(atob(t.replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0)));
 function estado() {
@@ -1187,7 +1191,7 @@ function aviso(txt, url) {
 $("#avisoFechar").addEventListener("click", () => { $("#aviso").hidden = true; });
 $("#avisoLink").addEventListener("click", () => { $("#aviso").hidden = true; });
 function imprime(qual) {
-  if (EMBUTIDA) {
+  if (!IMPRIME_AQUI) {
     const url = `${PAGINA_IMPRESSAO}#imprimir=${qual}&p=${encodeURIComponent(SL[atual].id)}&s=${b64(JSON.stringify(estado()))}`;
     let w = null;
     try { w = window.open(url, "_blank"); } catch (e) {}
