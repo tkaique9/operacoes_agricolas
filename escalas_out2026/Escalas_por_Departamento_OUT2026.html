@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Escalas por departamento</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&display=swap">
+<style>
+/* Padrão das apresentações da diretoria (Indicadores Grupo Japungu, tema da apresentação comercial):
+   fundo azul-noite com campo de partículas, cromo translúcido com fio dourado, Archivo nos títulos e números,
+   Source Serif 4 nos textos, IBM Plex Mono nos rótulos; conteúdo em cartões brancos com filete dourado.
+   Uma tela por tópico, sem rolagem do documento; navegação por botões, bolinhas e setas.
+   Visual único (o da TV da diretoria), sem variação clara/escura. */
+:root {
+  color-scheme: dark;
+  --void: #0A1330; --navy: #12224A; --navy2: #1E3566; --gold: #C9A227;
+  --red: #C0392B; --green: #2E7D46; --amber: #A6620A;
+  --ink: #2B2B2B; --mut: #5A6072; --line: #D6DAE2; --bgsoft: #F4F6FA; --white: #FFFFFF;
+  --ok: #E2F1E6; --med: #FBEEDA; --bad: #FAE1DD; --tot: #FFF3D0; --sel: #FDF2D3; --na: #EEF0F4; --na-ink: #9AA3B5;
+  --t1: #F4F6FA; --t2: #AEBBD8; --t3: #7D8BB0; --linha: rgba(174,187,216,.20); --linha2: rgba(174,187,216,.34);
+  --gold-dim: rgba(201,162,39,.14); --gold-line: rgba(201,162,39,.50); --gold-glow: rgba(201,162,39,.26);
+  --f-display: "Archivo", "Segoe UI", -apple-system, Helvetica, Arial, sans-serif;
+  --f-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --ease: cubic-bezier(.22,1,.36,1);
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+html { background: var(--void); }
+body { margin: 0; display: flex; flex-direction: column; overflow: hidden; color: var(--t1); font-family: var(--f-display);
+  background: radial-gradient(1300px 780px at 12% -14%, #1C3672 0%, rgba(28,54,114,0) 62%),
+              radial-gradient(1000px 640px at 96% 112%, rgba(46,134,193,.16), rgba(46,134,193,0) 62%),
+              linear-gradient(180deg, #0D1A3F 0%, #0A1330 52%, #070E26 100%); }
+#campo, #vig { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+#campo { width: 100%; height: 100%; display: block; }
+#vig { background: radial-gradient(125% 95% at 50% 42%, transparent 34%, rgba(4,8,22,.60) 100%), radial-gradient(70% 55% at 50% 40%, var(--gold-dim), transparent 72%); }
+#barra { position: fixed; left: 0; bottom: 0; height: 2px; width: 0; z-index: 60; background: var(--gold); transition: width .52s var(--ease); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+td, th, input, .num { font-variant-numeric: tabular-nums; }
+
+/* cromo */
+header.top { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; gap: 6px 16px; flex-wrap: wrap;
+  padding: 11px max(30px, env(safe-area-inset-right, 0px)) 11px max(30px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(180deg, rgba(6,11,30,.66), rgba(6,11,30,.12)); border-bottom: 1px solid var(--linha); }
+header.top::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 84px; height: 2px; background: var(--gold); }
+header.top .brand { font: 600 11px var(--f-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--t2); }
+header.top .meta { font: 500 11px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--t3); }
+nav.toc { position: relative; z-index: 3; display: flex; align-items: center; gap: 4px 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none;
+  padding: 8px max(30px, env(safe-area-inset-right, 0px)) 8px max(30px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--linha); }
+nav.toc::-webkit-scrollbar { display: none; }
+.mod { font: 600 10px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--t1); padding: 4px 9px; border: 1px solid var(--gold); background: var(--gold-dim); border-radius: 2px; margin-right: 6px; }
+.mod.off { color: var(--t3); border-color: var(--linha); background: transparent; }
+.sep { flex: 0 0 1px; align-self: stretch; background: var(--linha); margin: 0 14px; }
+nav.toc a { font: 500 10px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--t3); text-decoration: none; margin-right: 14px; padding-bottom: 3px; border-bottom: 2px solid transparent; transition: color .25s, border-color .25s; }
+nav.toc a b { color: var(--gold); font-weight: 600; margin-right: 4px; }
+nav.toc a:hover { color: var(--t1); }
+nav.toc a.on { color: var(--t1); border-bottom-color: var(--gold); font-weight: 600; }
+.na-capa header.top, .na-capa nav.toc { opacity: 0; visibility: hidden; }
+header.top, nav.toc { transition: opacity .5s ease .2s, visibility 0s linear .2s; }
+
+/* páginas */
+.deck { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0; }
+.slide { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 12px; opacity: 0; visibility: hidden; overflow-y: auto;
+  padding: 18px max(30px, env(safe-area-inset-right, 0px)) 16px max(30px, env(safe-area-inset-left, 0px)); transition: opacity .62s ease, visibility .62s; }
+.slide.active { opacity: 1; visibility: visible; }
+.s-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; flex: 0 0 auto; }
+.s-eyebrow { display: flex; align-items: center; gap: 12px; font: 600 11.5px var(--f-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+.s-eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--gold); }
+.s-title { font: 700 clamp(22px, 2.4vw, 32px) var(--f-display); letter-spacing: -.018em; line-height: 1.08; margin: 4px 0 0; color: var(--t1); text-wrap: balance; }
+.s-sub { font: 400 14px var(--f-serif); color: var(--t2); margin: 5px 0 0; max-width: 900px; line-height: 1.5; }
+.chips { display: flex; gap: 9px; flex-wrap: wrap; }
+.chip { position: relative; overflow: hidden; border-radius: 3px; border: 1px solid var(--linha2); background: rgba(255,255,255,.035); padding: 8px 14px; min-width: 128px; }
+.chip::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--gold); }
+.chip .v { font: 700 21px var(--f-display); letter-spacing: -.02em; color: var(--gold); line-height: 1.1; }
+.chip .v.pos { color: #F0897A; } .chip .v.zero { color: #8FD3A6; }
+.chip .k { font: 500 10px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--t2); margin-top: 3px; }
+.card { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; background: var(--white); color: var(--ink); border-radius: 4px; border: 1px solid rgba(255,255,255,.16);
+  box-shadow: inset 0 2px 0 var(--gold), 0 28px 70px -12px rgba(0,0,0,.58), 0 0 90px -34px var(--gold-glow); padding: 10px 14px 10px; }
+.card.fix { flex: 0 0 auto; }
+.rolo { flex: 1 1 auto; min-height: 0; overflow: auto; }
+.card h3 { margin: 2px 0 8px; font: 600 11px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--navy); }
+.cols { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+.cols > .card { min-height: 0; }
+
+/* controles */
+.barra { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; padding: 2px 0 9px; margin-bottom: 6px; border-bottom: 1px solid var(--line); }
+.barra label { display: inline-flex; gap: 7px; align-items: center; font: 600 12.5px var(--f-display); color: var(--navy); cursor: pointer; }
+.barra input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--navy); }
+.barra .esp { flex: 1; }
+.btn { font: 600 10.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--bgsoft); border: 1px solid var(--line); border-radius: 2px; padding: 6px 11px; cursor: pointer; transition: border-color .2s, background-color .2s; }
+.btn:hover { border-color: var(--gold); background: var(--sel); }
+.btn.pri { background: var(--gold); border-color: var(--gold); }
+
+/* tabelas */
+table.tb { width: 100%; border-collapse: collapse; font: 600 13px var(--f-display); }
+table.tb th { position: sticky; top: 0; z-index: 2; background: var(--navy); color: var(--white); font-weight: 600; font-size: 11.5px; padding: 7px 7px; text-align: center; line-height: 1.22; vertical-align: bottom; }
+table.tb th u { display: block; text-decoration: none; font: 400 10px var(--f-mono); letter-spacing: .04em; opacity: .75; margin-top: 2px; }
+table.tb th.l, table.tb td.l { text-align: left; }
+table.tb td { padding: 3px 7px; border-bottom: 1px solid var(--line); text-align: center; color: var(--ink); vertical-align: middle; height: 34px; }
+#tabQ td { height: 27px; padding: 2px 7px; }
+#tabQ td.dep u, #tab td.dep u { display: inline; margin-left: 8px; }
+#tab td { height: 36px; padding: 2px 6px; }
+#tab small.s { display: inline; margin-left: 4px; }
+button.cel { line-height: 1.02; }
+@media (max-height: 820px) { .s-sub { display: none; } }
+#tabQ tr.sec td { height: 22px; }
+table.tb td.dep { min-width: 190px; color: var(--navy); font-weight: 700; }
+table.tb td.dep u { display: block; text-decoration: none; color: var(--mut); font: 400 12px var(--f-serif); font-style: italic; margin-top: 1px; }
+table.tb td.dep u b { font: 600 10px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; font-style: normal; color: #8A6D14; }
+table.tb td.mut { color: var(--mut); font-weight: 500; white-space: nowrap; }
+table.tb td small.s { display: block; font: 500 10.5px var(--f-mono); color: var(--mut); }
+table.tb tr.clic { cursor: pointer; }
+table.tb tr.clic:hover td { background: #EEF1F7; }
+table.tb tr.clic:hover td.dep { color: #8A6D14; }
+table.tb tr.sel td { background: var(--sel); }
+table.tb tr.tot td { position: sticky; bottom: 0; background: var(--tot); font-weight: 700; color: var(--navy); border-top: 2px solid var(--navy); }
+table.tb tr.sec td { background: #F1F3F8; color: var(--navy); font: 600 10.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; height: 26px; border-top: 2px solid var(--line); }
+.pt { display: inline-flex; gap: 3px; }
+.pt input { width: 38px; padding: 3px 2px; text-align: center; font: 700 14px var(--f-display); color: var(--navy); border: 1px solid var(--line); border-radius: 3px; background: var(--white); color-scheme: light; }
+.pt input:disabled { background: var(--bgsoft); color: var(--na-ink); }
+button.cel { width: 100%; min-width: 72px; border: 2px solid transparent; border-radius: 3px; padding: 1px 2px; cursor: pointer; display: grid; line-height: 1.1; background: var(--bgsoft); color: var(--ink); font-family: var(--f-display); }
+button.cel b { font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+button.cel b i { font-style: normal; color: var(--gold); font-size: 13px; margin-right: 3px; }
+button.cel small { font: 500 10px var(--f-mono); color: var(--mut); }
+button.cel.ok { background: var(--ok); } button.cel.ok b { color: var(--green); }
+button.cel.med { background: var(--med); } button.cel.med b { color: var(--amber); }
+button.cel.bad { background: var(--bad); } button.cel.bad b { color: var(--red); }
+button.cel.ns { background: var(--na); } button.cel.ns b { color: var(--na-ink); }
+button.cel.esc { border-color: var(--navy); box-shadow: 0 0 0 1px var(--navy) inset; }
+.tag { font: 600 9px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--navy); }
+.tag::before { content: "★ "; color: var(--gold); }
+td.na { color: var(--na-ink); font: 400 12px var(--f-serif); font-style: italic; }
+.q { display: inline-flex; align-items: baseline; gap: 5px; line-height: 1.1; }
+.q b { font-size: 16px; letter-spacing: -.02em; }
+.q small { font: 500 10.5px var(--f-mono); }
+.q.up small { color: var(--red); } .q.eq small { color: var(--mut); }
+td.qesc { background: var(--sel); }
+.pill { display: inline-block; font: 600 9.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; white-space: nowrap; margin-top: 3px; }
+.pill.Baixo { background: var(--ok); color: var(--green); } .pill.Médio { background: var(--med); color: var(--amber); }
+.pill.ns { background: var(--bad); color: var(--red); }
+th .pill.Baixo { background: rgba(46,125,70,.35); color: #CFEBD8; } th .pill.Médio { background: rgba(201,162,39,.30); color: #F3E2A6; } th .pill.ns { background: rgba(192,57,43,.38); color: #F7C9C2; }
+.leg { display: flex; flex-wrap: wrap; gap: 4px 16px; font: 400 12.5px var(--f-serif); color: var(--mut); margin-top: 7px; }
+.leg i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; vertical-align: -1px; margin-right: 5px; }
+
+/* capa */
+.capa { justify-content: space-between; gap: 14px; }
+.capa-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+.capa-topo img { display: block; height: clamp(44px, 8vh, 84px); width: auto; max-width: 46vw; }
+.capa-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; text-align: right; }
+.capa-meta .k { font: 600 11.5px var(--f-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+.capa-meta .v { font: 500 11px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--t2); }
+.capa-meio { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 36px; align-items: center; }
+.selo { display: inline-flex; align-items: center; gap: 12px; font: 600 12px var(--f-mono); letter-spacing: .24em; text-transform: uppercase; color: var(--gold); }
+.selo::before { content: ""; width: 38px; height: 3px; background: var(--gold); border-radius: 2px; }
+.capa h1 { font: 800 clamp(40px, 6vw, 92px) var(--f-display); letter-spacing: -.035em; line-height: .98; margin: 18px 0 14px; color: var(--t1); }
+.capa h1 em { display: block; font: italic 400 .4em var(--f-serif); letter-spacing: 0; color: var(--t2); margin-top: 12px; }
+.capa .sub { font: 400 16px var(--f-serif); color: var(--t2); max-width: 46ch; line-height: 1.55; margin: 0; }
+.graf { min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+.graf-t { font: 600 11.5px var(--f-mono); letter-spacing: .2em; text-transform: uppercase; color: var(--t1); }
+.graf-u { font: 400 13px var(--f-serif); font-style: italic; color: var(--t2); margin-left: 10px; letter-spacing: 0; text-transform: none; }
+.graf svg { width: 100%; height: auto; max-height: 52vh; display: block; margin-top: 10px; }
+.capa-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--linha2); border-radius: 4px; background: rgba(255,255,255,.025); }
+.capa-kpi { padding: clamp(10px, 2vh, 18px) clamp(12px, 1.8vw, 26px); min-width: 0; }
+.capa-kpi + .capa-kpi { border-left: 1px solid rgba(255,255,255,.10); }
+.capa-kpi .n { font: 700 clamp(26px, min(3.4vw, 6vh), 48px) var(--f-display); letter-spacing: -.03em; color: var(--gold); line-height: 1.04; }
+.capa-kpi .n small { font-size: .42em; font-weight: 600; margin-left: .3em; opacity: .85; letter-spacing: 0; }
+.capa-kpi .n.pos { color: #F0897A; }
+.capa-kpi .l { margin-top: 6px; font: 500 11px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--t1); line-height: 1.35; }
+.capa-kpi .l em { display: block; font: 400 13px var(--f-serif); text-transform: none; letter-spacing: 0; color: var(--t2); }
+
+/* capa: índice no lugar do gráfico */
+.capa-indice { align-self: center; border-left: 1px solid var(--linha2); padding-left: 32px; }
+.ci-t { font: 600 11.5px var(--f-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+.capa-indice ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.capa-indice button { all: unset; cursor: pointer; display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 2px 10px; padding: 9px 10px; border-radius: 3px; width: 100%; box-sizing: border-box; transition: background-color .25s; }
+.capa-indice button:hover, .capa-indice button:focus-visible { background: rgba(255,255,255,.05); }
+.capa-indice .n { grid-row: span 2; font: 600 13px var(--f-mono); color: var(--gold); padding-top: 3px; }
+.capa-indice .t { font: 700 19px var(--f-display); letter-spacing: -.01em; color: var(--t1); }
+.capa-indice .d { font: italic 400 13.5px var(--f-serif); color: var(--t2); }
+
+/* painel */
+.painel { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px; }
+.painel > .card { min-height: 0; }
+.card h3 .h3u { font: italic 400 12.5px var(--f-serif); letter-spacing: 0; text-transform: none; color: var(--mut); margin-left: 8px; }
+.painel svg { width: 100%; height: 100%; display: block; }
+table.lista { width: 100%; border-collapse: collapse; font: 600 13px var(--f-display); }
+table.lista td { padding: 5px 6px; border-bottom: 1px solid var(--line); color: var(--ink); }
+table.lista td.n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+table.lista tr.g td { background: var(--bgsoft); color: var(--navy); font: 700 13.5px var(--f-display); border-top: 2px solid var(--line); padding: 7px 6px; }
+table.lista tr.g td i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 8px; vertical-align: -1px; }
+table.lista tr.g small { font: 500 10.5px var(--f-mono); color: var(--mut); margin-left: 6px; }
+table.lista tr.clic { cursor: pointer; } table.lista tr.clic:hover td { background: #EEF1F7; }
+table.lista td.dn { color: var(--navy); font-weight: 600; padding-left: 26px; }
+table.lista td.dn u { text-decoration: none; font: 600 9.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: #8A6D14; margin-left: 6px; }
+table.lista .up { color: var(--red); font-weight: 700; } table.lista .eq { color: var(--mut); font-weight: 500; }
+
+/* quadro completo: colunas com linhas, números maiores */
+#tabQ { font-size: 14px; }
+#tabQ th, #tabQ td { border-right: 1px solid var(--line); }
+#tabQ th:last-child, #tabQ td:last-child { border-right: 0; }
+#tabQ thead th { border-right-color: rgba(255,255,255,.18); }
+#tabQ thead tr.grp th { background: #0E1A3D; color: var(--gold); font: 600 10.5px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,.14); }
+#tabQ thead tr + tr th { top: 27px; }
+#tabQ td { height: 31px; padding: 2px 9px; vertical-align: middle; }
+#tabQ tbody tr:nth-child(even):not(.tot):not(.sec) td { background: #FAFBFD; }
+#tabQ tbody tr.clic:hover td { background: #EEF1F7; }
+#tabQ td.dep { font-size: 14px; }
+#tabQ td.dep u { display: inline; margin-left: 8px; }
+#tabQ td.hoje { font: 700 17px var(--f-display); color: var(--navy); background: #F7F8FB; }
+#tabQ td.comp { font: 500 11.5px var(--f-mono); color: var(--mut); text-align: left; white-space: nowrap; vertical-align: middle; line-height: 1.2; }
+#tabQ td.qv { white-space: nowrap; }
+#tabQ td.qv b { font: 700 17px var(--f-display); letter-spacing: -.02em; color: var(--ink); }
+#tabQ td.qv .dl { display: inline-block; min-width: 30px; margin-left: 7px; font: 600 11px var(--f-mono); padding: 1px 5px; border-radius: 2px; text-align: center; }
+#tabQ td.qv .dl.up { background: var(--bad); color: var(--red); }
+#tabQ td.qv .dl.eq { color: var(--na-ink); }
+#tabQ td.qv.qsel { box-shadow: inset 0 -3px 0 var(--gold); background: var(--sel) !important; }
+#tabQ td.ec { white-space: nowrap; }
+#tabQ td.ec span { display: inline-block; font: 600 10.5px var(--f-mono); letter-spacing: .04em; padding: 3px 7px; border-radius: 2px; color: #fff; }
+#tabQ td.fq { background: var(--tot); }
+#tabQ td.fq b { font: 800 18px var(--f-display); color: var(--navy); }
+#tabQ td.nm { color: var(--mut); font: italic 400 13px var(--f-serif); }
+#tabQ tr.tot td { border-right-color: rgba(18,34,74,.18); }
+#tabQ tr.tot td b { font-size: 19px; }
+
+/* gráficos e escalas */
+.bars text { font-family: var(--f-display); }
+.escalas { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.esc { background: var(--white); color: var(--ink); border-radius: 4px; padding: 12px 12px 10px; min-width: 0; display: flex; flex-direction: column; gap: 8px;
+  box-shadow: inset 0 2px 0 var(--gold), 0 24px 60px -14px rgba(0,0,0,.55); }
+.esc.nserve { box-shadow: inset 0 2px 0 var(--red), 0 24px 60px -14px rgba(0,0,0,.55); }
+.esc h4 { margin: 0; font: 700 16px var(--f-display); color: var(--navy); letter-spacing: -.01em; }
+.esc .hr { font: 400 12.5px var(--f-serif); color: var(--mut); line-height: 1.4; }
+.esc dl { margin: 0; display: grid; grid-template-columns: auto auto; gap: 3px 8px; font-size: 12.5px; }
+.esc dt { font: 500 10px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--mut); align-self: center; }
+.esc dd { margin: 0; font-weight: 700; color: var(--navy); text-align: right; }
+.esc .nt { font: 400 12px var(--f-serif); color: var(--ink); line-height: 1.42; margin-top: auto; }
+.esc .big { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.esc .big div { background: var(--bgsoft); border-top: 2px solid var(--navy); padding: 7px 8px; }
+.esc .big b { display: block; font: 700 28px var(--f-display); letter-spacing: -.03em; color: var(--navy); line-height: 1; }
+.esc .big b.pos { color: var(--red); }
+.esc .big span { display: block; font: 500 9.5px var(--f-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--mut); margin-top: 5px; line-height: 1.3; }
+.mini td, .mini th { width: 15px; height: 16px; }
+.mini { border-collapse: separate; border-spacing: 2px; }
+.mini td, .mini th { width: 13px; height: 14px; padding: 0; border-radius: 2px; font: 600 8px var(--f-mono); text-align: center; }
+.mini th { background: var(--navy); color: #fff; }
+.mini th.d { background: var(--red); }
+.mini td { background: #DFE4EC; }
+.mini td.F { background: var(--green); } .mini td.F.d { background: var(--red); }
+.mini td.lab { width: auto; background: transparent; font: 600 9px var(--f-mono); color: var(--navy); padding-right: 4px; text-align: left; white-space: nowrap; }
+ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px var(--f-serif); color: var(--ink); line-height: 1.45; }
+
+/* painel de detalhe */
+.mf { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 28px; }
+.mf[hidden] { display: none !important; }
+.mf-fundo { position: absolute; inset: 0; background: rgba(6,12,28,.72); backdrop-filter: blur(2px); }
+.mf-caixa { position: relative; background: var(--white); color: var(--ink); border-radius: 4px; box-shadow: 0 24px 70px rgba(0,0,0,.5); width: min(1180px, 95vw); max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
+.mf-topo { display: flex; align-items: flex-start; gap: 16px; padding: 14px 20px 12px; background: var(--navy); color: #fff; border-bottom: 3px solid var(--gold); }
+.mf-k { font: 600 10.5px var(--f-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+.mf-titulo { font: 700 20px var(--f-display); letter-spacing: -.01em; margin-top: 3px; }
+.mf-sub { font: 400 13px var(--f-serif); color: var(--t2); margin-top: 4px; }
+.mf-fechar { margin-left: auto; font: 600 10.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--gold); border: 0; border-radius: 2px; padding: 7px 12px; cursor: pointer; }
+.mf-corpo { overflow: auto; padding: 14px 20px 18px; display: grid; gap: 14px; }
+.mf-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; }
+.comp { display: grid; gap: 6px; }
+.comp div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--bgsoft); border-left: 3px solid var(--navy); padding: 7px 10px; color: var(--navy); font-weight: 600; font-size: 13.5px; }
+.comp div.fim { border-left-color: var(--gold); background: var(--tot); }
+.comp b { font-size: 17px; }
+.nota { font: 400 12.5px var(--f-serif); color: var(--mut); margin: 8px 0 0; line-height: 1.45; }
+.grade { border-collapse: separate; border-spacing: 2px; font: 600 10px var(--f-mono); }
+.grade th { background: var(--navy); color: #fff; padding: 2px 0; width: 17px; border-radius: 2px; }
+.grade th.dom { background: var(--red); }
+.grade th.semana { background: var(--bgsoft); color: var(--navy); font-weight: 600; }
+.grade td { padding: 0; width: 17px; height: 19px; border-radius: 2px; background: #DFE4EC; text-align: center; }
+.grade td.F { background: var(--green); color: #fff; }
+.grade td.F.d { background: var(--red); }
+.grade td.lab { width: auto; padding: 0 8px 0 2px; text-align: left; background: transparent; color: var(--navy); white-space: nowrap; }
+.grade .wk { box-shadow: -3px 0 0 var(--white); }
+
+/* barra inferior */
+.deck-nav { position: relative; z-index: 3; flex: 0 0 auto; display: flex; align-items: center; gap: 16px;
+  padding: 8px max(26px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(26px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(0deg, rgba(6,11,30,.72), rgba(6,11,30,.12)); border-top: 1px solid var(--linha); }
+.deck-nav > button { font: 500 11px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--t2); background: transparent; border: 1px solid var(--linha2); border-radius: 2px; padding: 6px 14px; cursor: pointer; transition: color .25s, border-color .25s, background-color .25s; }
+.deck-nav > button:hover:not(:disabled) { color: var(--t1); border-color: var(--gold); background: var(--gold-dim); }
+.deck-nav > button:disabled { opacity: .28; cursor: default; }
+.dots { display: flex; gap: 10px; margin: 0 auto; }
+.dots button { width: 7px; height: 7px; padding: 0; border-radius: 50%; border: 0; background: rgba(174,187,216,.30); cursor: pointer; transition: background-color .25s, transform .25s, box-shadow .25s; }
+.dots button.on { background: var(--gold); transform: scale(1.55); box-shadow: 0 0 10px var(--gold-line); }
+.hint { font: 400 10.5px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--t3); }
+.count { font: 500 11px var(--f-mono); letter-spacing: .14em; color: var(--t3); }
+
+/* entrada em sequência */
+@keyframes sobe { from { opacity: 0; transform: translateY(22px); } }
+@keyframes varre { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.slide.active .s-eyebrow, .slide.active .selo { animation: sobe .7s var(--ease) .06s backwards; }
+.slide.active .s-title, .slide.active h1 { animation: sobe .7s var(--ease) .14s backwards; }
+.slide.active .s-sub, .slide.active .sub { animation: sobe .7s var(--ease) .22s backwards; }
+.slide.active .chip, .slide.active .capa-kpis { animation: sobe .65s var(--ease) .3s backwards; }
+.slide.active .card, .slide.active .esc { animation: sobe .7s var(--ease) .32s backwards; }
+.slide.active .graf svg { animation: varre 1.3s var(--ease) .35s backwards; }
+@media (prefers-reduced-motion: reduce) { .slide, .slide * { animation: none !important; transition: none !important; } }
+
+/* telas estreitas e baixas */
+@media (max-width: 1180px) { .escalas { grid-template-columns: repeat(3, minmax(0, 1fr)); } .painel { grid-template-columns: minmax(0, 1fr); } .painel > .card { flex: 0 0 auto; } }
+@media (max-width: 900px) {
+  .capa-meio, .cols, .mf-cols { grid-template-columns: minmax(0, 1fr); }
+  .capa-indice { border-left: 0; padding-left: 0; }
+  .capa-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .capa-kpi:nth-child(3) { border-left: 0; } .capa-kpi:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,.10); }
+  .card, .cols, .escalas { flex: 0 0 auto; } .rolo { max-height: 70vh; }
+  .escalas { grid-template-columns: minmax(0, 1fr); }
+  .hint { display: none; } .capa-meta { display: none; }
+}
+@media (max-width: 560px) { .deck-nav > button { padding: 6px 9px; } .dots { gap: 8px; } }
+@media print { #campo, #vig, #barra, .deck-nav, nav.toc, .barra, .mf { display: none !important; } body, html { height: auto; overflow: visible; background: #fff; }
+  .deck { position: static; } .slide { position: relative; opacity: 1; visibility: visible; break-after: page; color: var(--navy); } .s-title, .capa h1 { color: var(--navy); } .slide.capa { display: none; } }
+</style>
+</head><body>
+
+
+<canvas id="campo" aria-hidden="true"></canvas><div id="vig" aria-hidden="true"></div><div id="barra" aria-hidden="true"></div>
+<header class="top"><div class="brand">CRV Industrial &nbsp;·&nbsp; Escalas de trabalho · EC 141/2026</div><div class="meta" id="meta"></div></header>
+<nav class="toc" aria-label="Páginas"><span class="mod">Oficina</span><span class="mod off">Próximas áreas</span><span class="sep"></span><span id="toc"></span></nav>
+
+<main class="deck" id="deck">
+  <article class="slide capa" id="capa" data-title="Capa">
+    <div class="capa-topo">
+      <img alt="CRV Industrial — Açúcar, Etanol e Energia" width="640" height="191" src="data:image/webp;base64,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">
+      <div class="capa-meta"><span class="k">Fim da escala 6x1 · EC 141/2026</span><span class="v">Simulação para a diretoria</span><span class="v" id="capaBase"></span></div>
+    </div>
+    <div class="capa-meio">
+      <div>
+        <div class="selo">Oficina · simulação por departamento</div>
+        <h1>Escalas da Oficina<em>Quadro de hoje e quadro em cada escala</em></h1>
+        <p class="sub" id="capaSub"></p>
+      </div>
+      <nav class="capa-indice" aria-label="Nesta apresentação"><div class="ci-t">Nesta apresentação</div><ol id="capaIndice"></ol></nav>
+    </div>
+    <div class="capa-kpis" id="capaKpis"></div>
+  </article>
+
+  <article class="slide" id="painel" data-title="Painel" data-desc="O quadro da oficina hoje, em cada escala e na escolha por departamento">
+    <div class="s-head"><div><div class="s-eyebrow">01 · Painel</div><h2 class="s-title">Quadro da oficina: hoje e em cada escala</h2>
+      <p class="s-sub">Cada barra aplica uma escala a todos os departamentos com turno. A última soma a escala escolhida em cada um.</p></div>
+      <div class="chips" id="pChips"></div></div>
+    <div class="painel">
+      <div class="card"><h3>Quadro em cada escala<span class="h3u">pessoas · diferença sobre hoje</span></h3><div class="rolo" style="overflow:hidden"><svg id="gPainel" class="bars" role="img" aria-label="Quadro da oficina hoje e em cada escala"></svg></div></div>
+      <div class="card"><h3>Escala escolhida em cada departamento<span class="h3u">hoje → com a escala</span></h3><div class="rolo"><table class="lista" id="pLista"></table></div></div>
+    </div>
+  </article>
+
+  <article class="slide" id="quadro" data-title="Quadro completo" data-desc="Departamento por departamento: pessoas hoje e em cada escala">
+    <div class="s-head"><div><div class="s-eyebrow">02 · Quadro</div><h2 class="s-title">Quadro completo: hoje e em cada escala</h2>
+      <p class="s-sub">Pessoas de cada departamento hoje e quantas ficaria em cada escala. Quem sobra continua no departamento, de dia. Clique no departamento para ver o detalhe.</p></div>
+      <div class="chips" id="qChips"></div></div>
+    <div class="card"><div class="rolo"><table class="tb" id="tabQ"></table></div></div>
+  </article>
+
+  <article class="slide" id="matriz" data-title="Matriz de validação" data-desc="Contratar ou sobra em cada escala; escolha e pessoas por turno">
+    <div class="s-head"><div><div class="s-eyebrow">03 · Validação</div><h2 class="s-title">Cada departamento em cada escala</h2>
+      <p class="s-sub">Pessoas a contratar (+) ou que sobram para o dia (−). Clique na célula para escolher a escala; ajuste as pessoas por turno se a necessidade for outra.</p></div>
+      <div class="chips" id="mChips"></div></div>
+    <div class="card">
+      <div class="barra">
+        <label for="vol"><input type="checkbox" id="vol">Folguista volante entre turnos</label>
+        <label for="adm"><input type="checkbox" id="adm">Usar quem está no horário ADM do departamento</label>
+        <span class="esp"></span>
+        <button type="button" class="btn pri" id="bSug">Sugerida em todos</button>
+        <button type="button" class="btn" id="b5x2">5x2 em todos</button>
+        <button type="button" class="btn" id="b12">12x36 em todos</button>
+        <button type="button" class="btn" id="bHoje">Voltar ao inicial</button>
+      </div>
+      <div class="rolo"><table class="tb" id="tab"></table></div>
+      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><i style="background:var(--na)"></i>não serve na oficina</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
+    </div>
+  </article>
+
+  <article class="slide" id="grafico" data-title="Contratação" data-desc="Quanto cada departamento contrata na escala escolhida">
+    <div class="s-head"><div><div class="s-eyebrow">04 · Contratação</div><h2 class="s-title">Contratação por departamento</h2>
+      <p class="s-sub">Escala escolhida em cada departamento, comparada com a 5x2 em todos.</p></div>
+      <div class="chips" id="gChips"></div></div>
+    <div class="card"><div class="rolo"><svg id="gDep" class="bars" role="img" aria-label="Contratação por departamento"></svg></div></div>
+  </article>
+
+  <article class="slide" id="escalas" data-title="As escalas" data-desc="Horas, folgas, domingos e risco de cada escala">
+    <div class="s-head"><div><div class="s-eyebrow">05 · Referência</div><h2 class="s-title">As escalas na oficina</h2>
+      <p class="s-sub">Duas primeiras semanas de cada escala. F verde = folga; vermelho = folga no domingo.</p></div></div>
+    <div class="escalas" id="cardsEsc"></div>
+  </article>
+
+  <article class="slide" id="premissas" data-title="Sem turno e premissas" data-desc="Quem vai para segunda a sexta e como a conta foi feita">
+    <div class="s-head"><div><div class="s-eyebrow">06 · Premissas</div><h2 class="s-title">Sem turno e premissas da conta</h2></div></div>
+    <div class="cols">
+      <div class="card"><h3>Vão para segunda a sexta</h3><div class="rolo"><table class="tb" id="tabDia"></table></div></div>
+      <div class="card"><h3>Premissas e pontos de atenção</h3><div class="rolo"><ul class="prem" id="prem"></ul></div></div>
+    </div>
+  </article>
+</main>
+
+<div class="mf" id="mf" hidden>
+  <div class="mf-fundo" id="mfFundo"></div>
+  <div class="mf-caixa" role="dialog" aria-modal="true" aria-labelledby="mfTit">
+    <div class="mf-topo"><div><div class="mf-k" id="mfK"></div><div class="mf-titulo" id="mfTit"></div><div class="mf-sub" id="mfSub"></div></div>
+      <button type="button" class="mf-fechar" id="mfFechar">Fechar</button></div>
+    <div class="mf-corpo">
+      <div class="mf-cols">
+        <div><div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3>Como fica a equipe</h3><div class="comp" id="mfComp"></div><p class="nota" id="mfNota"></p></div></div>
+        <div><div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3>Todas as escalas neste departamento</h3><div class="rolo"><table class="tb" id="mfTab"></table></div></div></div>
+      </div>
+      <div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3 id="mfGt"></h3><div class="rolo"><table class="grade" id="mfGrade"></table></div><p class="nota" id="mfGn"></p></div>
+    </div>
+  </div>
+</div>
+
+<div class="deck-nav">
+  <button type="button" id="prev">‹ Anterior</button>
+  <div class="dots" id="dots"></div>
+  <span class="hint">Trocar de página: botões, bolinhas ou ← →</span>
+  <button type="button" id="next">Próxima ›</button>
+  <span class="count" id="count">–</span>
+</div>
+
+<script>
+const D = {"area":"Oficina","base":"20/10/2026","escalas":[{"id":"5x2","nome":"5x2 rotativa · 3 turnos de 8 h","curto":"5x2 rotativa","turnos":3,"trab":5,"ciclo":7,"h_sem":39.166666666666664,"he_sem":0.0,"folgas_sem":2.0,"horario":"Mesmos horários de hoje: 07:00–15:20 · 15:00–23:20 · 23:00–07:20","risco":"Baixo","nota":"Mesmos 3 turnos de 8 h e mesmos horários. Na noite (23:00–07:20) a hora noturna reduzida faz as 7h20 contarem cerca de 8h23: terminar às 07:00 ou ter norma coletiva com hora de 60 min.","grade":[["T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F"],["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F"],["T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T"],["F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"],["F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T"]],"rotulos":["Turma A","Turma B","Turma C","Turma D","Turma E","Turma F","Turma G"],"dom":2,"sem":7,"seq":5},{"id":"4x2","nome":"4x2 · 3 turnos de 8 h","curto":"4x2 de 8 h","turnos":3,"trab":4,"ciclo":6,"h_sem":36.55555555555555,"he_sem":0.0,"folgas_sem":2.3333333333333335,"horario":"Mesmos horários de hoje: 07:00–15:20 · 15:00–23:20 · 23:00–07:20","risco":"Baixo","nota":"Mesmos 3 turnos de 8 h, 4 dias de trabalho e 2 de folga. Mais descanso, mais gente.","grade":[["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"]],"rotulos":["Turma A","Turma B","Turma C"],"dom":2,"sem":6,"seq":4},{"id":"12x36","nome":"12x36 · 2 turnos de 12 h","curto":"12x36","turnos":2,"trab":1,"ciclo":2,"h_sem":38.5,"he_sem":0.0,"folgas_sem":3.5,"horario":"07:00–19:00 e 19:00–07:00, 1 h de intervalo (11 h de trabalho)","risco":"Médio","nota":"Dia 07:00–19:00 e noite 19:00–07:00, 1 h de intervalo. CLT art. 59-A com norma coletiva; dispensa a licença do MTE em atividade insalubre. Na noite a hora reduzida continua valendo e gera pagamento a mais.","grade":[["T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F"],["F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T"],["T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F"],["F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T"]],"rotulos":["A · dia","B · dia","C · noite","D · noite"],"dom":2,"sem":4,"seq":1},{"id":"3x3","nome":"3x3 · 2 turnos de 12 h","curto":"3x3 de 12 h","turnos":2,"trab":3,"ciclo":6,"h_sem":38.5,"he_sem":0.0,"folgas_sem":3.5,"horario":"07:00–19:00 e 19:00–07:00, 1 h de intervalo (11 h de trabalho)","risco":"Médio","nota":"Mesmo quadro da 12x36, com 3 plantões seguidos e 3 dias de folga. Depende de compensação em norma coletiva e, em atividade insalubre, de licença do MTE ou cláusula coletiva.","grade":[["T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F"],["F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T"],["T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F"],["F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T"]],"rotulos":["A · dia","B · dia","C · noite","D · noite"],"dom":3,"sem":6,"seq":3},{"id":"4x2_12","nome":"4x2 · 12 h com 2 h de intervalo","curto":"4x2 de 12 h","turnos":2,"trab":4,"ciclo":6,"h_sem":46.666666666666664,"he_sem":9.333333333333334,"folgas_sem":2.3333333333333335,"horario":"07:00–19:00 (intervalo 12:00–14:00) e 19:00–07:00 (intervalo 00:00–02:00): 10 h de trabalho","risco":"Não serve","nota":"Não serve na oficina: todos são CLT urbano e, com a hora noturna reduzida, o plantão da noite passa de 10 h contadas (8 h + 2 h extras é o teto).","grade":[["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"],["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"]],"rotulos":["A · dia","B · dia","C · dia","D · noite","E · noite","F · noite"],"dom":2,"sem":6,"seq":4}],"deps":[{"dep":"102.001.011","nome":"Planejamento e Controle de Manutenção","sub":"Ferramentaria","regra":"azul","regra_txt":"os 4 em azul rodam 24 h","nota":"5x2 · AZUL SIMULAR PRECISA RODAR 24 HRS","n":14,"equipe":4,"adm":0,"adm_hoje":9,"hoje":{"Manhã":1,"Tarde":1,"Noite":2},"pres":{"Manhã":0.83,"Tarde":0.83,"Noite":1.67},"postos":{"Manhã":1,"Tarde":1,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":10},{"dep":"102.001.012","nome":"Laboratório de Óleo","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":2,"hoje_txt":"2 em 12x36 só de dia","equipe":2,"adm":0,"adm_hoje":0,"hoje":{"Manhã":0,"Tarde":0,"Noite":0},"pres":{"Manhã":0,"Tarde":0,"Noite":0},"postos":{"Manhã":1,"Tarde":1,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.002.002","nome":"Borracharia","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":11,"equipe":11,"adm":0,"adm_hoje":0,"hoje":{"Manhã":4,"Tarde":3,"Noite":3},"pres":{"Manhã":3.33,"Tarde":2.5,"Noite":2.5},"postos":{"Manhã":3,"Tarde":2,"Noite":2},"sugerida":"5x2","lideres":0,"afastados":0,"sem_origem":1,"resto_5x2":0},{"dep":"102.002.003","nome":"Elétrica Automotiva","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":15,"equipe":12,"adm":1,"adm_hoje":1,"hoje":{"Manhã":4,"Tarde":4,"Noite":3},"pres":{"Manhã":3.33,"Tarde":3.33,"Noite":2.5},"postos":{"Manhã":3,"Tarde":3,"Noite":2},"sugerida":"12x36","lideres":2,"afastados":0,"sem_origem":1,"resto_5x2":0},{"dep":"102.002.004","nome":"Caldeiraria / Soldagem","sub":null,"regra":"1turno","regra_txt":"1 por turno nas 24 h, o resto no horário ADM","nota":"RODAR APENAS 1 PESSOA POR TURNO 24 HRS - RESTO PODE SER 5 X2","n":17,"equipe":11,"adm":0,"adm_hoje":5,"hoje":{"Manhã":8,"Tarde":2,"Noite":1},"pres":{"Manhã":6.67,"Tarde":1.67,"Noite":0.83},"postos":{"Manhã":1,"Tarde":1,"Noite":1},"sugerida":"5x2","lideres":1,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.002.006","nome":"Lavagem de Veículos","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":12,"equipe":10,"adm":2,"adm_hoje":2,"hoje":{"Manhã":4,"Tarde":2,"Noite":2},"pres":{"Manhã":3.33,"Tarde":1.67,"Noite":1.67},"postos":{"Manhã":3,"Tarde":2,"Noite":2},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":2,"resto_5x2":0},{"dep":"102.002.007","nome":"Lubrificação Rampa","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":12,"equipe":10,"adm":2,"adm_hoje":2,"hoje":{"Manhã":7,"Tarde":2,"Noite":1},"pres":{"Manhã":5.95,"Tarde":1.67,"Noite":0.83},"postos":{"Manhã":6,"Tarde":2,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.002.009","nome":"Hidráulica","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":3,"equipe":3,"adm":0,"adm_hoje":0,"hoje":{"Manhã":2,"Tarde":1,"Noite":0},"pres":{"Manhã":1.67,"Tarde":0.83,"Noite":0},"postos":{"Manhã":2,"Tarde":1,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.003.001","nome":"Máquinas Pesadas","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":9,"equipe":7,"adm":1,"adm_hoje":1,"hoje":{"Manhã":4,"Tarde":1,"Noite":2},"pres":{"Manhã":3.36,"Tarde":0.83,"Noite":1.67},"postos":{"Manhã":3,"Tarde":1,"Noite":2},"sugerida":"12x36","lideres":1,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.004.001","nome":"Colhedoras de Cana","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":40,"equipe":32,"adm":3,"adm_hoje":3,"hoje":{"Manhã":13,"Tarde":10,"Noite":9},"pres":{"Manhã":10.86,"Tarde":8.36,"Noite":7.5},"postos":{"Manhã":11,"Tarde":8,"Noite":7},"sugerida":"12x36","lideres":5,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.005.001","nome":"Caminhões / Veículos","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":13,"equipe":11,"adm":2,"adm_hoje":2,"hoje":{"Manhã":4,"Tarde":3,"Noite":3},"pres":{"Manhã":3.33,"Tarde":2.5,"Noite":2.5},"postos":{"Manhã":3,"Tarde":2,"Noite":2},"sugerida":"5x2","lideres":0,"afastados":0,"sem_origem":1,"resto_5x2":0},{"dep":"102.005.003","nome":"Veículos Leves","sub":null,"regra":"2turnos","regra_txt":"Turno A e B (sem noite)","nota":"TURNO A E B","n":3,"equipe":3,"adm":0,"adm_hoje":0,"hoje":{"Manhã":1,"Tarde":1,"Noite":1},"pres":{"Manhã":0.83,"Tarde":0.83,"Noite":0.83},"postos":{"Manhã":1,"Tarde":1,"Noite":0},"sugerida":"5x2","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.006.001","nome":"Bombas / Irrigação","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":11,"equipe":10,"adm":0,"adm_hoje":0,"hoje":{"Manhã":7,"Tarde":2,"Noite":1},"pres":{"Manhã":5.83,"Tarde":1.67,"Noite":0.83},"postos":{"Manhã":6,"Tarde":2,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":1,"sem_origem":0,"resto_5x2":0},{"dep":"102.006.003","nome":"Reboques","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":15,"equipe":9,"adm":6,"adm_hoje":6,"hoje":{"Manhã":5,"Tarde":1,"Noite":2},"pres":{"Manhã":4.17,"Tarde":0.83,"Noite":1.67},"postos":{"Manhã":4,"Tarde":1,"Noite":2},"sugerida":"5x2","lideres":0,"afastados":0,"sem_origem":1,"resto_5x2":0}],"dia":[{"dep":"102.001.011","nome":"Planejamento e Controle de Manutenção","sub":"fora a Ferramentaria","regra":"5x2","parte":true,"regra_txt":"5x2","nota":"5x2 · AZUL SIMULAR PRECISA RODAR 24 HRS","n":10,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0},{"dep":"102.001.001","nome":"Gerência da Oficina","sub":null,"regra":"nao","regra_txt":"Não precisa simular","nota":"NÃO PRECISA SIMULAR ESSE DEPARTAMENTO","n":13,"vai":"Fica como está (não simula)","lideres":11,"adm_hoje":2},{"dep":"102.001.013","nome":"Serviços Gerais","sub":null,"regra":"5x2","regra_txt":"5x2","nota":"5X2","n":1,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0,"adm_hoje":1},{"dep":"102.002.005","nome":"Lanternagem / Pintura","sub":null,"regra":"5x2","regra_txt":"5x2","nota":"5X2","n":2,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0,"adm_hoje":0},{"dep":"102.002.012","nome":"Torno","sub":null,"regra":"sem_nota","regra_txt":"Sem anotação (ficou 5x2)","nota":"","n":1,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0,"adm_hoje":1},{"dep":"102.006.002","nome":"Implementos Agrícolas","sub":null,"regra":"5x2","regra_txt":"5x2","nota":"RODAR 5X2","n":3,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0,"adm_hoje":0}],"tot":{"n":197,"lideres":20,"afastados":1,"clt_urbano":109,"sem_clt":87,"rural":1}};
+const $ = s => document.querySelector(s);
+const fmt = (x, d = 0) => Number(x).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const sinal = x => (x > 0 ? "+" : x < 0 ? "−" : "") + fmt(Math.abs(x));
+const hm = h => { const m = Math.round(h * 60); return Math.floor(m / 60) + "h" + String(m % 60).padStart(2, "0"); };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const ESC = Object.fromEntries(D.escalas.map(e => [e.id, e]));
+const IDS = D.escalas.map(e => e.id);
+const TURNOS = ["Manhã", "Tarde", "Noite"];
+const ORD = { "Baixo": 0, "Médio": 1, "Não serve": 9 };
+const S = { vol: false, adm: false, P: {}, esc: {} };
+D.deps.forEach(d => { S.P[d.dep] = { ...d.postos }; });
+
+/* ---------- conta ---------- */
+function precisa(e, P, vol) {
+  const f = e.ciclo / e.trab, f5 = 7 / 5, v = TURNOS.map(t => P[t] || 0);
+  if (e.turnos === 3) return vol ? Math.ceil(v.reduce((a, b) => a + b, 0) * f - 1e-9) : v.reduce((a, x) => a + Math.ceil(x * f - 1e-9), 0);
+  const p24 = Math.min(...v);
+  if (p24 === 0) return null;
+  const ex = v.map(x => x - p24);
+  if (vol) return Math.ceil(2 * p24 * f + ex.reduce((a, b) => a + b, 0) * f5 - 1e-9);
+  return 2 * Math.ceil(p24 * f - 1e-9) + ex.reduce((a, x) => a + Math.ceil(x * f5 - 1e-9), 0);
+}
+/* c = contratar (+) ou sobra (−); adm = quem fica no horário ADM (caldeiraria: o resto da equipe) */
+function conta(d, id) {
+  const e = ESC[id], need = precisa(e, S.P[d.dep], S.vol);
+  if (need === null) return null;
+  const pool = d.equipe + (S.adm ? d.adm : 0);
+  if (d.regra === "1turno") {
+    const c = Math.max(0, need - pool);
+    return { need, c, sobra: 0, adm: Math.max(0, pool - need) + d.adm_hoje, fica: d.n + c };
+  }
+  const c = need - pool, usados = S.adm ? Math.min(d.adm, Math.max(0, need - d.equipe)) : 0;
+  return { need, c, sobra: Math.max(0, -c), adm: d.adm_hoje - usados, fica: d.n + Math.max(c, 0) };
+}
+function sugerida(d) {
+  const ok = IDS.filter(id => ESC[id].risco !== "Não serve" && conta(d, id));
+  return ok.sort((a, b) => Math.max(conta(d, a).c, 0) - Math.max(conta(d, b).c, 0) || ORD[ESC[a].risco] - ORD[ESC[b].risco] || IDS.indexOf(a) - IDS.indexOf(b))[0];
+}
+function totais(escolha) {
+  let contr = 0, sobra = 0, fica = 0, risco = "Baixo";
+  D.deps.forEach(d => { let id = escolha(d); if (!conta(d, id)) id = "5x2"; const r = conta(d, id); contr += Math.max(r.c, 0); sobra += r.sobra; fica += r.fica; if (ORD[ESC[id].risco] > ORD[risco]) risco = ESC[id].risco; });
+  const dia = D.dia.filter(x => !x.parte).reduce((a, x) => a + x.n, 0);
+  return { contr, sobra, risco, quadro: fica + dia };
+}
+const COR = { "5x2": "#12224A", "4x2": "#5D78B4", "12x36": "#C9A227", "3x3": "#8A6D14", "4x2_12": "#C0392B" };
+const DIA = D.dia.filter(x => !x.parte).reduce((a, x) => a + x.n, 0);
+const HOJE = D.deps.reduce((a, d) => a + d.n, 0) + D.dia.filter(x => !x.parte).reduce((a, x) => a + x.n, 0);
+const classe = c => c <= 0 ? "ok" : c <= 2 ? "med" : "bad";
+const pill = r => `<span class="pill ${r === "Não serve" ? "ns" : r}">${r}</span>`;
+const th = cols => "<thead><tr>" + cols.map(([t, a]) => `<th class="${a || ""}">${t}</th>`).join("") + "</tr></thead>";
+const mostra = r => r.c > 0 ? sinal(r.c) : r.sobra ? "−" + r.sobra : "0";
+const nomeDep = d => `${esc(d.nome)}<u>${d.sub ? `<b>${esc(d.sub)}</b> · ` : ""}${esc(d.regra_txt || "")}</u>`;
+
+/* ---------- gráficos (SVG desenhado na escala) ---------- */
+function barrasV(svg, itens, opts) {
+  const W = 760, H = 360, m = { l: 44, r: 10, t: 34, b: 58 }, bruto = Math.max(...itens.map(i => i.v)) * 1.12;
+  const passo = [10, 20, 25, 50, 100, 200, 250, 500].find(p => bruto / p <= 5) || 1000, max = Math.ceil(bruto / passo) * passo;
+  const bw = (W - m.l - m.r) / itens.length, y = v => m.t + (H - m.t - m.b) * (1 - v / max);
+  let g = "";
+  for (let v = 0; v <= max; v += passo) { const yy = y(v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="rgba(174,187,216,.16)"/><text x="${m.l - 8}" y="${yy + 4}" text-anchor="end" font-size="11" fill="#7D8BB0">${fmt(v)}</text>`; }
+  if (opts.ref) { const yr = y(opts.ref); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yr}" y2="${yr}" stroke="#AEBBD8" stroke-dasharray="5 5" stroke-width="1.3"/><text x="${W - m.r}" y="${yr - 6}" text-anchor="end" font-size="11" fill="#AEBBD8" font-family="IBM Plex Mono, monospace">HOJE ${fmt(opts.ref)}</text>`; }
+  itens.forEach((it, i) => {
+    const x = m.l + bw * i + bw * .18, w = bw * .64, yy = y(it.v);
+    g += `<rect x="${x}" y="${yy}" width="${w}" height="${H - m.b - yy}" rx="2" fill="${it.cor}"/>`;
+    g += `<text x="${x + w / 2}" y="${yy - 8}" text-anchor="middle" font-size="17" font-weight="700" fill="${it.corT || "#F4F6FA"}">${fmt(it.v)}</text>`;
+    if (it.d !== undefined) g += `<text x="${x + w / 2}" y="${yy - 26}" text-anchor="middle" font-size="11" font-weight="600" fill="${it.d > 0 ? "#F0897A" : "#8FD3A6"}" font-family="IBM Plex Mono, monospace">${it.d > 0 ? "+" + it.d : it.d < 0 ? "−" + Math.abs(it.d) : "="}</text>`;
+    it.lab.split("\n").forEach((l, k) => { g += `<text x="${x + w / 2}" y="${H - m.b + 18 + k * 14}" text-anchor="middle" font-size="${k ? 10 : 12}" fill="${k ? "#7D8BB0" : "#AEBBD8"}" font-weight="${k ? 400 : 600}" ${k ? 'font-family="IBM Plex Mono, monospace"' : ""}>${esc(l)}</text>`; });
+  });
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = g;
+}
+function barrasH(svg, linhas) {
+  const W = 1500, rh = 31, m = { l: 290, r: 70, t: 34, b: 14 }, H = m.t + m.b + rh * linhas.length;
+  const max = Math.max(4, ...linhas.flatMap(l => [l.a, l.b])), x = v => m.l + (W - m.l - m.r) * v / max;
+  let g = `<rect x="${m.l}" y="6" width="12" height="12" rx="2" fill="#C9A227"/><text x="${m.l + 18}" y="16" font-size="11" fill="#5A6072" font-family="IBM Plex Mono, monospace">ESCALA ESCOLHIDA</text>
+       <rect x="${m.l + 170}" y="6" width="12" height="12" rx="2" fill="#B8C2D6"/><text x="${m.l + 188}" y="16" font-size="11" fill="#5A6072" font-family="IBM Plex Mono, monospace">5X2 EM TODOS</text>`;
+  for (let k = 0; k <= max; k += Math.max(1, Math.round(max / 6))) g += `<line x1="${x(k)}" x2="${x(k)}" y1="${m.t - 4}" y2="${H - m.b}" stroke="#E6E9F0"/><text x="${x(k)}" y="${H}" text-anchor="middle" font-size="10" fill="#9AA3B5">${k}</text>`;
+  linhas.forEach((l, i) => {
+    const y0 = m.t + rh * i;
+    g += `<text x="${m.l - 12}" y="${y0 + 15}" text-anchor="end" font-size="13" font-weight="700" fill="#12224A">${esc(l.nome)}</text><text x="${m.l - 12}" y="${y0 + 28}" text-anchor="end" font-size="10.5" fill="#5A6072" font-family="IBM Plex Mono, monospace">${esc(l.esc)}</text>`;
+    g += `<rect x="${m.l}" y="${y0 + 3}" width="${Math.max(0, x(Math.max(l.a, 0)) - m.l)}" height="13" rx="2" fill="#C9A227"/>`;
+    g += `<rect x="${m.l}" y="${y0 + 18}" width="${Math.max(0, x(Math.max(l.b, 0)) - m.l)}" height="9" rx="2" fill="#B8C2D6"/>`;
+    g += `<text x="${x(Math.max(l.a, 0)) + 6}" y="${y0 + 14}" font-size="12.5" font-weight="700" fill="${l.a > 0 ? "#C0392B" : "#2E7D46"}">${l.a > 0 ? "+" + l.a : l.a < 0 ? "sobra " + Math.abs(l.a) : "0"}</text>`;
+    g += `<text x="${x(Math.max(l.b, 0)) + 6}" y="${y0 + 27}" font-size="10.5" fill="#5A6072">${l.b > 0 ? "+" + l.b : "0"}</text>`;
+  });
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.style.width = "100%"; svg.style.minWidth = "760px";
+  svg.innerHTML = g;
+}
+
+/* ---------- telas ---------- */
+function capa() {
+  const n24 = D.deps.reduce((a, d) => a + d.n, 0), t5 = totais(() => "5x2"), ts = totais(sugerida), atual = totais(d => S.esc[d.dep]);
+  $("#capaBase").textContent = `Base de ${D.base}`;
+  $("#capaSub").textContent = `${fmt(HOJE)} pessoas na oficina, ${D.deps.length} departamentos em turno. A 5x2 e as 2 folgas por semana valem a partir de 15/12/2026; a escala de cada departamento muda o tamanho do quadro.`;
+  $("#capaKpis").innerHTML = [
+    [fmt(HOJE), "Pessoas hoje", `${fmt(n24)} em departamentos com turno`, ""],
+    [sinal(t5.contr), "5x2 em todos", `quadro de ${fmt(t5.quadro)} · risco baixo`, "pos"],
+    [sinal(ts.contr), "Escala sugerida", `quadro de ${fmt(ts.quadro)} · a de menor contratação`, ""],
+    [sinal(atual.contr), "Escolha atual", `quadro de ${fmt(atual.quadro)} · risco ${atual.risco.toLowerCase()}`, ""],
+  ].map(([n, l, e, c]) => `<div class="capa-kpi"><div class="n ${c}">${n}</div><div class="l">${l}<em>${e}</em></div></div>`).join("");
+}
+function indice() {
+  $("#capaIndice").innerHTML = SL.slice(1).map((sl, i) => `<li><button type="button" data-i="${i + 1}"><span class="n">${String(i + 1).padStart(2, "0")}</span><span class="t">${esc(sl.dataset.title)}</span><span class="d">${esc(sl.dataset.desc || "")}</span></button></li>`).join("");
+  document.querySelectorAll("#capaIndice button").forEach(b => b.addEventListener("click", () => vai(+b.dataset.i)));
+}
+function grupos() {
+  const g = {};
+  D.deps.forEach(d => { const id = S.esc[d.dep], r = conta(d, id); (g[id] ||= { id, deps: [], fica: 0, hoje: 0, contr: 0 }); g[id].deps.push({ d, r }); g[id].fica += r.fica; g[id].hoje += d.n; g[id].contr += Math.max(r.c, 0); });
+  return IDS.filter(id => g[id]).map(id => g[id]);
+}
+function grafPainel(svg) {
+  const W = 1000, H = 500, m = { l: 46, r: 62, t: 40, b: 128 };
+  const atual = totais(d => S.esc[d.dep]), gs = grupos();
+  const itens = [{ id: "hoje", v: HOJE, lab: "Hoje", sub: "5x1 / 6x1", cor: "#B8C2D6" }];
+  IDS.forEach(id => { const t = totais(() => id); itens.push({ id, v: t.quadro, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.quadro - HOJE, ns: ESC[id].risco === "Não serve" }); });
+  itens.push({ id: "esc", v: atual.quadro, lab: "Escolhida", sub: "POR DEPARTAMENTO", d: atual.quadro - HOJE, seg: [{ v: DIA, cor: "#DCE1EA" }, ...gs.map(g => ({ v: g.fica, cor: COR[g.id] }))] });
+  const bruto = Math.max(...itens.map(i => i.v)) * 1.1, passo = [10, 20, 25, 50, 100].find(p => bruto / p <= 6) || 200, max = Math.ceil(bruto / passo) * passo;
+  const bw = (W - m.l - m.r) / itens.length, y = v => m.t + (H - m.t - m.b) * (1 - v / max);
+  let g = "";
+  for (let v = 0; v <= max; v += passo) { const yy = y(v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="#E6E9F0"/><text x="${m.l - 8}" y="${yy + 4}" text-anchor="end" font-size="11" fill="#9AA3B5">${fmt(v)}</text>`; }
+  const yr = y(HOJE);
+  g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yr}" y2="${yr}" stroke="#5A6072" stroke-dasharray="5 5" stroke-width="1.2"/>`;
+  itens.forEach((it, i) => {
+    const x = m.l + bw * i + bw * .17, w = bw * .66, cx = x + w / 2, yy = y(it.v), esc_ = it.id === "esc";
+    if (esc_) g += `<rect x="${x - 6}" y="${m.t - 30}" width="${w + 12}" height="${H - m.t - 2}" rx="4" fill="#FDF2D3"/>`;
+    if (it.seg) { let base = H - m.b; it.seg.forEach(sg => { const h = (H - m.t - m.b) * sg.v / max; g += `<rect x="${x}" y="${base - h}" width="${w}" height="${h}" fill="${sg.cor}" stroke="#fff" stroke-width="1.5"/>`; base -= h; }); }
+    else g += `<rect x="${x}" y="${yy}" width="${w}" height="${H - m.b - yy}" rx="2" fill="${it.cor}" ${it.ns ? 'fill-opacity=".55"' : ""}/>`;
+    g += `<text x="${cx}" y="${yy - 9}" text-anchor="middle" font-size="${esc_ ? 21 : 18}" font-weight="800" fill="#12224A">${fmt(it.v)}</text>`;
+    if (it.d !== undefined) g += `<text x="${cx}" y="${yy - 30}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${it.d > 0 ? "#C0392B" : "#2E7D46"}" font-family="IBM Plex Mono, monospace">${it.d > 0 ? "+" + it.d : it.d < 0 ? "−" + Math.abs(it.d) : "="}</text>`;
+    g += `<text x="${cx}" y="${H - m.b + 19}" text-anchor="middle" font-size="13" font-weight="700" fill="#12224A">${esc(it.lab)}</text>`;
+    g += `<text x="${cx}" y="${H - m.b + 33}" text-anchor="middle" font-size="9.5" fill="${it.ns ? "#C0392B" : "#5A6072"}" font-family="IBM Plex Mono, monospace">${esc(it.sub)}</text>`;
+    if (esc_) {
+      let ly = H - m.b + 52;
+      [...gs].reverse().forEach(gr => { g += `<rect x="${x - 2}" y="${ly - 9}" width="10" height="10" rx="2" fill="${COR[gr.id]}"/><text x="${x + 13}" y="${ly}" font-size="11" font-weight="600" fill="#12224A">${esc(ESC[gr.id].curto)} · ${gr.deps.length}</text>`; ly += 16; });
+      g += `<rect x="${x - 2}" y="${ly - 9}" width="10" height="10" rx="2" fill="#DCE1EA"/><text x="${x + 13}" y="${ly}" font-size="11" font-weight="600" fill="#5A6072">sem turno · ${D.dia.filter(z => !z.parte).length}</text>`;
+    }
+  });
+  g += `<text x="${W - m.r + 8}" y="${yr - 3}" font-size="10.5" fill="#5A6072" font-family="IBM Plex Mono, monospace">HOJE</text><text x="${W - m.r + 8}" y="${yr + 11}" font-size="12" font-weight="700" fill="#12224A">${fmt(HOJE)}</text>`;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  svg.innerHTML = g;
+}
+function painel() {
+  chips("#pChips");
+  grafPainel($("#gPainel"));
+  let h = "";
+  grupos().forEach(gr => {
+    h += `<tr class="g"><td colspan="3"><i style="background:${COR[gr.id]}"></i>${esc(ESC[gr.id].curto)}<small>${gr.deps.length} depto(s) · ${gr.hoje} → ${gr.fica} · contratar ${sinal(gr.contr)}</small></td></tr>`;
+    gr.deps.forEach(({ d, r }) => { const dd = r.fica - d.n; h += `<tr class="clic" data-dep="${d.dep}"><td class="dn">${esc(d.sub || d.nome)}${d.sub ? "<u>PCM</u>" : ""}</td><td class="n">${d.n} → <b>${r.fica}</b></td><td class="n ${dd > 0 ? "up" : "eq"}">${dd > 0 ? "+" + dd : "="}</td></tr>`; });
+  });
+  h += `<tr class="g"><td colspan="3"><i style="background:#DCE1EA"></i>Sem turno · segunda a sexta<small>${D.dia.filter(z => !z.parte).length} deptos · ${DIA} pessoas · não muda</small></td></tr>`;
+  $("#pLista").innerHTML = h;
+  document.querySelectorAll("#pLista tr.clic").forEach(tr => tr.addEventListener("click", () => abre(tr.dataset.dep)));
+}
+function chips(sel) {
+  const atual = totais(d => S.esc[d.dep]), t5 = totais(() => "5x2");
+  $(sel).innerHTML = [[fmt(HOJE), "Hoje"], [fmt(atual.quadro), "Escolhida"], [sinal(atual.contr), "Contratar", atual.contr > 0 ? "" : "zero"], [sinal(t5.contr), "5x2 em todos", "pos"]]
+    .map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
+}
+function quadro() {
+  chips("#qChips");
+  const q = (fica, base, cls) => { const dd = fica - base; return `<td class="qv ${cls || ""}"><b>${fmt(fica)}</b><span class="dl ${dd > 0 ? "up" : "eq"}">${dd > 0 ? "+" + dd : "="}</span></td>`; };
+  let h = `<thead><tr class="grp"><th class="l" rowspan="2" style="vertical-align:bottom">Departamento</th><th colspan="2">Hoje</th><th colspan="${IDS.length}">Quadro com a escala aplicada a todos</th><th colspan="2">Escolha por departamento</th></tr><tr>
+    <th>Pessoas</th><th class="l">Composição</th>${IDS.map(id => `<th>${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}</th>`).join("")}<th>Escala</th><th>Quadro</th></tr></thead><tbody>`;
+  D.deps.forEach(d => {
+    const id = S.esc[d.dep], r = conta(d, id);
+    h += `<tr class="clic" data-dep="${d.dep}"><td class="l dep">${esc(d.nome)}${d.sub ? `<u><b>${esc(d.sub)}</b></u>` : ""}</td><td class="hoje">${d.n}</td>
+      <td class="comp">${d.equipe} turno · ${d.adm_hoje} ADM${d.lideres ? " · " + d.lideres + " lid." : ""}</td>`;
+    IDS.forEach(x => { const y = conta(d, x); h += y ? q(y.fica, d.n, x === id ? "qsel" : "") : `<td class="nm">não se aplica</td>`; });
+    h += `<td class="ec"><span style="background:${COR[id]}${id === "12x36" ? ";color:#12224A" : ""}">${esc(ESC[id].curto)}</span></td>${q(r.fica, d.n, "fq")}</tr>`;
+  });
+  const nomes = D.dia.filter(z => !z.parte).map(z => `${z.nome} ${z.n}`).join(" · ");
+  h += `<tr><td class="l dep">Sem turno · segunda a sexta<u style="display:block;margin:1px 0 0">${esc(nomes)}</u></td><td class="hoje">${DIA}</td><td class="comp">${D.dia.filter(z => !z.parte).length} deptos</td>
+    <td class="nm" colspan="${IDS.length}" style="text-align:center">não muda em nenhuma escala (o resto do PCM está na linha do PCM)</td><td class="ec"><span style="background:#8A93A6">5x2 de dia</span></td>${q(DIA, DIA, "fq")}</tr>`;
+  const atual = totais(d => S.esc[d.dep]);
+  h += `<tr class="tot"><td class="l">Total da oficina</td><td>${fmt(HOJE)}</td><td class="comp">${D.deps.reduce((a, d) => a + d.equipe, 0)} em turno</td>${IDS.map(x => q(totais(() => x).quadro, HOJE)).join("")}<td></td>${q(atual.quadro, HOJE, "fq")}</tr></tbody>`;
+  $("#tabQ").innerHTML = h;
+  document.querySelectorAll("#tabQ tr.clic").forEach(tr => tr.addEventListener("click", () => abre(tr.dataset.dep)));
+}
+function matriz() {
+  chips("#mChips");
+  const cab = [["Departamento", "l"], ["Em turno<u>hoje</u>"], ["Hoje por dia<u>manhã · tarde · noite</u>"], ["Garantir por turno<u>manhã · tarde · noite</u>"], ...IDS.map(id => [`${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}`])];
+  let h = th(cab) + "<tbody>";
+  D.deps.forEach(d => {
+    const P = S.P[d.dep], sug = sugerida(d), pres = d.hoje_txt || TURNOS.map(t => fmt(d.pres[t], 1)).join(" · ");
+    h += `<tr class="clic" data-dep="${d.dep}"><td class="l dep">${nomeDep(d)}</td><td>${d.equipe}${d.adm_hoje ? `<small class="s">+${d.adm_hoje} ADM</small>` : ""}</td><td class="mut">${pres}</td>
+      <td><div class="pt">${TURNOS.map((t, i) => `<input type="number" min="0" max="40" step="1" id="p_${d.dep}_${i}" aria-label="${esc(d.nome)}: pessoas por dia na ${t.toLowerCase()}" value="${P[t]}"${d.regra === "2turnos" && t === "Noite" ? " disabled" : ""}>`).join("")}</div></td>`;
+    IDS.forEach(id => {
+      const r = conta(d, id), e = ESC[id];
+      if (!r) { h += `<td class="na">não se aplica</td>`; return; }
+      const cls = e.risco === "Não serve" ? "ns" : classe(r.c), pe = d.regra === "1turno" ? `resto ${r.adm} no ADM` : `precisa ${r.need}`;
+      h += `<td><button type="button" class="cel ${cls}${S.esc[d.dep] === id ? " esc" : ""}" data-dep="${d.dep}" data-id="${id}" aria-pressed="${S.esc[d.dep] === id}" aria-label="${esc(d.nome)} em ${esc(e.curto)}: ${r.c > 0 ? "contratar " + r.c : r.sobra ? r.sobra + " sobram" : "fecha"}"><b>${id === sug ? "<i>★</i>" : ""}${mostra(r)}</b><small>${pe}</small></button></td>`;
+    });
+    h += "</tr>";
+  });
+  h += `<tr class="tot"><td class="l">Total da oficina</td><td>${D.deps.reduce((a, d) => a + d.equipe, 0)}</td><td></td><td></td>${IDS.map(id => { const t = totais(() => id); return `<td>${sinal(t.contr)}<small class="s">${fmt(t.sobra)} sobram</small></td>`; }).join("")}</tr></tbody>`;
+  $("#tab").innerHTML = h;
+  document.querySelectorAll("#tab button.cel").forEach(b => b.addEventListener("click", e => { e.stopPropagation(); S.esc[b.dataset.dep] = b.dataset.id; tudo(); }));
+  document.querySelectorAll("#tab tr.clic").forEach(tr => tr.addEventListener("click", e => { if (e.target.closest("input,button")) return; abre(tr.dataset.dep); }));
+  D.deps.forEach(d => TURNOS.forEach((t, i) => { const el = document.getElementById(`p_${d.dep}_${i}`); el.addEventListener("change", () => { S.P[d.dep][t] = Math.max(0, Math.min(40, parseInt(el.value, 10) || 0)); tudo(); }); }));
+}
+function grafico() {
+  chips("#gChips");
+  const linhas = D.deps.map(d => { const r = conta(d, S.esc[d.dep]), r5 = conta(d, "5x2"); return { nome: d.sub ? d.sub + " · PCM" : d.nome, esc: ESC[S.esc[d.dep]].curto, a: r.c, b: Math.max(r5.c, 0) }; })
+    .sort((x, y) => y.a - x.a || y.b - x.b);
+  barrasH($("#gDep"), linhas);
+}
+function escalas() {
+  $("#cardsEsc").innerHTML = D.escalas.map(e => {
+    const g = e.grade, DS = "STQQSSD";
+    let mini = `<table class="mini"><tr><td class="lab"></td>${Array.from({ length: 14 }, (_, i) => `<th class="${i % 7 === 6 ? "d" : ""}">${DS[i % 7]}</th>`).join("")}</tr>`;
+    g.forEach((l, i) => { mini += `<tr><td class="lab">${esc(e.rotulos[i].replace("Turma ", ""))}</td>${l.slice(0, 14).map((v, k) => `<td class="${v === "F" ? "F" + (k % 7 === 6 ? " d" : "") : ""}"></td>`).join("")}</tr>`; });
+    mini += "</table>";
+    return `<div class="esc${e.risco === "Não serve" ? " nserve" : ""}"><div><h4>${esc(e.nome)}</h4>${pill(e.risco)}</div><div class="hr">${esc(e.horario)}</div>
+      <div class="big"><div><b>${precisa(e, { "Manhã": 1, "Tarde": 1, "Noite": 1 }, false)}</b><span>pessoas para 1 posto<br>24 h, turma fixa</span></div><div><b class="${totais(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totais(() => e.id).contr)}</b><span>contratar na oficina<br>com ela em todos</span></div></div>
+      <dl><dt>Horas por semana</dt><dd>${hm(e.h_sem - e.he_sem)}${e.he_sem ? " + " + hm(e.he_sem) : ""}</dd><dt>Folgas por semana</dt><dd>${fmt(e.folgas_sem, 2)}</dd><dt>Domingos de folga</dt><dd>${e.dom} a cada ${e.sem} sem.</dd><dt>Máx. dias seguidos</dt><dd>${e.seq}</dd><dt>Turmas</dt><dd>${g.length}</dd></dl>
+      <div style="overflow-x:auto">${mini}</div><div class="nt">${esc(e.nota)}</div></div>`;
+  }).join("");
+}
+function premissas() {
+  $("#tabDia").innerHTML = th([["Departamento", "l"], ["Pessoas"], ["Anotação na planilha", "l"]]) + "<tbody>" +
+    D.dia.map(d => `<tr><td class="l dep">${esc(d.nome)}<u>${d.sub ? `<b>${esc(d.sub)}</b> · ` : ""}${esc(d.vai)}${d.lideres ? ` · ${d.lideres} lideranças` : ""}</u></td><td>${d.n}</td><td class="l mut" style="white-space:normal">${esc(d.nota || "sem anotação")}</td></tr>`).join("") +
+    `<tr class="tot"><td class="l">Total</td><td>${D.dia.reduce((a, d) => a + d.n, 0)}</td><td></td></tr></tbody>`;
+  $("#prem").innerHTML = [
+    "Garantir por turno: pessoas trabalhando todo dia naquele turno. Começa na média de hoje arredondada (2,5 vira 2), no mínimo 1 nos departamentos 24 h; Ferramentaria e Caldeiraria com 1 por turno, como anotado; Veículos Leves com manhã e tarde.",
+    "Caldeiraria: 1 pessoa por turno nas 24 h, tirada da própria equipe; o resto da equipe fica no horário ADM.",
+    "Quadro em cada escala = pessoas de hoje + contratações. Quem sobra continua no departamento, de dia (segunda a sexta).",
+    "Turma fixa por turno: ninguém alterna dia e noite (quem alterna cai na regra do turno de revezamento, 6 h por dia). O folguista volante reduz o quadro, mas roda entre turnos.",
+    "Nas escalas de 12 h, o mínimo comum aos três turnos vai para 12 h e o que passa dele fica como reforço de 8 h em 5x2.",
+    `Ficam de fora da conta de turno ${D.tot.lideres} lideranças sem registro no revezamento e ${D.tot.afastados} afastado(s); continuam no quadro.`,
+    `A oficina é CLT urbano no cadastro (${D.tot.clt_urbano} com o dado). Por isso a 4x2 de 12 h não serve, e a noite de 8 h precisa de ajuste até dez/2027.`,
+    "Mulheres em escala com domingo: folga em um domingo a cada 15 dias (CLT art. 386).",
+  ].map(x => `<li>${esc(x)}</li>`).join("");
+}
+
+/* ---------- painel do departamento ---------- */
+function composicao(d, id) {
+  const e = ESC[id], P = S.P[d.dep], f = e.ciclo / e.trab, out = [];
+  if (S.vol) out.push([`${precisa(e, P, true)} pessoas em ${e.curto}, com folguista cobrindo mais de um turno`, TURNOS.map(t => P[t]).join(" · ") + " por dia"]);
+  else if (e.turnos === 3) TURNOS.forEach(t => { if (P[t]) out.push([`${t}: ${Math.ceil(P[t] * f - 1e-9)} pessoas em ${e.curto}`, `mín. ${P[t]} por dia`]); });
+  else {
+    const v = TURNOS.map(t => P[t]), p24 = Math.min(...v), n = Math.ceil(p24 * f - 1e-9);
+    out.push([`Dia 07:00–19:00: ${n} pessoas em ${e.curto}`, `mín. ${p24} por dia`]);
+    out.push([`Noite 19:00–07:00: ${n} pessoas em ${e.curto}`, `mín. ${p24} por dia`]);
+    TURNOS.forEach((t, i) => { const x = v[i] - p24; if (x > 0) out.push([`Reforço na ${t.toLowerCase()} (8 h): ${Math.ceil(x * 1.4 - 1e-9)} em 5x2 rotativa`, `mais ${x} por dia`]); });
+  }
+  return out;
+}
+function abre(dep) {
+  const d = D.deps.find(x => x.dep === dep), id = S.esc[dep], e = ESC[id], r = conta(d, id);
+  $("#mfK").textContent = `${d.dep} · ${cap(d.regra_txt)}`;
+  $("#mfTit").textContent = `${d.nome}${d.sub ? " · " + d.sub : ""}`;
+  $("#mfSub").textContent = `Anotação na planilha: "${d.nota || "sem anotação"}". Hoje: ${d.n} pessoas (${d.equipe} em turno, ${d.adm_hoje} no ADM${d.lideres ? ", " + d.lideres + " liderança(s)" : ""}${d.afastados ? ", " + d.afastados + " afastado(s)" : ""}). Escala escolhida: ${e.nome}.`;
+  const comp = composicao(d, id).map(([a, b]) => `<div><span>${esc(a)}</span><b>${esc(b)}</b></div>`);
+  if (r.adm) comp.push(`<div><span>Horário ADM (segunda a sexta)</span><b>${r.adm}</b></div>`);
+  if (r.sobra) comp.push(`<div><span>Sobram da equipe de turno e vão para o dia</span><b>${r.sobra}</b></div>`);
+  comp.push(`<div class="fim"><span>${r.c > 0 ? "Contratar" : "Fecha com a equipe de hoje"} · quadro ${d.n} → ${r.fica}</span><b>${r.c > 0 ? "+" + r.c : "0"}</b></div>`);
+  $("#mfComp").innerHTML = comp.join("");
+  $("#mfNota").textContent = e.nota;
+  $("#mfTab").innerHTML = th([["Escala", "l"], ["Precisa"], ["Contratar"], ["Quadro"], ["Horas/semana"], ["Risco"]]) + "<tbody>" + IDS.map(x => {
+    const y = conta(d, x), ex = ESC[x];
+    if (!y) return `<tr><td class="l">${esc(ex.curto)}</td><td colspan="5" class="na">não se aplica (sem noite)</td></tr>`;
+    return `<tr${x === id ? ' class="sel"' : ""}><td class="l">${esc(ex.curto)}${x === sugerida(d) ? ' <span class="tag">sugerida</span>' : ""}</td><td>${y.need}</td><td>${mostra(y)}</td><td>${y.fica}</td><td>${hm(ex.h_sem - ex.he_sem)}${ex.he_sem ? " + " + hm(ex.he_sem) : ""}</td><td>${pill(ex.risco)}</td></tr>`;
+  }).join("") + "</tbody>";
+  $("#mfGt").textContent = `Escala ${e.curto} · ${e.grade.length} turmas · ${e.dom} domingos de folga a cada ${e.sem} semanas · no máximo ${e.seq} ${e.seq === 1 ? "dia seguido" : "dias seguidos"}`;
+  const dias = e.grade[0].length, DS = "STQQSSD";
+  let g = `<thead><tr><th style="background:transparent"></th>`;
+  for (let w = 0; w < dias / 7; w++) g += `<th colspan="7" class="semana${w ? " wk" : ""}">Semana ${w + 1}</th>`;
+  g += `</tr><tr><th style="background:transparent"></th>` + Array.from({ length: dias }, (_, i) => `<th class="${i % 7 === 6 ? "dom" : ""}${i % 7 === 0 && i ? " wk" : ""}">${DS[i % 7]}</th>`).join("") + "</tr></thead><tbody>";
+  e.grade.forEach((l, i) => { g += `<tr><td class="lab">${esc(e.rotulos[i])}</td>` + l.map((v, k) => `<td class="${v === "F" ? "F" + (k % 7 === 6 ? " d" : "") : ""}${k % 7 === 0 && k ? " wk" : ""}">${v === "F" ? "F" : ""}</td>`).join("") + "</tr>"; });
+  $("#mfGrade").innerHTML = g + "</tbody>";
+  $("#mfGn").textContent = `${e.horario}. F = folga; vermelho = folga no domingo. Em equipe pequena, cada pessoa segue uma das linhas.`;
+  $("#mf").hidden = false; $("#mfFechar").focus();
+}
+function fecha() { $("#mf").hidden = true; }
+$("#mfFechar").addEventListener("click", fecha);
+$("#mfFundo").addEventListener("click", fecha);
+
+/* ---------- navegação ---------- */
+const SL = [...document.querySelectorAll(".slide")];
+let atual = 0;
+$("#toc").innerHTML = SL.slice(1).map((s, i) => `<a href="#${s.id}" data-i="${i + 1}"><b>${i + 1}</b>${esc(s.dataset.title)}</a>`).join("");
+$("#dots").innerHTML = SL.map((s, i) => `<button type="button" aria-label="${esc(s.dataset.title)}" data-i="${i}"></button>`).join("");
+function vai(i) {
+  atual = Math.max(0, Math.min(SL.length - 1, i));
+  SL.forEach((s, k) => s.classList.toggle("active", k === atual));
+  document.querySelectorAll("#dots button").forEach((b, k) => b.classList.toggle("on", k === atual));
+  document.querySelectorAll("#toc a").forEach(a => a.classList.toggle("on", +a.dataset.i === atual));
+  document.body.classList.toggle("na-capa", atual === 0);
+  $("#prev").disabled = atual === 0; $("#next").disabled = atual === SL.length - 1;
+  $("#count").textContent = `${atual + 1} / ${SL.length}`;
+  $("#barra").style.width = `${(atual + 1) / SL.length * 100}%`;
+  try { history.replaceState(null, "", "#" + SL[atual].id); } catch (e) {}
+}
+$("#prev").addEventListener("click", () => vai(atual - 1));
+$("#next").addEventListener("click", () => vai(atual + 1));
+document.querySelectorAll("#dots button").forEach(b => b.addEventListener("click", () => vai(+b.dataset.i)));
+document.querySelectorAll("#toc a").forEach(a => a.addEventListener("click", e => { e.preventDefault(); vai(+a.dataset.i); }));
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !$("#mf").hidden) { fecha(); return; }
+  if (!$("#mf").hidden || e.target.closest("input,select,textarea")) return;
+  if (e.key === "ArrowRight" || e.key === "PageDown" || (e.key === " " && !e.target.closest("button"))) { e.preventDefault(); vai(atual + 1); }
+  if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); vai(atual - 1); }
+});
+
+/* ---------- campo de partículas ---------- */
+(function () {
+  const cv = $("#campo"), ctx = cv.getContext("2d"), calmo = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W, H, P = [], dpr = Math.min(2, window.devicePixelRatio || 1);
+  function monta() { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; const n = Math.round(Math.min(90, innerWidth * innerHeight / 16000));
+    P = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .18 * dpr, vy: (Math.random() - .5) * .18 * dpr, r: (Math.random() * 1.4 + .6) * dpr, o: Math.random() < .18 })); }
+  function desenha() {
+    ctx.clearRect(0, 0, W, H);
+    const lim = 140 * dpr;
+    for (let i = 0; i < P.length; i++) { const a = P[i];
+      for (let j = i + 1; j < P.length; j++) { const b = P[j], dx = a.x - b.x, dy = a.y - b.y, d = Math.hypot(dx, dy);
+        if (d < lim) { ctx.strokeStyle = `rgba(201,162,39,${(1 - d / lim) * .16})`; ctx.lineWidth = dpr * .7; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); } }
+      ctx.fillStyle = a.o ? "rgba(201,162,39,.75)" : "rgba(174,187,216,.35)"; ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.283); ctx.fill(); }
+  }
+  function passo() { if (!document.hidden) { P.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1; }); desenha(); } requestAnimationFrame(passo); }
+  monta(); addEventListener("resize", () => { monta(); desenha(); });
+  if (calmo) desenha(); else requestAnimationFrame(passo);
+})();
+
+/* ---------- liga tudo ---------- */
+function tudo() { capa(); painel(); quadro(); matriz(); grafico(); escalas(); }
+$("#vol").addEventListener("change", e => { S.vol = e.target.checked; tudo(); });
+$("#adm").addEventListener("change", e => { S.adm = e.target.checked; tudo(); });
+$("#bSug").addEventListener("click", () => { D.deps.forEach(d => S.esc[d.dep] = sugerida(d)); tudo(); });
+$("#b5x2").addEventListener("click", () => { D.deps.forEach(d => S.esc[d.dep] = "5x2"); tudo(); });
+$("#b12").addEventListener("click", () => { D.deps.forEach(d => S.esc[d.dep] = conta(d, "12x36") ? "12x36" : "5x2"); tudo(); });
+$("#bHoje").addEventListener("click", () => { D.deps.forEach(d => { S.P[d.dep] = { ...d.postos }; S.esc[d.dep] = sugerida(d); }); tudo(); });
+D.deps.forEach(d => { S.esc[d.dep] = sugerida(d); });
+indice();
+$("#meta").textContent = `${D.area} · base de ${D.base}`;
+premissas(); tudo();
+const ini = SL.findIndex(s => "#" + s.id === location.hash);
+vai(ini > 0 ? ini : 0);
+</script>
+
+</body></html>

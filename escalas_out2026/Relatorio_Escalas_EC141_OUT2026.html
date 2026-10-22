@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Escalas pós-6x1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+/* Layout: quadro de escala da usina — faixa azul-marinho do padrão dos relatórios, seções empilhadas,
+   tabelas e grades de turma como peça central; números em Barlow Condensed. */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --ink: #172331; --muted: #5d6b7c; --line: #d9dfe7; --soft: #e9edf2;
+  --navy: #142a47; --navy-ink: #ffffff; --accent: #1f4e86;
+  --ok: #1e6b4a; --ok-soft: #e3f1ea; --warn: #b8741c; --warn-soft: #fbf0df; --bad: #b3302d; --bad-soft: #fbe7e6;
+  --off: #1e6b4a; --off-sun: #b3302d; --on: #dfe5ec; --on-ink: #8693a3;
+  --f-body: "Barlow", "Segoe UI", Arial, sans-serif;
+  --f-num: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  --r: 6px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1520; --surface: #152031; --ink: #e5ebf3; --muted: #9aa8ba; --line: #2a3a50; --soft: #1b293d;
+  --navy: #0a1a2e; --navy-ink: #e5ebf3; --accent: #7fa8dc;
+  --ok: #5cb88e; --ok-soft: #173327; --warn: #e3a54f; --warn-soft: #3a2a14; --bad: #e46a63; --bad-soft: #3d1b1a;
+  --off: #3f9a70; --off-sun: #d4554e; --on: #223349; --on-ink: #6f8098; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e1520; --surface: #152031; --ink: #e5ebf3; --muted: #9aa8ba; --line: #2a3a50; --soft: #1b293d;
+  --navy: #0a1a2e; --navy-ink: #e5ebf3; --accent: #7fa8dc;
+  --ok: #5cb88e; --ok-soft: #173327; --warn: #e3a54f; --warn-soft: #3a2a14; --bad: #e46a63; --bad-soft: #3d1b1a;
+  --off: #3f9a70; --off-sun: #d4554e; --on: #223349; --on-ink: #6f8098; color-scheme: dark }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; margin: 0; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+.num, td, th, .tile .v { font-variant-numeric: tabular-nums; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* topo */
+.top { background: var(--navy); color: var(--navy-ink); }
+.top .wrap { padding-block: 26px 22px; display: grid; gap: 14px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; opacity: .78; font-weight: 600; }
+.top h1 { font-family: var(--f-num); font-weight: 700; font-size: clamp(30px, 5vw, 46px); line-height: 1.02; letter-spacing: .01em; }
+.top p { margin: 0; max-width: 70ch; font-size: 16.5px; opacity: .92; }
+.tl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 6px; }
+.tl div { border-top: 4px solid rgba(255,255,255,.35); padding-top: 8px; min-width: 0; }
+.tl div:nth-child(2) { border-top-color: #e46a63; } .tl div:nth-child(3) { border-top-color: #5cb88e; }
+.tl b { font-family: var(--f-num); font-size: 22px; display: block; line-height: 1.1; }
+.tl span { font-size: 13.5px; opacity: .88; }
+nav.secoes { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+nav.secoes .wrap { display: flex; gap: 4px; overflow-x: auto; padding-block: 6px; scrollbar-width: thin; }
+nav.secoes a { white-space: nowrap; text-decoration: none; color: var(--muted); font-weight: 600; font-size: 14px; padding: 6px 10px; border-radius: var(--r); }
+nav.secoes a:hover { background: var(--soft); color: var(--ink); }
+
+/* seções */
+section { padding-block: 30px 6px; }
+section > .wrap { display: grid; gap: 16px; }
+.sh { display: grid; gap: 4px; }
+.sh h2 { font-family: var(--f-num); font-weight: 700; font-size: 28px; letter-spacing: .01em; }
+.sh p { margin: 0; color: var(--muted); max-width: 80ch; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: grid; gap: 2px; align-content: start; min-width: 0; }
+.tile .t { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
+.tile .v { font-family: var(--f-num); font-weight: 700; font-size: 34px; line-height: 1.05; }
+.tile .s { font-size: 13.5px; color: var(--muted); }
+.tile.bad .v { color: var(--bad); } .tile.ok .v { color: var(--ok); } .tile.warn .v { color: var(--warn); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; min-width: 0; }
+.card h3 { font-size: 17px; margin-bottom: 8px; }
+.card p { margin: 0 0 8px 0; } .card p:last-child { margin-bottom: 0; }
+.card ul, .card ol { margin: 0; padding-left: 20px; display: grid; gap: 5px; }
+.card.ok { border-left: 5px solid var(--ok); } .card.warn { border-left: 5px solid var(--warn); } .card.bad { border-left: 5px solid var(--bad); }
+.note { font-size: 13px; color: var(--muted); margin: 0; }
+
+/* tabelas */
+.tw { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th { background: var(--navy); color: var(--navy-ink); text-align: right; font-weight: 600; padding: 8px 10px; white-space: nowrap; font-size: 13px; }
+td { padding: 7px 10px; text-align: right; border-top: 1px solid var(--line); }
+th.l, td.l { text-align: left; } th.c, td.c { text-align: center; }
+tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--soft) 55%, transparent); }
+tr.tot td { font-weight: 700; background: var(--soft) !important; }
+tr.sel td { background: color-mix(in srgb, var(--accent) 14%, var(--surface)) !important; }
+tr.click { cursor: pointer; } tr.click:hover td { background: var(--soft); }
+td.nome { font-weight: 600; min-width: 190px; }
+#tabCen th { white-space: normal; vertical-align: bottom; line-height: 1.25; }
+#tabCen td, #tabCen th { padding-inline: 8px; }
+.pill { display: inline-block; font-size: 12.5px; font-weight: 700; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.Baixo, .pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.Médio, .pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.Alto, .pill.Proibida, .pill.bad { background: var(--bad-soft); color: var(--bad); }
+.mk { font-weight: 700; } .mk.ok { color: var(--ok); } .mk.warn { color: var(--warn); } .mk.bad { color: var(--bad); }
+.pos { color: var(--bad); font-weight: 700; } .neg { color: var(--ok); font-weight: 700; }
+
+/* barras */
+.bars { display: grid; gap: 8px; }
+.bar { display: grid; grid-template-columns: minmax(110px, 190px) minmax(0, 1fr); gap: 10px; align-items: center; font-size: 14px; }
+.bar .lab { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar .trk { position: relative; height: 24px; background: var(--soft); border-radius: 3px; }
+.bar .fill { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: var(--accent); }
+.bar .val { position: absolute; top: 2px; font-family: var(--f-num); font-weight: 700; font-size: 16px; white-space: nowrap; }
+.bar .ref { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: .55; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: var(--surface); }
+.seg button { border: 0; background: transparent; color: var(--muted); font: 600 14px var(--f-body); padding: 6px 12px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--navy); color: var(--navy-ink); }
+
+/* grade de escala */
+.grade { border-collapse: separate; border-spacing: 2px; width: auto; font-size: 11px; }
+.grade th { background: var(--navy); color: var(--navy-ink); padding: 2px 0; width: 19px; text-align: center; font-size: 10.5px; border-radius: 2px; }
+.grade th.dom { background: var(--off-sun); color: #fff; }
+.grade th.semana { background: var(--soft); color: var(--ink); font-weight: 600; }
+.grade td { padding: 0; width: 19px; height: 21px; text-align: center; border: 0; border-radius: 2px; background: var(--on) !important; color: var(--on-ink); }
+.grade td.F { background: var(--off) !important; color: #fff; font-weight: 700; }
+.grade td.F.d { background: var(--off-sun) !important; }
+.grade td.lab { width: auto; padding: 0 8px 0 2px; text-align: left; background: transparent !important; color: var(--ink); font-weight: 700; white-space: nowrap; font-size: 12.5px; }
+.grade td.cnt { background: transparent !important; color: var(--ink); font-weight: 700; }
+.grade .wk { box-shadow: -3px 0 0 var(--bg); }
+
+/* simulador */
+.ctl { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.ctl label { display: grid; gap: 4px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.ctl select, .ctl input { font: 500 15px var(--f-body); padding: 7px 9px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); color: var(--ink); width: 100%; }
+.legenda { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); }
+.legenda i { display: inline-block; width: 13px; height: 13px; border-radius: 2px; vertical-align: -2px; margin-right: 5px; }
+.props { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.props div { background: var(--soft); border-radius: var(--r); padding: 8px 10px; min-width: 0; }
+.props b { display: block; font-family: var(--f-num); font-size: 22px; line-height: 1.1; }
+.props span { font-size: 12.5px; color: var(--muted); }
+footer { padding-block: 26px 40px; color: var(--muted); font-size: 13px; }
+@media (max-width: 860px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } .tl { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: no-preference) { .bar .fill { transition: width .35s ease; } }
+@media print { nav.secoes, .seg, .ctl { display: none; } section { break-inside: avoid; } }
+</style>
+</head><body>
+
+
+<header class="top"><div class="wrap">
+  <div class="eyebrow" id="eyebrow">CRV Industrial Ltda · base de 20/10/2026 · EC 141/2026</div>
+  <h1>Escalas depois do fim da 6x1</h1>
+  <p id="lead"></p>
+  <div class="tl">
+    <div><b>16/10/2026</b><span>EC 141/2026 promulgada e publicada.</span></div>
+    <div><b>15/12/2026</b><span>2 folgas remuneradas por semana e no máximo 42 h. Acabam a 6x1 e a 5x1.</span></div>
+    <div><b>dez/2027</b><span>Limite de 40 h por semana e 8 h por dia. Salário não pode cair.</span></div>
+  </div>
+</div></header>
+<nav class="secoes" aria-label="Seções"><div class="wrap">
+  <a href="#resumo">Resumo</a><a href="#quem">Quem muda</a><a href="#sugestoes">Sugestões</a><a href="#grade">Escala</a>
+  <a href="#risco">Risco no MTE</a><a href="#simulador">Simulador</a><a href="#outros">6x1, ADM e 12x36</a><a href="#lei">Lei e plano</a>
+</div></nav>
+
+<section id="resumo"><div class="wrap">
+  <div class="tiles" id="kpis"></div>
+  <div class="grid2">
+    <div class="card ok"><h3>Recomendação</h3><div id="recom"></div></div>
+    <div class="card warn"><h3>A sugestão 4x2 de 12 h com 2 h de intervalo</h3><div id="sug412"></div></div>
+  </div>
+</div></section>
+
+<section id="quem"><div class="wrap">
+  <div class="sh"><h2>Quem muda de escala</h2><p>Os colaboradores do cadastro pela escala de hoje (último registro do Relatório de Revezamento).</p></div>
+  <div class="grid2">
+    <div class="card"><div class="bars" id="barsGrupos"></div></div>
+    <div class="tw"><table id="tabGrupos"></table></div>
+  </div>
+  <div class="grid2">
+    <div class="tw"><table id="tabTurnoArea"></table></div>
+    <div class="tw"><table id="tabFamilia"></table></div>
+  </div>
+  <p class="note" id="notaQuem"></p>
+</div></section>
+
+<section id="sugestoes"><div class="wrap">
+  <div class="sh"><h2>Sugestões de escala para os turnos 24 h</h2>
+    <p>Cada sugestão aplicada a todas as pessoas que hoje estão na 5x1. Clique numa linha para ver a escala e o risco dela.</p></div>
+  <div class="tw"><table id="tabCen"></table></div>
+  <div class="card">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <h3 style="margin:0" id="tituloBarras">Pessoas nos turnos 24 h</h3>
+      <div class="seg" role="group" aria-label="Medida do gráfico">
+        <button type="button" id="mPessoas" aria-pressed="true">Pessoas</button>
+        <button type="button" id="mFolha" aria-pressed="false">Folha</button>
+        <button type="button" id="mFrota" aria-pressed="false">Por frota</button>
+      </div>
+    </div>
+    <div class="bars" id="barsCen"></div>
+    <p class="note" style="margin-top:10px" id="notaBarras"></p>
+  </div>
+  <p class="note" id="notaCen"></p>
+</div></section>
+
+<section id="grade"><div class="wrap">
+  <div class="sh"><h2 id="tituloGrade">Escala</h2><p id="subGrade"></p></div>
+  <div class="ctl" style="max-width:420px"><label for="selGrade">Sugestão<select id="selGrade"></select></label></div>
+  <div class="props" id="propsGrade"></div>
+  <div class="tw" style="padding:10px"><table class="grade" id="tabGrade"></table></div>
+  <div class="legenda"><span><i style="background:var(--on)"></i>Trabalho</span><span><i style="background:var(--off)"></i>Folga</span><span><i style="background:var(--off-sun)"></i>Folga no domingo</span><span id="legGrade"></span></div>
+</div></section>
+
+<section id="risco"><div class="wrap">
+  <div class="sh"><h2>Risco com o Ministério do Trabalho</h2>
+    <p>O que um auditor fiscal do trabalho confere em cada sugestão. Ainda não há nota técnica do MTE sobre a EC 141; a leitura abaixo usa a CLT e a jurisprudência atual.</p></div>
+  <div class="tw"><table id="tabRisco"></table></div>
+  <div class="grid2" id="detRisco"></div>
+</div></section>
+
+<section id="simulador"><div class="wrap">
+  <div class="sh"><h2>Simulador</h2><p>Escolha a escala de cada área e, se quiser, o custo médio por pessoa. Tudo é recalculado na hora.</p></div>
+  <div class="card"><div class="ctl">
+    <label for="sAgr">Frentes agrícolas e automotivas<select id="sAgr"></select></label>
+    <label for="sInd">Indústria<select id="sInd"></select></label>
+    <label for="s6x1">6x1 operacional de dia<select id="s6x1">
+      <option value="A">Segunda a sexta (sem contratar)</option><option value="B">Segunda a sábado com folga escalonada</option></select></label>
+    <label for="rend">Rendição: 1 rendicionista para cada<select id="rend"><option value="4">4 frotas</option><option value="5" selected>5 frotas</option><option value="6">6 frotas</option></select></label>
+    <label for="sal">Salário médio + encargos (R$/mês)<input id="sal" inputmode="decimal" placeholder="opcional, ex.: 4.500"></label>
+    <label for="ben">Benefícios por pessoa (R$/mês)<input id="ben" inputmode="decimal" placeholder="transporte, refeição, plano"></label>
+    <label for="adic">Adicional de hora extra (%)<input id="adic" type="number" min="50" max="150" step="5" value="50"></label>
+    <label for="refl">Reflexos da hora extra (%)<input id="refl" type="number" min="0" max="80" step="5" value="20"></label>
+  </div></div>
+  <div class="tiles" id="simKpis"></div>
+  <div class="tw"><table id="simTab"></table></div>
+  <p class="note" id="simNota"></p>
+</div></section>
+
+<section id="outros"><div class="wrap">
+  <div class="sh"><h2>6x1 operacional, horário ADM e 12x36</h2><p>Quem não está nos turnos 24 h também muda.</p></div>
+  <div class="tw"><table id="tabOp6"></table></div>
+  <p class="note">Opção B: a operação continua de segunda a sábado e cada pessoa folga 2 dias em dias diferentes (5 de cada 6 trabalham por dia). Para o código 300, a opção A estica o dia de 5h45 para 7 h e mantém as horas da semana; mudar o horário diário pede concordância ou norma coletiva.</p>
+  <div class="grid2" id="cardsOutros"></div>
+</div></section>
+
+<section id="lei"><div class="wrap">
+  <div class="sh"><h2>Lei, plano e premissas</h2></div>
+  <div class="grid2">
+    <div class="tw"><table id="tabLei"></table></div>
+    <div class="tw"><table id="tabAtual"></table></div>
+  </div>
+  <div class="grid3">
+    <div class="card"><h3>Plano até 15/12/2026</h3><ol id="plano"></ol></div>
+    <div class="card warn"><h3>Pontos de atenção</h3><ul id="atencao"></ul></div>
+    <div class="card"><h3>Premissas da conta</h3><ul id="premissas"></ul></div>
+  </div>
+  <p class="note" id="fontes"></p>
+</div></section>
+<footer><div class="wrap" id="rodape"></div></footer>
+
+<script>
+const D = {"base":"20/10/2026","lei":{"promulgacao":"16/10/2026","fase1":"15/12/2026","fase2":"dez/2027","h_dia":8.0,"h_sem_fase1":42.0,"h_sem_fase2":40.0,"folgas_sem":2.0},"total":1770,"situacao":{"AT":1626,"AF":113,"FE":31},"grupos":[{"nome":"5x1 turnos 24 h","n":1047,"tom":"bad","acao":"Muda: 5x1 → escala nova dos turnos 24 h"},{"nome":"6x1 operacional (dia)","n":122,"tom":"bad","acao":"Muda: 6x1 → 5x2"},{"nome":"ADM com sábado (6x1)","n":176,"tom":"bad","acao":"Muda: sai o sábado (5x2, 40 h)"},{"nome":"ADM sábado compensado (5x2)","n":127,"tom":"warn","acao":"Ajusta horas: 44 h → 40 h"},{"nome":"12x36 (códigos Portaria)","n":41,"tom":"ok","acao":"Mantém, com norma coletiva"},{"nome":"Afastado (INSS)","n":111,"tom":"off","acao":"Fora da conta; entra ao voltar"},{"nome":"Sem registro no revezamento","n":113,"tom":"off","acao":"Verificar a escala real"},{"nome":"Férias/atestado sem escala de origem","n":33,"tom":"off","acao":"Verificar a escala de origem"}],"celulas":[{"familia":"Administrativo e apoio","area":"Agrícola e automotiva","triade":"07-15-23","n":32,"manha":11,"tarde":10,"noite":11},{"familia":"Administrativo e apoio","area":"Industrial","triade":"07-15-23","n":14,"manha":5,"tarde":3,"noite":6},{"familia":"Auxiliares agrícolas e rurais","area":"Agrícola e automotiva","triade":"05-13-21","n":8,"manha":5,"tarde":1,"noite":2},{"familia":"Auxiliares agrícolas e rurais","area":"Agrícola e automotiva","triade":"06-14-22","n":7,"manha":2,"tarde":3,"noite":2},{"familia":"Auxiliares agrícolas e rurais","area":"Agrícola e automotiva","triade":"07-15-23","n":63,"manha":25,"tarde":22,"noite":16},{"familia":"Laboratório e qualidade","area":"Agrícola e automotiva","triade":"07-15-23","n":1,"manha":1,"tarde":0,"noite":0},{"familia":"Laboratório e qualidade","area":"Industrial","triade":"07-15-23","n":16,"manha":7,"tarde":6,"noite":3},{"familia":"Lideranças","area":"Agrícola e automotiva","triade":"05-13-21","n":1,"manha":1,"tarde":0,"noite":0},{"familia":"Lideranças","area":"Agrícola e automotiva","triade":"06-14-22","n":1,"manha":1,"tarde":0,"noite":0},{"familia":"Lideranças","area":"Agrícola e automotiva","triade":"07-15-23","n":5,"manha":3,"tarde":1,"noite":1},{"familia":"Lideranças","area":"Industrial","triade":"06-14-22","n":1,"manha":0,"tarde":0,"noite":1},{"familia":"Lideranças","area":"Industrial","triade":"07-15-23","n":9,"manha":4,"tarde":3,"noite":2},{"familia":"Logística e abastecimento","area":"Agrícola e automotiva","triade":"07-15-23","n":14,"manha":5,"tarde":4,"noite":5},{"familia":"Logística e abastecimento","area":"Industrial","triade":"07-15-23","n":17,"manha":5,"tarde":5,"noite":7},{"familia":"Manutenção","area":"Agrícola e automotiva","triade":"05-13-21","n":8,"manha":1,"tarde":4,"noite":3},{"familia":"Manutenção","area":"Agrícola e automotiva","triade":"06-14-22","n":7,"manha":2,"tarde":2,"noite":3},{"familia":"Manutenção","area":"Agrícola e automotiva","triade":"07-15-23","n":110,"manha":60,"tarde":28,"noite":22},{"familia":"Manutenção","area":"Industrial","triade":"06-14-22","n":2,"manha":0,"tarde":2,"noite":0},{"familia":"Manutenção","area":"Industrial","triade":"07-15-23","n":35,"manha":18,"tarde":9,"noite":8},{"familia":"Motoristas","area":"Agrícola e automotiva","triade":"05-13-21","n":24,"manha":5,"tarde":10,"noite":9},{"familia":"Motoristas","area":"Agrícola e automotiva","triade":"06-14-22","n":62,"manha":20,"tarde":25,"noite":17},{"familia":"Motoristas","area":"Agrícola e automotiva","triade":"07-15-23","n":158,"manha":66,"tarde":46,"noite":46},{"familia":"Op. de máquinas agrícolas","area":"Agrícola e automotiva","triade":"05-13-21","n":59,"manha":18,"tarde":22,"noite":19},{"familia":"Op. de máquinas agrícolas","area":"Agrícola e automotiva","triade":"06-14-22","n":47,"manha":15,"tarde":17,"noite":15},{"familia":"Op. de máquinas agrícolas","area":"Agrícola e automotiva","triade":"07-15-23","n":177,"manha":69,"tarde":50,"noite":58},{"familia":"Operação industrial","area":"Agrícola e automotiva","triade":"07-15-23","n":1,"manha":1,"tarde":0,"noite":0},{"familia":"Operação industrial","area":"Industrial","triade":"07-15-23","n":168,"manha":71,"tarde":50,"noite":47}],"frotas24":232,"parciais":177,"cenarios":[{"id":"5x1","nome":"5x1 (hoje)","curto":"5x1 hoje","turnos":3,"trab":5,"ciclo":6,"h_trab":7.833333333333333,"he_dia":0.0,"rend":0.0,"turmas":6,"parada":1.5,"risco":"Proibida","horario":"07:00–15:20 · 15:00–23:20 · 23:00–07:20 (30 min de intervalo)","obs":"Não cumpre: 1,17 folga por semana e 45h41 de média","h_sem":45.694444444444436,"he_sem":0.0,"folgas_sem":1.1666666666666667},{"id":"5x2","nome":"5x2 rotativa · 3 turnos de 8 h","curto":"5x2 rotativa","turnos":3,"trab":5,"ciclo":7,"h_trab":7.833333333333333,"he_dia":0.0,"rend":0.0,"turmas":7,"parada":1.5,"risco":"Baixo","horario":"Mesmos horários de hoje: 07:00–15:20 · 15:00–23:20 · 23:00–07:20","obs":"Mesmos 3 turnos de 8 h; 7 turmas por turno; folgas giram em 7 semanas","h_sem":39.166666666666664,"he_sem":0.0,"folgas_sem":2.0},{"id":"4x2","nome":"4x2 · 3 turnos de 8 h","curto":"4x2 de 8 h","turnos":3,"trab":4,"ciclo":6,"h_trab":7.833333333333333,"he_dia":0.0,"rend":0.0,"turmas":3,"parada":1.5,"risco":"Baixo","horario":"Mesmos horários de hoje: 07:00–15:20 · 15:00–23:20 · 23:00–07:20","obs":"Mesmos 3 turnos; 3 turmas por turno; mais folga e mais gente","h_sem":36.55555555555555,"he_sem":0.0,"folgas_sem":2.3333333333333335},{"id":"12x36","nome":"12x36 · 2 turnos de 12 h","curto":"12x36","turnos":2,"trab":1,"ciclo":2,"h_trab":11.0,"he_dia":0.0,"rend":0.0,"turmas":2,"parada":2.0,"risco":"Médio","horario":"07:00–19:00 e 19:00–07:00, 1 h de intervalo (11 h de trabalho)","obs":"Trabalha um dia sim, um dia não; CLT art. 59-A com norma coletiva","h_sem":38.5,"he_sem":0.0,"folgas_sem":3.5},{"id":"3x3","nome":"3x3 · 2 turnos de 12 h","curto":"3x3 de 12 h","turnos":2,"trab":3,"ciclo":6,"h_trab":11.0,"he_dia":0.0,"rend":0.0,"turmas":2,"parada":2.0,"risco":"Médio","horario":"07:00–19:00 e 19:00–07:00, 1 h de intervalo (11 h de trabalho)","obs":"3 plantões seguidos e 3 dias de folga; compensação por norma coletiva","h_sem":38.5,"he_sem":0.0,"folgas_sem":3.5},{"id":"4x2_12","nome":"4x2 · 12 h com 2 h de intervalo","curto":"4x2 de 12 h","turnos":2,"trab":4,"ciclo":6,"h_trab":10.0,"he_dia":2.0,"rend":0.0,"turmas":3,"parada":4.0,"risco":"Alto","horario":"07:00–19:00 (intervalo 12:00–14:00) e 19:00–07:00 (intervalo 00:00–02:00): 10 h de trabalho","obs":"8 h normais + 2 h extras em todo plantão; máquina para no intervalo","h_sem":46.666666666666664,"he_sem":9.333333333333334,"folgas_sem":2.3333333333333335},{"id":"4x2_12r","nome":"4x2 · 12 h com 2 h de intervalo + rendição","curto":"4x2 12 h + rendição","turnos":2,"trab":4,"ciclo":6,"h_trab":10.0,"he_dia":2.0,"rend":0.2,"turmas":3,"parada":0.0,"risco":"Alto","horario":"Igual à 4x2 de 12 h, com 1 rendicionista para cada 5 frotas cobrindo os intervalos","obs":"Máquina roda 24 h; rendicionista também em 4x2 de 12 h","h_sem":46.666666666666664,"he_sem":9.333333333333334,"folgas_sem":2.3333333333333335}],"par":{"he_divisor":200,"dias_mes":30.4375},"grades":{"5x1":{"linhas":[["T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F"],["T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T"],["T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T"],["T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T"],["T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T"],["F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T"]],"rotulos":["Turma A","Turma B","Turma C","Turma D","Turma E","Turma F"],"nota":"turmas por horário hoje","leg":"5 de 6 turmas trabalham por dia"},"5x2":{"linhas":[["T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F"],["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F"],["T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T"],["F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"],["F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T"]],"rotulos":["Turma A","Turma B","Turma C","Turma D","Turma E","Turma F","Turma G"],"nota":"turmas por horário (A–F de hoje + G nova)","leg":"5 de 7 turmas trabalham por dia"},"4x2":{"linhas":[["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"]],"rotulos":["Turma A","Turma B","Turma C"],"nota":"turmas em cada horário de 8 h","leg":"2 de 3 turmas trabalham por dia em cada horário"},"12x36":{"linhas":[["T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F"],["F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T"],["T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F"],["F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T"]],"rotulos":["A · dia","B · dia","C · noite","D · noite"],"nota":"turmas: 2 de dia e 2 de noite","leg":"1 turma de dia e 1 de noite por dia"},"3x3":{"linhas":[["T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F"],["F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T"],["T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F"],["F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T"]],"rotulos":["A · dia","B · dia","C · noite","D · noite"],"nota":"turmas: 2 de dia e 2 de noite","leg":"1 turma de dia e 1 de noite por dia"},"4x2_12":{"linhas":[["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"],["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"]],"rotulos":["A · dia","B · dia","C · dia","D · noite","E · noite","F · noite"],"nota":"turmas: 3 de dia e 3 de noite","leg":"2 turmas de dia e 2 de noite por dia"}},"op6":{"n":122,"contratar_seg_sab":25,"linhas":[{"codigo":919,"horario":"07:00–12:00 / 13:00–15:20 6x1","n":52,"h_sem":44.0,"cargos":"Auxiliar Agricola 9, Trabalhador Rural 8, Op. de Maquinas Agricolas II 6","opA":"Seg–sex no mesmo horário: 36h40. Sem contratar, mas sem sábado","contratar_seg_sab":11},{"codigo":300,"horario":"06:00–12:00 (pausa 09:00–09:15)","n":45,"h_sem":34.5,"cargos":"Trabalhador Rural 45","opA":"Seg–sex 06:00–14:00 (1 h de intervalo): 7 h/dia, 35 h. Sem contratar e sem perder horas","contratar_seg_sab":9},{"codigo":552,"horario":"15:00–23:20 6x1 (30 min)","n":13,"h_sem":47.0,"cargos":"Op. de Maquinas Agricolas II 4, Op. de Maquinas Agricolas III 3, Motorista III 3","opA":"Seg–sex no mesmo horário: 39h10. Sem contratar, mas sem sábado","contratar_seg_sab":3},{"codigo":924,"horario":"6x1 06:00–14:20","n":12,"h_sem":47.0,"cargos":"Op. de Maquinas Agricolas I 5, Motorista II 4, Auxiliar Agricola 2","opA":"Seg–sex no mesmo horário: 39h10. Sem contratar, mas sem sábado","contratar_seg_sab":2}]},"adm6":{"n":176},"adm5":{"n":127},"cards_outros":[{"tom":"warn","titulo":"Horário ADM: 303 pessoas vão para segunda a sexta, 8 h por dia","itens":["176 com sábado (códigos 807, 814, 815 e 801): sai o sábado. Fica 07:00–11:00 / 12:00–16:00, 40 h.","127 com sábado compensado (910, 76 e 921): hoje fazem 8h48 por dia (44 h). Passam para 8 h por dia (40 h).","Sem contratação. A capacidade cai 1.212 h por semana (4 h por pessoa), o equivalente a 30 pessoas de 40 h. Funções operacionais nesse horário: auxiliares agrícolas e rurais 41, administrativo e apoio 38, manutenção 36, lideranças 32, motoristas 10."]},{"tom":"ok","titulo":"12x36: 41 pessoas (códigos Portaria) continuam na escala","itens":["Segurança patrimonial 26, Manutenção 4, Operação industrial 3, Lideranças 2.","A 12x36 só continua com norma coletiva escrita nas regras novas. As cláusulas antigas incompatíveis perdem efeito em 15/12/2026.","Com 1 h de intervalo gozado são 11 h por plantão e 38h30 por semana. Sem o intervalo seriam 42 h, acima das 40 h de dez/2027."]}],"checagens":[{"item":"2 folgas por semana (EC 141)","v":{"5x2":["ok","2"],"4x2":["ok","2 a 3"],"12x36":["ok","3 a 4"],"3x3":["ok","3 a 4"],"4x2_12":["ok","2 a 3"],"4x2_12r":["ok","2 a 3"]}},{"item":"Até 40 h normais por semana","v":{"5x2":["ok","39h10"],"4x2":["ok","36h33"],"12x36":["warn","38h30 na média, semanas de 44 h"],"3x3":["warn","38h30 na média, semanas de 44 h"],"4x2_12":["bad","37h20 + 9h20 extras"],"4x2_12r":["bad","37h20 + 9h20 extras"]}},{"item":"Duração do dia","v":{"5x2":["ok","7h50"],"4x2":["ok","7h50"],"12x36":["warn","11 h, art. 59-A"],"3x3":["warn","11 h, só com compensação coletiva"],"4x2_12":["bad","10 h: teto de 8 h + 2 h extras"],"4x2_12r":["bad","10 h: teto de 8 h + 2 h extras"]}},{"item":"Hora extra fixa na escala","v":{"5x2":["ok","não"],"4x2":["ok","não"],"12x36":["ok","não"],"3x3":["ok","não"],"4x2_12":["bad","2 h em todo plantão"],"4x2_12r":["bad","2 h em todo plantão"]}},{"item":"Atividade insalubre (CLT art. 60)","v":{"5x2":["ok","não se aplica"],"4x2":["ok","não se aplica"],"12x36":["ok","dispensa a licença"],"3x3":["warn","licença do MTE ou norma coletiva"],"4x2_12":["bad","licença do MTE ou norma coletiva"],"4x2_12r":["bad","licença do MTE ou norma coletiva"]}},{"item":"Norma coletiva","v":{"5x2":["ok","não precisa"],"4x2":["ok","não precisa"],"12x36":["warn","obrigatória"],"3x3":["warn","obrigatória"],"4x2_12":["warn","acordo de prorrogação; na prática, coletivo"],"4x2_12r":["warn","acordo de prorrogação; na prática, coletivo"]}},{"item":"Margem para atraso na troca de turno","v":{"5x2":["ok","até 2 h extras"],"4x2":["ok","até 2 h extras"],"12x36":["warn","pouca"],"3x3":["warn","pouca"],"4x2_12":["bad","nenhuma"],"4x2_12r":["bad","nenhuma"]}},{"item":"Noite de trabalhador urbano (hora reduzida)","v":{"5x2":["warn","conferir na norma coletiva"],"4x2":["warn","conferir na norma coletiva"],"12x36":["warn","conferir na norma coletiva"],"3x3":["warn","conferir na norma coletiva"],"4x2_12":["bad","passa de 10 h contadas"],"4x2_12r":["bad","passa de 10 h contadas"]}},{"item":"Fadiga (NR-1, NR-12, NR-31)","v":{"5x2":["ok","8 h"],"4x2":["ok","8 h"],"12x36":["warn","12 h, dia sim, dia não"],"3x3":["warn","3 plantões de 12 h seguidos"],"4x2_12":["bad","4 plantões de 12 h seguidos"],"4x2_12r":["bad","4 plantões de 12 h seguidos"]}}],"risco_det":{"5x1":{"veredito":"Proibida a partir de 15/12/2026: dá 1,17 folga por semana e, no turno de 7h50, 45h42 de média.","olha":["Menos de 2 folgas por semana.","Média acima de 42 h (2026) e de 40 h (2027)."],"fazer":["Trocar até 15/12/2026 por uma das sugestões."]},"5x2":{"veredito":"Escala que a EC 141 toma como regra. Não depende de norma coletiva para existir.","olha":["Ponto com as 2 folgas de cada semana registradas.","Trabalho aos domingos: atividade contínua e escala de revezamento com domingo de folga periódico (para mulheres, a cada 15 dias, CLT art. 386).","Hora noturna e intervalo de 30 min conforme a norma coletiva da categoria."],"fazer":["Manter as turmas fixas por horário. Alternar dia e noite transforma a escala em turno ininterrupto de revezamento, que tem limite de 6 h (CF art. 7º, XIV).","Publicar a escala com antecedência e igualar o tamanho das turmas na passagem.","Hora extra só eventual, dentro de 2 h por dia."]},"4x2":{"veredito":"Cumpre a lei com folga: 2 a 3 folgas por semana e 36h33 de média. Custa mais gente.","olha":["Ponto com as 2 folgas de cada semana registradas.","Trabalho aos domingos: atividade contínua e escala de revezamento com domingo de folga periódico (para mulheres, a cada 15 dias, CLT art. 386).","Hora noturna e intervalo de 30 min conforme a norma coletiva da categoria."],"fazer":["Manter as turmas fixas por horário. Alternar dia e noite transforma a escala em turno ininterrupto de revezamento, que tem limite de 6 h (CF art. 7º, XIV).","Publicar a escala com antecedência e igualar o tamanho das turmas na passagem.","Hora extra só eventual, dentro de 2 h por dia."]},"12x36":{"veredito":"Permitida pela CLT (art. 59-A) como regime diferenciado, desde que haja norma coletiva escrita nas regras novas.","olha":["Acordo ou convenção coletiva válidos depois de 15/12/2026; as cláusulas antigas incompatíveis perdem efeito.","Intervalo de 1 h gozado. Sem ele são 12 h por plantão e 42 h por semana, acima das 40 h de dez/2027.","Plantão que passa de 12 h por atraso na troca descaracteriza a escala.","Fadiga de 12 h operando máquina ou dirigindo à noite (PGR, NR-1)."],"fazer":["Usar nas frentes agrícolas 24 h, com troca de turno no campo.","Turmas fixas de dia e de noite.","Ponto com alerta perto de 12 h."]},"3x3":{"veredito":"Mesmo quadro da 12x36, com 3 plantões seguidos e 3 dias de folga. Não tem a base legal própria da 12x36: depende de compensação por norma coletiva.","olha":["Semanas com 44 h só valem com compensação em acordo coletivo (média de 38h30).","Em atividade insalubre, licença prévia do MTE (CLT art. 60) ou cláusula coletiva (art. 611-A, XIII). A dispensa do art. 60 vale só para a 12x36.","3 noites de 12 h seguidas: fadiga no PGR (NR-1)."],"fazer":["Preferir a 12x36, que tem base legal própria.","Se usar, acordo coletivo específico e turmas fixas de dia e de noite."]},"4x2_12":{"veredito":"Não é proibida, mas é a sugestão com mais chance de auto de infração e de passivo trabalhista.","olha":["10 h de trabalho é o teto da CLT (8 h + 2 h extras, art. 59). Atraso na troca de turno, no abastecimento ou na espera do ônibus passa do limite: infração por empregado e por dia.","Hora extra fixa: 46h40 por semana em média, contra 40 h da EC 141. Escala que já nasce com hora extra pode ser vista como forma de contornar o limite (CLT art. 9º), com risco de ação do Ministério Público do Trabalho.","Atividade insalubre: prorrogar a jornada todo dia exige licença prévia do MTE (CLT art. 60) ou cláusula em norma coletiva (art. 611-A, XIII). O TST já invalidou escala de 12 h em atividade insalubre por falta de licença.","Intervalo de 2 h: um só, registrado e livre. Se a pessoa fica na frente esperando, é tempo à disposição (CLT art. 4º) e o plantão vira 12 h de trabalho.","Turno da noite de trabalhador urbano: com a hora noturna reduzida, 19:00–07:00 conta cerca de 11 h.","4 plantões de 12 h seguidos operando máquina ou dirigindo: a fadiga precisa estar no PGR (NR-1) e na análise de risco (NR-31 e NR-12).","Hora extra habitual entra em 13º, férias, FGTS e DSR. Se for cortada depois de 1 ano, gera indenização (Súmula 291 do TST)."],"fazer":["Parecer jurídico antes de implantar.","Só nas frentes agrícolas 24 h (trabalhador rural, hora noturna de 60 min). Na indústria, não.","Acordo coletivo específico com a prorrogação de 2 h, a insalubridade e o intervalo de 2 h.","Ponto eletrônico com alerta antes de 10 h e troca de turno no campo, sem espera.","Piloto de 2 a 3 meses em uma frente, medindo horas, acidentes e produção.","Com rendição a máquina roda 24 h, mas o quadro volta a 3,6 por frota e a folha passa a da 5x2."]},"4x2_12r":{"veredito":"Mesmo risco da 4x2 de 12 h: a rendição resolve a máquina parada, não a jornada.","olha":["10 h de trabalho é o teto da CLT (8 h + 2 h extras, art. 59). Atraso na troca de turno, no abastecimento ou na espera do ônibus passa do limite: infração por empregado e por dia.","Hora extra fixa: 46h40 por semana em média, contra 40 h da EC 141. Escala que já nasce com hora extra pode ser vista como forma de contornar o limite (CLT art. 9º), com risco de ação do Ministério Público do Trabalho.","Atividade insalubre: prorrogar a jornada todo dia exige licença prévia do MTE (CLT art. 60) ou cláusula em norma coletiva (art. 611-A, XIII). O TST já invalidou escala de 12 h em atividade insalubre por falta de licença.","Intervalo de 2 h: um só, registrado e livre. Se a pessoa fica na frente esperando, é tempo à disposição (CLT art. 4º) e o plantão vira 12 h de trabalho.","Turno da noite de trabalhador urbano: com a hora noturna reduzida, 19:00–07:00 conta cerca de 11 h.","4 plantões de 12 h seguidos operando máquina ou dirigindo: a fadiga precisa estar no PGR (NR-1) e na análise de risco (NR-31 e NR-12).","Hora extra habitual entra em 13º, férias, FGTS e DSR. Se for cortada depois de 1 ano, gera indenização (Súmula 291 do TST)."],"fazer":["Parecer jurídico antes de implantar.","Só nas frentes agrícolas 24 h (trabalhador rural, hora noturna de 60 min). Na indústria, não.","Acordo coletivo específico com a prorrogação de 2 h, a insalubridade e o intervalo de 2 h.","Ponto eletrônico com alerta antes de 10 h e troca de turno no campo, sem espera.","Piloto de 2 a 3 meses em uma frente, medindo horas, acidentes e produção.","Com rendição a máquina roda 24 h, mas o quadro volta a 3,6 por frota e a folha passa a da 5x2."]}},"lei_tab":[["Jornada semanal máxima","44 h","42 h","40 h"],["Jornada diária normal","8 h","8 h (8h24 em 5 dias com norma coletiva)","8 h"],["Descanso semanal remunerado","1 dia","2 dias, um de preferência no domingo","2 dias"],["Escala diferente da 5x2","acordo ou convenção","só com norma coletiva: média de 2 folgas por semana no mês e 1 folga por semana","idem"],["Salário e piso","—","sem redução","sem redução"],["Cláusulas coletivas incompatíveis","valem","perdem efeito","—"]],"atual_tab":[["5x1 turnos 24 h (turno de 7h50)",565,"45h42","1,17",["bad","Não cumpre"],["bad","Não cumpre"]],["5x1 turnos 24 h (turno de 7h20)",482,"42h47","1,17",["bad","Não cumpre"],["bad","Não cumpre"]],["6x1 operacional (dia)",122,"34h30 a 47h00","1",["bad","Não cumpre"],["bad","Não cumpre"]],["ADM com sábado (6x1)",176,"44h00","1",["bad","Não cumpre"],["bad","Não cumpre"]],["ADM sábado compensado (8h48/dia)",127,"44h00","2",["bad","Não cumpre"],["bad","Não cumpre"]],["12x36 (códigos Portaria)",41,"38h30","3,5",["warn","Com norma coletiva"],["warn","Com norma coletiva"]]],"plano":[["Até 31/10/2026","Diretoria escolhe a escala dos turnos 24 h e aprova as contratações. Jurídico confere a EC 141 e as normas coletivas (rural e industrial)."],["Novembro","Recrutamento e treinamento conforme a escala escolhida (5x2: 175 pessoas para as turmas G). Prioridade: operadores de máquinas e motoristas."],["Novembro","Negociação com os sindicatos: 12x36, domingos, hora noturna, banco de horas e, se for o caminho, a prorrogação da 4x2 de 12 h."],["Até 01/12/2026","Cadastrar no ponto os códigos novos, montar as turmas e avisar cada pessoa da escala nova."],["15/12/2026","Começa a escala nova: 2 folgas por semana e no máximo 42 h."],["dez/2027","Limite de 40 h. 5x2, 4x2 de 8 h e 12x36 com intervalo já cumprem."]],"atencao":["Hora extra não substitui contratação: as 2 folgas não podem ser trabalhadas como rotina. Folga trabalhada é paga em dobro.","Entressafra: se ela começar antes de 15/12/2026, a troca acontece com menos frentes rodando e parte das contratações pode ficar para o início da safra 2027.","Hora noturna na indústria: para o trabalhador urbano a hora noturna é reduzida. Conferir na norma coletiva como o turno da noite é contado.","Mulheres em escala com domingo: domingo de folga a cada 15 dias (CLT art. 386).","Fora da conta: 111 afastados pelo INSS (entram na escala nova ao voltar), 113 sem registro no revezamento, a maioria lideranças (as 2 folgas valem para eles também), e 33 em férias ou atestado sem escala de origem."],"premissas":["5x1 = horários com 6 códigos de escala, um por dia de folga do ciclo de 6 dias.","Mantém a cobertura de hoje: o mesmo número de pessoas trabalhando por dia em cada turno. Férias e faltas continuam na mesma proporção.","Frotas 24 h = 232 postos que rodam nos 3 turnos; os 177 postos-turno parciais ficam em 8 h (5x2) nas sugestões de 12 h.","Turno de 8 h com 7h50 de trabalho; 12x36 e 3x3 com 11 h; 4x2 de 12 h com 10 h (8 h + 2 h extras).","Hora extra: horas por mês ÷ 200 (salário de 40 h) × adicional × reflexos (13º e férias). DSR sobre a hora extra habitual pode somar mais.","Rendição: 1 rendicionista para cada 5 frotas por turno, também em 4x2 de 12 h."],"fontes":[["Planalto: EC 141/2026","https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc141.htm"],["Agência Brasil: promulgação","https://agenciabrasil.ebc.com.br/politica/noticia/2026-10/congresso-promulga-emenda-do-fim-da-6x1-escala-5x2-comeca-em-60-dias"],["Agência Câmara: texto aprovado","https://www.camara.leg.br/noticias/1277141-camara-aprova-em-dois-turnos-fim-da-escala-6x1-com-jornada-maxima-de-40-horas-semanais"],["Contábeis: calendário da EC 141","https://www.contabeis.com.br/noticias/80151/emenda-141-muda-jornada-e-garante-mais-descanso/"],["Henrique Foreis: regime compensatório","https://www.henriqueforeis.com.br/blog/fim-da-escala-6x1-emenda-constitucional-141.html"],["TRT-4: prorrogação de 2 h (art. 59)","https://periodicos.trt4.jus.br/revista/article/download/905/809/1450"],["TST: 12 h sem licença em atividade insalubre","https://www.lex.com.br/tecnica-de-enfermagem-recebera-horas-extras-por-jornada-12x36/"]]};
+const $ = s => document.querySelector(s);
+const fmt = (x, d = 0) => Number(x).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const sinal = x => (x > 0 ? "+" : x < 0 ? "−" : "") + fmt(Math.abs(x));
+const pct = (a, b, d = 1) => fmt(a / b * 100, d) + "%";
+const sinalPct = x => (x > 0 ? "+" : x < 0 ? "−" : "") + fmt(Math.abs(x * 100), 1) + "%";
+const hm = h => { const m = Math.round(h * 60); return Math.floor(m / 60) + "h" + String(m % 60).padStart(2, "0"); };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const CEN = Object.fromEntries(D.cenarios.map(c => [c.id, c]));
+const SUG = D.cenarios.filter(c => c.id !== "5x1");
+const CELS = D.celulas.map(c => { const p24 = Math.min(c.manha, c.tarde, c.noite) * 5 / 6; return { ...c, p24, parc: c.n * 5 / 6 - 3 * p24 }; });
+const N24 = CELS.reduce((a, c) => a + c.n, 0);
+let SEL = "4x2_12", METRICA = "pessoas";
+
+function lerNum(v) { const t = String(v || "").replace(/\./g, "").replace(",", ".").trim(); const x = parseFloat(t); return isFinite(x) && x > 0 ? x : null; }
+function P() {
+  return { adic: (+$("#adic").value || 50) / 100, refl: (+$("#refl").value || 0) / 100, rendN: +$("#rend").value || 5,
+           sal: lerNum($("#sal").value), ben: lerNum($("#ben").value) };
+}
+function porFrota(c, p) { return c.turnos * c.ciclo / c.trab * (1 + (c.rend ? 1 / p.rendN : 0)); }
+function heMes(c) { return c.he_dia * D.par.dias_mes * c.trab / c.ciclo; }
+function hePct(c, p) { return heMes(c) / D.par.he_divisor * (1 + p.adic) * (1 + p.refl); }
+function calc(c, p24, parc, p) {
+  if (c.turnos === 3) { const nec = (3 * p24 + parc) * c.ciclo / c.trab; return { nec, folha: nec, heH: 0 }; }
+  const n12 = p24 * porFrota(c, p), n8 = parc * 7 / 5;
+  return { nec: n12 + n8, folha: n12 * (1 + hePct(c, p)) + n8, heH: n12 * heMes(c) };
+}
+function soma(cels, escolha, p) {
+  let n = 0, nec = 0, folha = 0, heH = 0, p24 = 0, parc = 0;
+  for (const c of cels) { const r = calc(CEN[escolha(c)], c.p24, c.parc, p); n += c.n; nec += r.nec; folha += r.folha; heH += r.heH; p24 += c.p24; parc += c.parc; }
+  return { n, nec, folha, heH, p24, parc, contratar: Math.ceil(nec - n - 1e-9) };
+}
+function rateio(total, partes) {
+  const b = partes.map(([k, v]) => { const f = Math.floor(v + 1e-9); return { k, v: f, r: v - f }; });
+  let falta = total - b.reduce((a, x) => a + x.v, 0);
+  [...b].sort((x, y) => y.r - x.r).slice(0, Math.max(falta, 0)).forEach(x => x.v++);
+  return Object.fromEntries(b.map(x => [x.k, x.v]));
+}
+function grade(id) { return D.grades[id === "4x2_12r" ? "4x2_12" : id]; }
+function analisaGrade(g) {
+  const L = g.linhas, dias = L[0].length, sem = dias / 7;
+  let fmin = 9, fmax = 0, seq = 0, dom = 0;
+  for (const l of L) {
+    for (let w = 0; w < sem; w++) { const f = l.slice(w * 7, w * 7 + 7).filter(x => x === "F").length; fmin = Math.min(fmin, f); fmax = Math.max(fmax, f); }
+    let s = 0; for (const v of l.concat(l)) { s = v === "T" ? s + 1 : 0; seq = Math.max(seq, s); }
+    dom = Math.max(dom, l.filter((v, i) => i % 7 === 6 && v === "F").length);
+  }
+  return { fmin, fmax, seq, dom, sem };
+}
+const RISCO_ORD = { "Baixo": 1, "Médio": 2, "Alto": 3, "Proibida": 4 };
+function th(cols) { return "<thead><tr>" + cols.map(([t, a]) => `<th class="${a || ""}">${t}</th>`).join("") + "</tr></thead>"; }
+
+/* ---------- topo e resumo ---------- */
+function resumo() {
+  const p = P(), g = D.grupos;
+  $("#lead").textContent = `${fmt(N24)} pessoas em 5x1 nos turnos 24 h e ${fmt(D.op6.n)} em 6x1 de dia precisam mudar de escala até 15/12/2026. No horário ADM, ${fmt(D.adm6.n + D.adm5.n)} pessoas vão para segunda a sexta, 8 h por dia.`;
+  const r = id => soma(CELS, () => id, p);
+  const a = r("5x2"), b = r("4x2_12"), c = r("12x36");
+  const dias = Math.round((new Date(2026, 11, 15) - new Date(2026, 9, 20)) / 864e5);
+  $("#kpis").innerHTML = [
+    ["Turnos 24 h em 5x1", fmt(N24), `${fmt(D.frotas24)} frotas nos 3 turnos + ${fmt(D.parciais)} postos parciais`, "bad"],
+    ["6x1 operacional", fmt(D.op6.n), "folga fixa no domingo", "bad"],
+    ["Horário ADM", fmt(D.adm6.n + D.adm5.n), `${D.adm6.n} com sábado + ${D.adm5.n} compensado`, "warn"],
+    ["5x2 rotativa", sinal(a.contratar), "pessoas nos turnos 24 h · risco baixo", "ok"],
+    ["4x2 de 12 h", sinal(b.contratar), `3 por frota · risco alto`, "warn"],
+    ["Prazo", dias + " dias", "até 15/12/2026", ""],
+  ].map(([t, v, s, k]) => `<div class="tile ${k}"><div class="t">${t}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join("");
+  $("#recom").innerHTML = `<ul>
+    <li><b>5x2 rotativa como regra</b>: mesmos 3 turnos de 8 h e mesmos horários; cada horário ganha uma 7ª turma (G). ${sinal(a.contratar)} pessoas, 39h10 por semana, 2 folgas em toda semana. Cumpre 2026 e 2027 sem norma coletiva especial.</li>
+    <li><b>Para precisar de menos gente</b>: 12x36 nas frentes agrícolas 24 h, com acordo coletivo (${sinal(c.contratar)} se aplicada em todos os turnos; risco médio).</li>
+    <li><b>4x2 de 12 h</b>: só com parecer jurídico, acordo coletivo e piloto em uma frente agrícola. Na indústria, não.</li>
+    <li>Horário ADM em segunda a sexta, 8 h (40 h). 6x1 de dia: decidir se o sábado continua (+${D.op6.contratar_seg_sab}).</li></ul>`;
+  $("#sug412").innerHTML = `<p><b>3 pessoas por frota</b>, uma a menos que a 12x36 (4) e 1,2 a menos que a 5x2 (4,2). Aplicada a todos os turnos 24 h: <b>${sinal(b.contratar)} pessoas</b> em relação a hoje.</p>
+    <p>A folha fica perto da 5x2 (${fmt(b.folha)} contra ${fmt(a.folha)} salários médios por mês): cada pessoa faz 2 h extras por plantão, cerca de ${fmt(hePct(CEN["4x2_12"], p) * 100)}% a mais no salário. Quem economiza é o quadro (benefícios, transporte, recrutamento).</p>
+    <p><span class="pill Alto">Risco alto no MTE</span> 10 h por dia é o teto legal (8 h + 2 h extras). Qualquer atraso na troca de turno vira infração. Com hora extra fixa, insalubridade e o turno da noite, é a sugestão mais exposta a autuação. Detalhes em <a href="#risco">Risco no MTE</a>.</p>`;
+}
+
+/* ---------- quem muda ---------- */
+function quem() {
+  const max = Math.max(...D.grupos.map(g => g.n));
+  const cor = { bad: "var(--bad)", warn: "var(--warn)", ok: "var(--ok)", off: "var(--on-ink)" };
+  $("#barsGrupos").innerHTML = D.grupos.map(g => `<div class="bar"><span class="lab" title="${esc(g.nome)}">${esc(g.nome)}</span>
+    <div class="trk"><div class="fill" style="width:${g.n / max * 82}%;background:${cor[g.tom]}"></div><span class="val" style="left:calc(${g.n / max * 82}% + 6px)">${fmt(g.n)}</span></div></div>`).join("");
+  $("#tabGrupos").innerHTML = th([["Grupo", "l"], ["Pessoas"], ["%"], ["O que acontece", "l"]]) + "<tbody>" +
+    D.grupos.map(g => `<tr><td class="l">${esc(g.nome)}</td><td>${fmt(g.n)}</td><td>${pct(g.n, D.total)}</td><td class="l">${esc(g.acao)}</td></tr>`).join("") +
+    `<tr class="tot"><td class="l">Total do cadastro</td><td>${fmt(D.total)}</td><td>100%</td><td></td></tr></tbody>`;
+  const areas = ["Agrícola e automotiva", "Industrial"], turnos = [["manha", "Manhã"], ["tarde", "Tarde"], ["noite", "Noite"]];
+  const v = (t, a) => CELS.filter(c => !a || c.area === a).reduce((s, c) => s + c[t], 0);
+  $("#tabTurnoArea").innerHTML = th([["Turno (5x1 hoje)", "l"], ["Agrícola e autom."], ["Industrial"], ["Total"]]) + "<tbody>" +
+    turnos.map(([k, n]) => `<tr><td class="l">${n}</td>${areas.map(a => `<td>${fmt(v(k, a))}</td>`).join("")}<td>${fmt(v(k))}</td></tr>`).join("") +
+    `<tr class="tot"><td class="l">Total</td>${areas.map(a => `<td>${fmt(CELS.filter(c => c.area === a).reduce((s, c) => s + c.n, 0))}</td>`).join("")}<td>${fmt(N24)}</td></tr></tbody>`;
+  const fam = {}; CELS.forEach(c => { const f = fam[c.familia] ||= { n: 0, p24: 0, parc: 0 }; f.n += c.n; f.p24 += c.p24; f.parc += c.parc; });
+  const lf = Object.entries(fam).sort((a, b) => b[1].n - a[1].n);
+  $("#tabFamilia").innerHTML = th([["Função (5x1 hoje)", "l"], ["Pessoas"], ["Frotas 24 h"], ["Postos parciais"]]) + "<tbody>" +
+    lf.map(([k, f]) => `<tr><td class="l">${esc(k)}</td><td>${fmt(f.n)}</td><td>${fmt(f.p24, 1)}</td><td>${fmt(f.parc, 1)}</td></tr>`).join("") +
+    `<tr class="tot"><td class="l">Total</td><td>${fmt(N24)}</td><td>${fmt(D.frotas24, 1)}</td><td>${fmt(D.parciais, 1)}</td></tr></tbody>`;
+  $("#notaQuem").textContent = `Frota 24 h = posto que roda de manhã, de tarde e de noite: o menor número de pessoas trabalhando por dia entre os três turnos, por função, área e grupo de horários (05/13/21, 06/14/22, 07/15/23). Postos parciais = postos-turno que sobram, quase todos de manhã. Cadastro: ${fmt(D.situacao.AT)} ativos, ${fmt(D.situacao.FE)} em férias e ${fmt(D.situacao.AF)} afastados. Agrícola e automotiva = centros de custo 1xx; industrial = 2xx.`;
+}
+
+/* ---------- sugestões ---------- */
+function linhasCen() {
+  const p = P();
+  return D.cenarios.map(c => { const r = soma(CELS, () => c.id, p); const g = analisaGrade(grade(c.id)); return { c, r, g, pf: porFrota(c, p) }; });
+}
+function sugestoes() {
+  const L = linhasCen(), hoje = L[0].r;
+  $("#tabCen").innerHTML = th([["Sugestão", "l"], ["Pessoas por frota 24 h"], ["Pessoas"], ["Contratar"], ["Folha (salários/mês)"], ["Folha x hoje"],
+    ["Horas por semana"], ["Folgas por semana"], ["Domingos de folga"], ["Máx. dias seguidos"], ["Máquina parada no intervalo"], ["Risco MTE", "c"]]) + "<tbody>" +
+    L.map(({ c, r, g, pf }) => `<tr class="click${c.id === SEL ? " sel" : ""}" data-id="${c.id}" tabindex="0">
+      <td class="l nome">${esc(c.nome)}</td><td>${fmt(pf, 1)}</td><td>${fmt(c.id === "5x1" ? r.n : r.n + r.contratar)}</td>
+      <td>${c.id === "5x1" ? "—" : `<span class="${r.contratar > 0 ? "pos" : "neg"}">${sinal(r.contratar)}</span>`}</td>
+      <td>${fmt(r.folha)}</td><td>${c.id === "5x1" ? "—" : sinalPct(r.folha / hoje.folha - 1)}</td>
+      <td>${hm(c.h_sem - c.he_sem)}${c.he_sem ? ` + ${hm(c.he_sem)} extras` : ""}</td><td>${fmt(c.folgas_sem, 2)}</td>
+      <td>${g.dom} a cada ${g.sem} sem.</td><td>${g.seq}</td><td>${c.parada ? fmt(c.parada, 1) + " h/dia" : "0 (rendição)"}</td>
+      <td class="c"><span class="pill ${c.risco}">${c.risco}</span></td></tr>`).join("") + "</tbody>";
+  document.querySelectorAll("#tabCen tr.click").forEach(tr => {
+    const go = () => { SEL = tr.dataset.id; $("#selGrade").value = SEL; tudo(); };
+    tr.addEventListener("click", go); tr.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+  });
+  const val = { pessoas: x => x.c.id === "5x1" ? x.r.n : x.r.n + x.r.contratar, folha: x => x.r.folha, frota: x => x.pf }[METRICA];
+  const tit = { pessoas: "Pessoas nos turnos 24 h", folha: "Folha mensal em salários médios (hora extra incluída)", frota: "Pessoas por frota rodando 24 h" }[METRICA];
+  const max = Math.max(...L.map(val)) * 1.12, ref = val(L[0]);
+  const cor = { "Baixo": "var(--ok)", "Médio": "var(--warn)", "Alto": "var(--bad)", "Proibida": "var(--on-ink)" };
+  $("#tituloBarras").textContent = tit;
+  $("#barsCen").innerHTML = L.map(x => { const v = val(x); return `<div class="bar"><span class="lab" title="${esc(x.c.nome)}">${esc(x.c.curto)}</span>
+    <div class="trk"><div class="fill" style="width:${v / max * 100}%;background:${cor[x.c.risco]}"></div>
+    <span class="val" style="left:calc(${v / max * 100}% + 6px)">${fmt(v, METRICA === "frota" ? 1 : 0)}</span>
+    <span class="ref" style="left:${ref / max * 100}%"></span></div></div>`; }).join("");
+  $("#notaBarras").textContent = "Cor da barra = risco no MTE (verde baixo, laranja médio, vermelho alto; cinza = escala de hoje, proibida a partir de 15/12/2026). Traço vertical = hoje.";
+  $("#notaCen").textContent = `Pessoas por frota = turnos por dia × dias do ciclo ÷ dias trabalhados. Nas sugestões de 12 h, as ${fmt(D.frotas24)} frotas 24 h vão para a escala de 12 h e os ${fmt(D.parciais)} postos parciais ficam em 5x2 de 8 h. Folha em salários médios: quem faz hora extra custa 1 + adicional + reflexos (ajuste no simulador). Horas por semana = média do ciclo. Contratar arredondado para cima.`;
+}
+
+/* ---------- grade ---------- */
+function mostraGrade() {
+  const c = CEN[SEL], g = grade(SEL), a = analisaGrade(g), dias = g.linhas[0].length, DS = "STQQSSD";
+  $("#tituloGrade").textContent = "Escala: " + c.nome;
+  $("#subGrade").textContent = c.horario + ". " + c.obs + ".";
+  $("#propsGrade").innerHTML = [
+    [g.linhas.length + " turmas", g.nota], [hm(c.h_sem - c.he_sem) + (c.he_sem ? " + " + hm(c.he_sem) : ""), c.he_sem ? "normais + extras por semana" : "por semana (média)"],
+    [a.fmin === a.fmax ? a.fmin : `${a.fmin} a ${a.fmax}`, "folgas em cada semana"], [`${a.dom} a cada ${a.sem}`, "domingos de folga (semanas)"],
+    [a.seq + " dias", "no máximo seguidos"], [fmt(porFrota(c, P()), 1), "pessoas por frota 24 h"],
+  ].map(([b, s]) => `<div><b>${b}</b><span>${esc(s)}</span></div>`).join("");
+  let h = `<thead><tr><th style="background:transparent"></th>`;
+  for (let w = 0; w < dias / 7; w++) h += `<th colspan="7" class="semana${w ? " wk" : ""}">Semana ${w + 1}</th>`;
+  h += `</tr><tr><th style="background:transparent"></th>` + Array.from({ length: dias }, (_, d) => `<th class="${d % 7 === 6 ? "dom" : ""}${d % 7 === 0 && d ? " wk" : ""}">${DS[d % 7]}</th>`).join("") + "</tr></thead><tbody>";
+  g.linhas.forEach((l, i) => { h += `<tr><td class="lab">${esc(g.rotulos[i])}</td>` + l.map((v, d) => `<td class="${v === "F" ? "F" + (d % 7 === 6 ? " d" : "") : ""}${d % 7 === 0 && d ? " wk" : ""}">${v === "F" ? "F" : ""}</td>`).join("") + "</tr>"; });
+  h += `<tr><td class="lab">Trabalhando</td>` + Array.from({ length: dias }, (_, d) => `<td class="cnt${d % 7 === 0 && d ? " wk" : ""}">${g.linhas.filter(l => l[d] === "T").length}</td>`).join("") + "</tr></tbody>";
+  $("#tabGrade").innerHTML = h;
+  $("#legGrade").textContent = g.leg;
+}
+
+/* ---------- risco ---------- */
+function risco() {
+  const ids = SUG.map(c => c.id);
+  $("#tabRisco").innerHTML = th([["O que a fiscalização confere", "l"], ...SUG.map(c => [esc(c.curto), "c"])]) + "<tbody>" +
+    D.checagens.map(k => `<tr><td class="l">${esc(k.item)}</td>${ids.map(id => { const [t, s] = k.v[id]; return `<td class="c"><span class="mk ${t}">${{ ok: "✓", warn: "!", bad: "✗" }[t]}</span> <span style="font-size:13px">${esc(s)}</span></td>`; }).join("")}</tr>`).join("") +
+    `<tr class="tot"><td class="l">Risco</td>${SUG.map(c => `<td class="c"><span class="pill ${c.risco}">${c.risco}</span></td>`).join("")}</tr></tbody>`;
+  const c = CEN[SEL], d = D.risco_det[SEL] || D.risco_det["5x2"];
+  $("#detRisco").innerHTML = `<div class="card ${{ "Baixo": "ok", "Médio": "warn", "Alto": "bad", "Proibida": "bad" }[c.risco]}"><h3>${esc(c.nome)}: <span class="pill ${c.risco}">risco ${c.risco.toLowerCase()}</span></h3><p>${esc(d.veredito)}</p><ul>${d.olha.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
+    <div class="card"><h3>${SEL.startsWith("4x2_12") ? "Se a diretoria quiser seguir com ela" : "Como manter o risco baixo"}</h3><ul>${d.fazer.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+}
+
+/* ---------- simulador ---------- */
+function simulador() {
+  const p = P(), ea = $("#sAgr").value, ei = $("#sInd").value;
+  const escolha = c => c.area === "Industrial" ? ei : ea;
+  const r = soma(CELS, escolha, p), hoje = soma(CELS, () => "5x1", p);
+  const c6 = $("#s6x1").value === "B" ? D.op6.contratar_seg_sab : 0;
+  const riscoMax = [ea, ei].map(id => CEN[id].risco).sort((a, b) => RISCO_ORD[b] - RISCO_ORD[a])[0];
+  const reais = x => "R$ " + fmt(x / 1000) + " mil";
+  const custo = (folha, pessoas) => p.sal ? folha * p.sal + (p.ben ? pessoas * p.ben : 0) : null;
+  const ch = custo(hoje.folha, hoje.nec), cn = custo(r.folha, r.nec);
+  $("#simKpis").innerHTML = [
+    ["Pessoas nos turnos 24 h", `${fmt(N24)} → ${fmt(N24 + r.contratar)}`, `${sinal(r.contratar)} pessoas`, r.contratar > 0 ? "bad" : "ok"],
+    ["Contratar no total", sinal(r.contratar + c6), `turnos 24 h ${sinal(r.contratar)} · 6x1 ${sinal(c6)} · ADM 0`, r.contratar + c6 > 0 ? "bad" : "ok"],
+    [ch ? (p.ben ? "Custo mensal (folha + benefícios)" : "Folha mensal") : "Folha mensal", ch ? reais(cn) : fmt(r.folha) + " sal.", ch ? `${sinal(Math.round((cn - ch) / 1000))} mil x hoje` : `${sinalPct(r.folha / hoje.folha - 1)} x hoje (em salários médios)`, "warn"],
+    ["Horas extras por mês", fmt(r.heH), r.heH ? "fixas na escala" : "nenhuma prevista na escala", r.heH ? "warn" : "ok"],
+    ["Risco no MTE", riscoMax, "da escala mais arriscada escolhida", { "Baixo": "ok", "Médio": "warn", "Alto": "bad", "Proibida": "bad" }[riscoMax]],
+  ].map(([t, v, s, k]) => `<div class="tile ${k}"><div class="t">${t}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join("");
+  const fam = {}; CELS.forEach(c => { const f = fam[c.familia] ||= []; f.push(c); });
+  const linhas = Object.entries(fam).map(([k, cs]) => [k, soma(cs, escolha, p)]).sort((a, b) => b[1].n - a[1].n);
+  const rt = rateio(r.contratar, linhas.map(([k, x]) => [k, x.nec - x.n]));
+  $("#simTab").innerHTML = th([["Função", "l"], ["Hoje"], ["Frotas 24 h"], ["Postos parciais"], ["Necessário"], ["Contratar"], ["Horas extras/mês"]]) + "<tbody>" +
+    linhas.map(([k, x]) => `<tr><td class="l">${esc(k)}</td><td>${fmt(x.n)}</td><td>${fmt(x.p24, 1)}</td><td>${fmt(x.parc, 1)}</td><td>${fmt(x.nec, 1)}</td><td><span class="${rt[k] > 0 ? "pos" : "neg"}">${sinal(rt[k])}</span></td><td>${fmt(x.heH)}</td></tr>`).join("") +
+    `<tr class="tot"><td class="l">Total</td><td>${fmt(r.n)}</td><td>${fmt(r.p24, 1)}</td><td>${fmt(r.parc, 1)}</td><td>${fmt(r.nec, 1)}</td><td>${sinal(r.contratar)}</td><td>${fmt(r.heH)}</td></tr></tbody>`;
+  $("#simNota").textContent = `Folha em salários médios: 1 salário por pessoa; quem faz 2 h extras por plantão custa ${fmt(1 + hePct(CEN["4x2_12"], p), 2)} (${fmt(heMes(CEN["4x2_12"]), 1)} h extras por mês ÷ ${D.par.he_divisor} h × adicional × reflexos). Com o salário médio preenchido, a folha vira reais; benefícios entram por pessoa. Contratar por função fecha com o total arredondado.`;
+}
+
+/* ---------- outros e lei ---------- */
+function outros() {
+  $("#tabOp6").innerHTML = th([["Código", "l"], ["Horário", "l"], ["Pessoas"], ["Principais cargos", "l"], ["h/sem hoje"], ["Opção A: segunda a sexta", "l"], ["Opção B: seg–sáb"]]) + "<tbody>" +
+    D.op6.linhas.map(x => `<tr><td class="l">${x.codigo}</td><td class="l">${esc(x.horario)}</td><td>${x.n}</td><td class="l">${esc(x.cargos)}</td><td>${hm(x.h_sem)}</td><td class="l">${esc(x.opA)}</td><td>+${x.contratar_seg_sab}</td></tr>`).join("") +
+    `<tr class="tot"><td class="l">Total</td><td></td><td>${D.op6.n}</td><td></td><td></td><td class="l">0</td><td>+${D.op6.contratar_seg_sab}</td></tr></tbody>`;
+  $("#cardsOutros").innerHTML = D.cards_outros.map(k => `<div class="card ${k.tom}"><h3>${esc(k.titulo)}</h3><ul>${k.itens.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`).join("");
+  $("#tabLei").innerHTML = th([["Regra", "l"], ["Até 14/12/2026"], ["A partir de 15/12/2026"], ["A partir de dez/2027"]]) + "<tbody>" +
+    D.lei_tab.map(l => `<tr><td class="l">${esc(l[0])}</td><td>${esc(l[1])}</td><td>${esc(l[2])}</td><td>${esc(l[3])}</td></tr>`).join("") + "</tbody>";
+  $("#tabAtual").innerHTML = th([["Escala de hoje", "l"], ["Pessoas"], ["h/semana"], ["Folgas/sem."], ["15/12/2026", "c"], ["dez/2027", "c"]]) + "<tbody>" +
+    D.atual_tab.map(l => `<tr><td class="l">${esc(l[0])}</td><td>${fmt(l[1])}</td><td>${esc(l[2])}</td><td>${esc(l[3])}</td>${[l[4], l[5]].map(v => `<td class="c"><span class="pill ${v[0]}">${esc(v[1])}</span></td>`).join("")}</tr>`).join("") + "</tbody>";
+  $("#plano").innerHTML = D.plano.map(x => `<li><b>${esc(x[0])}</b>: ${esc(x[1])}</li>`).join("");
+  $("#atencao").innerHTML = D.atencao.map(x => `<li>${esc(x)}</li>`).join("");
+  $("#premissas").innerHTML = D.premissas.map(x => `<li>${esc(x)}</li>`).join("");
+  $("#fontes").innerHTML = "Fontes: " + D.fontes.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(t)}</a>`).join(" · ") + ". Dados: Relatório de Revezamento e Relação de Funcionários do sistema de RH, 20/10/2026.";
+  $("#rodape").textContent = "Simulação para a diretoria. Validar com o jurídico e o departamento pessoal antes de implantar. Gerado a partir de escalas.xlsx e ativoss.xlsx (20/10/2026).";
+}
+
+function tudo() { resumo(); sugestoes(); mostraGrade(); risco(); simulador(); }
+function init() {
+  const ops = D.cenarios.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join("");
+  $("#selGrade").innerHTML = ops; $("#selGrade").value = SEL;
+  const opsSug = SUG.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join("");
+  $("#sAgr").innerHTML = opsSug; $("#sInd").innerHTML = opsSug; $("#sAgr").value = "5x2"; $("#sInd").value = "5x2";
+  $("#selGrade").addEventListener("change", e => { SEL = e.target.value; tudo(); });
+  ["#sAgr", "#sInd", "#s6x1", "#rend", "#sal", "#ben", "#adic", "#refl"].forEach(id => $(id).addEventListener("input", tudo));
+  [["#mPessoas", "pessoas"], ["#mFolha", "folha"], ["#mFrota", "frota"]].forEach(([id, m]) => $(id).addEventListener("click", () => {
+    METRICA = m; ["#mPessoas", "#mFolha", "#mFrota"].forEach(b => $(b).setAttribute("aria-pressed", String(b === id))); sugestoes();
+  }));
+  quem(); outros(); tudo();
+}
+init();
+</script>
+
+</body></html>

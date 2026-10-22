@@ -1,0 +1,761 @@
+<title>Escalas por departamento</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&display=swap">
+<style>
+/* Padrão das apresentações da diretoria (Indicadores Grupo Japungu, tema da apresentação comercial):
+   fundo azul-noite com campo de partículas, cromo translúcido com fio dourado, Archivo nos títulos e números,
+   Source Serif 4 nos textos, IBM Plex Mono nos rótulos; conteúdo em cartões brancos com filete dourado.
+   Uma tela por tópico, sem rolagem do documento; navegação por botões, bolinhas e setas.
+   Visual único (o da TV da diretoria), sem variação clara/escura. */
+:root {
+  color-scheme: dark;
+  --void: #0A1330; --navy: #12224A; --navy2: #1E3566; --gold: #C9A227;
+  --red: #C0392B; --green: #2E7D46; --amber: #A6620A;
+  --ink: #2B2B2B; --mut: #5A6072; --line: #D6DAE2; --bgsoft: #F4F6FA; --white: #FFFFFF;
+  --ok: #E2F1E6; --med: #FBEEDA; --bad: #FAE1DD; --tot: #FFF3D0; --sel: #FDF2D3; --na: #EEF0F4; --na-ink: #9AA3B5;
+  --t1: #F4F6FA; --t2: #AEBBD8; --t3: #7D8BB0; --linha: rgba(174,187,216,.20); --linha2: rgba(174,187,216,.34);
+  --gold-dim: rgba(201,162,39,.14); --gold-line: rgba(201,162,39,.50); --gold-glow: rgba(201,162,39,.26);
+  --f-display: "Archivo", "Segoe UI", -apple-system, Helvetica, Arial, sans-serif;
+  --f-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --ease: cubic-bezier(.22,1,.36,1);
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+html { background: var(--void); }
+body { margin: 0; display: flex; flex-direction: column; overflow: hidden; color: var(--t1); font-family: var(--f-display);
+  background: radial-gradient(1300px 780px at 12% -14%, #1C3672 0%, rgba(28,54,114,0) 62%),
+              radial-gradient(1000px 640px at 96% 112%, rgba(46,134,193,.16), rgba(46,134,193,0) 62%),
+              linear-gradient(180deg, #0D1A3F 0%, #0A1330 52%, #070E26 100%); }
+#campo, #vig { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+#campo { width: 100%; height: 100%; display: block; }
+#vig { background: radial-gradient(125% 95% at 50% 42%, transparent 34%, rgba(4,8,22,.60) 100%), radial-gradient(70% 55% at 50% 40%, var(--gold-dim), transparent 72%); }
+#barra { position: fixed; left: 0; bottom: 0; height: 2px; width: 0; z-index: 60; background: var(--gold); transition: width .52s var(--ease); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+td, th, input, .num { font-variant-numeric: tabular-nums; }
+
+/* cromo */
+header.top { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; gap: 6px 16px; flex-wrap: wrap;
+  padding: 11px max(30px, env(safe-area-inset-right, 0px)) 11px max(30px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(180deg, rgba(6,11,30,.66), rgba(6,11,30,.12)); border-bottom: 1px solid var(--linha); }
+header.top::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 84px; height: 2px; background: var(--gold); }
+header.top .brand { font: 600 11px var(--f-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--t2); }
+header.top .meta { font: 500 11px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--t3); }
+nav.toc { position: relative; z-index: 3; display: flex; align-items: center; gap: 4px 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none;
+  padding: 8px max(30px, env(safe-area-inset-right, 0px)) 8px max(30px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--linha); }
+nav.toc::-webkit-scrollbar { display: none; }
+.mod { font: 600 10px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--t1); padding: 4px 9px; border: 1px solid var(--gold); background: var(--gold-dim); border-radius: 2px; margin-right: 6px; }
+.mod.off { color: var(--t3); border-color: var(--linha); background: transparent; }
+.sep { flex: 0 0 1px; align-self: stretch; background: var(--linha); margin: 0 14px; }
+nav.toc a { font: 500 10px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--t3); text-decoration: none; margin-right: 14px; padding-bottom: 3px; border-bottom: 2px solid transparent; transition: color .25s, border-color .25s; }
+nav.toc a b { color: var(--gold); font-weight: 600; margin-right: 4px; }
+nav.toc a:hover { color: var(--t1); }
+nav.toc a.on { color: var(--t1); border-bottom-color: var(--gold); font-weight: 600; }
+.na-capa header.top, .na-capa nav.toc { opacity: 0; visibility: hidden; }
+header.top, nav.toc { transition: opacity .5s ease .2s, visibility 0s linear .2s; }
+
+/* páginas */
+.deck { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0; }
+.slide { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 12px; opacity: 0; visibility: hidden; overflow-y: auto;
+  padding: 18px max(30px, env(safe-area-inset-right, 0px)) 16px max(30px, env(safe-area-inset-left, 0px)); transition: opacity .62s ease, visibility .62s; }
+.slide.active { opacity: 1; visibility: visible; }
+.s-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; flex: 0 0 auto; }
+.s-eyebrow { display: flex; align-items: center; gap: 12px; font: 600 11.5px var(--f-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+.s-eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--gold); }
+.s-title { font: 700 clamp(22px, 2.4vw, 32px) var(--f-display); letter-spacing: -.018em; line-height: 1.08; margin: 4px 0 0; color: var(--t1); text-wrap: balance; }
+.s-sub { font: 400 14px var(--f-serif); color: var(--t2); margin: 5px 0 0; max-width: 900px; line-height: 1.5; }
+.chips { display: flex; gap: 9px; flex-wrap: wrap; }
+.chip { position: relative; overflow: hidden; border-radius: 3px; border: 1px solid var(--linha2); background: rgba(255,255,255,.035); padding: 8px 14px; min-width: 128px; }
+.chip::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--gold); }
+.chip .v { font: 700 21px var(--f-display); letter-spacing: -.02em; color: var(--gold); line-height: 1.1; }
+.chip .v.pos { color: #F0897A; } .chip .v.zero { color: #8FD3A6; }
+.chip .k { font: 500 10px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--t2); margin-top: 3px; }
+.card { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; background: var(--white); color: var(--ink); border-radius: 4px; border: 1px solid rgba(255,255,255,.16);
+  box-shadow: inset 0 2px 0 var(--gold), 0 28px 70px -12px rgba(0,0,0,.58), 0 0 90px -34px var(--gold-glow); padding: 10px 14px 10px; }
+.card.fix { flex: 0 0 auto; }
+.rolo { flex: 1 1 auto; min-height: 0; overflow: auto; }
+.card h3 { margin: 2px 0 8px; font: 600 11px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--navy); }
+.cols { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+.cols > .card { min-height: 0; }
+
+/* controles */
+.barra { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; padding: 2px 0 9px; margin-bottom: 6px; border-bottom: 1px solid var(--line); }
+.barra label { display: inline-flex; gap: 7px; align-items: center; font: 600 12.5px var(--f-display); color: var(--navy); cursor: pointer; }
+.barra input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--navy); }
+.barra .esp { flex: 1; }
+.btn { font: 600 10.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--bgsoft); border: 1px solid var(--line); border-radius: 2px; padding: 6px 11px; cursor: pointer; transition: border-color .2s, background-color .2s; }
+.btn:hover { border-color: var(--gold); background: var(--sel); }
+.btn.pri { background: var(--gold); border-color: var(--gold); }
+
+/* tabelas */
+table.tb { width: 100%; border-collapse: collapse; font: 600 13px var(--f-display); }
+table.tb th { position: sticky; top: 0; z-index: 2; background: var(--navy); color: var(--white); font-weight: 600; font-size: 11.5px; padding: 7px 7px; text-align: center; line-height: 1.22; vertical-align: bottom; }
+table.tb th u { display: block; text-decoration: none; font: 400 10px var(--f-mono); letter-spacing: .04em; opacity: .75; margin-top: 2px; }
+table.tb th.l, table.tb td.l { text-align: left; }
+table.tb td { padding: 3px 7px; border-bottom: 1px solid var(--line); text-align: center; color: var(--ink); vertical-align: middle; height: 34px; }
+#tabQ td { height: 27px; padding: 2px 7px; }
+#tabQ td.dep u, #tab td.dep u { display: inline; margin-left: 8px; }
+#tab td { height: 36px; padding: 2px 6px; }
+#tab small.s { display: inline; margin-left: 4px; }
+button.cel { line-height: 1.02; }
+@media (max-height: 820px) { .s-sub { display: none; } }
+#tabQ tr.sec td { height: 22px; }
+table.tb td.dep { min-width: 190px; color: var(--navy); font-weight: 700; }
+table.tb td.dep u { display: block; text-decoration: none; color: var(--mut); font: 400 12px var(--f-serif); font-style: italic; margin-top: 1px; }
+table.tb td.dep u b { font: 600 10px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; font-style: normal; color: #8A6D14; }
+table.tb td.mut { color: var(--mut); font-weight: 500; white-space: nowrap; }
+table.tb td small.s { display: block; font: 500 10.5px var(--f-mono); color: var(--mut); }
+table.tb tr.clic { cursor: pointer; }
+table.tb tr.clic:hover td { background: #EEF1F7; }
+table.tb tr.clic:hover td.dep { color: #8A6D14; }
+table.tb tr.sel td { background: var(--sel); }
+table.tb tr.tot td { position: sticky; bottom: 0; background: var(--tot); font-weight: 700; color: var(--navy); border-top: 2px solid var(--navy); }
+table.tb tr.sec td { background: #F1F3F8; color: var(--navy); font: 600 10.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; height: 26px; border-top: 2px solid var(--line); }
+.pt { display: inline-flex; gap: 3px; }
+.pt input { width: 38px; padding: 3px 2px; text-align: center; font: 700 14px var(--f-display); color: var(--navy); border: 1px solid var(--line); border-radius: 3px; background: var(--white); color-scheme: light; }
+.pt input:disabled { background: var(--bgsoft); color: var(--na-ink); }
+button.cel { width: 100%; min-width: 72px; border: 2px solid transparent; border-radius: 3px; padding: 1px 2px; cursor: pointer; display: grid; line-height: 1.1; background: var(--bgsoft); color: var(--ink); font-family: var(--f-display); }
+button.cel b { font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+button.cel b i { font-style: normal; color: var(--gold); font-size: 13px; margin-right: 3px; }
+button.cel small { font: 500 10px var(--f-mono); color: var(--mut); }
+button.cel.ok { background: var(--ok); } button.cel.ok b { color: var(--green); }
+button.cel.med { background: var(--med); } button.cel.med b { color: var(--amber); }
+button.cel.bad { background: var(--bad); } button.cel.bad b { color: var(--red); }
+button.cel.ns { background: var(--na); } button.cel.ns b { color: var(--na-ink); }
+button.cel.esc { border-color: var(--navy); box-shadow: 0 0 0 1px var(--navy) inset; }
+.tag { font: 600 9px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--navy); }
+.tag::before { content: "★ "; color: var(--gold); }
+td.na { color: var(--na-ink); font: 400 12px var(--f-serif); font-style: italic; }
+.q { display: inline-flex; align-items: baseline; gap: 5px; line-height: 1.1; }
+.q b { font-size: 16px; letter-spacing: -.02em; }
+.q small { font: 500 10.5px var(--f-mono); }
+.q.up small { color: var(--red); } .q.eq small { color: var(--mut); }
+td.qesc { background: var(--sel); }
+.pill { display: inline-block; font: 600 9.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; white-space: nowrap; margin-top: 3px; }
+.pill.Baixo { background: var(--ok); color: var(--green); } .pill.Médio { background: var(--med); color: var(--amber); }
+.pill.ns { background: var(--bad); color: var(--red); }
+th .pill.Baixo { background: rgba(46,125,70,.35); color: #CFEBD8; } th .pill.Médio { background: rgba(201,162,39,.30); color: #F3E2A6; } th .pill.ns { background: rgba(192,57,43,.38); color: #F7C9C2; }
+.leg { display: flex; flex-wrap: wrap; gap: 4px 16px; font: 400 12.5px var(--f-serif); color: var(--mut); margin-top: 7px; }
+.leg i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; vertical-align: -1px; margin-right: 5px; }
+
+/* capa */
+.capa { justify-content: space-between; gap: 14px; }
+.capa-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+.capa-topo img { display: block; height: clamp(44px, 8vh, 84px); width: auto; max-width: 46vw; }
+.capa-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; text-align: right; }
+.capa-meta .k { font: 600 11.5px var(--f-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+.capa-meta .v { font: 500 11px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--t2); }
+.capa-meio { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 36px; align-items: center; }
+.selo { display: inline-flex; align-items: center; gap: 12px; font: 600 12px var(--f-mono); letter-spacing: .24em; text-transform: uppercase; color: var(--gold); }
+.selo::before { content: ""; width: 38px; height: 3px; background: var(--gold); border-radius: 2px; }
+.capa h1 { font: 800 clamp(40px, 6vw, 92px) var(--f-display); letter-spacing: -.035em; line-height: .98; margin: 18px 0 14px; color: var(--t1); }
+.capa h1 em { display: block; font: italic 400 .4em var(--f-serif); letter-spacing: 0; color: var(--t2); margin-top: 12px; }
+.capa .sub { font: 400 16px var(--f-serif); color: var(--t2); max-width: 46ch; line-height: 1.55; margin: 0; }
+.graf { min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+.graf-t { font: 600 11.5px var(--f-mono); letter-spacing: .2em; text-transform: uppercase; color: var(--t1); }
+.graf-u { font: 400 13px var(--f-serif); font-style: italic; color: var(--t2); margin-left: 10px; letter-spacing: 0; text-transform: none; }
+.graf svg { width: 100%; height: auto; max-height: 52vh; display: block; margin-top: 10px; }
+.capa-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--linha2); border-radius: 4px; background: rgba(255,255,255,.025); }
+.capa-kpi { padding: clamp(10px, 2vh, 18px) clamp(12px, 1.8vw, 26px); min-width: 0; }
+.capa-kpi + .capa-kpi { border-left: 1px solid rgba(255,255,255,.10); }
+.capa-kpi .n { font: 700 clamp(26px, min(3.4vw, 6vh), 48px) var(--f-display); letter-spacing: -.03em; color: var(--gold); line-height: 1.04; }
+.capa-kpi .n small { font-size: .42em; font-weight: 600; margin-left: .3em; opacity: .85; letter-spacing: 0; }
+.capa-kpi .n.pos { color: #F0897A; }
+.capa-kpi .l { margin-top: 6px; font: 500 11px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--t1); line-height: 1.35; }
+.capa-kpi .l em { display: block; font: 400 13px var(--f-serif); text-transform: none; letter-spacing: 0; color: var(--t2); }
+
+/* capa: índice no lugar do gráfico */
+.capa-indice { align-self: center; border-left: 1px solid var(--linha2); padding-left: 32px; }
+.ci-t { font: 600 11.5px var(--f-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+.capa-indice ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.capa-indice button { all: unset; cursor: pointer; display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 2px 10px; padding: 9px 10px; border-radius: 3px; width: 100%; box-sizing: border-box; transition: background-color .25s; }
+.capa-indice button:hover, .capa-indice button:focus-visible { background: rgba(255,255,255,.05); }
+.capa-indice .n { grid-row: span 2; font: 600 13px var(--f-mono); color: var(--gold); padding-top: 3px; }
+.capa-indice .t { font: 700 19px var(--f-display); letter-spacing: -.01em; color: var(--t1); }
+.capa-indice .d { font: italic 400 13.5px var(--f-serif); color: var(--t2); }
+
+/* painel */
+.painel { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px; }
+.painel > .card { min-height: 0; }
+.card h3 .h3u { font: italic 400 12.5px var(--f-serif); letter-spacing: 0; text-transform: none; color: var(--mut); margin-left: 8px; }
+.painel svg { width: 100%; height: 100%; display: block; }
+table.lista { width: 100%; border-collapse: collapse; font: 600 13px var(--f-display); }
+table.lista td { padding: 5px 6px; border-bottom: 1px solid var(--line); color: var(--ink); }
+table.lista td.n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+table.lista tr.g td { background: var(--bgsoft); color: var(--navy); font: 700 13.5px var(--f-display); border-top: 2px solid var(--line); padding: 7px 6px; }
+table.lista tr.g td i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 8px; vertical-align: -1px; }
+table.lista tr.g small { font: 500 10.5px var(--f-mono); color: var(--mut); margin-left: 6px; }
+table.lista tr.clic { cursor: pointer; } table.lista tr.clic:hover td { background: #EEF1F7; }
+table.lista td.dn { color: var(--navy); font-weight: 600; padding-left: 26px; }
+table.lista td.dn u { text-decoration: none; font: 600 9.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: #8A6D14; margin-left: 6px; }
+table.lista .up { color: var(--red); font-weight: 700; } table.lista .eq { color: var(--mut); font-weight: 500; }
+
+/* quadro completo: colunas com linhas, números maiores */
+#tabQ { font-size: 14px; }
+#tabQ th, #tabQ td { border-right: 1px solid var(--line); }
+#tabQ th:last-child, #tabQ td:last-child { border-right: 0; }
+#tabQ thead th { border-right-color: rgba(255,255,255,.18); }
+#tabQ thead tr.grp th { background: #0E1A3D; color: var(--gold); font: 600 10.5px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,.14); }
+#tabQ thead tr + tr th { top: 27px; }
+#tabQ td { height: 31px; padding: 2px 9px; vertical-align: middle; }
+#tabQ tbody tr:nth-child(even):not(.tot):not(.sec) td { background: #FAFBFD; }
+#tabQ tbody tr.clic:hover td { background: #EEF1F7; }
+#tabQ td.dep { font-size: 14px; }
+#tabQ td.dep u { display: inline; margin-left: 8px; }
+#tabQ td.hoje { font: 700 17px var(--f-display); color: var(--navy); background: #F7F8FB; }
+#tabQ td.comp { font: 500 11.5px var(--f-mono); color: var(--mut); text-align: left; white-space: nowrap; vertical-align: middle; line-height: 1.2; }
+#tabQ td.qv { white-space: nowrap; }
+#tabQ td.qv b { font: 700 17px var(--f-display); letter-spacing: -.02em; color: var(--ink); }
+#tabQ td.qv .dl { display: inline-block; min-width: 30px; margin-left: 7px; font: 600 11px var(--f-mono); padding: 1px 5px; border-radius: 2px; text-align: center; }
+#tabQ td.qv .dl.up { background: var(--bad); color: var(--red); }
+#tabQ td.qv .dl.eq { color: var(--na-ink); }
+#tabQ td.qv.qsel { box-shadow: inset 0 -3px 0 var(--gold); background: var(--sel) !important; }
+#tabQ td.ec { white-space: nowrap; }
+#tabQ td.ec span { display: inline-block; font: 600 10.5px var(--f-mono); letter-spacing: .04em; padding: 3px 7px; border-radius: 2px; color: #fff; }
+#tabQ td.fq { background: var(--tot); }
+#tabQ td.fq b { font: 800 18px var(--f-display); color: var(--navy); }
+#tabQ td.nm { color: var(--mut); font: italic 400 13px var(--f-serif); }
+#tabQ tr.tot td { border-right-color: rgba(18,34,74,.18); }
+#tabQ tr.tot td b { font-size: 19px; }
+
+/* gráficos e escalas */
+.bars text { font-family: var(--f-display); }
+.escalas { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.esc { background: var(--white); color: var(--ink); border-radius: 4px; padding: 12px 12px 10px; min-width: 0; display: flex; flex-direction: column; gap: 8px;
+  box-shadow: inset 0 2px 0 var(--gold), 0 24px 60px -14px rgba(0,0,0,.55); }
+.esc.nserve { box-shadow: inset 0 2px 0 var(--red), 0 24px 60px -14px rgba(0,0,0,.55); }
+.esc h4 { margin: 0; font: 700 16px var(--f-display); color: var(--navy); letter-spacing: -.01em; }
+.esc .hr { font: 400 12.5px var(--f-serif); color: var(--mut); line-height: 1.4; }
+.esc dl { margin: 0; display: grid; grid-template-columns: auto auto; gap: 3px 8px; font-size: 12.5px; }
+.esc dt { font: 500 10px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--mut); align-self: center; }
+.esc dd { margin: 0; font-weight: 700; color: var(--navy); text-align: right; }
+.esc .nt { font: 400 12px var(--f-serif); color: var(--ink); line-height: 1.42; margin-top: auto; }
+.esc .big { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.esc .big div { background: var(--bgsoft); border-top: 2px solid var(--navy); padding: 7px 8px; }
+.esc .big b { display: block; font: 700 28px var(--f-display); letter-spacing: -.03em; color: var(--navy); line-height: 1; }
+.esc .big b.pos { color: var(--red); }
+.esc .big span { display: block; font: 500 9.5px var(--f-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--mut); margin-top: 5px; line-height: 1.3; }
+.mini td, .mini th { width: 15px; height: 16px; }
+.mini { border-collapse: separate; border-spacing: 2px; }
+.mini td, .mini th { width: 13px; height: 14px; padding: 0; border-radius: 2px; font: 600 8px var(--f-mono); text-align: center; }
+.mini th { background: var(--navy); color: #fff; }
+.mini th.d { background: var(--red); }
+.mini td { background: #DFE4EC; }
+.mini td.F { background: var(--green); } .mini td.F.d { background: var(--red); }
+.mini td.lab { width: auto; background: transparent; font: 600 9px var(--f-mono); color: var(--navy); padding-right: 4px; text-align: left; white-space: nowrap; }
+ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px var(--f-serif); color: var(--ink); line-height: 1.45; }
+
+/* painel de detalhe */
+.mf { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 28px; }
+.mf[hidden] { display: none !important; }
+.mf-fundo { position: absolute; inset: 0; background: rgba(6,12,28,.72); backdrop-filter: blur(2px); }
+.mf-caixa { position: relative; background: var(--white); color: var(--ink); border-radius: 4px; box-shadow: 0 24px 70px rgba(0,0,0,.5); width: min(1180px, 95vw); max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
+.mf-topo { display: flex; align-items: flex-start; gap: 16px; padding: 14px 20px 12px; background: var(--navy); color: #fff; border-bottom: 3px solid var(--gold); }
+.mf-k { font: 600 10.5px var(--f-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+.mf-titulo { font: 700 20px var(--f-display); letter-spacing: -.01em; margin-top: 3px; }
+.mf-sub { font: 400 13px var(--f-serif); color: var(--t2); margin-top: 4px; }
+.mf-fechar { margin-left: auto; font: 600 10.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--gold); border: 0; border-radius: 2px; padding: 7px 12px; cursor: pointer; }
+.mf-corpo { overflow: auto; padding: 14px 20px 18px; display: grid; gap: 14px; }
+.mf-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; }
+.comp { display: grid; gap: 6px; }
+.comp div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--bgsoft); border-left: 3px solid var(--navy); padding: 7px 10px; color: var(--navy); font-weight: 600; font-size: 13.5px; }
+.comp div.fim { border-left-color: var(--gold); background: var(--tot); }
+.comp b { font-size: 17px; }
+.nota { font: 400 12.5px var(--f-serif); color: var(--mut); margin: 8px 0 0; line-height: 1.45; }
+.grade { border-collapse: separate; border-spacing: 2px; font: 600 10px var(--f-mono); }
+.grade th { background: var(--navy); color: #fff; padding: 2px 0; width: 17px; border-radius: 2px; }
+.grade th.dom { background: var(--red); }
+.grade th.semana { background: var(--bgsoft); color: var(--navy); font-weight: 600; }
+.grade td { padding: 0; width: 17px; height: 19px; border-radius: 2px; background: #DFE4EC; text-align: center; }
+.grade td.F { background: var(--green); color: #fff; }
+.grade td.F.d { background: var(--red); }
+.grade td.lab { width: auto; padding: 0 8px 0 2px; text-align: left; background: transparent; color: var(--navy); white-space: nowrap; }
+.grade .wk { box-shadow: -3px 0 0 var(--white); }
+
+/* barra inferior */
+.deck-nav { position: relative; z-index: 3; flex: 0 0 auto; display: flex; align-items: center; gap: 16px;
+  padding: 8px max(26px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(26px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(0deg, rgba(6,11,30,.72), rgba(6,11,30,.12)); border-top: 1px solid var(--linha); }
+.deck-nav > button { font: 500 11px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--t2); background: transparent; border: 1px solid var(--linha2); border-radius: 2px; padding: 6px 14px; cursor: pointer; transition: color .25s, border-color .25s, background-color .25s; }
+.deck-nav > button:hover:not(:disabled) { color: var(--t1); border-color: var(--gold); background: var(--gold-dim); }
+.deck-nav > button:disabled { opacity: .28; cursor: default; }
+.dots { display: flex; gap: 10px; margin: 0 auto; }
+.dots button { width: 7px; height: 7px; padding: 0; border-radius: 50%; border: 0; background: rgba(174,187,216,.30); cursor: pointer; transition: background-color .25s, transform .25s, box-shadow .25s; }
+.dots button.on { background: var(--gold); transform: scale(1.55); box-shadow: 0 0 10px var(--gold-line); }
+.hint { font: 400 10.5px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--t3); }
+.count { font: 500 11px var(--f-mono); letter-spacing: .14em; color: var(--t3); }
+
+/* entrada em sequência */
+@keyframes sobe { from { opacity: 0; transform: translateY(22px); } }
+@keyframes varre { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.slide.active .s-eyebrow, .slide.active .selo { animation: sobe .7s var(--ease) .06s backwards; }
+.slide.active .s-title, .slide.active h1 { animation: sobe .7s var(--ease) .14s backwards; }
+.slide.active .s-sub, .slide.active .sub { animation: sobe .7s var(--ease) .22s backwards; }
+.slide.active .chip, .slide.active .capa-kpis { animation: sobe .65s var(--ease) .3s backwards; }
+.slide.active .card, .slide.active .esc { animation: sobe .7s var(--ease) .32s backwards; }
+.slide.active .graf svg { animation: varre 1.3s var(--ease) .35s backwards; }
+@media (prefers-reduced-motion: reduce) { .slide, .slide * { animation: none !important; transition: none !important; } }
+
+/* telas estreitas e baixas */
+@media (max-width: 1180px) { .escalas { grid-template-columns: repeat(3, minmax(0, 1fr)); } .painel { grid-template-columns: minmax(0, 1fr); } .painel > .card { flex: 0 0 auto; } }
+@media (max-width: 900px) {
+  .capa-meio, .cols, .mf-cols { grid-template-columns: minmax(0, 1fr); }
+  .capa-indice { border-left: 0; padding-left: 0; }
+  .capa-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .capa-kpi:nth-child(3) { border-left: 0; } .capa-kpi:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,.10); }
+  .card, .cols, .escalas { flex: 0 0 auto; } .rolo { max-height: 70vh; }
+  .escalas { grid-template-columns: minmax(0, 1fr); }
+  .hint { display: none; } .capa-meta { display: none; }
+}
+@media (max-width: 560px) { .deck-nav > button { padding: 6px 9px; } .dots { gap: 8px; } }
+@media print { #campo, #vig, #barra, .deck-nav, nav.toc, .barra, .mf { display: none !important; } body, html { height: auto; overflow: visible; background: #fff; }
+  .deck { position: static; } .slide { position: relative; opacity: 1; visibility: visible; break-after: page; color: var(--navy); } .s-title, .capa h1 { color: var(--navy); } .slide.capa { display: none; } }
+</style>
+
+<canvas id="campo" aria-hidden="true"></canvas><div id="vig" aria-hidden="true"></div><div id="barra" aria-hidden="true"></div>
+<header class="top"><div class="brand">CRV Industrial &nbsp;·&nbsp; Escalas de trabalho · EC 141/2026</div><div class="meta" id="meta"></div></header>
+<nav class="toc" aria-label="Páginas"><span class="mod">Oficina</span><span class="mod off">Próximas áreas</span><span class="sep"></span><span id="toc"></span></nav>
+
+<main class="deck" id="deck">
+  <article class="slide capa" id="capa" data-title="Capa">
+    <div class="capa-topo">
+      <img alt="CRV Industrial — Açúcar, Etanol e Energia" width="640" height="191" src="/*LOGO*/">
+      <div class="capa-meta"><span class="k">Fim da escala 6x1 · EC 141/2026</span><span class="v">Simulação para a diretoria</span><span class="v" id="capaBase"></span></div>
+    </div>
+    <div class="capa-meio">
+      <div>
+        <div class="selo">Oficina · simulação por departamento</div>
+        <h1>Escalas da Oficina<em>Quadro de hoje e quadro em cada escala</em></h1>
+        <p class="sub" id="capaSub"></p>
+      </div>
+      <nav class="capa-indice" aria-label="Nesta apresentação"><div class="ci-t">Nesta apresentação</div><ol id="capaIndice"></ol></nav>
+    </div>
+    <div class="capa-kpis" id="capaKpis"></div>
+  </article>
+
+  <article class="slide" id="painel" data-title="Painel" data-desc="O quadro da oficina hoje, em cada escala e na escolha por departamento">
+    <div class="s-head"><div><div class="s-eyebrow">01 · Painel</div><h2 class="s-title">Quadro da oficina: hoje e em cada escala</h2>
+      <p class="s-sub">Cada barra aplica uma escala a todos os departamentos com turno. A última soma a escala escolhida em cada um.</p></div>
+      <div class="chips" id="pChips"></div></div>
+    <div class="painel">
+      <div class="card"><h3>Quadro em cada escala<span class="h3u">pessoas · diferença sobre hoje</span></h3><div class="rolo" style="overflow:hidden"><svg id="gPainel" class="bars" role="img" aria-label="Quadro da oficina hoje e em cada escala"></svg></div></div>
+      <div class="card"><h3>Escala escolhida em cada departamento<span class="h3u">hoje → com a escala</span></h3><div class="rolo"><table class="lista" id="pLista"></table></div></div>
+    </div>
+  </article>
+
+  <article class="slide" id="quadro" data-title="Quadro completo" data-desc="Departamento por departamento: pessoas hoje e em cada escala">
+    <div class="s-head"><div><div class="s-eyebrow">02 · Quadro</div><h2 class="s-title">Quadro completo: hoje e em cada escala</h2>
+      <p class="s-sub">Pessoas de cada departamento hoje e quantas ficaria em cada escala. Quem sobra continua no departamento, de dia. Clique no departamento para ver o detalhe.</p></div>
+      <div class="chips" id="qChips"></div></div>
+    <div class="card"><div class="rolo"><table class="tb" id="tabQ"></table></div></div>
+  </article>
+
+  <article class="slide" id="matriz" data-title="Matriz de validação" data-desc="Contratar ou sobra em cada escala; escolha e pessoas por turno">
+    <div class="s-head"><div><div class="s-eyebrow">03 · Validação</div><h2 class="s-title">Cada departamento em cada escala</h2>
+      <p class="s-sub">Pessoas a contratar (+) ou que sobram para o dia (−). Clique na célula para escolher a escala; ajuste as pessoas por turno se a necessidade for outra.</p></div>
+      <div class="chips" id="mChips"></div></div>
+    <div class="card">
+      <div class="barra">
+        <label for="vol"><input type="checkbox" id="vol">Folguista volante entre turnos</label>
+        <label for="adm"><input type="checkbox" id="adm">Usar quem está no horário ADM do departamento</label>
+        <span class="esp"></span>
+        <button type="button" class="btn pri" id="bSug">Sugerida em todos</button>
+        <button type="button" class="btn" id="b5x2">5x2 em todos</button>
+        <button type="button" class="btn" id="b12">12x36 em todos</button>
+        <button type="button" class="btn" id="bHoje">Voltar ao inicial</button>
+      </div>
+      <div class="rolo"><table class="tb" id="tab"></table></div>
+      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><i style="background:var(--na)"></i>não serve na oficina</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
+    </div>
+  </article>
+
+  <article class="slide" id="grafico" data-title="Contratação" data-desc="Quanto cada departamento contrata na escala escolhida">
+    <div class="s-head"><div><div class="s-eyebrow">04 · Contratação</div><h2 class="s-title">Contratação por departamento</h2>
+      <p class="s-sub">Escala escolhida em cada departamento, comparada com a 5x2 em todos.</p></div>
+      <div class="chips" id="gChips"></div></div>
+    <div class="card"><div class="rolo"><svg id="gDep" class="bars" role="img" aria-label="Contratação por departamento"></svg></div></div>
+  </article>
+
+  <article class="slide" id="escalas" data-title="As escalas" data-desc="Horas, folgas, domingos e risco de cada escala">
+    <div class="s-head"><div><div class="s-eyebrow">05 · Referência</div><h2 class="s-title">As escalas na oficina</h2>
+      <p class="s-sub">Duas primeiras semanas de cada escala. F verde = folga; vermelho = folga no domingo.</p></div></div>
+    <div class="escalas" id="cardsEsc"></div>
+  </article>
+
+  <article class="slide" id="premissas" data-title="Sem turno e premissas" data-desc="Quem vai para segunda a sexta e como a conta foi feita">
+    <div class="s-head"><div><div class="s-eyebrow">06 · Premissas</div><h2 class="s-title">Sem turno e premissas da conta</h2></div></div>
+    <div class="cols">
+      <div class="card"><h3>Vão para segunda a sexta</h3><div class="rolo"><table class="tb" id="tabDia"></table></div></div>
+      <div class="card"><h3>Premissas e pontos de atenção</h3><div class="rolo"><ul class="prem" id="prem"></ul></div></div>
+    </div>
+  </article>
+</main>
+
+<div class="mf" id="mf" hidden>
+  <div class="mf-fundo" id="mfFundo"></div>
+  <div class="mf-caixa" role="dialog" aria-modal="true" aria-labelledby="mfTit">
+    <div class="mf-topo"><div><div class="mf-k" id="mfK"></div><div class="mf-titulo" id="mfTit"></div><div class="mf-sub" id="mfSub"></div></div>
+      <button type="button" class="mf-fechar" id="mfFechar">Fechar</button></div>
+    <div class="mf-corpo">
+      <div class="mf-cols">
+        <div><div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3>Como fica a equipe</h3><div class="comp" id="mfComp"></div><p class="nota" id="mfNota"></p></div></div>
+        <div><div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3>Todas as escalas neste departamento</h3><div class="rolo"><table class="tb" id="mfTab"></table></div></div></div>
+      </div>
+      <div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3 id="mfGt"></h3><div class="rolo"><table class="grade" id="mfGrade"></table></div><p class="nota" id="mfGn"></p></div>
+    </div>
+  </div>
+</div>
+
+<div class="deck-nav">
+  <button type="button" id="prev">‹ Anterior</button>
+  <div class="dots" id="dots"></div>
+  <span class="hint">Trocar de página: botões, bolinhas ou ← →</span>
+  <button type="button" id="next">Próxima ›</button>
+  <span class="count" id="count">–</span>
+</div>
+
+<script>
+const D = /*DADOS*/null;
+const $ = s => document.querySelector(s);
+const fmt = (x, d = 0) => Number(x).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const sinal = x => (x > 0 ? "+" : x < 0 ? "−" : "") + fmt(Math.abs(x));
+const hm = h => { const m = Math.round(h * 60); return Math.floor(m / 60) + "h" + String(m % 60).padStart(2, "0"); };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const ESC = Object.fromEntries(D.escalas.map(e => [e.id, e]));
+const IDS = D.escalas.map(e => e.id);
+const TURNOS = ["Manhã", "Tarde", "Noite"];
+const ORD = { "Baixo": 0, "Médio": 1, "Não serve": 9 };
+const S = { vol: false, adm: false, P: {}, esc: {} };
+D.deps.forEach(d => { S.P[d.dep] = { ...d.postos }; });
+
+/* ---------- conta ---------- */
+function precisa(e, P, vol) {
+  const f = e.ciclo / e.trab, f5 = 7 / 5, v = TURNOS.map(t => P[t] || 0);
+  if (e.turnos === 3) return vol ? Math.ceil(v.reduce((a, b) => a + b, 0) * f - 1e-9) : v.reduce((a, x) => a + Math.ceil(x * f - 1e-9), 0);
+  const p24 = Math.min(...v);
+  if (p24 === 0) return null;
+  const ex = v.map(x => x - p24);
+  if (vol) return Math.ceil(2 * p24 * f + ex.reduce((a, b) => a + b, 0) * f5 - 1e-9);
+  return 2 * Math.ceil(p24 * f - 1e-9) + ex.reduce((a, x) => a + Math.ceil(x * f5 - 1e-9), 0);
+}
+/* c = contratar (+) ou sobra (−); adm = quem fica no horário ADM (caldeiraria: o resto da equipe) */
+function conta(d, id) {
+  const e = ESC[id], need = precisa(e, S.P[d.dep], S.vol);
+  if (need === null) return null;
+  const pool = d.equipe + (S.adm ? d.adm : 0);
+  if (d.regra === "1turno") {
+    const c = Math.max(0, need - pool);
+    return { need, c, sobra: 0, adm: Math.max(0, pool - need) + d.adm_hoje, fica: d.n + c };
+  }
+  const c = need - pool, usados = S.adm ? Math.min(d.adm, Math.max(0, need - d.equipe)) : 0;
+  return { need, c, sobra: Math.max(0, -c), adm: d.adm_hoje - usados, fica: d.n + Math.max(c, 0) };
+}
+function sugerida(d) {
+  const ok = IDS.filter(id => ESC[id].risco !== "Não serve" && conta(d, id));
+  return ok.sort((a, b) => Math.max(conta(d, a).c, 0) - Math.max(conta(d, b).c, 0) || ORD[ESC[a].risco] - ORD[ESC[b].risco] || IDS.indexOf(a) - IDS.indexOf(b))[0];
+}
+function totais(escolha) {
+  let contr = 0, sobra = 0, fica = 0, risco = "Baixo";
+  D.deps.forEach(d => { let id = escolha(d); if (!conta(d, id)) id = "5x2"; const r = conta(d, id); contr += Math.max(r.c, 0); sobra += r.sobra; fica += r.fica; if (ORD[ESC[id].risco] > ORD[risco]) risco = ESC[id].risco; });
+  const dia = D.dia.filter(x => !x.parte).reduce((a, x) => a + x.n, 0);
+  return { contr, sobra, risco, quadro: fica + dia };
+}
+const COR = { "5x2": "#12224A", "4x2": "#5D78B4", "12x36": "#C9A227", "3x3": "#8A6D14", "4x2_12": "#C0392B" };
+const DIA = D.dia.filter(x => !x.parte).reduce((a, x) => a + x.n, 0);
+const HOJE = D.deps.reduce((a, d) => a + d.n, 0) + D.dia.filter(x => !x.parte).reduce((a, x) => a + x.n, 0);
+const classe = c => c <= 0 ? "ok" : c <= 2 ? "med" : "bad";
+const pill = r => `<span class="pill ${r === "Não serve" ? "ns" : r}">${r}</span>`;
+const th = cols => "<thead><tr>" + cols.map(([t, a]) => `<th class="${a || ""}">${t}</th>`).join("") + "</tr></thead>";
+const mostra = r => r.c > 0 ? sinal(r.c) : r.sobra ? "−" + r.sobra : "0";
+const nomeDep = d => `${esc(d.nome)}<u>${d.sub ? `<b>${esc(d.sub)}</b> · ` : ""}${esc(d.regra_txt || "")}</u>`;
+
+/* ---------- gráficos (SVG desenhado na escala) ---------- */
+function barrasV(svg, itens, opts) {
+  const W = 760, H = 360, m = { l: 44, r: 10, t: 34, b: 58 }, bruto = Math.max(...itens.map(i => i.v)) * 1.12;
+  const passo = [10, 20, 25, 50, 100, 200, 250, 500].find(p => bruto / p <= 5) || 1000, max = Math.ceil(bruto / passo) * passo;
+  const bw = (W - m.l - m.r) / itens.length, y = v => m.t + (H - m.t - m.b) * (1 - v / max);
+  let g = "";
+  for (let v = 0; v <= max; v += passo) { const yy = y(v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="rgba(174,187,216,.16)"/><text x="${m.l - 8}" y="${yy + 4}" text-anchor="end" font-size="11" fill="#7D8BB0">${fmt(v)}</text>`; }
+  if (opts.ref) { const yr = y(opts.ref); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yr}" y2="${yr}" stroke="#AEBBD8" stroke-dasharray="5 5" stroke-width="1.3"/><text x="${W - m.r}" y="${yr - 6}" text-anchor="end" font-size="11" fill="#AEBBD8" font-family="IBM Plex Mono, monospace">HOJE ${fmt(opts.ref)}</text>`; }
+  itens.forEach((it, i) => {
+    const x = m.l + bw * i + bw * .18, w = bw * .64, yy = y(it.v);
+    g += `<rect x="${x}" y="${yy}" width="${w}" height="${H - m.b - yy}" rx="2" fill="${it.cor}"/>`;
+    g += `<text x="${x + w / 2}" y="${yy - 8}" text-anchor="middle" font-size="17" font-weight="700" fill="${it.corT || "#F4F6FA"}">${fmt(it.v)}</text>`;
+    if (it.d !== undefined) g += `<text x="${x + w / 2}" y="${yy - 26}" text-anchor="middle" font-size="11" font-weight="600" fill="${it.d > 0 ? "#F0897A" : "#8FD3A6"}" font-family="IBM Plex Mono, monospace">${it.d > 0 ? "+" + it.d : it.d < 0 ? "−" + Math.abs(it.d) : "="}</text>`;
+    it.lab.split("\n").forEach((l, k) => { g += `<text x="${x + w / 2}" y="${H - m.b + 18 + k * 14}" text-anchor="middle" font-size="${k ? 10 : 12}" fill="${k ? "#7D8BB0" : "#AEBBD8"}" font-weight="${k ? 400 : 600}" ${k ? 'font-family="IBM Plex Mono, monospace"' : ""}>${esc(l)}</text>`; });
+  });
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = g;
+}
+function barrasH(svg, linhas) {
+  const W = 1500, rh = 31, m = { l: 290, r: 70, t: 34, b: 14 }, H = m.t + m.b + rh * linhas.length;
+  const max = Math.max(4, ...linhas.flatMap(l => [l.a, l.b])), x = v => m.l + (W - m.l - m.r) * v / max;
+  let g = `<rect x="${m.l}" y="6" width="12" height="12" rx="2" fill="#C9A227"/><text x="${m.l + 18}" y="16" font-size="11" fill="#5A6072" font-family="IBM Plex Mono, monospace">ESCALA ESCOLHIDA</text>
+       <rect x="${m.l + 170}" y="6" width="12" height="12" rx="2" fill="#B8C2D6"/><text x="${m.l + 188}" y="16" font-size="11" fill="#5A6072" font-family="IBM Plex Mono, monospace">5X2 EM TODOS</text>`;
+  for (let k = 0; k <= max; k += Math.max(1, Math.round(max / 6))) g += `<line x1="${x(k)}" x2="${x(k)}" y1="${m.t - 4}" y2="${H - m.b}" stroke="#E6E9F0"/><text x="${x(k)}" y="${H}" text-anchor="middle" font-size="10" fill="#9AA3B5">${k}</text>`;
+  linhas.forEach((l, i) => {
+    const y0 = m.t + rh * i;
+    g += `<text x="${m.l - 12}" y="${y0 + 15}" text-anchor="end" font-size="13" font-weight="700" fill="#12224A">${esc(l.nome)}</text><text x="${m.l - 12}" y="${y0 + 28}" text-anchor="end" font-size="10.5" fill="#5A6072" font-family="IBM Plex Mono, monospace">${esc(l.esc)}</text>`;
+    g += `<rect x="${m.l}" y="${y0 + 3}" width="${Math.max(0, x(Math.max(l.a, 0)) - m.l)}" height="13" rx="2" fill="#C9A227"/>`;
+    g += `<rect x="${m.l}" y="${y0 + 18}" width="${Math.max(0, x(Math.max(l.b, 0)) - m.l)}" height="9" rx="2" fill="#B8C2D6"/>`;
+    g += `<text x="${x(Math.max(l.a, 0)) + 6}" y="${y0 + 14}" font-size="12.5" font-weight="700" fill="${l.a > 0 ? "#C0392B" : "#2E7D46"}">${l.a > 0 ? "+" + l.a : l.a < 0 ? "sobra " + Math.abs(l.a) : "0"}</text>`;
+    g += `<text x="${x(Math.max(l.b, 0)) + 6}" y="${y0 + 27}" font-size="10.5" fill="#5A6072">${l.b > 0 ? "+" + l.b : "0"}</text>`;
+  });
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.style.width = "100%"; svg.style.minWidth = "760px";
+  svg.innerHTML = g;
+}
+
+/* ---------- telas ---------- */
+function capa() {
+  const n24 = D.deps.reduce((a, d) => a + d.n, 0), t5 = totais(() => "5x2"), ts = totais(sugerida), atual = totais(d => S.esc[d.dep]);
+  $("#capaBase").textContent = `Base de ${D.base}`;
+  $("#capaSub").textContent = `${fmt(HOJE)} pessoas na oficina, ${D.deps.length} departamentos em turno. A 5x2 e as 2 folgas por semana valem a partir de 15/12/2026; a escala de cada departamento muda o tamanho do quadro.`;
+  $("#capaKpis").innerHTML = [
+    [fmt(HOJE), "Pessoas hoje", `${fmt(n24)} em departamentos com turno`, ""],
+    [sinal(t5.contr), "5x2 em todos", `quadro de ${fmt(t5.quadro)} · risco baixo`, "pos"],
+    [sinal(ts.contr), "Escala sugerida", `quadro de ${fmt(ts.quadro)} · a de menor contratação`, ""],
+    [sinal(atual.contr), "Escolha atual", `quadro de ${fmt(atual.quadro)} · risco ${atual.risco.toLowerCase()}`, ""],
+  ].map(([n, l, e, c]) => `<div class="capa-kpi"><div class="n ${c}">${n}</div><div class="l">${l}<em>${e}</em></div></div>`).join("");
+}
+function indice() {
+  $("#capaIndice").innerHTML = SL.slice(1).map((sl, i) => `<li><button type="button" data-i="${i + 1}"><span class="n">${String(i + 1).padStart(2, "0")}</span><span class="t">${esc(sl.dataset.title)}</span><span class="d">${esc(sl.dataset.desc || "")}</span></button></li>`).join("");
+  document.querySelectorAll("#capaIndice button").forEach(b => b.addEventListener("click", () => vai(+b.dataset.i)));
+}
+function grupos() {
+  const g = {};
+  D.deps.forEach(d => { const id = S.esc[d.dep], r = conta(d, id); (g[id] ||= { id, deps: [], fica: 0, hoje: 0, contr: 0 }); g[id].deps.push({ d, r }); g[id].fica += r.fica; g[id].hoje += d.n; g[id].contr += Math.max(r.c, 0); });
+  return IDS.filter(id => g[id]).map(id => g[id]);
+}
+function grafPainel(svg) {
+  const W = 1000, H = 500, m = { l: 46, r: 62, t: 40, b: 128 };
+  const atual = totais(d => S.esc[d.dep]), gs = grupos();
+  const itens = [{ id: "hoje", v: HOJE, lab: "Hoje", sub: "5x1 / 6x1", cor: "#B8C2D6" }];
+  IDS.forEach(id => { const t = totais(() => id); itens.push({ id, v: t.quadro, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.quadro - HOJE, ns: ESC[id].risco === "Não serve" }); });
+  itens.push({ id: "esc", v: atual.quadro, lab: "Escolhida", sub: "POR DEPARTAMENTO", d: atual.quadro - HOJE, seg: [{ v: DIA, cor: "#DCE1EA" }, ...gs.map(g => ({ v: g.fica, cor: COR[g.id] }))] });
+  const bruto = Math.max(...itens.map(i => i.v)) * 1.1, passo = [10, 20, 25, 50, 100].find(p => bruto / p <= 6) || 200, max = Math.ceil(bruto / passo) * passo;
+  const bw = (W - m.l - m.r) / itens.length, y = v => m.t + (H - m.t - m.b) * (1 - v / max);
+  let g = "";
+  for (let v = 0; v <= max; v += passo) { const yy = y(v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="#E6E9F0"/><text x="${m.l - 8}" y="${yy + 4}" text-anchor="end" font-size="11" fill="#9AA3B5">${fmt(v)}</text>`; }
+  const yr = y(HOJE);
+  g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yr}" y2="${yr}" stroke="#5A6072" stroke-dasharray="5 5" stroke-width="1.2"/>`;
+  itens.forEach((it, i) => {
+    const x = m.l + bw * i + bw * .17, w = bw * .66, cx = x + w / 2, yy = y(it.v), esc_ = it.id === "esc";
+    if (esc_) g += `<rect x="${x - 6}" y="${m.t - 30}" width="${w + 12}" height="${H - m.t - 2}" rx="4" fill="#FDF2D3"/>`;
+    if (it.seg) { let base = H - m.b; it.seg.forEach(sg => { const h = (H - m.t - m.b) * sg.v / max; g += `<rect x="${x}" y="${base - h}" width="${w}" height="${h}" fill="${sg.cor}" stroke="#fff" stroke-width="1.5"/>`; base -= h; }); }
+    else g += `<rect x="${x}" y="${yy}" width="${w}" height="${H - m.b - yy}" rx="2" fill="${it.cor}" ${it.ns ? 'fill-opacity=".55"' : ""}/>`;
+    g += `<text x="${cx}" y="${yy - 9}" text-anchor="middle" font-size="${esc_ ? 21 : 18}" font-weight="800" fill="#12224A">${fmt(it.v)}</text>`;
+    if (it.d !== undefined) g += `<text x="${cx}" y="${yy - 30}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${it.d > 0 ? "#C0392B" : "#2E7D46"}" font-family="IBM Plex Mono, monospace">${it.d > 0 ? "+" + it.d : it.d < 0 ? "−" + Math.abs(it.d) : "="}</text>`;
+    g += `<text x="${cx}" y="${H - m.b + 19}" text-anchor="middle" font-size="13" font-weight="700" fill="#12224A">${esc(it.lab)}</text>`;
+    g += `<text x="${cx}" y="${H - m.b + 33}" text-anchor="middle" font-size="9.5" fill="${it.ns ? "#C0392B" : "#5A6072"}" font-family="IBM Plex Mono, monospace">${esc(it.sub)}</text>`;
+    if (esc_) {
+      let ly = H - m.b + 52;
+      [...gs].reverse().forEach(gr => { g += `<rect x="${x - 2}" y="${ly - 9}" width="10" height="10" rx="2" fill="${COR[gr.id]}"/><text x="${x + 13}" y="${ly}" font-size="11" font-weight="600" fill="#12224A">${esc(ESC[gr.id].curto)} · ${gr.deps.length}</text>`; ly += 16; });
+      g += `<rect x="${x - 2}" y="${ly - 9}" width="10" height="10" rx="2" fill="#DCE1EA"/><text x="${x + 13}" y="${ly}" font-size="11" font-weight="600" fill="#5A6072">sem turno · ${D.dia.filter(z => !z.parte).length}</text>`;
+    }
+  });
+  g += `<text x="${W - m.r + 8}" y="${yr - 3}" font-size="10.5" fill="#5A6072" font-family="IBM Plex Mono, monospace">HOJE</text><text x="${W - m.r + 8}" y="${yr + 11}" font-size="12" font-weight="700" fill="#12224A">${fmt(HOJE)}</text>`;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  svg.innerHTML = g;
+}
+function painel() {
+  chips("#pChips");
+  grafPainel($("#gPainel"));
+  let h = "";
+  grupos().forEach(gr => {
+    h += `<tr class="g"><td colspan="3"><i style="background:${COR[gr.id]}"></i>${esc(ESC[gr.id].curto)}<small>${gr.deps.length} depto(s) · ${gr.hoje} → ${gr.fica} · contratar ${sinal(gr.contr)}</small></td></tr>`;
+    gr.deps.forEach(({ d, r }) => { const dd = r.fica - d.n; h += `<tr class="clic" data-dep="${d.dep}"><td class="dn">${esc(d.sub || d.nome)}${d.sub ? "<u>PCM</u>" : ""}</td><td class="n">${d.n} → <b>${r.fica}</b></td><td class="n ${dd > 0 ? "up" : "eq"}">${dd > 0 ? "+" + dd : "="}</td></tr>`; });
+  });
+  h += `<tr class="g"><td colspan="3"><i style="background:#DCE1EA"></i>Sem turno · segunda a sexta<small>${D.dia.filter(z => !z.parte).length} deptos · ${DIA} pessoas · não muda</small></td></tr>`;
+  $("#pLista").innerHTML = h;
+  document.querySelectorAll("#pLista tr.clic").forEach(tr => tr.addEventListener("click", () => abre(tr.dataset.dep)));
+}
+function chips(sel) {
+  const atual = totais(d => S.esc[d.dep]), t5 = totais(() => "5x2");
+  $(sel).innerHTML = [[fmt(HOJE), "Hoje"], [fmt(atual.quadro), "Escolhida"], [sinal(atual.contr), "Contratar", atual.contr > 0 ? "" : "zero"], [sinal(t5.contr), "5x2 em todos", "pos"]]
+    .map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
+}
+function quadro() {
+  chips("#qChips");
+  const q = (fica, base, cls) => { const dd = fica - base; return `<td class="qv ${cls || ""}"><b>${fmt(fica)}</b><span class="dl ${dd > 0 ? "up" : "eq"}">${dd > 0 ? "+" + dd : "="}</span></td>`; };
+  let h = `<thead><tr class="grp"><th class="l" rowspan="2" style="vertical-align:bottom">Departamento</th><th colspan="2">Hoje</th><th colspan="${IDS.length}">Quadro com a escala aplicada a todos</th><th colspan="2">Escolha por departamento</th></tr><tr>
+    <th>Pessoas</th><th class="l">Composição</th>${IDS.map(id => `<th>${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}</th>`).join("")}<th>Escala</th><th>Quadro</th></tr></thead><tbody>`;
+  D.deps.forEach(d => {
+    const id = S.esc[d.dep], r = conta(d, id);
+    h += `<tr class="clic" data-dep="${d.dep}"><td class="l dep">${esc(d.nome)}${d.sub ? `<u><b>${esc(d.sub)}</b></u>` : ""}</td><td class="hoje">${d.n}</td>
+      <td class="comp">${d.equipe} turno · ${d.adm_hoje} ADM${d.lideres ? " · " + d.lideres + " lid." : ""}</td>`;
+    IDS.forEach(x => { const y = conta(d, x); h += y ? q(y.fica, d.n, x === id ? "qsel" : "") : `<td class="nm">não se aplica</td>`; });
+    h += `<td class="ec"><span style="background:${COR[id]}${id === "12x36" ? ";color:#12224A" : ""}">${esc(ESC[id].curto)}</span></td>${q(r.fica, d.n, "fq")}</tr>`;
+  });
+  const nomes = D.dia.filter(z => !z.parte).map(z => `${z.nome} ${z.n}`).join(" · ");
+  h += `<tr><td class="l dep">Sem turno · segunda a sexta<u style="display:block;margin:1px 0 0">${esc(nomes)}</u></td><td class="hoje">${DIA}</td><td class="comp">${D.dia.filter(z => !z.parte).length} deptos</td>
+    <td class="nm" colspan="${IDS.length}" style="text-align:center">não muda em nenhuma escala (o resto do PCM está na linha do PCM)</td><td class="ec"><span style="background:#8A93A6">5x2 de dia</span></td>${q(DIA, DIA, "fq")}</tr>`;
+  const atual = totais(d => S.esc[d.dep]);
+  h += `<tr class="tot"><td class="l">Total da oficina</td><td>${fmt(HOJE)}</td><td class="comp">${D.deps.reduce((a, d) => a + d.equipe, 0)} em turno</td>${IDS.map(x => q(totais(() => x).quadro, HOJE)).join("")}<td></td>${q(atual.quadro, HOJE, "fq")}</tr></tbody>`;
+  $("#tabQ").innerHTML = h;
+  document.querySelectorAll("#tabQ tr.clic").forEach(tr => tr.addEventListener("click", () => abre(tr.dataset.dep)));
+}
+function matriz() {
+  chips("#mChips");
+  const cab = [["Departamento", "l"], ["Em turno<u>hoje</u>"], ["Hoje por dia<u>manhã · tarde · noite</u>"], ["Garantir por turno<u>manhã · tarde · noite</u>"], ...IDS.map(id => [`${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}`])];
+  let h = th(cab) + "<tbody>";
+  D.deps.forEach(d => {
+    const P = S.P[d.dep], sug = sugerida(d), pres = d.hoje_txt || TURNOS.map(t => fmt(d.pres[t], 1)).join(" · ");
+    h += `<tr class="clic" data-dep="${d.dep}"><td class="l dep">${nomeDep(d)}</td><td>${d.equipe}${d.adm_hoje ? `<small class="s">+${d.adm_hoje} ADM</small>` : ""}</td><td class="mut">${pres}</td>
+      <td><div class="pt">${TURNOS.map((t, i) => `<input type="number" min="0" max="40" step="1" id="p_${d.dep}_${i}" aria-label="${esc(d.nome)}: pessoas por dia na ${t.toLowerCase()}" value="${P[t]}"${d.regra === "2turnos" && t === "Noite" ? " disabled" : ""}>`).join("")}</div></td>`;
+    IDS.forEach(id => {
+      const r = conta(d, id), e = ESC[id];
+      if (!r) { h += `<td class="na">não se aplica</td>`; return; }
+      const cls = e.risco === "Não serve" ? "ns" : classe(r.c), pe = d.regra === "1turno" ? `resto ${r.adm} no ADM` : `precisa ${r.need}`;
+      h += `<td><button type="button" class="cel ${cls}${S.esc[d.dep] === id ? " esc" : ""}" data-dep="${d.dep}" data-id="${id}" aria-pressed="${S.esc[d.dep] === id}" aria-label="${esc(d.nome)} em ${esc(e.curto)}: ${r.c > 0 ? "contratar " + r.c : r.sobra ? r.sobra + " sobram" : "fecha"}"><b>${id === sug ? "<i>★</i>" : ""}${mostra(r)}</b><small>${pe}</small></button></td>`;
+    });
+    h += "</tr>";
+  });
+  h += `<tr class="tot"><td class="l">Total da oficina</td><td>${D.deps.reduce((a, d) => a + d.equipe, 0)}</td><td></td><td></td>${IDS.map(id => { const t = totais(() => id); return `<td>${sinal(t.contr)}<small class="s">${fmt(t.sobra)} sobram</small></td>`; }).join("")}</tr></tbody>`;
+  $("#tab").innerHTML = h;
+  document.querySelectorAll("#tab button.cel").forEach(b => b.addEventListener("click", e => { e.stopPropagation(); S.esc[b.dataset.dep] = b.dataset.id; tudo(); }));
+  document.querySelectorAll("#tab tr.clic").forEach(tr => tr.addEventListener("click", e => { if (e.target.closest("input,button")) return; abre(tr.dataset.dep); }));
+  D.deps.forEach(d => TURNOS.forEach((t, i) => { const el = document.getElementById(`p_${d.dep}_${i}`); el.addEventListener("change", () => { S.P[d.dep][t] = Math.max(0, Math.min(40, parseInt(el.value, 10) || 0)); tudo(); }); }));
+}
+function grafico() {
+  chips("#gChips");
+  const linhas = D.deps.map(d => { const r = conta(d, S.esc[d.dep]), r5 = conta(d, "5x2"); return { nome: d.sub ? d.sub + " · PCM" : d.nome, esc: ESC[S.esc[d.dep]].curto, a: r.c, b: Math.max(r5.c, 0) }; })
+    .sort((x, y) => y.a - x.a || y.b - x.b);
+  barrasH($("#gDep"), linhas);
+}
+function escalas() {
+  $("#cardsEsc").innerHTML = D.escalas.map(e => {
+    const g = e.grade, DS = "STQQSSD";
+    let mini = `<table class="mini"><tr><td class="lab"></td>${Array.from({ length: 14 }, (_, i) => `<th class="${i % 7 === 6 ? "d" : ""}">${DS[i % 7]}</th>`).join("")}</tr>`;
+    g.forEach((l, i) => { mini += `<tr><td class="lab">${esc(e.rotulos[i].replace("Turma ", ""))}</td>${l.slice(0, 14).map((v, k) => `<td class="${v === "F" ? "F" + (k % 7 === 6 ? " d" : "") : ""}"></td>`).join("")}</tr>`; });
+    mini += "</table>";
+    return `<div class="esc${e.risco === "Não serve" ? " nserve" : ""}"><div><h4>${esc(e.nome)}</h4>${pill(e.risco)}</div><div class="hr">${esc(e.horario)}</div>
+      <div class="big"><div><b>${precisa(e, { "Manhã": 1, "Tarde": 1, "Noite": 1 }, false)}</b><span>pessoas para 1 posto<br>24 h, turma fixa</span></div><div><b class="${totais(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totais(() => e.id).contr)}</b><span>contratar na oficina<br>com ela em todos</span></div></div>
+      <dl><dt>Horas por semana</dt><dd>${hm(e.h_sem - e.he_sem)}${e.he_sem ? " + " + hm(e.he_sem) : ""}</dd><dt>Folgas por semana</dt><dd>${fmt(e.folgas_sem, 2)}</dd><dt>Domingos de folga</dt><dd>${e.dom} a cada ${e.sem} sem.</dd><dt>Máx. dias seguidos</dt><dd>${e.seq}</dd><dt>Turmas</dt><dd>${g.length}</dd></dl>
+      <div style="overflow-x:auto">${mini}</div><div class="nt">${esc(e.nota)}</div></div>`;
+  }).join("");
+}
+function premissas() {
+  $("#tabDia").innerHTML = th([["Departamento", "l"], ["Pessoas"], ["Anotação na planilha", "l"]]) + "<tbody>" +
+    D.dia.map(d => `<tr><td class="l dep">${esc(d.nome)}<u>${d.sub ? `<b>${esc(d.sub)}</b> · ` : ""}${esc(d.vai)}${d.lideres ? ` · ${d.lideres} lideranças` : ""}</u></td><td>${d.n}</td><td class="l mut" style="white-space:normal">${esc(d.nota || "sem anotação")}</td></tr>`).join("") +
+    `<tr class="tot"><td class="l">Total</td><td>${D.dia.reduce((a, d) => a + d.n, 0)}</td><td></td></tr></tbody>`;
+  $("#prem").innerHTML = [
+    "Garantir por turno: pessoas trabalhando todo dia naquele turno. Começa na média de hoje arredondada (2,5 vira 2), no mínimo 1 nos departamentos 24 h; Ferramentaria e Caldeiraria com 1 por turno, como anotado; Veículos Leves com manhã e tarde.",
+    "Caldeiraria: 1 pessoa por turno nas 24 h, tirada da própria equipe; o resto da equipe fica no horário ADM.",
+    "Quadro em cada escala = pessoas de hoje + contratações. Quem sobra continua no departamento, de dia (segunda a sexta).",
+    "Turma fixa por turno: ninguém alterna dia e noite (quem alterna cai na regra do turno de revezamento, 6 h por dia). O folguista volante reduz o quadro, mas roda entre turnos.",
+    "Nas escalas de 12 h, o mínimo comum aos três turnos vai para 12 h e o que passa dele fica como reforço de 8 h em 5x2.",
+    `Ficam de fora da conta de turno ${D.tot.lideres} lideranças sem registro no revezamento e ${D.tot.afastados} afastado(s); continuam no quadro.`,
+    `A oficina é CLT urbano no cadastro (${D.tot.clt_urbano} com o dado). Por isso a 4x2 de 12 h não serve, e a noite de 8 h precisa de ajuste até dez/2027.`,
+    "Mulheres em escala com domingo: folga em um domingo a cada 15 dias (CLT art. 386).",
+  ].map(x => `<li>${esc(x)}</li>`).join("");
+}
+
+/* ---------- painel do departamento ---------- */
+function composicao(d, id) {
+  const e = ESC[id], P = S.P[d.dep], f = e.ciclo / e.trab, out = [];
+  if (S.vol) out.push([`${precisa(e, P, true)} pessoas em ${e.curto}, com folguista cobrindo mais de um turno`, TURNOS.map(t => P[t]).join(" · ") + " por dia"]);
+  else if (e.turnos === 3) TURNOS.forEach(t => { if (P[t]) out.push([`${t}: ${Math.ceil(P[t] * f - 1e-9)} pessoas em ${e.curto}`, `mín. ${P[t]} por dia`]); });
+  else {
+    const v = TURNOS.map(t => P[t]), p24 = Math.min(...v), n = Math.ceil(p24 * f - 1e-9);
+    out.push([`Dia 07:00–19:00: ${n} pessoas em ${e.curto}`, `mín. ${p24} por dia`]);
+    out.push([`Noite 19:00–07:00: ${n} pessoas em ${e.curto}`, `mín. ${p24} por dia`]);
+    TURNOS.forEach((t, i) => { const x = v[i] - p24; if (x > 0) out.push([`Reforço na ${t.toLowerCase()} (8 h): ${Math.ceil(x * 1.4 - 1e-9)} em 5x2 rotativa`, `mais ${x} por dia`]); });
+  }
+  return out;
+}
+function abre(dep) {
+  const d = D.deps.find(x => x.dep === dep), id = S.esc[dep], e = ESC[id], r = conta(d, id);
+  $("#mfK").textContent = `${d.dep} · ${cap(d.regra_txt)}`;
+  $("#mfTit").textContent = `${d.nome}${d.sub ? " · " + d.sub : ""}`;
+  $("#mfSub").textContent = `Anotação na planilha: "${d.nota || "sem anotação"}". Hoje: ${d.n} pessoas (${d.equipe} em turno, ${d.adm_hoje} no ADM${d.lideres ? ", " + d.lideres + " liderança(s)" : ""}${d.afastados ? ", " + d.afastados + " afastado(s)" : ""}). Escala escolhida: ${e.nome}.`;
+  const comp = composicao(d, id).map(([a, b]) => `<div><span>${esc(a)}</span><b>${esc(b)}</b></div>`);
+  if (r.adm) comp.push(`<div><span>Horário ADM (segunda a sexta)</span><b>${r.adm}</b></div>`);
+  if (r.sobra) comp.push(`<div><span>Sobram da equipe de turno e vão para o dia</span><b>${r.sobra}</b></div>`);
+  comp.push(`<div class="fim"><span>${r.c > 0 ? "Contratar" : "Fecha com a equipe de hoje"} · quadro ${d.n} → ${r.fica}</span><b>${r.c > 0 ? "+" + r.c : "0"}</b></div>`);
+  $("#mfComp").innerHTML = comp.join("");
+  $("#mfNota").textContent = e.nota;
+  $("#mfTab").innerHTML = th([["Escala", "l"], ["Precisa"], ["Contratar"], ["Quadro"], ["Horas/semana"], ["Risco"]]) + "<tbody>" + IDS.map(x => {
+    const y = conta(d, x), ex = ESC[x];
+    if (!y) return `<tr><td class="l">${esc(ex.curto)}</td><td colspan="5" class="na">não se aplica (sem noite)</td></tr>`;
+    return `<tr${x === id ? ' class="sel"' : ""}><td class="l">${esc(ex.curto)}${x === sugerida(d) ? ' <span class="tag">sugerida</span>' : ""}</td><td>${y.need}</td><td>${mostra(y)}</td><td>${y.fica}</td><td>${hm(ex.h_sem - ex.he_sem)}${ex.he_sem ? " + " + hm(ex.he_sem) : ""}</td><td>${pill(ex.risco)}</td></tr>`;
+  }).join("") + "</tbody>";
+  $("#mfGt").textContent = `Escala ${e.curto} · ${e.grade.length} turmas · ${e.dom} domingos de folga a cada ${e.sem} semanas · no máximo ${e.seq} ${e.seq === 1 ? "dia seguido" : "dias seguidos"}`;
+  const dias = e.grade[0].length, DS = "STQQSSD";
+  let g = `<thead><tr><th style="background:transparent"></th>`;
+  for (let w = 0; w < dias / 7; w++) g += `<th colspan="7" class="semana${w ? " wk" : ""}">Semana ${w + 1}</th>`;
+  g += `</tr><tr><th style="background:transparent"></th>` + Array.from({ length: dias }, (_, i) => `<th class="${i % 7 === 6 ? "dom" : ""}${i % 7 === 0 && i ? " wk" : ""}">${DS[i % 7]}</th>`).join("") + "</tr></thead><tbody>";
+  e.grade.forEach((l, i) => { g += `<tr><td class="lab">${esc(e.rotulos[i])}</td>` + l.map((v, k) => `<td class="${v === "F" ? "F" + (k % 7 === 6 ? " d" : "") : ""}${k % 7 === 0 && k ? " wk" : ""}">${v === "F" ? "F" : ""}</td>`).join("") + "</tr>"; });
+  $("#mfGrade").innerHTML = g + "</tbody>";
+  $("#mfGn").textContent = `${e.horario}. F = folga; vermelho = folga no domingo. Em equipe pequena, cada pessoa segue uma das linhas.`;
+  $("#mf").hidden = false; $("#mfFechar").focus();
+}
+function fecha() { $("#mf").hidden = true; }
+$("#mfFechar").addEventListener("click", fecha);
+$("#mfFundo").addEventListener("click", fecha);
+
+/* ---------- navegação ---------- */
+const SL = [...document.querySelectorAll(".slide")];
+let atual = 0;
+$("#toc").innerHTML = SL.slice(1).map((s, i) => `<a href="#${s.id}" data-i="${i + 1}"><b>${i + 1}</b>${esc(s.dataset.title)}</a>`).join("");
+$("#dots").innerHTML = SL.map((s, i) => `<button type="button" aria-label="${esc(s.dataset.title)}" data-i="${i}"></button>`).join("");
+function vai(i) {
+  atual = Math.max(0, Math.min(SL.length - 1, i));
+  SL.forEach((s, k) => s.classList.toggle("active", k === atual));
+  document.querySelectorAll("#dots button").forEach((b, k) => b.classList.toggle("on", k === atual));
+  document.querySelectorAll("#toc a").forEach(a => a.classList.toggle("on", +a.dataset.i === atual));
+  document.body.classList.toggle("na-capa", atual === 0);
+  $("#prev").disabled = atual === 0; $("#next").disabled = atual === SL.length - 1;
+  $("#count").textContent = `${atual + 1} / ${SL.length}`;
+  $("#barra").style.width = `${(atual + 1) / SL.length * 100}%`;
+  try { history.replaceState(null, "", "#" + SL[atual].id); } catch (e) {}
+}
+$("#prev").addEventListener("click", () => vai(atual - 1));
+$("#next").addEventListener("click", () => vai(atual + 1));
+document.querySelectorAll("#dots button").forEach(b => b.addEventListener("click", () => vai(+b.dataset.i)));
+document.querySelectorAll("#toc a").forEach(a => a.addEventListener("click", e => { e.preventDefault(); vai(+a.dataset.i); }));
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !$("#mf").hidden) { fecha(); return; }
+  if (!$("#mf").hidden || e.target.closest("input,select,textarea")) return;
+  if (e.key === "ArrowRight" || e.key === "PageDown" || (e.key === " " && !e.target.closest("button"))) { e.preventDefault(); vai(atual + 1); }
+  if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); vai(atual - 1); }
+});
+
+/* ---------- campo de partículas ---------- */
+(function () {
+  const cv = $("#campo"), ctx = cv.getContext("2d"), calmo = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W, H, P = [], dpr = Math.min(2, window.devicePixelRatio || 1);
+  function monta() { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; const n = Math.round(Math.min(90, innerWidth * innerHeight / 16000));
+    P = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .18 * dpr, vy: (Math.random() - .5) * .18 * dpr, r: (Math.random() * 1.4 + .6) * dpr, o: Math.random() < .18 })); }
+  function desenha() {
+    ctx.clearRect(0, 0, W, H);
+    const lim = 140 * dpr;
+    for (let i = 0; i < P.length; i++) { const a = P[i];
+      for (let j = i + 1; j < P.length; j++) { const b = P[j], dx = a.x - b.x, dy = a.y - b.y, d = Math.hypot(dx, dy);
+        if (d < lim) { ctx.strokeStyle = `rgba(201,162,39,${(1 - d / lim) * .16})`; ctx.lineWidth = dpr * .7; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); } }
+      ctx.fillStyle = a.o ? "rgba(201,162,39,.75)" : "rgba(174,187,216,.35)"; ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.283); ctx.fill(); }
+  }
+  function passo() { if (!document.hidden) { P.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1; }); desenha(); } requestAnimationFrame(passo); }
+  monta(); addEventListener("resize", () => { monta(); desenha(); });
+  if (calmo) desenha(); else requestAnimationFrame(passo);
+})();
+
+/* ---------- liga tudo ---------- */
+function tudo() { capa(); painel(); quadro(); matriz(); grafico(); escalas(); }
+$("#vol").addEventListener("change", e => { S.vol = e.target.checked; tudo(); });
+$("#adm").addEventListener("change", e => { S.adm = e.target.checked; tudo(); });
+$("#bSug").addEventListener("click", () => { D.deps.forEach(d => S.esc[d.dep] = sugerida(d)); tudo(); });
+$("#b5x2").addEventListener("click", () => { D.deps.forEach(d => S.esc[d.dep] = "5x2"); tudo(); });
+$("#b12").addEventListener("click", () => { D.deps.forEach(d => S.esc[d.dep] = conta(d, "12x36") ? "12x36" : "5x2"); tudo(); });
+$("#bHoje").addEventListener("click", () => { D.deps.forEach(d => { S.P[d.dep] = { ...d.postos }; S.esc[d.dep] = sugerida(d); }); tudo(); });
+D.deps.forEach(d => { S.esc[d.dep] = sugerida(d); });
+indice();
+$("#meta").textContent = `${D.area} · base de ${D.base}`;
+premissas(); tudo();
+const ini = SL.findIndex(s => "#" + s.id === location.hash);
+vai(ini > 0 ? ini : 0);
+</script>
