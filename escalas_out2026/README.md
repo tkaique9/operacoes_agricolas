@@ -17,6 +17,14 @@ Os turnos 24 h saem da 5x1, a 6x1 de dia vira 5x2 e o horário ADM com sábado v
 | `oficina.py` | Lê `dados/oficina/ativos_oficina.xlsx` (anotações por departamento e linhas em azul), cruza com a escala de hoje e calcula cada escala com turma fixa por turno |
 | `gerar_departamentos.py` + `departamentos_template.html` | Monta a página por departamento |
 
+### Operacional (frota 24 h)
+
+Aba **Operacional** da mesma apresentação: os 84 equipamentos do *Detalhamento da frota* (lista em
+`gerar_departamentos.FROTA`), cada um com 1 operador por turno nas 24 h, hoje em 5x1. Hoje = a 5x1 calculada com
+a mesma regra de turma fixa por tipo de equipamento: 330 operadores. Com 5x2 em toda a frota: +45; com 12x36: +6;
+com a escala sugerida por equipamento: +20. Quantidade e operadores por turno são editáveis na página. No cadastro,
+operadores de máquinas (335) e motoristas (250) são CLT urbano, então a 4x2 de 12 h não serve na frota.
+
 ### Oficina por departamento
 
 `python gerar_departamentos.py`. Regra de cada departamento em `oficina.REGRAS`, tirada das anotações da planilha.

@@ -310,7 +310,7 @@ function resumo() {
   $("#recom").innerHTML = `<ul>
     <li><b>5x2 rotativa como regra</b>: mesmos 3 turnos de 8 h e mesmos horários; cada horário ganha uma 7ª turma (G). ${sinal(a.contratar)} pessoas, 39h10 por semana, 2 folgas em toda semana. Cumpre 2026 e 2027 sem norma coletiva especial.</li>
     <li><b>Para precisar de menos gente</b>: 12x36 nas frentes agrícolas 24 h, com acordo coletivo (${sinal(c.contratar)} se aplicada em todos os turnos; risco médio).</li>
-    <li><b>4x2 de 12 h</b>: só com parecer jurídico, acordo coletivo e piloto em uma frente agrícola. Na indústria, não.</li>
+    <li><b>4x2 de 12 h</b>: no cadastro, operadores e motoristas são CLT urbano, e a noite de 12 h passa do limite com a hora noturna reduzida. Só com norma coletiva específica e parecer jurídico.</li>
     <li>Horário ADM em segunda a sexta, 8 h (40 h). 6x1 de dia: decidir se o sábado continua (+${D.op6.contratar_seg_sab}).</li></ul>`;
   $("#sug412").innerHTML = `<p><b>3 pessoas por frota</b>, uma a menos que a 12x36 (4) e 1,2 a menos que a 5x2 (4,2). Aplicada a todos os turnos 24 h: <b>${sinal(b.contratar)} pessoas</b> em relação a hoje.</p>
     <p>A folha fica perto da 5x2 (${fmt(b.folha)} contra ${fmt(a.folha)} salários médios por mês): cada pessoa faz 2 h extras por plantão, cerca de ${fmt(hePct(CEN["4x2_12"], p) * 100)}% a mais no salário. Quem economiza é o quadro (benefícios, transporte, recrutamento).</p>

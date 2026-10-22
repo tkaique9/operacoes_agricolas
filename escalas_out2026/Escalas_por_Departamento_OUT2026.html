@@ -98,13 +98,13 @@ table.tb th { position: sticky; top: 0; z-index: 2; background: var(--navy); col
 table.tb th u { display: block; text-decoration: none; font: 400 10px var(--f-mono); letter-spacing: .04em; opacity: .75; margin-top: 2px; }
 table.tb th.l, table.tb td.l { text-align: left; }
 table.tb td { padding: 3px 7px; border-bottom: 1px solid var(--line); text-align: center; color: var(--ink); vertical-align: middle; height: 34px; }
-#tabQ td { height: 27px; padding: 2px 7px; }
-#tabQ td.dep u, #tab td.dep u { display: inline; margin-left: 8px; }
-#tab td { height: 36px; padding: 2px 6px; }
-#tab small.s { display: inline; margin-left: 4px; }
+table.qd td { height: 27px; padding: 2px 7px; }
+table.qd td.dep u, table.mx td.dep u { display: inline; margin-left: 8px; }
+table.mx td { height: 36px; padding: 2px 6px; }
+table.mx small.s { display: inline; margin-left: 4px; }
 button.cel { line-height: 1.02; }
 @media (max-height: 820px) { .s-sub { display: none; } }
-#tabQ tr.sec td { height: 22px; }
+table.qd tr.sec td { height: 22px; }
 table.tb td.dep { min-width: 190px; color: var(--navy); font-weight: 700; }
 table.tb td.dep u { display: block; text-decoration: none; color: var(--mut); font: 400 12px var(--f-serif); font-style: italic; margin-top: 1px; }
 table.tb td.dep u b { font: 600 10px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; font-style: normal; color: #8A6D14; }
@@ -196,32 +196,55 @@ table.lista td.dn u { text-decoration: none; font: 600 9.5px var(--f-mono); lett
 table.lista .up { color: var(--red); font-weight: 700; } table.lista .eq { color: var(--mut); font-weight: 500; }
 
 /* quadro completo: colunas com linhas, números maiores */
-#tabQ { font-size: 14px; }
-#tabQ th, #tabQ td { border-right: 1px solid var(--line); }
-#tabQ th:last-child, #tabQ td:last-child { border-right: 0; }
-#tabQ thead th { border-right-color: rgba(255,255,255,.18); }
-#tabQ thead tr.grp th { background: #0E1A3D; color: var(--gold); font: 600 10.5px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,.14); }
-#tabQ thead tr + tr th { top: 27px; }
-#tabQ td { height: 31px; padding: 2px 9px; vertical-align: middle; }
-#tabQ tbody tr:nth-child(even):not(.tot):not(.sec) td { background: #FAFBFD; }
-#tabQ tbody tr.clic:hover td { background: #EEF1F7; }
-#tabQ td.dep { font-size: 14px; }
-#tabQ td.dep u { display: inline; margin-left: 8px; }
-#tabQ td.hoje { font: 700 17px var(--f-display); color: var(--navy); background: #F7F8FB; }
-#tabQ td.comp { font: 500 11.5px var(--f-mono); color: var(--mut); text-align: left; white-space: nowrap; vertical-align: middle; line-height: 1.2; }
-#tabQ td.qv { white-space: nowrap; }
-#tabQ td.qv b { font: 700 17px var(--f-display); letter-spacing: -.02em; color: var(--ink); }
-#tabQ td.qv .dl { display: inline-block; min-width: 30px; margin-left: 7px; font: 600 11px var(--f-mono); padding: 1px 5px; border-radius: 2px; text-align: center; }
-#tabQ td.qv .dl.up { background: var(--bad); color: var(--red); }
-#tabQ td.qv .dl.eq { color: var(--na-ink); }
-#tabQ td.qv.qsel { box-shadow: inset 0 -3px 0 var(--gold); background: var(--sel) !important; }
-#tabQ td.ec { white-space: nowrap; }
-#tabQ td.ec span { display: inline-block; font: 600 10.5px var(--f-mono); letter-spacing: .04em; padding: 3px 7px; border-radius: 2px; color: #fff; }
-#tabQ td.fq { background: var(--tot); }
-#tabQ td.fq b { font: 800 18px var(--f-display); color: var(--navy); }
-#tabQ td.nm { color: var(--mut); font: italic 400 13px var(--f-serif); }
-#tabQ tr.tot td { border-right-color: rgba(18,34,74,.18); }
-#tabQ tr.tot td b { font-size: 19px; }
+table.qd { font-size: 14px; }
+table.qd th, table.qd td { border-right: 1px solid var(--line); }
+table.qd th:last-child, table.qd td:last-child { border-right: 0; }
+table.qd thead th { border-right-color: rgba(255,255,255,.18); }
+table.qd thead tr.grp th { background: #0E1A3D; color: var(--gold); font: 600 10.5px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,.14); }
+table.qd thead tr + tr th { top: 27px; }
+table.qd td { height: 31px; padding: 2px 9px; vertical-align: middle; }
+table.qd tbody tr:nth-child(even):not(.tot):not(.sec) td { background: #FAFBFD; }
+table.qd tbody tr.clic:hover td { background: #EEF1F7; }
+table.qd td.dep { font-size: 14px; }
+table.qd td.dep u { display: inline; margin-left: 8px; }
+table.qd td.hoje { font: 700 17px var(--f-display); color: var(--navy); background: #F7F8FB; }
+table.qd td.comp { font: 500 11.5px var(--f-mono); color: var(--mut); text-align: left; white-space: nowrap; vertical-align: middle; line-height: 1.2; }
+table.qd td.qv { white-space: nowrap; }
+table.qd td.qv b { font: 700 17px var(--f-display); letter-spacing: -.02em; color: var(--ink); }
+table.qd td.qv .dl { display: inline-block; min-width: 30px; margin-left: 7px; font: 600 11px var(--f-mono); padding: 1px 5px; border-radius: 2px; text-align: center; }
+table.qd td.qv .dl.up { background: var(--bad); color: var(--red); }
+table.qd td.qv .dl.eq { color: var(--na-ink); }
+table.qd td.qv.qsel { box-shadow: inset 0 -3px 0 var(--gold); background: var(--sel) !important; }
+table.qd td.ec { white-space: nowrap; }
+table.qd td.ec span { display: inline-block; font: 600 10.5px var(--f-mono); letter-spacing: .04em; padding: 3px 7px; border-radius: 2px; color: #fff; }
+table.qd td.fq { background: var(--tot); }
+table.qd td.fq b { font: 800 18px var(--f-display); color: var(--navy); }
+table.qd td.nm { color: var(--mut); font: italic 400 13px var(--f-serif); }
+table.qd tr.tot td { border-right-color: rgba(18,34,74,.18); }
+table.qd tr.tot td b { font-size: 19px; }
+
+/* abas por área (módulos) e frota */
+button.mod { cursor: pointer; transition: color .25s, border-color .25s, background-color .25s; }
+button.mod u { text-decoration: none; color: var(--gold); font-weight: 500; margin-left: 5px; }
+button.mod.off u { color: var(--t3); }
+button.mod.off:hover { border-color: var(--gold-line); color: var(--t1); }
+.fdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; vertical-align: 0; }
+table.qd tr.fr td { background: #F1F3F8 !important; color: var(--navy); font-weight: 700; border-top: 2px solid #D6DAE2; height: 30px; }
+table.qd tr.fr td.l { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; }
+table.qd tr.fr td.qv b { font-size: 15px; color: var(--navy); }
+table.mx tr.fr td { background: #F1F3F8; color: var(--navy); font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; height: 26px; border-top: 2px solid #D6DAE2; }
+.pt.um input { width: 46px; }
+.capa-indice .mods { display: grid; gap: 10px; }
+.capa-indice .mi { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 4px 12px; padding: 12px 12px 12px 10px; border-radius: 3px; border: 1px solid transparent; }
+.capa-indice .mi:hover { background: rgba(255,255,255,.04); border-color: var(--linha); }
+.capa-indice .mi .n { grid-row: span 2; font: 600 13px var(--f-mono); color: var(--gold); padding-top: 4px; }
+.capa-indice .mi .t { font: 700 21px var(--f-display); letter-spacing: -.01em; color: var(--t1); }
+.capa-indice .mi .pg { display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.capa-indice .mi .pg button { all: unset; cursor: pointer; font: italic 400 13.5px var(--f-serif); color: var(--t2); padding: 1px 0; border-bottom: 1px solid transparent; }
+.capa-indice .mi .pg button:hover, .capa-indice .mi .pg button:focus-visible { color: var(--t1); border-bottom-color: var(--gold); }
+.capa-indice .mi .pg span { color: var(--t3); }
+.esc .big.tres { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.esc .big.tres b { font-size: 23px; }
 
 /* gráficos e escalas */
 .bars text { font-family: var(--f-display); }
@@ -321,7 +344,7 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px
 
 <canvas id="campo" aria-hidden="true"></canvas><div id="vig" aria-hidden="true"></div><div id="barra" aria-hidden="true"></div>
 <header class="top"><div class="brand">CRV Industrial &nbsp;·&nbsp; Escalas de trabalho · EC 141/2026</div><div class="meta" id="meta"></div></header>
-<nav class="toc" aria-label="Páginas"><span class="mod">Oficina</span><span class="mod off">Próximas áreas</span><span class="sep"></span><span id="toc"></span></nav>
+<nav class="toc" aria-label="Páginas"><span id="mods"></span><span class="sep"></span><span id="toc"></span></nav>
 
 <main class="deck" id="deck">
   <article class="slide capa" id="capa" data-title="Capa">
@@ -331,17 +354,17 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px
     </div>
     <div class="capa-meio">
       <div>
-        <div class="selo">Oficina · simulação por departamento</div>
-        <h1>Escalas da Oficina<em>Quadro de hoje e quadro em cada escala</em></h1>
+        <div class="selo">Oficina e operacional · simulação por área</div>
+        <h1>Escalas 24 horas<em>Oficina e frota operacional: quadro de hoje e em cada escala</em></h1>
         <p class="sub" id="capaSub"></p>
       </div>
-      <nav class="capa-indice" aria-label="Nesta apresentação"><div class="ci-t">Nesta apresentação</div><ol id="capaIndice"></ol></nav>
+      <nav class="capa-indice" aria-label="Nesta apresentação"><div class="ci-t">Nesta apresentação</div><div class="mods" id="capaIndice"></div></nav>
     </div>
     <div class="capa-kpis" id="capaKpis"></div>
   </article>
 
-  <article class="slide" id="painel" data-title="Painel" data-desc="O quadro da oficina hoje, em cada escala e na escolha por departamento">
-    <div class="s-head"><div><div class="s-eyebrow">01 · Painel</div><h2 class="s-title">Quadro da oficina: hoje e em cada escala</h2>
+  <article class="slide" id="painel" data-mod="Oficina" data-title="Painel" data-desc="O quadro da oficina hoje, em cada escala e na escolha por departamento">
+    <div class="s-head"><div><div class="s-eyebrow">01 · Oficina · Painel</div><h2 class="s-title">Quadro da oficina: hoje e em cada escala</h2>
       <p class="s-sub">Cada barra aplica uma escala a todos os departamentos com turno. A última soma a escala escolhida em cada um.</p></div>
       <div class="chips" id="pChips"></div></div>
     <div class="painel">
@@ -350,15 +373,15 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px
     </div>
   </article>
 
-  <article class="slide" id="quadro" data-title="Quadro completo" data-desc="Departamento por departamento: pessoas hoje e em cada escala">
-    <div class="s-head"><div><div class="s-eyebrow">02 · Quadro</div><h2 class="s-title">Quadro completo: hoje e em cada escala</h2>
+  <article class="slide" id="quadro" data-mod="Oficina" data-title="Quadro completo" data-desc="Departamento por departamento: pessoas hoje e em cada escala">
+    <div class="s-head"><div><div class="s-eyebrow">02 · Oficina · Quadro</div><h2 class="s-title">Quadro completo: hoje e em cada escala</h2>
       <p class="s-sub">Pessoas de cada departamento hoje e quantas ficaria em cada escala. Quem sobra continua no departamento, de dia. Clique no departamento para ver o detalhe.</p></div>
       <div class="chips" id="qChips"></div></div>
-    <div class="card"><div class="rolo"><table class="tb" id="tabQ"></table></div></div>
+    <div class="card"><div class="rolo"><table class="tb qd" id="tabQ"></table></div></div>
   </article>
 
-  <article class="slide" id="matriz" data-title="Matriz de validação" data-desc="Contratar ou sobra em cada escala; escolha e pessoas por turno">
-    <div class="s-head"><div><div class="s-eyebrow">03 · Validação</div><h2 class="s-title">Cada departamento em cada escala</h2>
+  <article class="slide" id="matriz" data-mod="Oficina" data-title="Matriz de validação" data-desc="Contratar ou sobra em cada escala; escolha e pessoas por turno">
+    <div class="s-head"><div><div class="s-eyebrow">03 · Oficina · Validação</div><h2 class="s-title">Cada departamento em cada escala</h2>
       <p class="s-sub">Pessoas a contratar (+) ou que sobram para o dia (−). Clique na célula para escolher a escala; ajuste as pessoas por turno se a necessidade for outra.</p></div>
       <div class="chips" id="mChips"></div></div>
     <div class="card">
@@ -371,26 +394,61 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px
         <button type="button" class="btn" id="b12">12x36 em todos</button>
         <button type="button" class="btn" id="bHoje">Voltar ao inicial</button>
       </div>
-      <div class="rolo"><table class="tb" id="tab"></table></div>
+      <div class="rolo"><table class="tb mx" id="tab"></table></div>
       <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><i style="background:var(--na)"></i>não serve na oficina</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
     </div>
   </article>
 
-  <article class="slide" id="grafico" data-title="Contratação" data-desc="Quanto cada departamento contrata na escala escolhida">
-    <div class="s-head"><div><div class="s-eyebrow">04 · Contratação</div><h2 class="s-title">Contratação por departamento</h2>
+  <article class="slide" id="grafico" data-mod="Oficina" data-title="Contratação" data-desc="Quanto cada departamento contrata na escala escolhida">
+    <div class="s-head"><div><div class="s-eyebrow">04 · Oficina · Contratação</div><h2 class="s-title">Contratação por departamento</h2>
       <p class="s-sub">Escala escolhida em cada departamento, comparada com a 5x2 em todos.</p></div>
       <div class="chips" id="gChips"></div></div>
     <div class="card"><div class="rolo"><svg id="gDep" class="bars" role="img" aria-label="Contratação por departamento"></svg></div></div>
   </article>
 
-  <article class="slide" id="escalas" data-title="As escalas" data-desc="Horas, folgas, domingos e risco de cada escala">
-    <div class="s-head"><div><div class="s-eyebrow">05 · Referência</div><h2 class="s-title">As escalas na oficina</h2>
+  <article class="slide" id="op-painel" data-mod="Operacional" data-title="Painel da frota" data-desc="Operadores para rodar a frota 24 h: hoje em 5x1 e em cada escala">
+    <div class="s-head"><div><div class="s-eyebrow">05 · Operacional · Painel</div><h2 class="s-title">Frota operacional: operadores hoje e em cada escala</h2>
+      <p class="s-sub" id="opSub"></p></div>
+      <div class="chips" id="opChips"></div></div>
+    <div class="painel">
+      <div class="card"><h3>Operadores em cada escala<span class="h3u">operadores · diferença sobre hoje (5x1)</span></h3><div class="rolo" style="overflow:hidden"><svg id="gOp" class="bars" role="img" aria-label="Operadores da frota hoje e em cada escala"></svg></div></div>
+      <div class="card"><h3>Escala escolhida em cada equipamento<span class="h3u">operadores hoje → com a escala</span></h3><div class="rolo"><table class="lista" id="opLista"></table></div></div>
+    </div>
+  </article>
+
+  <article class="slide" id="op-quadro" data-mod="Operacional" data-title="Quadro por equipamento" data-desc="Equipamento por equipamento e por frente: operadores hoje e em cada escala">
+    <div class="s-head"><div><div class="s-eyebrow">06 · Operacional · Quadro</div><h2 class="s-title">Quadro por equipamento: hoje e em cada escala</h2>
+      <p class="s-sub">Operadores para manter cada equipamento rodando 24 h, 7 dias por semana. Clique no equipamento para ver o detalhe.</p></div>
+      <div class="chips" id="oqChips"></div></div>
+    <div class="card"><div class="rolo"><table class="tb qd" id="tabOq"></table></div></div>
+  </article>
+
+  <article class="slide" id="op-matriz" data-mod="Operacional" data-title="Matriz da frota" data-desc="Contratar ou sobra por equipamento; quantidade e operadores por turno editáveis">
+    <div class="s-head"><div><div class="s-eyebrow">07 · Operacional · Validação</div><h2 class="s-title">Cada equipamento em cada escala</h2>
+      <p class="s-sub">Operadores a contratar (+) ou que sobram (−) em relação à 5x1 de hoje. Clique na célula para escolher a escala; ajuste a quantidade de equipamentos e os operadores por turno.</p></div>
+      <div class="chips" id="omChips"></div></div>
+    <div class="card">
+      <div class="barra">
+        <label for="volOp"><input type="checkbox" id="volOp">Folguista volante entre turnos</label>
+        <span class="esp"></span>
+        <button type="button" class="btn pri" id="bSugOp">Sugerida em todos</button>
+        <button type="button" class="btn" id="b5x2Op">5x2 em todos</button>
+        <button type="button" class="btn" id="b12Op">12x36 em todos</button>
+        <button type="button" class="btn" id="bHojeOp">Voltar ao inicial</button>
+      </div>
+      <div class="rolo"><table class="tb mx" id="tabOm"></table></div>
+      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><i style="background:var(--na)"></i>não serve (CLT urbano)</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
+    </div>
+  </article>
+
+  <article class="slide" id="escalas" data-mod="Referência" data-title="As escalas" data-desc="Horas, folgas, domingos e risco de cada escala">
+    <div class="s-head"><div><div class="s-eyebrow">08 · Referência</div><h2 class="s-title">As escalas</h2>
       <p class="s-sub">Duas primeiras semanas de cada escala. F verde = folga; vermelho = folga no domingo.</p></div></div>
     <div class="escalas" id="cardsEsc"></div>
   </article>
 
-  <article class="slide" id="premissas" data-title="Sem turno e premissas" data-desc="Quem vai para segunda a sexta e como a conta foi feita">
-    <div class="s-head"><div><div class="s-eyebrow">06 · Premissas</div><h2 class="s-title">Sem turno e premissas da conta</h2></div></div>
+  <article class="slide" id="premissas" data-mod="Referência" data-title="Sem turno e premissas" data-desc="Quem vai para segunda a sexta e como a conta foi feita">
+    <div class="s-head"><div><div class="s-eyebrow">09 · Premissas</div><h2 class="s-title">Sem turno e premissas da conta</h2></div></div>
     <div class="cols">
       <div class="card"><h3>Vão para segunda a sexta</h3><div class="rolo"><table class="tb" id="tabDia"></table></div></div>
       <div class="card"><h3>Premissas e pontos de atenção</h3><div class="rolo"><ul class="prem" id="prem"></ul></div></div>
@@ -405,8 +463,8 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px
       <button type="button" class="mf-fechar" id="mfFechar">Fechar</button></div>
     <div class="mf-corpo">
       <div class="mf-cols">
-        <div><div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3>Como fica a equipe</h3><div class="comp" id="mfComp"></div><p class="nota" id="mfNota"></p></div></div>
-        <div><div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3>Todas as escalas neste departamento</h3><div class="rolo"><table class="tb" id="mfTab"></table></div></div></div>
+        <div><div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3 id="mfCompT">Como fica a equipe</h3><div class="comp" id="mfComp"></div><p class="nota" id="mfNota"></p></div></div>
+        <div><div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3 id="mfTabT">Todas as escalas neste departamento</h3><div class="rolo"><table class="tb" id="mfTab"></table></div></div></div>
       </div>
       <div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3 id="mfGt"></h3><div class="rolo"><table class="grade" id="mfGrade"></table></div><p class="nota" id="mfGn"></p></div>
     </div>
@@ -422,7 +480,7 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px
 </div>
 
 <script>
-const D = {"area":"Oficina","base":"20/10/2026","escalas":[{"id":"5x2","nome":"5x2 rotativa · 3 turnos de 8 h","curto":"5x2 rotativa","turnos":3,"trab":5,"ciclo":7,"h_sem":39.166666666666664,"he_sem":0.0,"folgas_sem":2.0,"horario":"Mesmos horários de hoje: 07:00–15:20 · 15:00–23:20 · 23:00–07:20","risco":"Baixo","nota":"Mesmos 3 turnos de 8 h e mesmos horários. Na noite (23:00–07:20) a hora noturna reduzida faz as 7h20 contarem cerca de 8h23: terminar às 07:00 ou ter norma coletiva com hora de 60 min.","grade":[["T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F"],["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F"],["T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T"],["F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"],["F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T"]],"rotulos":["Turma A","Turma B","Turma C","Turma D","Turma E","Turma F","Turma G"],"dom":2,"sem":7,"seq":5},{"id":"4x2","nome":"4x2 · 3 turnos de 8 h","curto":"4x2 de 8 h","turnos":3,"trab":4,"ciclo":6,"h_sem":36.55555555555555,"he_sem":0.0,"folgas_sem":2.3333333333333335,"horario":"Mesmos horários de hoje: 07:00–15:20 · 15:00–23:20 · 23:00–07:20","risco":"Baixo","nota":"Mesmos 3 turnos de 8 h, 4 dias de trabalho e 2 de folga. Mais descanso, mais gente.","grade":[["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"]],"rotulos":["Turma A","Turma B","Turma C"],"dom":2,"sem":6,"seq":4},{"id":"12x36","nome":"12x36 · 2 turnos de 12 h","curto":"12x36","turnos":2,"trab":1,"ciclo":2,"h_sem":38.5,"he_sem":0.0,"folgas_sem":3.5,"horario":"07:00–19:00 e 19:00–07:00, 1 h de intervalo (11 h de trabalho)","risco":"Médio","nota":"Dia 07:00–19:00 e noite 19:00–07:00, 1 h de intervalo. CLT art. 59-A com norma coletiva; dispensa a licença do MTE em atividade insalubre. Na noite a hora reduzida continua valendo e gera pagamento a mais.","grade":[["T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F"],["F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T"],["T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F"],["F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T"]],"rotulos":["A · dia","B · dia","C · noite","D · noite"],"dom":2,"sem":4,"seq":1},{"id":"3x3","nome":"3x3 · 2 turnos de 12 h","curto":"3x3 de 12 h","turnos":2,"trab":3,"ciclo":6,"h_sem":38.5,"he_sem":0.0,"folgas_sem":3.5,"horario":"07:00–19:00 e 19:00–07:00, 1 h de intervalo (11 h de trabalho)","risco":"Médio","nota":"Mesmo quadro da 12x36, com 3 plantões seguidos e 3 dias de folga. Depende de compensação em norma coletiva e, em atividade insalubre, de licença do MTE ou cláusula coletiva.","grade":[["T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F"],["F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T"],["T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F"],["F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T"]],"rotulos":["A · dia","B · dia","C · noite","D · noite"],"dom":3,"sem":6,"seq":3},{"id":"4x2_12","nome":"4x2 · 12 h com 2 h de intervalo","curto":"4x2 de 12 h","turnos":2,"trab":4,"ciclo":6,"h_sem":46.666666666666664,"he_sem":9.333333333333334,"folgas_sem":2.3333333333333335,"horario":"07:00–19:00 (intervalo 12:00–14:00) e 19:00–07:00 (intervalo 00:00–02:00): 10 h de trabalho","risco":"Não serve","nota":"Não serve na oficina: todos são CLT urbano e, com a hora noturna reduzida, o plantão da noite passa de 10 h contadas (8 h + 2 h extras é o teto).","grade":[["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"],["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"]],"rotulos":["A · dia","B · dia","C · dia","D · noite","E · noite","F · noite"],"dom":2,"sem":6,"seq":4}],"deps":[{"dep":"102.001.011","nome":"Planejamento e Controle de Manutenção","sub":"Ferramentaria","regra":"azul","regra_txt":"os 4 em azul rodam 24 h","nota":"5x2 · AZUL SIMULAR PRECISA RODAR 24 HRS","n":14,"equipe":4,"adm":0,"adm_hoje":9,"hoje":{"Manhã":1,"Tarde":1,"Noite":2},"pres":{"Manhã":0.83,"Tarde":0.83,"Noite":1.67},"postos":{"Manhã":1,"Tarde":1,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":10},{"dep":"102.001.012","nome":"Laboratório de Óleo","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":2,"hoje_txt":"2 em 12x36 só de dia","equipe":2,"adm":0,"adm_hoje":0,"hoje":{"Manhã":0,"Tarde":0,"Noite":0},"pres":{"Manhã":0,"Tarde":0,"Noite":0},"postos":{"Manhã":1,"Tarde":1,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.002.002","nome":"Borracharia","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":11,"equipe":11,"adm":0,"adm_hoje":0,"hoje":{"Manhã":4,"Tarde":3,"Noite":3},"pres":{"Manhã":3.33,"Tarde":2.5,"Noite":2.5},"postos":{"Manhã":3,"Tarde":2,"Noite":2},"sugerida":"5x2","lideres":0,"afastados":0,"sem_origem":1,"resto_5x2":0},{"dep":"102.002.003","nome":"Elétrica Automotiva","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":15,"equipe":12,"adm":1,"adm_hoje":1,"hoje":{"Manhã":4,"Tarde":4,"Noite":3},"pres":{"Manhã":3.33,"Tarde":3.33,"Noite":2.5},"postos":{"Manhã":3,"Tarde":3,"Noite":2},"sugerida":"12x36","lideres":2,"afastados":0,"sem_origem":1,"resto_5x2":0},{"dep":"102.002.004","nome":"Caldeiraria / Soldagem","sub":null,"regra":"1turno","regra_txt":"1 por turno nas 24 h, o resto no horário ADM","nota":"RODAR APENAS 1 PESSOA POR TURNO 24 HRS - RESTO PODE SER 5 X2","n":17,"equipe":11,"adm":0,"adm_hoje":5,"hoje":{"Manhã":8,"Tarde":2,"Noite":1},"pres":{"Manhã":6.67,"Tarde":1.67,"Noite":0.83},"postos":{"Manhã":1,"Tarde":1,"Noite":1},"sugerida":"5x2","lideres":1,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.002.006","nome":"Lavagem de Veículos","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":12,"equipe":10,"adm":2,"adm_hoje":2,"hoje":{"Manhã":4,"Tarde":2,"Noite":2},"pres":{"Manhã":3.33,"Tarde":1.67,"Noite":1.67},"postos":{"Manhã":3,"Tarde":2,"Noite":2},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":2,"resto_5x2":0},{"dep":"102.002.007","nome":"Lubrificação Rampa","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":12,"equipe":10,"adm":2,"adm_hoje":2,"hoje":{"Manhã":7,"Tarde":2,"Noite":1},"pres":{"Manhã":5.95,"Tarde":1.67,"Noite":0.83},"postos":{"Manhã":6,"Tarde":2,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.002.009","nome":"Hidráulica","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":3,"equipe":3,"adm":0,"adm_hoje":0,"hoje":{"Manhã":2,"Tarde":1,"Noite":0},"pres":{"Manhã":1.67,"Tarde":0.83,"Noite":0},"postos":{"Manhã":2,"Tarde":1,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.003.001","nome":"Máquinas Pesadas","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":9,"equipe":7,"adm":1,"adm_hoje":1,"hoje":{"Manhã":4,"Tarde":1,"Noite":2},"pres":{"Manhã":3.36,"Tarde":0.83,"Noite":1.67},"postos":{"Manhã":3,"Tarde":1,"Noite":2},"sugerida":"12x36","lideres":1,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.004.001","nome":"Colhedoras de Cana","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":40,"equipe":32,"adm":3,"adm_hoje":3,"hoje":{"Manhã":13,"Tarde":10,"Noite":9},"pres":{"Manhã":10.86,"Tarde":8.36,"Noite":7.5},"postos":{"Manhã":11,"Tarde":8,"Noite":7},"sugerida":"12x36","lideres":5,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.005.001","nome":"Caminhões / Veículos","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":13,"equipe":11,"adm":2,"adm_hoje":2,"hoje":{"Manhã":4,"Tarde":3,"Noite":3},"pres":{"Manhã":3.33,"Tarde":2.5,"Noite":2.5},"postos":{"Manhã":3,"Tarde":2,"Noite":2},"sugerida":"5x2","lideres":0,"afastados":0,"sem_origem":1,"resto_5x2":0},{"dep":"102.005.003","nome":"Veículos Leves","sub":null,"regra":"2turnos","regra_txt":"Turno A e B (sem noite)","nota":"TURNO A E B","n":3,"equipe":3,"adm":0,"adm_hoje":0,"hoje":{"Manhã":1,"Tarde":1,"Noite":1},"pres":{"Manhã":0.83,"Tarde":0.83,"Noite":0.83},"postos":{"Manhã":1,"Tarde":1,"Noite":0},"sugerida":"5x2","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.006.001","nome":"Bombas / Irrigação","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":11,"equipe":10,"adm":0,"adm_hoje":0,"hoje":{"Manhã":7,"Tarde":2,"Noite":1},"pres":{"Manhã":5.83,"Tarde":1.67,"Noite":0.83},"postos":{"Manhã":6,"Tarde":2,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":1,"sem_origem":0,"resto_5x2":0},{"dep":"102.006.003","nome":"Reboques","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":15,"equipe":9,"adm":6,"adm_hoje":6,"hoje":{"Manhã":5,"Tarde":1,"Noite":2},"pres":{"Manhã":4.17,"Tarde":0.83,"Noite":1.67},"postos":{"Manhã":4,"Tarde":1,"Noite":2},"sugerida":"5x2","lideres":0,"afastados":0,"sem_origem":1,"resto_5x2":0}],"dia":[{"dep":"102.001.011","nome":"Planejamento e Controle de Manutenção","sub":"fora a Ferramentaria","regra":"5x2","parte":true,"regra_txt":"5x2","nota":"5x2 · AZUL SIMULAR PRECISA RODAR 24 HRS","n":10,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0},{"dep":"102.001.001","nome":"Gerência da Oficina","sub":null,"regra":"nao","regra_txt":"Não precisa simular","nota":"NÃO PRECISA SIMULAR ESSE DEPARTAMENTO","n":13,"vai":"Fica como está (não simula)","lideres":11,"adm_hoje":2},{"dep":"102.001.013","nome":"Serviços Gerais","sub":null,"regra":"5x2","regra_txt":"5x2","nota":"5X2","n":1,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0,"adm_hoje":1},{"dep":"102.002.005","nome":"Lanternagem / Pintura","sub":null,"regra":"5x2","regra_txt":"5x2","nota":"5X2","n":2,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0,"adm_hoje":0},{"dep":"102.002.012","nome":"Torno","sub":null,"regra":"sem_nota","regra_txt":"Sem anotação (ficou 5x2)","nota":"","n":1,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0,"adm_hoje":1},{"dep":"102.006.002","nome":"Implementos Agrícolas","sub":null,"regra":"5x2","regra_txt":"5x2","nota":"RODAR 5X2","n":3,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0,"adm_hoje":0}],"tot":{"n":197,"lideres":20,"afastados":1,"clt_urbano":109,"sem_clt":87,"rural":1}};
+const D = {"area":"Oficina e Operacional","base":"20/10/2026","escalas":[{"id":"5x2","nome":"5x2 rotativa · 3 turnos de 8 h","curto":"5x2 rotativa","turnos":3,"trab":5,"ciclo":7,"h_sem":39.166666666666664,"he_sem":0.0,"folgas_sem":2.0,"horario":"Mesmos horários de hoje: 07:00–15:20 · 15:00–23:20 · 23:00–07:20","risco":"Baixo","nota":"Mesmos 3 turnos de 8 h e mesmos horários. Na noite (23:00–07:20) a hora noturna reduzida faz as 7h20 contarem cerca de 8h23: terminar às 07:00 ou ter norma coletiva com hora de 60 min.","grade":[["T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F"],["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F"],["T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["T","F","F","T","T","T","T","F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T"],["F","F","T","T","T","T","T","F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"],["F","T","T","T","T","T","F","T","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","T"]],"rotulos":["Turma A","Turma B","Turma C","Turma D","Turma E","Turma F","Turma G"],"dom":2,"sem":7,"seq":5},{"id":"4x2","nome":"4x2 · 3 turnos de 8 h","curto":"4x2 de 8 h","turnos":3,"trab":4,"ciclo":6,"h_sem":36.55555555555555,"he_sem":0.0,"folgas_sem":2.3333333333333335,"horario":"Mesmos horários de hoje: 07:00–15:20 · 15:00–23:20 · 23:00–07:20","risco":"Baixo","nota":"Mesmos 3 turnos de 8 h, 4 dias de trabalho e 2 de folga. Mais descanso, mais gente.","grade":[["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"]],"rotulos":["Turma A","Turma B","Turma C"],"dom":2,"sem":6,"seq":4},{"id":"12x36","nome":"12x36 · 2 turnos de 12 h","curto":"12x36","turnos":2,"trab":1,"ciclo":2,"h_sem":38.5,"he_sem":0.0,"folgas_sem":3.5,"horario":"07:00–19:00 e 19:00–07:00, 1 h de intervalo (11 h de trabalho)","risco":"Médio","nota":"Dia 07:00–19:00 e noite 19:00–07:00, 1 h de intervalo. CLT art. 59-A com norma coletiva; dispensa a licença do MTE em atividade insalubre. Na noite a hora reduzida continua valendo e gera pagamento a mais.","grade":[["T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F"],["F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T"],["T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F"],["F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T","F","T"]],"rotulos":["A · dia","B · dia","C · noite","D · noite"],"dom":2,"sem":4,"seq":1},{"id":"3x3","nome":"3x3 · 2 turnos de 12 h","curto":"3x3 de 12 h","turnos":2,"trab":3,"ciclo":6,"h_sem":38.5,"he_sem":0.0,"folgas_sem":3.5,"horario":"07:00–19:00 e 19:00–07:00, 1 h de intervalo (11 h de trabalho)","risco":"Médio","nota":"Mesmo quadro da 12x36, com 3 plantões seguidos e 3 dias de folga. Depende de compensação em norma coletiva e, em atividade insalubre, de licença do MTE ou cláusula coletiva.","grade":[["T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F"],["F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T"],["T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F"],["F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T","F","F","F","T","T","T"]],"rotulos":["A · dia","B · dia","C · noite","D · noite"],"dom":3,"sem":6,"seq":3},{"id":"4x2_12","nome":"4x2 · 12 h com 2 h de intervalo","curto":"4x2 de 12 h","turnos":2,"trab":4,"ciclo":6,"h_sem":46.666666666666664,"he_sem":9.333333333333334,"folgas_sem":2.3333333333333335,"horario":"07:00–19:00 (intervalo 12:00–14:00) e 19:00–07:00 (intervalo 00:00–02:00): 10 h de trabalho","risco":"Não serve","nota":"Não serve na oficina: todos são CLT urbano e, com a hora noturna reduzida, o plantão da noite passa de 10 h contadas (8 h + 2 h extras é o teto).","grade":[["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"],["T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F"],["T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T"],["F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T","F","F","T","T","T","T"]],"rotulos":["A · dia","B · dia","C · dia","D · noite","E · noite","F · noite"],"dom":2,"sem":6,"seq":4}],"deps":[{"dep":"102.001.011","nome":"Planejamento e Controle de Manutenção","sub":"Ferramentaria","regra":"azul","regra_txt":"os 4 em azul rodam 24 h","nota":"5x2 · AZUL SIMULAR PRECISA RODAR 24 HRS","n":14,"equipe":4,"adm":0,"adm_hoje":9,"hoje":{"Manhã":1,"Tarde":1,"Noite":2},"pres":{"Manhã":0.83,"Tarde":0.83,"Noite":1.67},"postos":{"Manhã":1,"Tarde":1,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":10},{"dep":"102.001.012","nome":"Laboratório de Óleo","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":2,"hoje_txt":"2 em 12x36 só de dia","equipe":2,"adm":0,"adm_hoje":0,"hoje":{"Manhã":0,"Tarde":0,"Noite":0},"pres":{"Manhã":0,"Tarde":0,"Noite":0},"postos":{"Manhã":1,"Tarde":1,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.002.002","nome":"Borracharia","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":11,"equipe":11,"adm":0,"adm_hoje":0,"hoje":{"Manhã":4,"Tarde":3,"Noite":3},"pres":{"Manhã":3.33,"Tarde":2.5,"Noite":2.5},"postos":{"Manhã":3,"Tarde":2,"Noite":2},"sugerida":"5x2","lideres":0,"afastados":0,"sem_origem":1,"resto_5x2":0},{"dep":"102.002.003","nome":"Elétrica Automotiva","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":15,"equipe":12,"adm":1,"adm_hoje":1,"hoje":{"Manhã":4,"Tarde":4,"Noite":3},"pres":{"Manhã":3.33,"Tarde":3.33,"Noite":2.5},"postos":{"Manhã":3,"Tarde":3,"Noite":2},"sugerida":"12x36","lideres":2,"afastados":0,"sem_origem":1,"resto_5x2":0},{"dep":"102.002.004","nome":"Caldeiraria / Soldagem","sub":null,"regra":"1turno","regra_txt":"1 por turno nas 24 h, o resto no horário ADM","nota":"RODAR APENAS 1 PESSOA POR TURNO 24 HRS - RESTO PODE SER 5 X2","n":17,"equipe":11,"adm":0,"adm_hoje":5,"hoje":{"Manhã":8,"Tarde":2,"Noite":1},"pres":{"Manhã":6.67,"Tarde":1.67,"Noite":0.83},"postos":{"Manhã":1,"Tarde":1,"Noite":1},"sugerida":"5x2","lideres":1,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.002.006","nome":"Lavagem de Veículos","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":12,"equipe":10,"adm":2,"adm_hoje":2,"hoje":{"Manhã":4,"Tarde":2,"Noite":2},"pres":{"Manhã":3.33,"Tarde":1.67,"Noite":1.67},"postos":{"Manhã":3,"Tarde":2,"Noite":2},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":2,"resto_5x2":0},{"dep":"102.002.007","nome":"Lubrificação Rampa","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":12,"equipe":10,"adm":2,"adm_hoje":2,"hoje":{"Manhã":7,"Tarde":2,"Noite":1},"pres":{"Manhã":5.95,"Tarde":1.67,"Noite":0.83},"postos":{"Manhã":6,"Tarde":2,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.002.009","nome":"Hidráulica","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":3,"equipe":3,"adm":0,"adm_hoje":0,"hoje":{"Manhã":2,"Tarde":1,"Noite":0},"pres":{"Manhã":1.67,"Tarde":0.83,"Noite":0},"postos":{"Manhã":2,"Tarde":1,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.003.001","nome":"Máquinas Pesadas","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":9,"equipe":7,"adm":1,"adm_hoje":1,"hoje":{"Manhã":4,"Tarde":1,"Noite":2},"pres":{"Manhã":3.36,"Tarde":0.83,"Noite":1.67},"postos":{"Manhã":3,"Tarde":1,"Noite":2},"sugerida":"12x36","lideres":1,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.004.001","nome":"Colhedoras de Cana","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":40,"equipe":32,"adm":3,"adm_hoje":3,"hoje":{"Manhã":13,"Tarde":10,"Noite":9},"pres":{"Manhã":10.86,"Tarde":8.36,"Noite":7.5},"postos":{"Manhã":11,"Tarde":8,"Noite":7},"sugerida":"12x36","lideres":5,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.005.001","nome":"Caminhões / Veículos","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":13,"equipe":11,"adm":2,"adm_hoje":2,"hoje":{"Manhã":4,"Tarde":3,"Noite":3},"pres":{"Manhã":3.33,"Tarde":2.5,"Noite":2.5},"postos":{"Manhã":3,"Tarde":2,"Noite":2},"sugerida":"5x2","lideres":0,"afastados":0,"sem_origem":1,"resto_5x2":0},{"dep":"102.005.003","nome":"Veículos Leves","sub":null,"regra":"2turnos","regra_txt":"Turno A e B (sem noite)","nota":"TURNO A E B","n":3,"equipe":3,"adm":0,"adm_hoje":0,"hoje":{"Manhã":1,"Tarde":1,"Noite":1},"pres":{"Manhã":0.83,"Tarde":0.83,"Noite":0.83},"postos":{"Manhã":1,"Tarde":1,"Noite":0},"sugerida":"5x2","lideres":0,"afastados":0,"sem_origem":0,"resto_5x2":0},{"dep":"102.006.001","nome":"Bombas / Irrigação","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":11,"equipe":10,"adm":0,"adm_hoje":0,"hoje":{"Manhã":7,"Tarde":2,"Noite":1},"pres":{"Manhã":5.83,"Tarde":1.67,"Noite":0.83},"postos":{"Manhã":6,"Tarde":2,"Noite":1},"sugerida":"12x36","lideres":0,"afastados":1,"sem_origem":0,"resto_5x2":0},{"dep":"102.006.003","nome":"Reboques","sub":null,"regra":"24h","regra_txt":"Roda 24 h","nota":"RODAR 24 HRS","n":15,"equipe":9,"adm":6,"adm_hoje":6,"hoje":{"Manhã":5,"Tarde":1,"Noite":2},"pres":{"Manhã":4.17,"Tarde":0.83,"Noite":1.67},"postos":{"Manhã":4,"Tarde":1,"Noite":2},"sugerida":"5x2","lideres":0,"afastados":0,"sem_origem":1,"resto_5x2":0}],"dia":[{"dep":"102.001.011","nome":"Planejamento e Controle de Manutenção","sub":"fora a Ferramentaria","regra":"5x2","parte":true,"regra_txt":"5x2","nota":"5x2 · AZUL SIMULAR PRECISA RODAR 24 HRS","n":10,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0},{"dep":"102.001.001","nome":"Gerência da Oficina","sub":null,"regra":"nao","regra_txt":"Não precisa simular","nota":"NÃO PRECISA SIMULAR ESSE DEPARTAMENTO","n":13,"vai":"Fica como está (não simula)","lideres":11,"adm_hoje":2},{"dep":"102.001.013","nome":"Serviços Gerais","sub":null,"regra":"5x2","regra_txt":"5x2","nota":"5X2","n":1,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0,"adm_hoje":1},{"dep":"102.002.005","nome":"Lanternagem / Pintura","sub":null,"regra":"5x2","regra_txt":"5x2","nota":"5X2","n":2,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0,"adm_hoje":0},{"dep":"102.002.012","nome":"Torno","sub":null,"regra":"sem_nota","regra_txt":"Sem anotação (ficou 5x2)","nota":"","n":1,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0,"adm_hoje":1},{"dep":"102.006.002","nome":"Implementos Agrícolas","sub":null,"regra":"5x2","regra_txt":"5x2","nota":"RODAR 5X2","n":3,"vai":"Segunda a sexta, 8 h por dia (40 h)","lideres":0,"adm_hoje":0}],"tot":{"n":197,"lideres":20,"afastados":1,"clt_urbano":109,"sem_clt":87,"rural":1},"frota":[{"nome":"Trator (preparo)","frente":"Preparo e plantio","qtd":14},{"nome":"Caminhão canavieiro","frente":"Colheita (CCT)","qtd":13},{"nome":"Plantadora","frente":"Preparo e plantio","qtd":12},{"nome":"Transbordo","frente":"Colheita (CCT)","qtd":10},{"nome":"Bombeiro","frente":"Apoio","qtd":6},{"nome":"Colhedora","frente":"Colheita (CCT)","qtd":5},{"nome":"Caçamba","frente":"Estradas e terraplanagem","qtd":5},{"nome":"Prancha","frente":"Apoio","qtd":3},{"nome":"Pá carregadeira","frente":"Estradas e terraplanagem","qtd":3},{"nome":"Carregadeira (trator apoio)","frente":"Apoio","qtd":2},{"nome":"IMAVE","frente":"Apoio","qtd":2},{"nome":"Motoniveladora","frente":"Estradas e terraplanagem","qtd":2},{"nome":"Trator eletroímã","frente":"Apoio","qtd":2},{"nome":"Bombeiro controle de praga","frente":"Apoio","qtd":1},{"nome":"Trator de apoio (pátio)","frente":"Apoio","qtd":1},{"nome":"Escavadeira","frente":"Estradas e terraplanagem","qtd":1},{"nome":"Rolo compactador","frente":"Estradas e terraplanagem","qtd":1},{"nome":"Caminhão molhar trajeto","frente":"Estradas e terraplanagem","qtd":1}],"frentes":{"Colheita (CCT)":"#2F6FD0","Preparo e plantio":"#E06A3A","Apoio":"#1FA37A","Estradas e terraplanagem":"#E0A21A"},"clt_op":{"op_C":335,"mot_C":250}};
 const $ = s => document.querySelector(s);
 const fmt = (x, d = 0) => Number(x).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
 const sinal = x => (x > 0 ? "+" : x < 0 ? "−" : "") + fmt(Math.abs(x));
@@ -435,6 +493,16 @@ const TURNOS = ["Manhã", "Tarde", "Noite"];
 const ORD = { "Baixo": 0, "Médio": 1, "Não serve": 9 };
 const S = { vol: false, adm: false, P: {}, esc: {} };
 D.deps.forEach(d => { S.P[d.dep] = { ...d.postos }; });
+/* a 5x1 de hoje, com a mesma regra de turma fixa, é a base da frota */
+const H5X1 = { id: "5x1", curto: "5x1 hoje", ciclo: 6, trab: 5, turnos: 3 };
+const FRENTE = D.frentes, ORDF = Object.keys(D.frentes).sort((a, b) => D.frota.filter(f => f.frente === b).reduce((x, f) => x + f.qtd, 0) - D.frota.filter(f => f.frente === a).reduce((x, f) => x + f.qtd, 0));
+const OP = D.frota.map(f => ({ dep: "eq:" + f.nome, tipo: "eq", nome: f.nome, frente: f.frente, qtd: f.qtd, qtd0: f.qtd, k: 1, regra: "24h",
+  regra_txt: "roda 24 h · hoje em 5x1", adm: 0, adm_hoje: 0, lideres: 0, afastados: 0, sem_origem: 0, n: 0, equipe: 0 }));
+function atualizaOp(d) {
+  const v = d.qtd * d.k; S.P[d.dep] = { "Manhã": v, "Tarde": v, "Noite": v };
+  d.n = d.equipe = v ? precisa(H5X1, S.P[d.dep], S.vol) : 0;
+  d.nota = `${d.qtd} equipamento(s) · ${d.k} operador(es) por equipamento em cada turno`;
+}
 
 /* ---------- conta ---------- */
 function precisa(e, P, vol) {
@@ -467,6 +535,11 @@ function totais(escolha) {
   D.deps.forEach(d => { let id = escolha(d); if (!conta(d, id)) id = "5x2"; const r = conta(d, id); contr += Math.max(r.c, 0); sobra += r.sobra; fica += r.fica; if (ORD[ESC[id].risco] > ORD[risco]) risco = ESC[id].risco; });
   const dia = D.dia.filter(x => !x.parte).reduce((a, x) => a + x.n, 0);
   return { contr, sobra, risco, quadro: fica + dia };
+}
+function totaisOp(escolha) {
+  let contr = 0, sobra = 0, need = 0, hoje = 0, risco = "Baixo";
+  OP.forEach(d => { if (!d.qtd) return; const id = escolha(d), r = conta(d, id); contr += Math.max(r.c, 0); sobra += r.sobra; need += r.need; hoje += d.n; if (ORD[ESC[id].risco] > ORD[risco]) risco = ESC[id].risco; });
+  return { contr, sobra, need, hoje, risco };
 }
 const COR = { "5x2": "#12224A", "4x2": "#5D78B4", "12x36": "#C9A227", "3x3": "#8A6D14", "4x2_12": "#C0392B" };
 const DIA = D.dia.filter(x => !x.parte).reduce((a, x) => a + x.n, 0);
@@ -516,18 +589,23 @@ function barrasH(svg, linhas) {
 
 /* ---------- telas ---------- */
 function capa() {
-  const n24 = D.deps.reduce((a, d) => a + d.n, 0), t5 = totais(() => "5x2"), ts = totais(sugerida), atual = totais(d => S.esc[d.dep]);
+  const n24 = D.deps.reduce((a, d) => a + d.n, 0), t5 = totais(() => "5x2"), atual = totais(d => S.esc[d.dep]);
+  const o = totaisOp(d => S.esc[d.dep]), o5 = totaisOp(() => "5x2"), nq = OP.reduce((x, d) => x + d.qtd, 0);
   $("#capaBase").textContent = `Base de ${D.base}`;
-  $("#capaSub").textContent = `${fmt(HOJE)} pessoas na oficina, ${D.deps.length} departamentos em turno. A 5x2 e as 2 folgas por semana valem a partir de 15/12/2026; a escala de cada departamento muda o tamanho do quadro.`;
+  $("#capaSub").textContent = `Oficina: ${fmt(HOJE)} pessoas em ${D.deps.length + D.dia.filter(z => !z.parte).length} departamentos. Frota operacional: ${nq} equipamentos que rodam 24 h, hoje em 5x1. A 5x2 e as 2 folgas por semana valem a partir de 15/12/2026.`;
   $("#capaKpis").innerHTML = [
-    [fmt(HOJE), "Pessoas hoje", `${fmt(n24)} em departamentos com turno`, ""],
-    [sinal(t5.contr), "5x2 em todos", `quadro de ${fmt(t5.quadro)} · risco baixo`, "pos"],
-    [sinal(ts.contr), "Escala sugerida", `quadro de ${fmt(ts.quadro)} · a de menor contratação`, ""],
-    [sinal(atual.contr), "Escolha atual", `quadro de ${fmt(atual.quadro)} · risco ${atual.risco.toLowerCase()}`, ""],
+    [`${fmt(HOJE)} → ${fmt(atual.quadro)}`, "Quadro da oficina", `contratar ${sinal(atual.contr)} na escolha · ${sinal(t5.contr)} com 5x2 em todos`, ""],
+    [`${fmt(o.hoje)} → ${fmt(o.need)}`, "Operadores da frota", `contratar ${sinal(o.contr)} na escolha · ${sinal(o5.contr)} com 5x2 em toda a frota`, ""],
+    [sinal(t5.contr + o5.contr), "5x2 em tudo", "oficina e frota, risco baixo", "pos"],
+    [sinal(atual.contr + o.contr), "Escolha atual", `risco ${[atual.risco, o.risco].sort((x, y) => ORD[y] - ORD[x])[0].toLowerCase()} · oficina e frota`, ""],
   ].map(([n, l, e, c]) => `<div class="capa-kpi"><div class="n ${c}">${n}</div><div class="l">${l}<em>${e}</em></div></div>`).join("");
 }
 function indice() {
-  $("#capaIndice").innerHTML = SL.slice(1).map((sl, i) => `<li><button type="button" data-i="${i + 1}"><span class="n">${String(i + 1).padStart(2, "0")}</span><span class="t">${esc(sl.dataset.title)}</span><span class="d">${esc(sl.dataset.desc || "")}</span></button></li>`).join("");
+  $("#capaIndice").innerHTML = MODS.map(mo => {
+    const ks = SL.map((sl, i) => [sl, i]).filter(([sl]) => sl.dataset.mod === mo);
+    return `<div class="mi"><span class="n">${String(ks[0][1]).padStart(2, "0")}–${String(ks[ks.length - 1][1]).padStart(2, "0")}</span><span class="t">${esc(mo)}</span>
+      <span class="pg">${ks.map(([sl, i], j) => `${j ? "<span>·</span>" : ""}<button type="button" data-i="${i}">${esc(sl.dataset.title)}</button>`).join("")}</span></div>`;
+  }).join("");
   document.querySelectorAll("#capaIndice button").forEach(b => b.addEventListener("click", () => vai(+b.dataset.i)));
 }
 function grupos() {
@@ -535,37 +613,110 @@ function grupos() {
   D.deps.forEach(d => { const id = S.esc[d.dep], r = conta(d, id); (g[id] ||= { id, deps: [], fica: 0, hoje: 0, contr: 0 }); g[id].deps.push({ d, r }); g[id].fica += r.fica; g[id].hoje += d.n; g[id].contr += Math.max(r.c, 0); });
   return IDS.filter(id => g[id]).map(id => g[id]);
 }
-function grafPainel(svg) {
+function grafQ(svg, base, itensEsc, escolhida) {
   const W = 1000, H = 500, m = { l: 46, r: 62, t: 40, b: 128 };
-  const atual = totais(d => S.esc[d.dep]), gs = grupos();
-  const itens = [{ id: "hoje", v: HOJE, lab: "Hoje", sub: "5x1 / 6x1", cor: "#B8C2D6" }];
-  IDS.forEach(id => { const t = totais(() => id); itens.push({ id, v: t.quadro, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.quadro - HOJE, ns: ESC[id].risco === "Não serve" }); });
-  itens.push({ id: "esc", v: atual.quadro, lab: "Escolhida", sub: "POR DEPARTAMENTO", d: atual.quadro - HOJE, seg: [{ v: DIA, cor: "#DCE1EA" }, ...gs.map(g => ({ v: g.fica, cor: COR[g.id] }))] });
-  const bruto = Math.max(...itens.map(i => i.v)) * 1.1, passo = [10, 20, 25, 50, 100].find(p => bruto / p <= 6) || 200, max = Math.ceil(bruto / passo) * passo;
+  const itens = [{ id: "hoje", v: base.v, lab: "Hoje", sub: base.sub, cor: "#B8C2D6" }, ...itensEsc,
+    { id: "esc", v: escolhida.v, lab: "Escolhida", sub: escolhida.sub, d: escolhida.v - base.v, seg: escolhida.seg }];
+  const bruto = Math.max(...itens.map(i => i.v)) * 1.1, passo = [5, 10, 20, 25, 50, 100].find(p => bruto / p <= 6) || 200, max = Math.ceil(bruto / passo) * passo;
   const bw = (W - m.l - m.r) / itens.length, y = v => m.t + (H - m.t - m.b) * (1 - v / max);
   let g = "";
   for (let v = 0; v <= max; v += passo) { const yy = y(v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="#E6E9F0"/><text x="${m.l - 8}" y="${yy + 4}" text-anchor="end" font-size="11" fill="#9AA3B5">${fmt(v)}</text>`; }
-  const yr = y(HOJE);
+  const yr = y(base.v);
   g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yr}" y2="${yr}" stroke="#5A6072" stroke-dasharray="5 5" stroke-width="1.2"/>`;
   itens.forEach((it, i) => {
     const x = m.l + bw * i + bw * .17, w = bw * .66, cx = x + w / 2, yy = y(it.v), esc_ = it.id === "esc";
     if (esc_) g += `<rect x="${x - 6}" y="${m.t - 30}" width="${w + 12}" height="${H - m.t - 2}" rx="4" fill="#FDF2D3"/>`;
-    if (it.seg) { let base = H - m.b; it.seg.forEach(sg => { const h = (H - m.t - m.b) * sg.v / max; g += `<rect x="${x}" y="${base - h}" width="${w}" height="${h}" fill="${sg.cor}" stroke="#fff" stroke-width="1.5"/>`; base -= h; }); }
+    if (it.seg) { let b0 = H - m.b; it.seg.forEach(sg => { const h = (H - m.t - m.b) * sg.v / max; g += `<rect x="${x}" y="${b0 - h}" width="${w}" height="${h}" fill="${sg.cor}" stroke="#fff" stroke-width="1.5"/>`; b0 -= h; }); }
     else g += `<rect x="${x}" y="${yy}" width="${w}" height="${H - m.b - yy}" rx="2" fill="${it.cor}" ${it.ns ? 'fill-opacity=".55"' : ""}/>`;
     g += `<text x="${cx}" y="${yy - 9}" text-anchor="middle" font-size="${esc_ ? 21 : 18}" font-weight="800" fill="#12224A">${fmt(it.v)}</text>`;
     if (it.d !== undefined) g += `<text x="${cx}" y="${yy - 30}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${it.d > 0 ? "#C0392B" : "#2E7D46"}" font-family="IBM Plex Mono, monospace">${it.d > 0 ? "+" + it.d : it.d < 0 ? "−" + Math.abs(it.d) : "="}</text>`;
     g += `<text x="${cx}" y="${H - m.b + 19}" text-anchor="middle" font-size="13" font-weight="700" fill="#12224A">${esc(it.lab)}</text>`;
     g += `<text x="${cx}" y="${H - m.b + 33}" text-anchor="middle" font-size="9.5" fill="${it.ns ? "#C0392B" : "#5A6072"}" font-family="IBM Plex Mono, monospace">${esc(it.sub)}</text>`;
-    if (esc_) {
-      let ly = H - m.b + 52;
-      [...gs].reverse().forEach(gr => { g += `<rect x="${x - 2}" y="${ly - 9}" width="10" height="10" rx="2" fill="${COR[gr.id]}"/><text x="${x + 13}" y="${ly}" font-size="11" font-weight="600" fill="#12224A">${esc(ESC[gr.id].curto)} · ${gr.deps.length}</text>`; ly += 16; });
-      g += `<rect x="${x - 2}" y="${ly - 9}" width="10" height="10" rx="2" fill="#DCE1EA"/><text x="${x + 13}" y="${ly}" font-size="11" font-weight="600" fill="#5A6072">sem turno · ${D.dia.filter(z => !z.parte).length}</text>`;
-    }
+    if (esc_) { let ly = H - m.b + 52; escolhida.leg.forEach(([cor, txt]) => { g += `<rect x="${x - 2}" y="${ly - 9}" width="10" height="10" rx="2" fill="${cor}"/><text x="${x + 13}" y="${ly}" font-size="11" font-weight="600" fill="#12224A">${esc(txt)}</text>`; ly += 16; }); }
   });
-  g += `<text x="${W - m.r + 8}" y="${yr - 3}" font-size="10.5" fill="#5A6072" font-family="IBM Plex Mono, monospace">HOJE</text><text x="${W - m.r + 8}" y="${yr + 11}" font-size="12" font-weight="700" fill="#12224A">${fmt(HOJE)}</text>`;
+  g += `<text x="${W - m.r + 8}" y="${yr - 3}" font-size="10.5" fill="#5A6072" font-family="IBM Plex Mono, monospace">HOJE</text><text x="${W - m.r + 8}" y="${yr + 11}" font-size="12" font-weight="700" fill="#12224A">${fmt(base.v)}</text>`;
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
   svg.innerHTML = g;
+}
+function grafPainel(svg) {
+  const atual = totais(d => S.esc[d.dep]), gs = grupos();
+  const itens = IDS.map(id => { const t = totais(() => id); return { id, v: t.quadro, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.quadro - HOJE, ns: ESC[id].risco === "Não serve" }; });
+  grafQ(svg, { v: HOJE, sub: "5x1 / 6x1" }, itens, { v: atual.quadro, sub: "POR DEPARTAMENTO", seg: [{ v: DIA, cor: "#DCE1EA" }, ...gs.map(g => ({ v: g.fica, cor: COR[g.id] }))],
+    leg: [...[...gs].reverse().map(gr => [COR[gr.id], `${ESC[gr.id].curto} · ${gr.deps.length}`]), ["#DCE1EA", `sem turno · ${D.dia.filter(z => !z.parte).length}`]] });
+}
+function gruposOp() {
+  const g = {};
+  OP.forEach(d => { if (!d.qtd) return; const id = S.esc[d.dep], r = conta(d, id); (g[id] ||= { id, deps: [], need: 0, hoje: 0, contr: 0, qtd: 0 }); g[id].deps.push({ d, r }); g[id].need += r.need; g[id].hoje += d.n; g[id].contr += Math.max(r.c, 0); g[id].qtd += d.qtd; });
+  return IDS.filter(id => g[id]).map(id => g[id]);
+}
+function chipsOp(sel) {
+  const a = totaisOp(d => S.esc[d.dep]), t5 = totaisOp(() => "5x2");
+  $(sel).innerHTML = [[fmt(a.hoje), "Hoje (5x1)"], [fmt(a.need), "Escolhida"], [sinal(a.contr), "Contratar", a.contr > 0 ? "" : "zero"], [sinal(t5.contr), "5x2 em todos", "pos"]]
+    .map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
+}
+function painelOp() {
+  chipsOp("#opChips");
+  const a = totaisOp(d => S.esc[d.dep]), gs = gruposOp(), nq = OP.reduce((x, d) => x + d.qtd, 0);
+  $("#opSub").textContent = `${nq} equipamentos, 1 operador por equipamento em cada turno. Cada barra aplica uma escala à frota inteira; a última soma a escala escolhida em cada equipamento.`;
+  const itens = IDS.map(id => { const t = totaisOp(() => id); return { id, v: t.need, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.need - a.hoje, ns: ESC[id].risco === "Não serve" }; });
+  grafQ($("#gOp"), { v: a.hoje, sub: "5X1" }, itens, { v: a.need, sub: "POR EQUIPAMENTO", seg: gs.map(g => ({ v: g.need, cor: COR[g.id] })), leg: [...gs].reverse().map(gr => [COR[gr.id], `${ESC[gr.id].curto} · ${gr.deps.length} tipos`]) });
+  let h = "";
+  gs.forEach(gr => {
+    h += `<tr class="g"><td colspan="3"><i style="background:${COR[gr.id]}"></i>${esc(ESC[gr.id].curto)}<small>${gr.qtd} equip. · ${gr.hoje} → ${gr.need} operadores · contratar ${sinal(gr.contr)}</small></td></tr>`;
+    gr.deps.forEach(({ d, r }) => { const dd = r.need - d.n; h += `<tr class="clic" data-dep="${esc(d.dep)}"><td class="dn"><span class="fdot" style="background:${FRENTE[d.frente]}"></span>${esc(d.nome)}<u>${d.qtd}×</u></td><td class="n">${d.n} → <b>${r.need}</b></td><td class="n ${dd > 0 ? "up" : "eq"}">${dd > 0 ? "+" + dd : dd < 0 ? "−" + Math.abs(dd) : "="}</td></tr>`; });
+  });
+  $("#opLista").innerHTML = h;
+  document.querySelectorAll("#opLista tr.clic").forEach(tr => tr.addEventListener("click", () => abre(tr.dataset.dep)));
+}
+function quadroOp() {
+  chipsOp("#oqChips");
+  const q = (v, base, cls) => { const dd = v - base; return `<td class="qv ${cls || ""}"><b>${fmt(v)}</b><span class="dl ${dd > 0 ? "up" : "eq"}">${dd > 0 ? "+" + dd : dd < 0 ? "−" + Math.abs(dd) : "="}</span></td>`; };
+  let h = `<thead><tr class="grp"><th class="l" rowspan="2" style="vertical-align:bottom">Equipamento</th><th rowspan="2" style="vertical-align:bottom">Qtd.</th><th rowspan="2" style="vertical-align:bottom">Hoje<u>5x1</u></th><th colspan="${IDS.length}">Operadores com a escala aplicada a toda a frota</th><th colspan="2">Escolha por equipamento</th></tr><tr>
+    ${IDS.map(id => `<th>${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}</th>`).join("")}<th>Escala</th><th>Operadores</th></tr></thead><tbody>`;
+  ORDF.forEach(fr => {
+    const ds = OP.filter(d => d.frente === fr && d.qtd);
+    if (!ds.length) return;
+    const soma = f => ds.reduce((x, d) => x + f(d), 0), hj = soma(d => d.n);
+    h += `<tr class="fr"><td class="l"><span class="fdot" style="background:${FRENTE[fr]}"></span>${esc(fr)}</td><td>${soma(d => d.qtd)}</td><td>${hj}</td>${IDS.map(id => q(soma(d => conta(d, id).need), hj)).join("")}<td></td>${q(soma(d => conta(d, S.esc[d.dep]).need), hj)}</tr>`;
+    ds.forEach(d => {
+      const id = S.esc[d.dep], r = conta(d, id);
+      h += `<tr class="clic" data-dep="${esc(d.dep)}"><td class="l dep">${esc(d.nome)}</td><td class="hoje">${d.qtd}</td><td class="hoje">${d.n}</td>${IDS.map(x => q(conta(d, x).need, d.n, x === id ? "qsel" : "")).join("")}
+        <td class="ec"><span style="background:${COR[id]}${id === "12x36" ? ";color:#12224A" : ""}">${esc(ESC[id].curto)}</span></td>${q(r.need, d.n, "fq")}</tr>`;
+    });
+  });
+  const a = totaisOp(d => S.esc[d.dep]);
+  h += `<tr class="tot"><td class="l">Total da frota</td><td>${OP.reduce((x, d) => x + d.qtd, 0)}</td><td>${a.hoje}</td>${IDS.map(id => q(totaisOp(() => id).need, a.hoje)).join("")}<td></td>${q(a.need, a.hoje, "fq")}</tr></tbody>`;
+  $("#tabOq").innerHTML = h;
+  document.querySelectorAll("#tabOq tr.clic").forEach(tr => tr.addEventListener("click", () => abre(tr.dataset.dep)));
+}
+function matrizOp() {
+  chipsOp("#omChips");
+  let h = `<thead><tr><th class="l">Equipamento</th><th>Qtd.<u>equipamentos</u></th><th>Operadores<u>por turno</u></th><th>Hoje<u>5x1</u></th>${IDS.map(id => `<th>${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}</th>`).join("")}</tr></thead><tbody>`;
+  ORDF.forEach(fr => {
+    h += `<tr class="fr"><td class="l" colspan="${IDS.length + 4}"><span class="fdot" style="background:${FRENTE[fr]}"></span>${esc(fr)}</td></tr>`;
+    OP.filter(d => d.frente === fr).forEach((d, i) => {
+      const sug = d.qtd ? sugerida(d) : null, key = OP.indexOf(d);
+      h += `<tr class="clic" data-dep="${esc(d.dep)}"><td class="l dep">${esc(d.nome)}</td>
+        <td><div class="pt um"><input type="number" min="0" max="99" step="1" id="oq_${key}" aria-label="${esc(d.nome)}: quantidade" value="${d.qtd}"></div></td>
+        <td><div class="pt um"><input type="number" min="0" max="5" step="1" id="ok_${key}" aria-label="${esc(d.nome)}: operadores por equipamento em cada turno" value="${d.k}"></div></td><td>${d.n}</td>`;
+      IDS.forEach(id => {
+        if (!d.qtd) { h += `<td class="na">—</td>`; return; }
+        const r = conta(d, id), e = ESC[id], cls = e.risco === "Não serve" ? "ns" : classe(r.c);
+        h += `<td><button type="button" class="cel ${cls}${S.esc[d.dep] === id ? " esc" : ""}" data-dep="${esc(d.dep)}" data-id="${id}" aria-pressed="${S.esc[d.dep] === id}" aria-label="${esc(d.nome)} em ${esc(e.curto)}: ${r.c > 0 ? "contratar " + r.c : r.sobra ? r.sobra + " sobram" : "fecha"}"><b>${id === sug ? "<i>★</i>" : ""}${mostra(r)}</b><small>precisa ${r.need}</small></button></td>`;
+      });
+      h += "</tr>";
+    });
+  });
+  const a = totaisOp(d => S.esc[d.dep]);
+  h += `<tr class="tot"><td class="l">Total da frota</td><td>${OP.reduce((x, d) => x + d.qtd, 0)}</td><td></td><td>${a.hoje}</td>${IDS.map(id => { const t = totaisOp(() => id); return `<td>${sinal(t.contr)}<small class="s">${fmt(t.sobra)} sobram</small></td>`; }).join("")}</tr></tbody>`;
+  $("#tabOm").innerHTML = h;
+  document.querySelectorAll("#tabOm button.cel").forEach(b => b.addEventListener("click", e => { e.stopPropagation(); S.esc[b.dataset.dep] = b.dataset.id; tudo(); }));
+  document.querySelectorAll("#tabOm tr.clic").forEach(tr => tr.addEventListener("click", e => { if (e.target.closest("input,button")) return; abre(tr.dataset.dep); }));
+  OP.forEach((d, key) => {
+    $(`#oq_${key}`).addEventListener("change", ev => { d.qtd = Math.max(0, Math.min(99, parseInt(ev.target.value, 10) || 0)); atualizaOp(d); if (d.qtd) S.esc[d.dep] = S.esc[d.dep] || sugerida(d); tudo(); });
+    $(`#ok_${key}`).addEventListener("change", ev => { d.k = Math.max(0, Math.min(5, parseInt(ev.target.value, 10) || 0)); if (!d.k) d.k = 1; atualizaOp(d); tudo(); });
+  });
 }
 function painel() {
   chips("#pChips");
@@ -639,7 +790,7 @@ function escalas() {
     g.forEach((l, i) => { mini += `<tr><td class="lab">${esc(e.rotulos[i].replace("Turma ", ""))}</td>${l.slice(0, 14).map((v, k) => `<td class="${v === "F" ? "F" + (k % 7 === 6 ? " d" : "") : ""}"></td>`).join("")}</tr>`; });
     mini += "</table>";
     return `<div class="esc${e.risco === "Não serve" ? " nserve" : ""}"><div><h4>${esc(e.nome)}</h4>${pill(e.risco)}</div><div class="hr">${esc(e.horario)}</div>
-      <div class="big"><div><b>${precisa(e, { "Manhã": 1, "Tarde": 1, "Noite": 1 }, false)}</b><span>pessoas para 1 posto<br>24 h, turma fixa</span></div><div><b class="${totais(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totais(() => e.id).contr)}</b><span>contratar na oficina<br>com ela em todos</span></div></div>
+      <div class="big tres"><div><b>${precisa(e, { "Manhã": 1, "Tarde": 1, "Noite": 1 }, false)}</b><span>pessoas para<br>1 posto 24 h</span></div><div><b class="${totais(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totais(() => e.id).contr)}</b><span>oficina<br>em todos</span></div><div><b class="${totaisOp(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totaisOp(() => e.id).contr - totaisOp(() => e.id).sobra)}</b><span>frota<br>líquido</span></div></div>
       <dl><dt>Horas por semana</dt><dd>${hm(e.h_sem - e.he_sem)}${e.he_sem ? " + " + hm(e.he_sem) : ""}</dd><dt>Folgas por semana</dt><dd>${fmt(e.folgas_sem, 2)}</dd><dt>Domingos de folga</dt><dd>${e.dom} a cada ${e.sem} sem.</dd><dt>Máx. dias seguidos</dt><dd>${e.seq}</dd><dt>Turmas</dt><dd>${g.length}</dd></dl>
       <div style="overflow-x:auto">${mini}</div><div class="nt">${esc(e.nota)}</div></div>`;
   }).join("");
@@ -657,6 +808,9 @@ function premissas() {
     `Ficam de fora da conta de turno ${D.tot.lideres} lideranças sem registro no revezamento e ${D.tot.afastados} afastado(s); continuam no quadro.`,
     `A oficina é CLT urbano no cadastro (${D.tot.clt_urbano} com o dado). Por isso a 4x2 de 12 h não serve, e a noite de 8 h precisa de ajuste até dez/2027.`,
     "Mulheres em escala com domingo: folga em um domingo a cada 15 dias (CLT art. 386).",
+    `Frota operacional: ${OP.reduce((x, d) => x + d.qtd, 0)} equipamentos do Detalhamento da frota, cada um com 1 operador por turno nas 24 h (editável). Hoje = a 5x1, com a mesma regra de turma fixa por tipo de equipamento.`,
+    `Operadores de máquinas e motoristas aparecem como CLT urbano no cadastro (${(D.clt_op.op_C || 0) + (D.clt_op.mot_C || 0)} pessoas; ${(D.clt_op.op_R || 0) + (D.clt_op.mot_R || 0)} rurais). Por isso a 4x2 de 12 h também não serve na frota.`,
+    "Frota: sobra de operadores num tipo de equipamento pode cobrir folga de outro da mesma frente, se a pessoa for habilitada nos dois.",
   ].map(x => `<li>${esc(x)}</li>`).join("");
 }
 
@@ -674,20 +828,24 @@ function composicao(d, id) {
   return out;
 }
 function abre(dep) {
-  const d = D.deps.find(x => x.dep === dep), id = S.esc[dep], e = ESC[id], r = conta(d, id);
-  $("#mfK").textContent = `${d.dep} · ${cap(d.regra_txt)}`;
+  const d = D.deps.find(x => x.dep === dep) || OP.find(x => x.dep === dep), id = S.esc[dep], e = ESC[id], r = conta(d, id), eq = d.tipo === "eq";
+  $("#mfK").textContent = eq ? `${d.frente} · roda 24 h · hoje em 5x1` : `${d.dep} · ${cap(d.regra_txt)}`;
   $("#mfTit").textContent = `${d.nome}${d.sub ? " · " + d.sub : ""}`;
-  $("#mfSub").textContent = `Anotação na planilha: "${d.nota || "sem anotação"}". Hoje: ${d.n} pessoas (${d.equipe} em turno, ${d.adm_hoje} no ADM${d.lideres ? ", " + d.lideres + " liderança(s)" : ""}${d.afastados ? ", " + d.afastados + " afastado(s)" : ""}). Escala escolhida: ${e.nome}.`;
+  $("#mfSub").textContent = eq ? `${d.nota}. Hoje (5x1): ${d.n} operadores. Escala escolhida: ${e.nome}.`
+    : `Anotação na planilha: "${d.nota || "sem anotação"}". Hoje: ${d.n} pessoas (${d.equipe} em turno, ${d.adm_hoje} no ADM${d.lideres ? ", " + d.lideres + " liderança(s)" : ""}${d.afastados ? ", " + d.afastados + " afastado(s)" : ""}). Escala escolhida: ${e.nome}.`;
+  $("#mfCompT").textContent = eq ? "Como ficam os operadores" : "Como fica a equipe";
+  $("#mfTabT").textContent = eq ? "Todas as escalas neste equipamento" : "Todas as escalas neste departamento";
   const comp = composicao(d, id).map(([a, b]) => `<div><span>${esc(a)}</span><b>${esc(b)}</b></div>`);
   if (r.adm) comp.push(`<div><span>Horário ADM (segunda a sexta)</span><b>${r.adm}</b></div>`);
-  if (r.sobra) comp.push(`<div><span>Sobram da equipe de turno e vão para o dia</span><b>${r.sobra}</b></div>`);
-  comp.push(`<div class="fim"><span>${r.c > 0 ? "Contratar" : "Fecha com a equipe de hoje"} · quadro ${d.n} → ${r.fica}</span><b>${r.c > 0 ? "+" + r.c : "0"}</b></div>`);
+  if (r.sobra && !eq) comp.push(`<div><span>Sobram da equipe de turno e vão para o dia</span><b>${r.sobra}</b></div>`);
+  comp.push(eq ? `<div class="fim"><span>${r.c > 0 ? "Contratar" : r.sobra ? "Sobram (cobrem outro equipamento da frente)" : "Fecha com os operadores de hoje"} · ${d.n} → ${r.need} operadores</span><b>${r.c > 0 ? "+" + r.c : r.sobra ? "−" + r.sobra : "0"}</b></div>`
+    : `<div class="fim"><span>${r.c > 0 ? "Contratar" : "Fecha com a equipe de hoje"} · quadro ${d.n} → ${r.fica}</span><b>${r.c > 0 ? "+" + r.c : "0"}</b></div>`);
   $("#mfComp").innerHTML = comp.join("");
   $("#mfNota").textContent = e.nota;
-  $("#mfTab").innerHTML = th([["Escala", "l"], ["Precisa"], ["Contratar"], ["Quadro"], ["Horas/semana"], ["Risco"]]) + "<tbody>" + IDS.map(x => {
+  $("#mfTab").innerHTML = th([["Escala", "l"], ["Precisa"], ["Contratar"], [eq ? "Operadores" : "Quadro"], ["Horas/semana"], ["Risco"]]) + "<tbody>" + IDS.map(x => {
     const y = conta(d, x), ex = ESC[x];
     if (!y) return `<tr><td class="l">${esc(ex.curto)}</td><td colspan="5" class="na">não se aplica (sem noite)</td></tr>`;
-    return `<tr${x === id ? ' class="sel"' : ""}><td class="l">${esc(ex.curto)}${x === sugerida(d) ? ' <span class="tag">sugerida</span>' : ""}</td><td>${y.need}</td><td>${mostra(y)}</td><td>${y.fica}</td><td>${hm(ex.h_sem - ex.he_sem)}${ex.he_sem ? " + " + hm(ex.he_sem) : ""}</td><td>${pill(ex.risco)}</td></tr>`;
+    return `<tr${x === id ? ' class="sel"' : ""}><td class="l">${esc(ex.curto)}${x === sugerida(d) ? ' <span class="tag">sugerida</span>' : ""}</td><td>${y.need}</td><td>${mostra(y)}</td><td>${eq ? y.need : y.fica}</td><td>${hm(ex.h_sem - ex.he_sem)}${ex.he_sem ? " + " + hm(ex.he_sem) : ""}</td><td>${pill(ex.risco)}</td></tr>`;
   }).join("") + "</tbody>";
   $("#mfGt").textContent = `Escala ${e.curto} · ${e.grade.length} turmas · ${e.dom} domingos de folga a cada ${e.sem} semanas · no máximo ${e.seq} ${e.seq === 1 ? "dia seguido" : "dias seguidos"}`;
   const dias = e.grade[0].length, DS = "STQQSSD";
@@ -705,14 +863,19 @@ $("#mfFundo").addEventListener("click", fecha);
 
 /* ---------- navegação ---------- */
 const SL = [...document.querySelectorAll(".slide")];
+const MODS = [...new Set(SL.map(sl => sl.dataset.mod).filter(Boolean))];
 let atual = 0;
-$("#toc").innerHTML = SL.slice(1).map((s, i) => `<a href="#${s.id}" data-i="${i + 1}"><b>${i + 1}</b>${esc(s.dataset.title)}</a>`).join("");
+$("#mods").innerHTML = MODS.map(mo => { const ks = SL.map((sl, i) => i).filter(i => SL[i].dataset.mod === mo); return `<button type="button" class="mod off" data-mod="${esc(mo)}" data-i="${ks[0]}">${esc(mo)}<u>${ks[0]}–${ks[ks.length - 1]}</u></button>`; }).join("");
+$("#toc").innerHTML = SL.slice(1).map((s, i) => `<a href="#${s.id}" data-i="${i + 1}" data-mod="${esc(s.dataset.mod)}"><b>${i + 1}</b>${esc(s.dataset.title)}</a>`).join("");
+document.querySelectorAll("#mods button").forEach(b => b.addEventListener("click", () => vai(+b.dataset.i)));
 $("#dots").innerHTML = SL.map((s, i) => `<button type="button" aria-label="${esc(s.dataset.title)}" data-i="${i}"></button>`).join("");
 function vai(i) {
   atual = Math.max(0, Math.min(SL.length - 1, i));
   SL.forEach((s, k) => s.classList.toggle("active", k === atual));
   document.querySelectorAll("#dots button").forEach((b, k) => b.classList.toggle("on", k === atual));
-  document.querySelectorAll("#toc a").forEach(a => a.classList.toggle("on", +a.dataset.i === atual));
+  const mo = SL[atual].dataset.mod || MODS[0];
+  document.querySelectorAll("#toc a").forEach(a => { a.classList.toggle("on", +a.dataset.i === atual); a.hidden = a.dataset.mod !== mo; });
+  document.querySelectorAll("#mods button").forEach(b => b.classList.toggle("off", b.dataset.mod !== mo));
   document.body.classList.toggle("na-capa", atual === 0);
   $("#prev").disabled = atual === 0; $("#next").disabled = atual === SL.length - 1;
   $("#count").textContent = `${atual + 1} / ${SL.length}`;
@@ -750,14 +913,21 @@ document.addEventListener("keydown", e => {
 })();
 
 /* ---------- liga tudo ---------- */
-function tudo() { capa(); painel(); quadro(); matriz(); grafico(); escalas(); }
-$("#vol").addEventListener("change", e => { S.vol = e.target.checked; tudo(); });
+function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); escalas(); }
+function volante(v) { S.vol = v; $("#vol").checked = v; $("#volOp").checked = v; tudo(); }
+$("#vol").addEventListener("change", e => volante(e.target.checked));
+$("#volOp").addEventListener("change", e => volante(e.target.checked));
+$("#bSugOp").addEventListener("click", () => { OP.forEach(d => { if (d.qtd) S.esc[d.dep] = sugerida(d); }); tudo(); });
+$("#b5x2Op").addEventListener("click", () => { OP.forEach(d => S.esc[d.dep] = "5x2"); tudo(); });
+$("#b12Op").addEventListener("click", () => { OP.forEach(d => S.esc[d.dep] = "12x36"); tudo(); });
+$("#bHojeOp").addEventListener("click", () => { OP.forEach(d => { d.qtd = d.qtd0; d.k = 1; atualizaOp(d); S.esc[d.dep] = sugerida(d); }); tudo(); });
 $("#adm").addEventListener("change", e => { S.adm = e.target.checked; tudo(); });
 $("#bSug").addEventListener("click", () => { D.deps.forEach(d => S.esc[d.dep] = sugerida(d)); tudo(); });
 $("#b5x2").addEventListener("click", () => { D.deps.forEach(d => S.esc[d.dep] = "5x2"); tudo(); });
 $("#b12").addEventListener("click", () => { D.deps.forEach(d => S.esc[d.dep] = conta(d, "12x36") ? "12x36" : "5x2"); tudo(); });
 $("#bHoje").addEventListener("click", () => { D.deps.forEach(d => { S.P[d.dep] = { ...d.postos }; S.esc[d.dep] = sugerida(d); }); tudo(); });
 D.deps.forEach(d => { S.esc[d.dep] = sugerida(d); });
+OP.forEach(d => { atualizaOp(d); S.esc[d.dep] = sugerida(d); });
 indice();
 $("#meta").textContent = `${D.area} · base de ${D.base}`;
 premissas(); tudo();

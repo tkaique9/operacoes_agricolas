@@ -42,6 +42,37 @@ NOMES = {  # nomes como a diretoria lê (a planilha vem sem acento)
     "102.006.002": "Implementos Agrícolas", "102.006.003": "Reboques",
 }
 SUB = {"102.001.011": "Ferramentaria"}  # o grupo em azul do PCM
+
+# Frota operacional que roda 24 h (hoje em 5x1), do "Detalhamento da frota" enviado pela operação em 22/10/2026:
+# equipamento, frente, quantidade. Cada equipamento leva 1 operador por turno (editável na página).
+FROTA = [
+    ("Trator (preparo)", "Preparo e plantio", 14), ("Caminhão canavieiro", "Colheita (CCT)", 13),
+    ("Plantadora", "Preparo e plantio", 12), ("Transbordo", "Colheita (CCT)", 10), ("Bombeiro", "Apoio", 6),
+    ("Colhedora", "Colheita (CCT)", 5), ("Caçamba", "Estradas e terraplanagem", 5), ("Prancha", "Apoio", 3),
+    ("Pá carregadeira", "Estradas e terraplanagem", 3), ("Carregadeira (trator apoio)", "Apoio", 2), ("IMAVE", "Apoio", 2),
+    ("Motoniveladora", "Estradas e terraplanagem", 2), ("Trator eletroímã", "Apoio", 2),
+    ("Bombeiro controle de praga", "Apoio", 1), ("Trator de apoio (pátio)", "Apoio", 1),
+    ("Escavadeira", "Estradas e terraplanagem", 1), ("Rolo compactador", "Estradas e terraplanagem", 1),
+    ("Caminhão molhar trajeto", "Estradas e terraplanagem", 1),
+]
+FRENTES = {"Colheita (CCT)": "#2F6FD0", "Preparo e plantio": "#E06A3A", "Apoio": "#1FA37A",
+           "Estradas e terraplanagem": "#E0A21A"}
+
+
+def clt_operacao():
+    """Operadores de máquinas e motoristas por tipo de contrato (C = CLT urbano, R = rural), da aba Planilha1."""
+    import collections
+    import openpyxl
+    wb = openpyxl.load_workbook(oficina.ARQ, read_only=True, data_only=True)
+    linhas = list(wb["Planilha1"].iter_rows(values_only=True))
+    idx = {c: i for i, c in enumerate(linhas[0])}
+    cont = collections.Counter()
+    for r in linhas[1:]:
+        f = (r[idx["desc_funcao"]] or "").strip()
+        fam = "op" if f.startswith("OP. DE MAQUINAS AGRICOLAS") else "mot" if f.startswith("MOTORISTA") else None
+        if fam:
+            cont[f"{fam}_{r[idx['clt_rural']]}"] += 1
+    return dict(cont)
 REGRA_TXT = {"24h": "Roda 24 h", "azul": "os 4 em azul rodam 24 h", "1turno": "1 por turno nas 24 h, o resto no horário ADM",
              "2turnos": "Turno A e B (sem noite)", "5x2": "5x2", "nao": "Não precisa simular",
              "sem_nota": "Sem anotação (ficou 5x2)"}
@@ -97,7 +128,9 @@ def dados():
            "afastados": sum(1 for p in o["pessoas"] if p["tipo"] == "Afastado"),
            "clt_urbano": o["clt_rural"].get("C", 0), "sem_clt": o["clt_rural"].get(None, 0),
            "rural": o["clt_rural"].get("R", 0)}
-    return {"area": "Oficina", "base": "20/10/2026", "escalas": escalas, "deps": deps, "dia": dia, "tot": tot}
+    frota = [{"nome": n, "frente": f, "qtd": q} for n, f, q in FROTA]
+    return {"area": "Oficina e Operacional", "base": "20/10/2026", "escalas": escalas, "deps": deps, "dia": dia, "tot": tot,
+            "frota": frota, "frentes": FRENTES, "clt_op": clt_operacao()}
 
 
 def gerar():

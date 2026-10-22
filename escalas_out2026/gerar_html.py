@@ -86,7 +86,7 @@ DET_412 = {
     ],
     "fazer": [
         "Parecer jurídico antes de implantar.",
-        "Só nas frentes agrícolas 24 h (trabalhador rural, hora noturna de 60 min). Na indústria, não.",
+        "No cadastro, operadores de máquinas e motoristas são CLT urbano: com a hora noturna reduzida, o plantão da noite passa de 10 h contadas. Só daria com norma coletiva que troque a hora reduzida por adicional maior.",
         "Acordo coletivo específico com a prorrogação de 2 h, a insalubridade e o intervalo de 2 h.",
         "Ponto eletrônico com alerta antes de 10 h e troca de turno no campo, sem espera.",
         "Piloto de 2 a 3 meses em uma frente, medindo horas, acidentes e produção.",
