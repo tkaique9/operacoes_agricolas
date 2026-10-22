@@ -229,6 +229,11 @@ button.mod.off:hover { border-color: var(--gold-line); color: var(--t1); }
 table.qd tr.fr td { background: #F1F3F8 !important; color: var(--navy); font-weight: 700; border-top: 2px solid #D6DAE2; height: 30px; }
 table.qd tr.fr td.l { font: 600 13px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; }
 table.qd tr.fr td.qv b { font-size: 16.5px; color: var(--navy); }
+table.qd tr.fr td { background: color-mix(in srgb, var(--fc, #8A93A6) 13%, #fff) !important; border-top: 2px solid var(--fc, #D6DAE2); }
+table.qd tr.fr td.l { box-shadow: inset 6px 0 0 var(--fc, transparent); padding-left: 16px; }
+table.qd td.qv .pc { display: block; font: 600 13px var(--f-mono); font-style: normal; letter-spacing: .02em; color: var(--red); margin-top: 1px; }
+table.qd td.qv .pc.dn { color: var(--green); }
+table.qd td.qv .pc.eq { color: var(--na-ink); }
 table.mx tr.fr td { background: #F1F3F8; color: var(--navy); font: 600 13px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; height: 26px; border-top: 2px solid #D6DAE2; }
 .pt.um input { width: 54px; }
 .capa-indice .mods { display: grid; gap: 10px; }
@@ -391,7 +396,7 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 15.5
 
   <article class="slide" id="quadro" data-mod="Oficina" data-title="Quadro completo" data-desc="Departamento por departamento: pessoas hoje e em cada escala">
     <div class="s-head"><div><div class="s-eyebrow">02 · Oficina · Quadro</div><h2 class="s-title">Quadro completo: hoje e em cada escala</h2>
-      <p class="s-sub">Pessoas de cada departamento hoje e quantas ficaria em cada escala. Quem sobra continua no departamento, de dia. Clique no departamento para ver o detalhe.</p></div>
+      <p class="s-sub">Pessoas de cada departamento hoje e quantas ficaria em cada escala. Quem sobra continua no departamento, de dia. No total, o % é quanto aumenta sobre hoje. Clique no departamento para ver o detalhe.</p></div>
       <div class="chips" id="qChips"></div></div>
     <div class="card"><div class="rolo"><table class="tb qd" id="tabQ"></table></div></div>
   </article>
@@ -436,7 +441,7 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 15.5
 
   <article class="slide" id="op-quadro" data-mod="Operacional" data-title="Quadro por equipamento" data-desc="Equipamento por equipamento e por frente: operadores hoje e em cada escala">
     <div class="s-head"><div><div class="s-eyebrow">06 · Operacional · Quadro</div><h2 class="s-title">Quadro por equipamento: hoje e em cada escala</h2>
-      <p class="s-sub">Operadores para manter cada equipamento rodando 24 h, 7 dias por semana. Clique no equipamento para ver o detalhe.</p></div>
+      <p class="s-sub">Operadores para manter cada equipamento rodando 24 h, 7 dias por semana. Nos subtotais e no total, o % é quanto aumenta sobre hoje. Clique no equipamento para ver o detalhe.</p></div>
       <div class="chips" id="oqChips"></div></div>
     <div class="card"><div class="rolo"><table class="tb qd" id="tabOq"></table></div></div>
   </article>
@@ -525,6 +530,9 @@ const OP = D.frota.map(f => ({ dep: "eq:" + f.nome, tipo: "eq", nome: f.nome, fr
   regra_txt: "roda 24 h · hoje em 5x1", adm: 0, adm_hoje: 0, lideres: 0, afastados: 0, sem_origem: 0, n: 0, equipe: 0 }));
 const PPP = e => e.turnos * e.ciclo / e.trab;
 const f1 = x => fmt(x, Math.abs(x - Math.round(x)) < 0.05 ? 0 : 1);
+// quanto o número aumenta (ou cai) sobre hoje, em %
+const pct = (v, base) => { const p = base ? (v - base) / base * 100 : 0;
+  return `<i class="pc${p > 0.05 ? "" : p < -0.05 ? " dn" : " eq"}">${Math.abs(p) < 0.05 ? "0%" : (p > 0 ? "+" : "−") + fmt(Math.abs(p), 1) + "%"}</i>`; };
 const sinal1 = x => Math.abs(x) < 0.05 ? "=" : (x > 0 ? "+" : "−") + f1(Math.abs(x));
 function atualizaOp(d) {
   const v = d.qtd * d.k; S.P[d.dep] = { "Manhã": v, "Tarde": v, "Noite": v };
@@ -703,14 +711,14 @@ function painelOp() {
 }
 function quadroOp() {
   chipsOp("#oqChips");
-  const q = (v, base, cls) => { const dd = v - base; return `<td class="qv ${cls || ""}"><b>${f1(v)}</b><span class="dl ${dd > 0.05 ? "up" : "eq"}">${sinal1(dd)}</span></td>`; };
+  const q = (v, base, cls, pc) => { const dd = v - base; return `<td class="qv ${cls || ""}"><b>${f1(v)}</b><span class="dl ${dd > 0.05 ? "up" : "eq"}">${sinal1(dd)}</span>${pc ? pct(v, base) : ""}</td>`; };
   let h = `<thead><tr class="grp"><th class="l" rowspan="2" style="vertical-align:bottom">Equipamento</th><th rowspan="2" style="vertical-align:bottom">Qtd.</th><th rowspan="2" style="vertical-align:bottom">Hoje<u>5x1 · 3,6/equip.</u></th><th colspan="${IDS.length}">Operadores com a escala aplicada a toda a frota</th><th colspan="2">Escolha por equipamento</th></tr><tr>
     ${IDS.map(id => `<th>${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}</th>`).join("")}<th>Escala</th><th>Operadores</th></tr></thead><tbody>`;
   ORDF.forEach(fr => {
     const ds = OP.filter(d => d.frente === fr && d.qtd);
     if (!ds.length) return;
     const soma = f => ds.reduce((x, d) => x + f(d), 0), hj = soma(d => d.n);
-    h += `<tr class="fr"><td class="l"><span class="fdot" style="background:${FRENTE[fr]}"></span>${esc(fr)}</td><td>${soma(d => d.qtd)}</td><td>${f1(hj)}</td>${IDS.map(id => q(soma(d => conta(d, id).need), hj)).join("")}<td></td>${q(soma(d => conta(d, S.esc[d.dep]).need), hj)}</tr>`;
+    h += `<tr class="fr" style="--fc:${FRENTE[fr]}"><td class="l"><span class="fdot" style="background:${FRENTE[fr]}"></span>${esc(fr)}</td><td>${soma(d => d.qtd)}</td><td>${f1(hj)}</td>${IDS.map(id => q(soma(d => conta(d, id).need), hj, "", 1)).join("")}<td></td>${q(soma(d => conta(d, S.esc[d.dep]).need), hj, "", 1)}</tr>`;
     ds.forEach(d => {
       const id = S.esc[d.dep], r = conta(d, id);
       h += `<tr class="clic" data-dep="${esc(d.dep)}"><td class="l dep">${esc(d.nome)}</td><td class="hoje">${d.qtd}</td><td class="hoje">${f1(d.n)}</td>${IDS.map(x => q(conta(d, x).need, d.n, x === id ? "qsel" : "")).join("")}
@@ -718,7 +726,7 @@ function quadroOp() {
     });
   });
   const a = totaisOp(d => S.esc[d.dep]);
-  h += `<tr class="tot"><td class="l">Total da frota</td><td>${OP.reduce((x, d) => x + d.qtd, 0)}</td><td>${a.hoje}</td>${IDS.map(id => q(totaisOp(() => id).need, a.hoje)).join("")}<td></td>${q(a.need, a.hoje, "fq")}</tr></tbody>`;
+  h += `<tr class="tot"><td class="l">Total da frota</td><td>${OP.reduce((x, d) => x + d.qtd, 0)}</td><td>${a.hoje}</td>${IDS.map(id => q(totaisOp(() => id).need, a.hoje, "", 1)).join("")}<td></td>${q(a.need, a.hoje, "fq", 1)}</tr></tbody>`;
   $("#tabOq").innerHTML = h;
   document.querySelectorAll("#tabOq tr.clic").forEach(tr => tr.addEventListener("click", () => abre(tr.dataset.dep)));
 }
@@ -769,7 +777,7 @@ function chips(sel) {
 }
 function quadro() {
   chips("#qChips");
-  const q = (fica, base, cls) => { const dd = fica - base; return `<td class="qv ${cls || ""}"><b>${fmt(fica)}</b><span class="dl ${dd > 0 ? "up" : "eq"}">${dd > 0 ? "+" + dd : "="}</span></td>`; };
+  const q = (fica, base, cls, pc) => { const dd = fica - base; return `<td class="qv ${cls || ""}"><b>${fmt(fica)}</b><span class="dl ${dd > 0 ? "up" : "eq"}">${dd > 0 ? "+" + dd : "="}</span>${pc ? pct(fica, base) : ""}</td>`; };
   let h = `<thead><tr class="grp"><th class="l" rowspan="2" style="vertical-align:bottom">Departamento</th><th colspan="2">Hoje</th><th colspan="${IDS.length}">Quadro com a escala aplicada a todos</th><th colspan="2">Escolha por departamento</th></tr><tr>
     <th>Pessoas</th><th class="l">Composição</th>${IDS.map(id => `<th>${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}</th>`).join("")}<th>Escala</th><th>Quadro</th></tr></thead><tbody>`;
   D.deps.forEach(d => {
@@ -783,7 +791,7 @@ function quadro() {
   h += `<tr><td class="l dep">Sem turno · segunda a sexta<u style="display:block;margin:1px 0 0">${esc(nomes)}</u></td><td class="hoje">${DIA}</td><td class="cmp">${D.dia.filter(z => !z.parte).length} deptos</td>
     <td class="nm" colspan="${IDS.length}" style="text-align:center">não muda em nenhuma escala (o resto do PCM está na linha do PCM)</td><td class="ec"><span style="background:#8A93A6">5x2 de dia</span></td>${q(DIA, DIA, "fq")}</tr>`;
   const atual = totais(d => S.esc[d.dep]);
-  h += `<tr class="tot"><td class="l">Total da oficina</td><td>${fmt(HOJE)}</td><td class="cmp">${D.deps.reduce((a, d) => a + d.equipe, 0)} em turno</td>${IDS.map(x => q(totais(() => x).quadro, HOJE)).join("")}<td></td>${q(atual.quadro, HOJE, "fq")}</tr></tbody>`;
+  h += `<tr class="tot"><td class="l">Total da oficina</td><td>${fmt(HOJE)}</td><td class="cmp">${D.deps.reduce((a, d) => a + d.equipe, 0)} em turno</td>${IDS.map(x => q(totais(() => x).quadro, HOJE, "", 1)).join("")}<td></td>${q(atual.quadro, HOJE, "fq", 1)}</tr></tbody>`;
   $("#tabQ").innerHTML = h;
   document.querySelectorAll("#tabQ tr.clic").forEach(tr => tr.addEventListener("click", () => abre(tr.dataset.dep)));
 }
