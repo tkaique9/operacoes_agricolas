@@ -234,6 +234,7 @@ table.qd tr.fr td.l { box-shadow: inset 6px 0 0 var(--fc, transparent); padding-
 table.qd td.qv .pc { display: block; font: 600 13px var(--f-mono); font-style: normal; letter-spacing: .02em; color: var(--red); margin-top: 1px; }
 table.qd td.qv .pc.dn { color: var(--green); }
 table.qd td.qv .pc.eq { color: var(--na-ink); }
+table.qd th .pch { font-weight: 600; } table.qd th .pch.up { color: #F0897A; } table.qd th .pch.dn { color: #8FD3A6; }
 table.mx tr.fr td { background: #F1F3F8; color: var(--navy); font: 600 13px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; height: 26px; border-top: 2px solid #D6DAE2; }
 .pt.um input { width: 54px; }
 .capa-indice .mods { display: grid; gap: 10px; }
@@ -794,7 +795,7 @@ function quadroOp() {
   chipsOp("#oqChips");
   const q = (v, base, cls, pc) => { const dd = v - base; return `<td class="qv ${cls || ""}"><b>${f1(v)}</b><span class="dl ${dd > 0.05 ? "up" : "eq"}">${sinal1(dd)}</span>${pc ? pct(v, base) : ""}</td>`; };
   let h = `<thead><tr class="grp"><th class="l" rowspan="2" style="vertical-align:bottom">Equipamento</th><th rowspan="2" style="vertical-align:bottom">Qtd.</th><th rowspan="2" style="vertical-align:bottom">Hoje<u>5x1 · 3,6/equip.</u></th><th colspan="${IDS.length}">Operadores com a escala aplicada a toda a frota</th><th colspan="2">Escolha por equipamento</th></tr><tr>
-    ${IDS.map(id => `<th>${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}</th>`).join("")}<th>Escala</th><th>Operadores</th></tr></thead><tbody>`;
+    ${IDS.map(id => { const pp = (PPP(ESC[id]) / PPP(H5X1) - 1) * 100; return `<th>${esc(ESC[id].curto)}<u>${f1(PPP(ESC[id]))}/equip. · <span class="pch ${pp > 0 ? "up" : "dn"}">${pp > 0 ? "+" : "−"}${fmt(Math.abs(pp), 1)}%</span></u>${pill(ESC[id].risco)}</th>`; }).join("")}<th>Escala</th><th>Operadores</th></tr></thead><tbody>`;
   ORDF.forEach(fr => {
     const ds = OP.filter(d => d.frente === fr && d.qtd);
     if (!ds.length) return;
