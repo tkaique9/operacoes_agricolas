@@ -362,8 +362,71 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 15.5
   .hint { display: none; } .capa-meta { display: none; }
 }
 @media (max-width: 560px) { .deck-nav > button { padding: 6px 9px; } .dots { gap: 8px; } }
-@media print { #campo, #vig, #barra, .deck-nav, nav.toc, .barra, .mf { display: none !important; } body, html { height: auto; overflow: visible; background: #fff; }
-  .deck { position: static; } .slide { position: relative; opacity: 1; visibility: visible; break-after: page; color: var(--navy); } .s-title, .capa h1 { color: var(--navy); } .slide.capa { display: none; } }
+
+/* ---------- impressão ----------
+   "Imprimir página" ou "Imprimir relatório" (ou Ctrl+P, que imprime o relatório): cada página vai para uma folha A4
+   deitada, com fundo branco e as tabelas inteiras, sem rolagem. A página que não cabe na folha é reduzida até caber
+   (no mínimo 72%). A capa, os botões e os controles não saem no papel. O desenho da folha não depende da largura da
+   tela: as regras das telas estreitas são desfeitas aqui. */
+.imp { display: flex; gap: 8px; }
+.imp button { font: 500 13px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--t2); background: transparent; border: 1px solid var(--linha2); border-radius: 2px; padding: 6px 12px; cursor: pointer; transition: color .25s, border-color .25s, background-color .25s; }
+.imp button:hover { color: var(--t1); border-color: var(--gold); background: var(--gold-dim); }
+@media screen and (max-width: 760px) { .imp { display: none; } }
+@page { size: A4 landscape; margin: 9mm 9mm 12mm;
+  @bottom-left { content: "CRV Industrial · Escalas de trabalho · EC 141/2026"; font: 500 8pt "IBM Plex Mono", Consolas, monospace; color: #7D8BB0; }
+  @bottom-right { content: counter(page) " de " counter(pages); font: 500 8pt "IBM Plex Mono", Consolas, monospace; color: #7D8BB0; } }
+html.imprimindo, html.imprimindo body { height: auto; overflow: visible; background: #fff !important; }
+html.imprimindo body { display: block; color: var(--ink); }
+html.imprimindo * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+html.imprimindo #campo, html.imprimindo #vig, html.imprimindo #barra, html.imprimindo header.top, html.imprimindo nav.toc,
+html.imprimindo .deck-nav, html.imprimindo .mf, html.imprimindo .barra, html.imprimindo .tg { display: none !important; }
+html.imprimindo .deck { position: static; width: 1040px; flex: none; }
+html.imprimindo .slide { position: relative; inset: auto; opacity: 1; visibility: visible; transition: none; height: auto; min-height: 0; overflow: visible;
+  padding: 0 0 4px; gap: 8px; color: var(--ink); break-before: page; page-break-before: always; }
+html.imprimindo .slide.capa + .slide, html.imprimindo.imprimir-pagina .slide.active { break-before: auto; page-break-before: auto; }
+html.imprimindo .slide * { animation: none !important; transition: none !important; }
+html.imprimindo .slide.capa, html.imprimindo.imprimir-pagina .slide:not(.active) { display: none !important; }
+html.imprimindo .s-eyebrow { color: #8A6D14; }
+html.imprimindo .s-eyebrow::before { background: #8A6D14; }
+html.imprimindo .s-title { color: var(--navy); font-size: 25px; }
+html.imprimindo .s-sub { display: block; color: var(--mut); max-width: none; }
+html.imprimindo .chip { background: #fff; border-color: var(--line); }
+html.imprimindo .chip .v { color: var(--navy); }
+html.imprimindo .chip .v.pos { color: var(--red); } html.imprimindo .chip .v.zero { color: var(--green); }
+html.imprimindo .chip .k { color: var(--mut); }
+html.imprimindo .card, html.imprimindo .esc { flex: none; box-shadow: none; border: 1px solid var(--line); border-top: 2px solid var(--gold); }
+html.imprimindo .esc.nserve { border-top-color: var(--red); }
+html.imprimindo .rolo, html.imprimindo .esc > div[style] { flex: none; overflow: visible !important; max-height: none; height: auto; }
+html.imprimindo .painel { flex: none; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+html.imprimindo .painel svg { height: auto; }
+html.imprimindo .cols { flex: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+html.imprimindo .escalas { flex: none; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+html.imprimindo table.tb th, html.imprimindo table.tb tr.tot td { position: static; }
+html.imprimindo table.tb tr, html.imprimindo table.lista tr { break-inside: avoid; page-break-inside: avoid; }
+html.imprimindo .card h3 { break-after: avoid; page-break-after: avoid; }
+html.imprimindo .s-head { gap: 6px 18px; }
+html.imprimindo .s-title { font-size: 23px; }
+html.imprimindo .s-sub { font-size: 14px; line-height: 1.4; margin-top: 3px; }
+html.imprimindo .chip { padding: 5px 11px; min-width: 108px; }
+html.imprimindo .chip .v { font-size: 19px; }
+html.imprimindo .card { padding: 8px 10px; }
+html.imprimindo table.tb td, html.imprimindo table.qd td, html.imprimindo table.mx td { height: auto; padding-top: 2px; padding-bottom: 2px; }
+html.imprimindo button.cel { line-height: 1; }
+html.imprimindo .leg { margin-top: 5px; font-size: 13.5px; }
+html.imprimindo .maxb, html.imprimindo .maxbar, html.imprimindo .tela { display: none !important; }
+
+/* ---------- tela cheia das tabelas grandes ---------- */
+.maxb { flex: 0 0 auto; align-self: flex-end; font: 500 13px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--t2); background: transparent;
+  border: 1px solid var(--linha2); border-radius: 2px; padding: 7px 12px; cursor: pointer; transition: color .25s, border-color .25s, background-color .25s; }
+.maxb:hover { color: var(--t1); border-color: var(--gold); background: var(--gold-dim); }
+.maxb span { color: var(--gold); margin-right: 4px; }
+.maxbar { display: none; }
+body.maxi-on .deck { z-index: 150; }
+.card.maxi { position: fixed; inset: 10px; z-index: 150; animation: none !important; box-shadow: inset 0 2px 0 var(--gold), 0 0 0 100vmax rgba(6,12,28,.94); }
+.card.maxi .rolo { flex: 1 1 auto; max-height: none; }
+.card.maxi .maxbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex: 0 0 auto; padding: 2px 0 8px; margin-bottom: 8px; border-bottom: 1px solid var(--line); }
+.maxbar small { display: block; font: 600 12.5px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: #8A6D14; }
+.maxbar b { font: 700 19px var(--f-display); letter-spacing: -.01em; color: var(--navy); }
 </style>
 </head><body>
 
@@ -401,14 +464,14 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 15.5
 
   <article class="slide" id="quadro" data-mod="Oficina" data-title="Quadro completo" data-desc="Departamento por departamento: pessoas hoje e em cada escala">
     <div class="s-head"><div><div class="s-eyebrow">02 · Oficina · Quadro</div><h2 class="s-title">Quadro completo: hoje e em cada escala</h2>
-      <p class="s-sub">Pessoas de cada departamento hoje e quantas ficaria em cada escala. Quem sobra continua no departamento, de dia. No total, o % é quanto aumenta sobre hoje. Clique no departamento para ver o detalhe.</p></div>
+      <p class="s-sub">Pessoas de cada departamento hoje e quantas ficaria em cada escala. Quem sobra continua no departamento, de dia. No total, o % é quanto aumenta sobre hoje.<span class="tela"> Clique no departamento para ver o detalhe.</span></p></div>
       <div class="chips" id="qChips"></div></div>
     <div class="card"><div class="rolo"><table class="tb qd" id="tabQ"></table></div></div>
   </article>
 
   <article class="slide" id="matriz" data-mod="Oficina" data-title="Matriz de validação" data-desc="Contratar ou sobra em cada escala; escolha e pessoas por turno">
     <div class="s-head"><div><div class="s-eyebrow">03 · Oficina · Validação</div><h2 class="s-title">Cada departamento em cada escala</h2>
-      <p class="s-sub">Pessoas a contratar (+) ou que sobram para o dia (−). Clique na célula para escolher a escala; ajuste as pessoas por turno se a necessidade for outra.</p></div>
+      <p class="s-sub">Pessoas a contratar (+) ou que sobram para o dia (−).<span class="tela"> Clique na célula para escolher a escala; ajuste as pessoas por turno se a necessidade for outra.</span></p></div>
       <div class="chips" id="mChips"></div></div>
     <div class="card">
       <div class="barra">
@@ -446,14 +509,14 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 15.5
 
   <article class="slide" id="op-quadro" data-mod="Operacional" data-title="Quadro por equipamento" data-desc="Equipamento por equipamento e por frente: operadores hoje e em cada escala">
     <div class="s-head"><div><div class="s-eyebrow">06 · Operacional · Quadro</div><h2 class="s-title">Quadro por equipamento: hoje e em cada escala</h2>
-      <p class="s-sub">Operadores para manter cada equipamento rodando 24 h, 7 dias por semana. Nos subtotais e no total, o % é quanto aumenta sobre hoje. Clique no equipamento para ver o detalhe.</p></div>
+      <p class="s-sub">Operadores para manter cada equipamento rodando 24 h, 7 dias por semana. Nos subtotais e no total, o % é quanto aumenta sobre hoje.<span class="tela"> Clique no equipamento para ver o detalhe.</span></p></div>
       <div class="chips" id="oqChips"></div></div>
     <div class="card"><div class="rolo"><table class="tb qd" id="tabOq"></table></div></div>
   </article>
 
   <article class="slide" id="op-matriz" data-mod="Operacional" data-title="Matriz da frota" data-desc="Contratar ou sobra por equipamento; quantidade e operadores por turno editáveis">
     <div class="s-head"><div><div class="s-eyebrow">07 · Operacional · Validação</div><h2 class="s-title">Cada equipamento em cada escala</h2>
-      <p class="s-sub">Operadores a contratar (+) ou que sobram (−) em relação à 5x1 de hoje. Clique na célula para escolher a escala; ajuste a quantidade de equipamentos e os operadores por turno.</p></div>
+      <p class="s-sub">Operadores a contratar (+) ou que sobram (−) em relação à 5x1 de hoje.<span class="tela"> Clique na célula para escolher a escala; ajuste a quantidade de equipamentos e os operadores por turno.</span></p></div>
       <div class="chips" id="omChips"></div></div>
     <div class="card">
       <div class="barra">
@@ -506,6 +569,7 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 15.5
   <div class="dots" id="dots"></div>
   <span class="hint">Trocar de página: botões, bolinhas ou ← →</span>
   <button type="button" id="next">Próxima ›</button>
+  <span class="imp"><button type="button" id="impPag" title="Imprimir a página aberta">Imprimir página</button><button type="button" id="impTudo" title="Imprimir o relatório inteiro, uma página por folha A4">Imprimir relatório</button></span>
   <span class="count" id="count">–</span>
 </div>
 
@@ -614,7 +678,7 @@ function barrasV(svg, itens, opts) {
   svg.innerHTML = g;
 }
 function barrasH(svg, linhas) {
-  const W = 1500, rh = 31, m = { l: 290, r: 70, t: 34, b: 14 }, H = m.t + m.b + rh * linhas.length;
+  const W = NA_FOLHA() ? 1040 : 1500, rh = 31, m = { l: 290, r: 70, t: 34, b: 14 }, H = m.t + m.b + rh * linhas.length;
   const max = Math.max(4, ...linhas.flatMap(l => [l.a, l.b])), x = v => m.l + (W - m.l - m.r) * v / max;
   let g = `<rect x="${m.l}" y="6" width="12" height="12" rx="2" fill="#C9A227"/><text x="${m.l + 18}" y="16" font-size="13" fill="#5A6072" font-family="IBM Plex Mono, monospace">ESCALA ESCOLHIDA</text>
        <rect x="${m.l + 170}" y="6" width="12" height="12" rx="2" fill="#B8C2D6"/><text x="${m.l + 188}" y="16" font-size="13" fill="#5A6072" font-family="IBM Plex Mono, monospace">5X2 EM TODOS</text>`;
@@ -658,8 +722,9 @@ function grupos() {
   D.deps.forEach(d => { const id = S.esc[d.dep], r = conta(d, id); (g[id] ||= { id, deps: [], fica: 0, hoje: 0, contr: 0 }); g[id].deps.push({ d, r }); g[id].fica += r.fica; g[id].hoje += d.n; g[id].contr += Math.max(r.c, 0); });
   return IDS.filter(id => g[id]).map(id => g[id]);
 }
+const NA_FOLHA = () => document.documentElement.classList.contains("imprimindo");
 function grafQ(svg, base, itensEsc, escolhida) {
-  const W = 1000, H = 500, m = { l: 46, r: 62, t: 40, b: 128 };
+  const W = 1000, H = NA_FOLHA() ? 760 : 500, m = { l: 46, r: 62, t: 40, b: 128 };
   const itens = [{ id: "hoje", v: base.v, lab: "Hoje", sub: base.sub, cor: "#B8C2D6" }, ...itensEsc,
     { id: "esc", v: escolhida.v, lab: "Escolhida", sub: escolhida.sub, d: escolhida.v - base.v, seg: escolhida.seg }];
   const bruto = Math.max(...itens.map(i => i.v)) * 1.1, passo = [5, 10, 20, 25, 50, 100].find(p => bruto / p <= 6) || 200, max = Math.ceil(bruto / passo) * passo;
@@ -967,6 +1032,7 @@ $("#toc").innerHTML = SL.slice(1).map((s, i) => `<a href="#${s.id}" data-i="${i 
 document.querySelectorAll("#mods button").forEach(b => b.addEventListener("click", () => vai(+b.dataset.i)));
 $("#dots").innerHTML = SL.map((s, i) => `<button type="button" aria-label="${esc(s.dataset.title)}" data-i="${i}"></button>`).join("");
 function vai(i) {
+  restauraMax();
   atual = Math.max(0, Math.min(SL.length - 1, i));
   SL.forEach((s, k) => s.classList.toggle("active", k === atual));
   document.querySelectorAll("#dots button").forEach((b, k) => b.classList.toggle("on", k === atual));
@@ -985,9 +1051,31 @@ document.querySelectorAll("#dots button").forEach(b => b.addEventListener("click
 document.querySelectorAll("#toc a").forEach(a => a.addEventListener("click", e => { e.preventDefault(); vai(+a.dataset.i); }));
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && !$("#mf").hidden) { fecha(); return; }
+  if (e.key === "Escape" && document.body.classList.contains("maxi-on")) { restauraMax(); return; }
   if (!$("#mf").hidden || e.target.closest("input,select,textarea")) return;
   if (e.key === "ArrowRight" || e.key === "PageDown" || (e.key === " " && !e.target.closest("button"))) { e.preventDefault(); vai(atual + 1); }
   if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); vai(atual - 1); }
+});
+
+/* ---------- tela cheia das tabelas grandes ---------- */
+// botão no topo da página; a tabela ocupa a tela toda e continua clicável e editável
+function restauraMax() {
+  document.querySelectorAll(".card.maxi").forEach(c => c.classList.remove("maxi"));
+  document.querySelectorAll(".maxb").forEach(b => b.setAttribute("aria-pressed", "false"));
+  document.body.classList.remove("maxi-on");
+}
+function maximiza(sl) {
+  const c = sl.querySelector(".card");
+  restauraMax();
+  c.classList.add("maxi"); document.body.classList.add("maxi-on");
+  sl.querySelector(".maxb").setAttribute("aria-pressed", "true"); c.querySelector(".maxbar button").focus();
+}
+["quadro", "matriz", "op-quadro", "op-matriz"].forEach(id => {
+  const sl = document.getElementById(id), c = sl.querySelector(".card"), hd = sl.querySelector(".s-head");
+  hd.insertAdjacentHTML("beforeend", `<button type="button" class="maxb" aria-pressed="false" title="Ver só a tabela, em tela cheia"><span aria-hidden="true">⤢</span>Tela cheia</button>`);
+  c.insertAdjacentHTML("afterbegin", `<div class="maxbar"><div><small>${esc(sl.querySelector(".s-eyebrow").textContent)}</small><b>${esc(sl.querySelector(".s-title").textContent)}</b></div><button type="button" class="btn">Sair da tela cheia ✕</button></div>`);
+  hd.querySelector(".maxb").addEventListener("click", () => maximiza(sl));
+  c.querySelector(".maxbar button").addEventListener("click", () => { restauraMax(); hd.querySelector(".maxb").focus(); });
 });
 
 /* ---------- campo de partículas ---------- */
@@ -1008,6 +1096,44 @@ document.addEventListener("keydown", e => {
   monta(); addEventListener("resize", () => { monta(); desenha(); });
   if (calmo) desenha(); else requestAnimationFrame(passo);
 })();
+
+/* ---------- impressão ---------- */
+// liga o modo de impressão, encaixa cada página na folha A4 deitada e, depois de imprimir, volta ao normal
+const FOLHA = { l: 1040, a: 704, min: .68 };   // área útil da folha (margens de 9 mm e rodapé), em px de tela; menor redução
+const IMP = { pedido: null };
+function encaixa(sl) {
+  // a página que passa da folha diminui até caber (no mínimo 68%). A que não cabe nem assim vai para o menor
+  // número de folhas, no maior tamanho que couber nelas; cada folha a mais repete o cabeçalho da tabela
+  const largura = z => { sl.style.zoom = z; sl.style.width = FOLHA.l / z + "px"; return sl.scrollWidth <= sl.clientWidth + 1; };
+  for (let n = 1; n <= 5; n++) {
+    const lim = n * FOLHA.a - (n - 1) * 150, cabe = z => largura(z) && sl.getBoundingClientRect().height <= lim;
+    if (cabe(1)) return;
+    if (!cabe(FOLHA.min)) continue;
+    let lo = FOLHA.min, hi = 1;
+    for (let k = 0; k < 8; k++) { const m = (lo + hi) / 2; if (cabe(m)) lo = m; else hi = m; }
+    cabe(lo); return;
+  }
+  largura(1);
+}
+function preparaImpressao(qual) {
+  if (qual === "pagina" && atual === 0) qual = "tudo";
+  restauraMax();
+  const html = document.documentElement;
+  html.classList.add("imprimindo"); html.classList.toggle("imprimir-pagina", qual === "pagina");
+  painel(); painelOp(); grafico();   // gráficos redesenhados no tamanho da folha
+  SL.forEach(sl => { sl.style.zoom = ""; sl.style.width = ""; });
+  SL.forEach(sl => { if (getComputedStyle(sl).display !== "none") encaixa(sl); });
+}
+function voltaImpressao() {
+  document.documentElement.classList.remove("imprimindo", "imprimir-pagina"); IMP.pedido = null;
+  SL.forEach(sl => { sl.style.zoom = ""; sl.style.width = ""; });
+  painel(); painelOp(); grafico();
+}
+addEventListener("beforeprint", () => { if (!IMP.pedido) preparaImpressao("tudo"); });
+addEventListener("afterprint", voltaImpressao);
+function imprime(qual) { IMP.pedido = qual; preparaImpressao(qual); setTimeout(() => print(), 60); }
+$("#impPag").addEventListener("click", () => imprime("pagina"));
+$("#impTudo").addEventListener("click", () => imprime("tudo"));
 
 /* ---------- liga tudo ---------- */
 function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); escalas(); }
