@@ -20,17 +20,21 @@ Os turnos 24 h saem da 5x1, a 6x1 de dia vira 5x2 e o horário ADM com sábado v
 ### Operacional (frota 24 h)
 
 Aba **Operacional** da mesma apresentação: os 84 equipamentos do *Detalhamento da frota* (lista em
-`gerar_departamentos.FROTA`), cada um com 1 operador por turno nas 24 h, hoje em 5x1. Hoje = a 5x1 calculada com
-a mesma regra de turma fixa por tipo de equipamento: 330 operadores. Com 5x2 em toda a frota: +45; com 12x36: +6;
-com a escala sugerida por equipamento: +20. Quantidade e operadores por turno são editáveis na página. No cadastro,
-operadores de máquinas (335) e motoristas (250) são CLT urbano, então a 4x2 de 12 h não serve na frota.
+`gerar_departamentos.FROTA`), cada um com 1 operador por turno nas 24 h, hoje em 5x1. Como o folguista roda entre
+equipamentos, a conta é por equipamento: 5x1 = 3,6 pessoas por equipamento (hoje 303 operadores), 5x2 = 4,2 (+50),
+4x2 de 8 h = 4,5 (+75), 12x36 e 3x3 = 4,0 (+33), 4x2 de 12 h = 3,0 (−51). Cada tipo fica fracionado e o total da frota
+arredonda para cima. Quantidade e operadores por turno são editáveis na página.
+
+A 4x2 de 12 h entra na simulação com **risco alto** (botão "4x2 12 h em todos" e opção de entrar na sugerida): no
+cadastro, operadores de máquinas (335) e motoristas (250) são CLT urbano e, com a hora noturna reduzida, a noite de
+12 h passa de 10 h contadas. Só vale com norma coletiva que troque a hora reduzida por adicional maior.
 
 ### Oficina por departamento
 
 `python gerar_departamentos.py`. Regra de cada departamento em `oficina.REGRAS`, tirada das anotações da planilha.
 "Garantir por turno" começa na média de hoje arredondada (2,5 vira 2), no mínimo 1 nos departamentos 24 h; PCM e
 caldeiraria com 1 por turno. Com turma fixa por turno: 5x2 em todos dá +32; a escala sugerida (a de menos contratação
-dentro da lei) dá +20, quase toda em 12x36. A 4x2 de 12 h não serve na oficina (CLT urbano, noite com hora reduzida).
+dentro da lei) dá +20, quase toda em 12x36. A 4x2 de 12 h entra com risco alto (CLT urbano, noite com hora reduzida).
 
 ## Para refazer
 

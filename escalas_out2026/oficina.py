@@ -63,8 +63,8 @@ def ler():
 CEN = {c["id"]: c for c in analise.CENARIOS}
 SUGS = ["5x2", "4x2", "12x36", "3x3", "4x2_12"]
 # na oficina todos são CLT urbano: a noite de 12 h com 10 h de trabalho passa de 10 h contadas (hora reduzida)
-RISCO_OF = {"5x2": "Baixo", "4x2": "Baixo", "12x36": "Médio", "3x3": "Médio", "4x2_12": "Não serve"}
-ORDEM_RISCO = {"Baixo": 0, "Médio": 1, "Não serve": 9}
+RISCO_OF = {"5x2": "Baixo", "4x2": "Baixo", "12x36": "Médio", "3x3": "Médio", "4x2_12": "Alto"}
+ORDEM_RISCO = {"Baixo": 0, "Médio": 1, "Alto": 2, "Não serve": 9}
 
 
 def arred(x):
@@ -120,7 +120,7 @@ def simular(d, ps):
         if regra == "1turno":           # o 24 h sai da própria equipe; quem sobra vai para 5x2 de dia
             cf, cv = max(0, cf), max(0, cv)
         res["sim"][cid] = {"precisa": fixo, "precisa_volante": vol, "contratar": cf, "contratar_volante": cv}
-    ok = [k for k in res["sim"] if RISCO_OF[k] != "Não serve"]
+    ok = [k for k in res["sim"] if RISCO_OF[k] in ("Baixo", "Médio")]  # a 4x2 de 12 h só entra se a página pedir
     res["sugerida"] = min(ok, key=lambda k: (max(res["sim"][k]["contratar"], 0), ORDEM_RISCO[RISCO_OF[k]], SUGS.index(k)))
     return res
 

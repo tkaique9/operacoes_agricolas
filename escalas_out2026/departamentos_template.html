@@ -41,15 +41,15 @@ header.top { position: relative; z-index: 3; display: flex; justify-content: spa
   padding: 11px max(30px, env(safe-area-inset-right, 0px)) 11px max(30px, env(safe-area-inset-left, 0px));
   background: linear-gradient(180deg, rgba(6,11,30,.66), rgba(6,11,30,.12)); border-bottom: 1px solid var(--linha); }
 header.top::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 84px; height: 2px; background: var(--gold); }
-header.top .brand { font: 600 11px var(--f-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--t2); }
-header.top .meta { font: 500 11px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--t3); }
+header.top .brand { font: 600 13px var(--f-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--t2); }
+header.top .meta { font: 500 13px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--t3); }
 nav.toc { position: relative; z-index: 3; display: flex; align-items: center; gap: 4px 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none;
   padding: 8px max(30px, env(safe-area-inset-right, 0px)) 8px max(30px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--linha); }
 nav.toc::-webkit-scrollbar { display: none; }
-.mod { font: 600 10px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--t1); padding: 4px 9px; border: 1px solid var(--gold); background: var(--gold-dim); border-radius: 2px; margin-right: 6px; }
+.mod { font: 600 12.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--t1); padding: 4px 9px; border: 1px solid var(--gold); background: var(--gold-dim); border-radius: 2px; margin-right: 6px; }
 .mod.off { color: var(--t3); border-color: var(--linha); background: transparent; }
 .sep { flex: 0 0 1px; align-self: stretch; background: var(--linha); margin: 0 14px; }
-nav.toc a { font: 500 10px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--t3); text-decoration: none; margin-right: 14px; padding-bottom: 3px; border-bottom: 2px solid transparent; transition: color .25s, border-color .25s; }
+nav.toc a { font: 500 12.5px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--t3); text-decoration: none; margin-right: 14px; padding-bottom: 3px; border-bottom: 2px solid transparent; transition: color .25s, border-color .25s; }
 nav.toc a b { color: var(--gold); font-weight: 600; margin-right: 4px; }
 nav.toc a:hover { color: var(--t1); }
 nav.toc a.on { color: var(--t1); border-bottom-color: var(--gold); font-weight: 600; }
@@ -62,37 +62,37 @@ header.top, nav.toc { transition: opacity .5s ease .2s, visibility 0s linear .2s
   padding: 18px max(30px, env(safe-area-inset-right, 0px)) 16px max(30px, env(safe-area-inset-left, 0px)); transition: opacity .62s ease, visibility .62s; }
 .slide.active { opacity: 1; visibility: visible; }
 .s-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; flex: 0 0 auto; }
-.s-eyebrow { display: flex; align-items: center; gap: 12px; font: 600 11.5px var(--f-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+.s-eyebrow { display: flex; align-items: center; gap: 12px; font: 600 13.5px var(--f-mono); letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
 .s-eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--gold); }
 .s-title { font: 700 clamp(22px, 2.4vw, 32px) var(--f-display); letter-spacing: -.018em; line-height: 1.08; margin: 4px 0 0; color: var(--t1); text-wrap: balance; }
-.s-sub { font: 400 14px var(--f-serif); color: var(--t2); margin: 5px 0 0; max-width: 900px; line-height: 1.5; }
+.s-sub { font: 400 15.5px var(--f-serif); color: var(--t2); margin: 5px 0 0; max-width: 900px; line-height: 1.5; }
 .chips { display: flex; gap: 9px; flex-wrap: wrap; }
 .chip { position: relative; overflow: hidden; border-radius: 3px; border: 1px solid var(--linha2); background: rgba(255,255,255,.035); padding: 8px 14px; min-width: 128px; }
 .chip::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--gold); }
 .chip .v { font: 700 21px var(--f-display); letter-spacing: -.02em; color: var(--gold); line-height: 1.1; }
 .chip .v.pos { color: #F0897A; } .chip .v.zero { color: #8FD3A6; }
-.chip .k { font: 500 10px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--t2); margin-top: 3px; }
+.chip .k { font: 500 12.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--t2); margin-top: 3px; }
 .card { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; background: var(--white); color: var(--ink); border-radius: 4px; border: 1px solid rgba(255,255,255,.16);
   box-shadow: inset 0 2px 0 var(--gold), 0 28px 70px -12px rgba(0,0,0,.58), 0 0 90px -34px var(--gold-glow); padding: 10px 14px 10px; }
 .card.fix { flex: 0 0 auto; }
 .rolo { flex: 1 1 auto; min-height: 0; overflow: auto; }
-.card h3 { margin: 2px 0 8px; font: 600 11px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--navy); }
+.card h3 { margin: 2px 0 8px; font: 600 13px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--navy); }
 .cols { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
 .cols > .card { min-height: 0; }
 
 /* controles */
 .barra { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; padding: 2px 0 9px; margin-bottom: 6px; border-bottom: 1px solid var(--line); }
-.barra label { display: inline-flex; gap: 7px; align-items: center; font: 600 12.5px var(--f-display); color: var(--navy); cursor: pointer; }
+.barra label { display: inline-flex; gap: 7px; align-items: center; font: 600 14.5px var(--f-display); color: var(--navy); cursor: pointer; }
 .barra input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--navy); }
 .barra .esp { flex: 1; }
-.btn { font: 600 10.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--bgsoft); border: 1px solid var(--line); border-radius: 2px; padding: 6px 11px; cursor: pointer; transition: border-color .2s, background-color .2s; }
+.btn { font: 600 13px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--bgsoft); border: 1px solid var(--line); border-radius: 2px; padding: 6px 11px; cursor: pointer; transition: border-color .2s, background-color .2s; }
 .btn:hover { border-color: var(--gold); background: var(--sel); }
 .btn.pri { background: var(--gold); border-color: var(--gold); }
 
 /* tabelas */
-table.tb { width: 100%; border-collapse: collapse; font: 600 13px var(--f-display); }
-table.tb th { position: sticky; top: 0; z-index: 2; background: var(--navy); color: var(--white); font-weight: 600; font-size: 11.5px; padding: 7px 7px; text-align: center; line-height: 1.22; vertical-align: bottom; }
-table.tb th u { display: block; text-decoration: none; font: 400 10px var(--f-mono); letter-spacing: .04em; opacity: .75; margin-top: 2px; }
+table.tb { width: 100%; border-collapse: collapse; font: 600 14.5px var(--f-display); }
+table.tb th { position: sticky; top: 0; z-index: 2; background: var(--navy); color: var(--white); font-weight: 600; font-size: 13.5px; padding: 7px 7px; text-align: center; line-height: 1.22; vertical-align: bottom; }
+table.tb th u { display: block; text-decoration: none; font: 400 12.5px var(--f-mono); letter-spacing: .04em; opacity: .75; margin-top: 2px; }
 table.tb th.l, table.tb td.l { text-align: left; }
 table.tb td { padding: 3px 7px; border-bottom: 1px solid var(--line); text-align: center; color: var(--ink); vertical-align: middle; height: 34px; }
 table.qd td { height: 27px; padding: 2px 7px; }
@@ -103,41 +103,41 @@ button.cel { line-height: 1.02; }
 @media (max-height: 820px) { .s-sub { display: none; } }
 table.qd tr.sec td { height: 22px; }
 table.tb td.dep { min-width: 190px; color: var(--navy); font-weight: 700; }
-table.tb td.dep u { display: block; text-decoration: none; color: var(--mut); font: 400 12px var(--f-serif); font-style: italic; margin-top: 1px; }
-table.tb td.dep u b { font: 600 10px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; font-style: normal; color: #8A6D14; }
+table.tb td.dep u { display: block; text-decoration: none; color: var(--mut); font: 400 14px var(--f-serif); font-style: italic; margin-top: 1px; }
+table.tb td.dep u b { font: 600 12.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; font-style: normal; color: #8A6D14; }
 table.tb td.mut { color: var(--mut); font-weight: 500; white-space: nowrap; }
-table.tb td small.s { display: block; font: 500 10.5px var(--f-mono); color: var(--mut); }
+table.tb td small.s { display: block; font: 500 13px var(--f-mono); color: var(--mut); }
 table.tb tr.clic { cursor: pointer; }
 table.tb tr.clic:hover td { background: #EEF1F7; }
 table.tb tr.clic:hover td.dep { color: #8A6D14; }
 table.tb tr.sel td { background: var(--sel); }
 table.tb tr.tot td { position: sticky; bottom: 0; background: var(--tot); font-weight: 700; color: var(--navy); border-top: 2px solid var(--navy); }
-table.tb tr.sec td { background: #F1F3F8; color: var(--navy); font: 600 10.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; height: 26px; border-top: 2px solid var(--line); }
+table.tb tr.sec td { background: #F1F3F8; color: var(--navy); font: 600 13px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; height: 26px; border-top: 2px solid var(--line); }
 .pt { display: inline-flex; gap: 3px; }
-.pt input { width: 38px; padding: 3px 2px; text-align: center; font: 700 14px var(--f-display); color: var(--navy); border: 1px solid var(--line); border-radius: 3px; background: var(--white); color-scheme: light; }
+.pt input { width: 46px; padding: 3px 2px; text-align: center; font: 700 15.5px var(--f-display); color: var(--navy); border: 1px solid var(--line); border-radius: 3px; background: var(--white); color-scheme: light; }
 .pt input:disabled { background: var(--bgsoft); color: var(--na-ink); }
-button.cel { width: 100%; min-width: 72px; border: 2px solid transparent; border-radius: 3px; padding: 1px 2px; cursor: pointer; display: grid; line-height: 1.1; background: var(--bgsoft); color: var(--ink); font-family: var(--f-display); }
-button.cel b { font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
-button.cel b i { font-style: normal; color: var(--gold); font-size: 13px; margin-right: 3px; }
-button.cel small { font: 500 10px var(--f-mono); color: var(--mut); }
+button.cel { width: 100%; min-width: 82px; border: 2px solid transparent; border-radius: 3px; padding: 1px 2px; cursor: pointer; display: grid; line-height: 1.1; background: var(--bgsoft); color: var(--ink); font-family: var(--f-display); }
+button.cel b { font-size: 17px; font-weight: 700; letter-spacing: -.02em; }
+button.cel b i { font-style: normal; color: var(--gold); font-size: 14.5px; margin-right: 3px; }
+button.cel small { font: 500 12.5px var(--f-mono); color: var(--mut); }
 button.cel.ok { background: var(--ok); } button.cel.ok b { color: var(--green); }
 button.cel.med { background: var(--med); } button.cel.med b { color: var(--amber); }
 button.cel.bad { background: var(--bad); } button.cel.bad b { color: var(--red); }
 button.cel.ns { background: var(--na); } button.cel.ns b { color: var(--na-ink); }
 button.cel.esc { border-color: var(--navy); box-shadow: 0 0 0 1px var(--navy) inset; }
-.tag { font: 600 9px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--navy); }
+.tag { font: 600 11.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--navy); }
 .tag::before { content: "★ "; color: var(--gold); }
-td.na { color: var(--na-ink); font: 400 12px var(--f-serif); font-style: italic; }
+td.na { color: var(--na-ink); font: 400 14px var(--f-serif); font-style: italic; }
 .q { display: inline-flex; align-items: baseline; gap: 5px; line-height: 1.1; }
-.q b { font-size: 16px; letter-spacing: -.02em; }
-.q small { font: 500 10.5px var(--f-mono); }
+.q b { font-size: 17px; letter-spacing: -.02em; }
+.q small { font: 500 13px var(--f-mono); }
 .q.up small { color: var(--red); } .q.eq small { color: var(--mut); }
 td.qesc { background: var(--sel); }
-.pill { display: inline-block; font: 600 9.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; white-space: nowrap; margin-top: 3px; }
+.pill { display: inline-block; font: 600 12px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; white-space: nowrap; margin-top: 3px; }
 .pill.Baixo { background: var(--ok); color: var(--green); } .pill.Médio { background: var(--med); color: var(--amber); }
 .pill.ns { background: var(--bad); color: var(--red); }
 th .pill.Baixo { background: rgba(46,125,70,.35); color: #CFEBD8; } th .pill.Médio { background: rgba(201,162,39,.30); color: #F3E2A6; } th .pill.ns { background: rgba(192,57,43,.38); color: #F7C9C2; }
-.leg { display: flex; flex-wrap: wrap; gap: 4px 16px; font: 400 12.5px var(--f-serif); color: var(--mut); margin-top: 7px; }
+.leg { display: flex; flex-wrap: wrap; gap: 4px 16px; font: 400 14.5px var(--f-serif); color: var(--mut); margin-top: 7px; }
 .leg i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; vertical-align: -1px; margin-right: 5px; }
 
 /* capa */
@@ -145,17 +145,17 @@ th .pill.Baixo { background: rgba(46,125,70,.35); color: #CFEBD8; } th .pill.Mé
 .capa-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
 .capa-topo img { display: block; height: clamp(44px, 8vh, 84px); width: auto; max-width: 46vw; }
 .capa-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; text-align: right; }
-.capa-meta .k { font: 600 11.5px var(--f-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
-.capa-meta .v { font: 500 11px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--t2); }
+.capa-meta .k { font: 600 13.5px var(--f-mono); letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+.capa-meta .v { font: 500 13px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--t2); }
 .capa-meio { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 36px; align-items: center; }
-.selo { display: inline-flex; align-items: center; gap: 12px; font: 600 12px var(--f-mono); letter-spacing: .24em; text-transform: uppercase; color: var(--gold); }
+.selo { display: inline-flex; align-items: center; gap: 12px; font: 600 14px var(--f-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
 .selo::before { content: ""; width: 38px; height: 3px; background: var(--gold); border-radius: 2px; }
 .capa h1 { font: 800 clamp(40px, 6vw, 92px) var(--f-display); letter-spacing: -.035em; line-height: .98; margin: 18px 0 14px; color: var(--t1); }
 .capa h1 em { display: block; font: italic 400 .4em var(--f-serif); letter-spacing: 0; color: var(--t2); margin-top: 12px; }
-.capa .sub { font: 400 16px var(--f-serif); color: var(--t2); max-width: 46ch; line-height: 1.55; margin: 0; }
+.capa .sub { font: 400 17px var(--f-serif); color: var(--t2); max-width: 46ch; line-height: 1.55; margin: 0; }
 .graf { min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: center; }
-.graf-t { font: 600 11.5px var(--f-mono); letter-spacing: .2em; text-transform: uppercase; color: var(--t1); }
-.graf-u { font: 400 13px var(--f-serif); font-style: italic; color: var(--t2); margin-left: 10px; letter-spacing: 0; text-transform: none; }
+.graf-t { font: 600 13.5px var(--f-mono); letter-spacing: .2em; text-transform: uppercase; color: var(--t1); }
+.graf-u { font: 400 14.5px var(--f-serif); font-style: italic; color: var(--t2); margin-left: 10px; letter-spacing: 0; text-transform: none; }
 .graf svg { width: 100%; height: auto; max-height: 52vh; display: block; margin-top: 10px; }
 .capa-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--linha2); border-radius: 4px; background: rgba(255,255,255,.025); }
 .capa-kpi { padding: clamp(10px, 2vh, 18px) clamp(12px, 1.8vw, 26px); min-width: 0; }
@@ -163,60 +163,60 @@ th .pill.Baixo { background: rgba(46,125,70,.35); color: #CFEBD8; } th .pill.Mé
 .capa-kpi .n { font: 700 clamp(26px, min(3.4vw, 6vh), 48px) var(--f-display); letter-spacing: -.03em; color: var(--gold); line-height: 1.04; }
 .capa-kpi .n small { font-size: .42em; font-weight: 600; margin-left: .3em; opacity: .85; letter-spacing: 0; }
 .capa-kpi .n.pos { color: #F0897A; }
-.capa-kpi .l { margin-top: 6px; font: 500 11px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--t1); line-height: 1.35; }
-.capa-kpi .l em { display: block; font: 400 13px var(--f-serif); text-transform: none; letter-spacing: 0; color: var(--t2); }
+.capa-kpi .l { margin-top: 6px; font: 500 13px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--t1); line-height: 1.35; }
+.capa-kpi .l em { display: block; font: 400 14.5px var(--f-serif); text-transform: none; letter-spacing: 0; color: var(--t2); }
 
 /* capa: índice no lugar do gráfico */
 .capa-indice { align-self: center; border-left: 1px solid var(--linha2); padding-left: 32px; }
-.ci-t { font: 600 11.5px var(--f-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+.ci-t { font: 600 13.5px var(--f-mono); letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
 .capa-indice ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .capa-indice button { all: unset; cursor: pointer; display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 2px 10px; padding: 9px 10px; border-radius: 3px; width: 100%; box-sizing: border-box; transition: background-color .25s; }
 .capa-indice button:hover, .capa-indice button:focus-visible { background: rgba(255,255,255,.05); }
-.capa-indice .n { grid-row: span 2; font: 600 13px var(--f-mono); color: var(--gold); padding-top: 3px; }
+.capa-indice .n { grid-row: span 2; font: 600 14.5px var(--f-mono); color: var(--gold); padding-top: 3px; }
 .capa-indice .t { font: 700 19px var(--f-display); letter-spacing: -.01em; color: var(--t1); }
-.capa-indice .d { font: italic 400 13.5px var(--f-serif); color: var(--t2); }
+.capa-indice .d { font: italic 400 15px var(--f-serif); color: var(--t2); }
 
 /* painel */
 .painel { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px; }
 .painel > .card { min-height: 0; }
-.card h3 .h3u { font: italic 400 12.5px var(--f-serif); letter-spacing: 0; text-transform: none; color: var(--mut); margin-left: 8px; }
+.card h3 .h3u { font: italic 400 14.5px var(--f-serif); letter-spacing: 0; text-transform: none; color: var(--mut); margin-left: 8px; }
 .painel svg { width: 100%; height: 100%; display: block; }
-table.lista { width: 100%; border-collapse: collapse; font: 600 13px var(--f-display); }
+table.lista { width: 100%; border-collapse: collapse; font: 600 14.5px var(--f-display); }
 table.lista td { padding: 5px 6px; border-bottom: 1px solid var(--line); color: var(--ink); }
 table.lista td.n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-table.lista tr.g td { background: var(--bgsoft); color: var(--navy); font: 700 13.5px var(--f-display); border-top: 2px solid var(--line); padding: 7px 6px; }
+table.lista tr.g td { background: var(--bgsoft); color: var(--navy); font: 700 15px var(--f-display); border-top: 2px solid var(--line); padding: 7px 6px; }
 table.lista tr.g td i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 8px; vertical-align: -1px; }
-table.lista tr.g small { font: 500 10.5px var(--f-mono); color: var(--mut); margin-left: 6px; }
+table.lista tr.g small { font: 500 13px var(--f-mono); color: var(--mut); margin-left: 6px; }
 table.lista tr.clic { cursor: pointer; } table.lista tr.clic:hover td { background: #EEF1F7; }
 table.lista td.dn { color: var(--navy); font-weight: 600; padding-left: 26px; }
-table.lista td.dn u { text-decoration: none; font: 600 9.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: #8A6D14; margin-left: 6px; }
+table.lista td.dn u { text-decoration: none; font: 600 12px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: #8A6D14; margin-left: 6px; }
 table.lista .up { color: var(--red); font-weight: 700; } table.lista .eq { color: var(--mut); font-weight: 500; }
 
 /* quadro completo: colunas com linhas, números maiores */
-table.qd { font-size: 14px; }
+table.qd { font-size: 15.5px; }
 table.qd th, table.qd td { border-right: 1px solid var(--line); }
 table.qd th:last-child, table.qd td:last-child { border-right: 0; }
 table.qd thead th { border-right-color: rgba(255,255,255,.18); }
-table.qd thead tr.grp th { background: #0E1A3D; color: var(--gold); font: 600 10.5px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,.14); }
+table.qd thead tr.grp th { background: #0E1A3D; color: var(--gold); font: 600 13px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,.14); }
 table.qd thead tr + tr th { top: 27px; }
 table.qd td { height: 31px; padding: 2px 9px; vertical-align: middle; }
 table.qd tbody tr:nth-child(even):not(.tot):not(.sec) td { background: #FAFBFD; }
 table.qd tbody tr.clic:hover td { background: #EEF1F7; }
-table.qd td.dep { font-size: 14px; }
+table.qd td.dep { font-size: 15.5px; }
 table.qd td.dep u { display: inline; margin-left: 8px; }
-table.qd td.hoje { font: 700 17px var(--f-display); color: var(--navy); background: #F7F8FB; }
-table.qd td.comp { font: 500 11.5px var(--f-mono); color: var(--mut); text-align: left; white-space: nowrap; vertical-align: middle; line-height: 1.2; }
+table.qd td.hoje { font: 700 18px var(--f-display); color: var(--navy); background: #F7F8FB; }
+table.qd td.cmp { font: 500 13.5px var(--f-mono); color: var(--mut); text-align: left; white-space: nowrap; vertical-align: middle; line-height: 1.2; }
 table.qd td.qv { white-space: nowrap; }
-table.qd td.qv b { font: 700 17px var(--f-display); letter-spacing: -.02em; color: var(--ink); }
-table.qd td.qv .dl { display: inline-block; min-width: 30px; margin-left: 7px; font: 600 11px var(--f-mono); padding: 1px 5px; border-radius: 2px; text-align: center; }
+table.qd td.qv b { font: 700 18px var(--f-display); letter-spacing: -.02em; color: var(--ink); }
+table.qd td.qv .dl { display: inline-block; min-width: 30px; margin-left: 7px; font: 600 13px var(--f-mono); padding: 1px 5px; border-radius: 2px; text-align: center; }
 table.qd td.qv .dl.up { background: var(--bad); color: var(--red); }
 table.qd td.qv .dl.eq { color: var(--na-ink); }
 table.qd td.qv.qsel { box-shadow: inset 0 -3px 0 var(--gold); background: var(--sel) !important; }
 table.qd td.ec { white-space: nowrap; }
-table.qd td.ec span { display: inline-block; font: 600 10.5px var(--f-mono); letter-spacing: .04em; padding: 3px 7px; border-radius: 2px; color: #fff; }
+table.qd td.ec span { display: inline-block; font: 600 13px var(--f-mono); letter-spacing: .04em; padding: 3px 7px; border-radius: 2px; color: #fff; }
 table.qd td.fq { background: var(--tot); }
-table.qd td.fq b { font: 800 18px var(--f-display); color: var(--navy); }
-table.qd td.nm { color: var(--mut); font: italic 400 13px var(--f-serif); }
+table.qd td.fq b { font: 800 19px var(--f-display); color: var(--navy); }
+table.qd td.nm { color: var(--mut); font: italic 400 14.5px var(--f-serif); }
 table.qd tr.tot td { border-right-color: rgba(18,34,74,.18); }
 table.qd tr.tot td b { font-size: 19px; }
 
@@ -227,17 +227,17 @@ button.mod.off u { color: var(--t3); }
 button.mod.off:hover { border-color: var(--gold-line); color: var(--t1); }
 .fdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; vertical-align: 0; }
 table.qd tr.fr td { background: #F1F3F8 !important; color: var(--navy); font-weight: 700; border-top: 2px solid #D6DAE2; height: 30px; }
-table.qd tr.fr td.l { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; }
-table.qd tr.fr td.qv b { font-size: 15px; color: var(--navy); }
-table.mx tr.fr td { background: #F1F3F8; color: var(--navy); font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; height: 26px; border-top: 2px solid #D6DAE2; }
-.pt.um input { width: 46px; }
+table.qd tr.fr td.l { font: 600 13px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; }
+table.qd tr.fr td.qv b { font-size: 16.5px; color: var(--navy); }
+table.mx tr.fr td { background: #F1F3F8; color: var(--navy); font: 600 13px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; height: 26px; border-top: 2px solid #D6DAE2; }
+.pt.um input { width: 54px; }
 .capa-indice .mods { display: grid; gap: 10px; }
 .capa-indice .mi { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 4px 12px; padding: 12px 12px 12px 10px; border-radius: 3px; border: 1px solid transparent; }
 .capa-indice .mi:hover { background: rgba(255,255,255,.04); border-color: var(--linha); }
-.capa-indice .mi .n { grid-row: span 2; font: 600 13px var(--f-mono); color: var(--gold); padding-top: 4px; }
+.capa-indice .mi .n { grid-row: span 2; font: 600 14.5px var(--f-mono); color: var(--gold); padding-top: 4px; }
 .capa-indice .mi .t { font: 700 21px var(--f-display); letter-spacing: -.01em; color: var(--t1); }
 .capa-indice .mi .pg { display: flex; flex-wrap: wrap; gap: 4px 6px; }
-.capa-indice .mi .pg button { all: unset; cursor: pointer; font: italic 400 13.5px var(--f-serif); color: var(--t2); padding: 1px 0; border-bottom: 1px solid transparent; }
+.capa-indice .mi .pg button { all: unset; cursor: pointer; font: italic 400 15px var(--f-serif); color: var(--t2); padding: 1px 0; border-bottom: 1px solid transparent; }
 .capa-indice .mi .pg button:hover, .capa-indice .mi .pg button:focus-visible { color: var(--t1); border-bottom-color: var(--gold); }
 .capa-indice .mi .pg span { color: var(--t3); }
 .esc .big.tres { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
@@ -249,26 +249,26 @@ table.mx tr.fr td { background: #F1F3F8; color: var(--navy); font: 600 11px var(
 .esc { background: var(--white); color: var(--ink); border-radius: 4px; padding: 12px 12px 10px; min-width: 0; display: flex; flex-direction: column; gap: 8px;
   box-shadow: inset 0 2px 0 var(--gold), 0 24px 60px -14px rgba(0,0,0,.55); }
 .esc.nserve { box-shadow: inset 0 2px 0 var(--red), 0 24px 60px -14px rgba(0,0,0,.55); }
-.esc h4 { margin: 0; font: 700 16px var(--f-display); color: var(--navy); letter-spacing: -.01em; }
-.esc .hr { font: 400 12.5px var(--f-serif); color: var(--mut); line-height: 1.4; }
-.esc dl { margin: 0; display: grid; grid-template-columns: auto auto; gap: 3px 8px; font-size: 12.5px; }
-.esc dt { font: 500 10px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--mut); align-self: center; }
+.esc h4 { margin: 0; font: 700 17px var(--f-display); color: var(--navy); letter-spacing: -.01em; }
+.esc .hr { font: 400 14.5px var(--f-serif); color: var(--mut); line-height: 1.4; }
+.esc dl { margin: 0; display: grid; grid-template-columns: auto auto; gap: 3px 8px; font-size: 14.5px; }
+.esc dt { font: 500 12.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--mut); align-self: center; }
 .esc dd { margin: 0; font-weight: 700; color: var(--navy); text-align: right; }
-.esc .nt { font: 400 12px var(--f-serif); color: var(--ink); line-height: 1.42; margin-top: auto; }
+.esc .nt { font: 400 14px var(--f-serif); color: var(--ink); line-height: 1.42; margin-top: auto; }
 .esc .big { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .esc .big div { background: var(--bgsoft); border-top: 2px solid var(--navy); padding: 7px 8px; }
 .esc .big b { display: block; font: 700 28px var(--f-display); letter-spacing: -.03em; color: var(--navy); line-height: 1; }
 .esc .big b.pos { color: var(--red); }
-.esc .big span { display: block; font: 500 9.5px var(--f-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--mut); margin-top: 5px; line-height: 1.3; }
+.esc .big span { display: block; font: 500 12px var(--f-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--mut); margin-top: 5px; line-height: 1.3; }
 .mini td, .mini th { width: 15px; height: 16px; }
 .mini { border-collapse: separate; border-spacing: 2px; }
-.mini td, .mini th { width: 13px; height: 14px; padding: 0; border-radius: 2px; font: 600 8px var(--f-mono); text-align: center; }
+.mini td, .mini th { width: 13px; height: 14px; padding: 0; border-radius: 2px; font: 600 10.5px var(--f-mono); text-align: center; }
 .mini th { background: var(--navy); color: #fff; }
 .mini th.d { background: var(--red); }
 .mini td { background: #DFE4EC; }
 .mini td.F { background: var(--green); } .mini td.F.d { background: var(--red); }
-.mini td.lab { width: auto; background: transparent; font: 600 9px var(--f-mono); color: var(--navy); padding-right: 4px; text-align: left; white-space: nowrap; }
-ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px var(--f-serif); color: var(--ink); line-height: 1.45; }
+.mini td.lab { width: auto; background: transparent; font: 600 11.5px var(--f-mono); color: var(--navy); padding-right: 4px; text-align: left; white-space: nowrap; }
+ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 15.5px var(--f-serif); color: var(--ink); line-height: 1.45; }
 
 /* painel de detalhe */
 .mf { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 28px; }
@@ -276,18 +276,18 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px
 .mf-fundo { position: absolute; inset: 0; background: rgba(6,12,28,.72); backdrop-filter: blur(2px); }
 .mf-caixa { position: relative; background: var(--white); color: var(--ink); border-radius: 4px; box-shadow: 0 24px 70px rgba(0,0,0,.5); width: min(1180px, 95vw); max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
 .mf-topo { display: flex; align-items: flex-start; gap: 16px; padding: 14px 20px 12px; background: var(--navy); color: #fff; border-bottom: 3px solid var(--gold); }
-.mf-k { font: 600 10.5px var(--f-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+.mf-k { font: 600 13px var(--f-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
 .mf-titulo { font: 700 20px var(--f-display); letter-spacing: -.01em; margin-top: 3px; }
-.mf-sub { font: 400 13px var(--f-serif); color: var(--t2); margin-top: 4px; }
-.mf-fechar { margin-left: auto; font: 600 10.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--gold); border: 0; border-radius: 2px; padding: 7px 12px; cursor: pointer; }
+.mf-sub { font: 400 14.5px var(--f-serif); color: var(--t2); margin-top: 4px; }
+.mf-fechar { margin-left: auto; font: 600 13px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--gold); border: 0; border-radius: 2px; padding: 7px 12px; cursor: pointer; }
 .mf-corpo { overflow: auto; padding: 14px 20px 18px; display: grid; gap: 14px; }
 .mf-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; }
 .comp { display: grid; gap: 6px; }
-.comp div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--bgsoft); border-left: 3px solid var(--navy); padding: 7px 10px; color: var(--navy); font-weight: 600; font-size: 13.5px; }
+.comp div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--bgsoft); border-left: 3px solid var(--navy); padding: 7px 10px; color: var(--navy); font-weight: 600; font-size: 15px; }
 .comp div.fim { border-left-color: var(--gold); background: var(--tot); }
-.comp b { font-size: 17px; }
-.nota { font: 400 12.5px var(--f-serif); color: var(--mut); margin: 8px 0 0; line-height: 1.45; }
-.grade { border-collapse: separate; border-spacing: 2px; font: 600 10px var(--f-mono); }
+.comp b { font-size: 18px; }
+.nota { font: 400 14.5px var(--f-serif); color: var(--mut); margin: 8px 0 0; line-height: 1.45; }
+.grade { border-collapse: separate; border-spacing: 2px; font: 600 12.5px var(--f-mono); }
 .grade th { background: var(--navy); color: #fff; padding: 2px 0; width: 17px; border-radius: 2px; }
 .grade th.dom { background: var(--red); }
 .grade th.semana { background: var(--bgsoft); color: var(--navy); font-weight: 600; }
@@ -301,14 +301,14 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px
 .deck-nav { position: relative; z-index: 3; flex: 0 0 auto; display: flex; align-items: center; gap: 16px;
   padding: 8px max(26px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(26px, env(safe-area-inset-left, 0px));
   background: linear-gradient(0deg, rgba(6,11,30,.72), rgba(6,11,30,.12)); border-top: 1px solid var(--linha); }
-.deck-nav > button { font: 500 11px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--t2); background: transparent; border: 1px solid var(--linha2); border-radius: 2px; padding: 6px 14px; cursor: pointer; transition: color .25s, border-color .25s, background-color .25s; }
+.deck-nav > button { font: 500 13px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--t2); background: transparent; border: 1px solid var(--linha2); border-radius: 2px; padding: 6px 14px; cursor: pointer; transition: color .25s, border-color .25s, background-color .25s; }
 .deck-nav > button:hover:not(:disabled) { color: var(--t1); border-color: var(--gold); background: var(--gold-dim); }
 .deck-nav > button:disabled { opacity: .28; cursor: default; }
 .dots { display: flex; gap: 10px; margin: 0 auto; }
 .dots button { width: 7px; height: 7px; padding: 0; border-radius: 50%; border: 0; background: rgba(174,187,216,.30); cursor: pointer; transition: background-color .25s, transform .25s, box-shadow .25s; }
 .dots button.on { background: var(--gold); transform: scale(1.55); box-shadow: 0 0 10px var(--gold-line); }
-.hint { font: 400 10.5px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--t3); }
-.count { font: 500 11px var(--f-mono); letter-spacing: .14em; color: var(--t3); }
+.hint { font: 400 13px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--t3); }
+.count { font: 500 13px var(--f-mono); letter-spacing: .14em; color: var(--t3); }
 
 /* entrada em sequência */
 @keyframes sobe { from { opacity: 0; transform: translateY(22px); } }
@@ -383,14 +383,16 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px
       <div class="barra">
         <label for="vol"><input type="checkbox" id="vol">Folguista volante entre turnos</label>
         <label for="adm"><input type="checkbox" id="adm">Usar quem está no horário ADM do departamento</label>
+        <label for="inc12"><input type="checkbox" id="inc12">4x2 de 12 h na sugerida</label>
         <span class="esp"></span>
         <button type="button" class="btn pri" id="bSug">Sugerida em todos</button>
         <button type="button" class="btn" id="b5x2">5x2 em todos</button>
         <button type="button" class="btn" id="b12">12x36 em todos</button>
+        <button type="button" class="btn" id="b412">4x2 12 h em todos</button>
         <button type="button" class="btn" id="bHoje">Voltar ao inicial</button>
       </div>
       <div class="rolo"><table class="tb mx" id="tab"></table></div>
-      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><i style="background:var(--na)"></i>não serve na oficina</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
+      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><b style="color:var(--red)">4x2 de 12 h</b>: risco alto (CLT urbano, noite com hora reduzida)</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
     </div>
   </article>
 
@@ -424,15 +426,17 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 14px
       <div class="chips" id="omChips"></div></div>
     <div class="card">
       <div class="barra">
-        <label for="volOp"><input type="checkbox" id="volOp">Folguista volante entre turnos</label>
+        <span class="nota" style="margin:0">Folguista roda entre equipamentos: conta por equipamento, 5x1 = 3,6 pessoas por equipamento.</span>
+        <label for="inc12Op"><input type="checkbox" id="inc12Op">4x2 de 12 h na sugerida</label>
         <span class="esp"></span>
         <button type="button" class="btn pri" id="bSugOp">Sugerida em todos</button>
         <button type="button" class="btn" id="b5x2Op">5x2 em todos</button>
         <button type="button" class="btn" id="b12Op">12x36 em todos</button>
+        <button type="button" class="btn" id="b412Op">4x2 12 h em todos</button>
         <button type="button" class="btn" id="bHojeOp">Voltar ao inicial</button>
       </div>
       <div class="rolo"><table class="tb mx" id="tabOm"></table></div>
-      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><i style="background:var(--na)"></i>não serve (CLT urbano)</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
+      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><b style="color:var(--red)">4x2 de 12 h</b>: risco alto (CLT urbano, noite com hora reduzida)</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
     </div>
   </article>
 
@@ -485,18 +489,22 @@ const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const ESC = Object.fromEntries(D.escalas.map(e => [e.id, e]));
 const IDS = D.escalas.map(e => e.id);
 const TURNOS = ["Manhã", "Tarde", "Noite"];
-const ORD = { "Baixo": 0, "Médio": 1, "Não serve": 9 };
-const S = { vol: false, adm: false, P: {}, esc: {} };
+const ORD = { "Baixo": 0, "Médio": 1, "Alto": 2, "Não serve": 9 };
+const S = { vol: false, adm: false, inc12: false, P: {}, esc: {} };
 D.deps.forEach(d => { S.P[d.dep] = { ...d.postos }; });
-/* a 5x1 de hoje, com a mesma regra de turma fixa, é a base da frota */
+/* frota: o folguista roda entre equipamentos, então a conta é por equipamento (5x1 = 3,6 pessoas por equipamento);
+   cada tipo fica fracionado e o total da frota arredonda para cima */
 const H5X1 = { id: "5x1", curto: "5x1 hoje", ciclo: 6, trab: 5, turnos: 3 };
 const FRENTE = D.frentes, ORDF = Object.keys(D.frentes).sort((a, b) => D.frota.filter(f => f.frente === b).reduce((x, f) => x + f.qtd, 0) - D.frota.filter(f => f.frente === a).reduce((x, f) => x + f.qtd, 0));
 const OP = D.frota.map(f => ({ dep: "eq:" + f.nome, tipo: "eq", nome: f.nome, frente: f.frente, qtd: f.qtd, qtd0: f.qtd, k: 1, regra: "24h",
   regra_txt: "roda 24 h · hoje em 5x1", adm: 0, adm_hoje: 0, lideres: 0, afastados: 0, sem_origem: 0, n: 0, equipe: 0 }));
+const PPP = e => e.turnos * e.ciclo / e.trab;
+const f1 = x => fmt(x, Math.abs(x - Math.round(x)) < 0.05 ? 0 : 1);
+const sinal1 = x => Math.abs(x) < 0.05 ? "=" : (x > 0 ? "+" : "−") + f1(Math.abs(x));
 function atualizaOp(d) {
   const v = d.qtd * d.k; S.P[d.dep] = { "Manhã": v, "Tarde": v, "Noite": v };
-  d.n = d.equipe = v ? precisa(H5X1, S.P[d.dep], S.vol) : 0;
-  d.nota = `${d.qtd} equipamento(s) · ${d.k} operador(es) por equipamento em cada turno`;
+  d.n = d.equipe = v * PPP(H5X1);
+  d.nota = `${d.qtd} equipamento(s) · ${d.k} operador(es) por equipamento em cada turno · ${f1(d.k * PPP(H5X1))} pessoas por equipamento na 5x1`;
 }
 
 /* ---------- conta ---------- */
@@ -511,6 +519,7 @@ function precisa(e, P, vol) {
 }
 /* c = contratar (+) ou sobra (−); adm = quem fica no horário ADM (caldeiraria: o resto da equipe) */
 function conta(d, id) {
+  if (d.tipo === "eq") { const need = d.qtd * d.k * PPP(ESC[id]), c = need - d.n; return { need, c, sobra: Math.max(0, -c), adm: 0, fica: need }; }
   const e = ESC[id], need = precisa(e, S.P[d.dep], S.vol);
   if (need === null) return null;
   const pool = d.equipe + (S.adm ? d.adm : 0);
@@ -522,7 +531,7 @@ function conta(d, id) {
   return { need, c, sobra: Math.max(0, -c), adm: d.adm_hoje - usados, fica: d.n + Math.max(c, 0) };
 }
 function sugerida(d) {
-  const ok = IDS.filter(id => ESC[id].risco !== "Não serve" && conta(d, id));
+  const ok = IDS.filter(id => (ESC[id].risco === "Baixo" || ESC[id].risco === "Médio" || (S.inc12 && ESC[id].risco === "Alto")) && conta(d, id));
   return ok.sort((a, b) => Math.max(conta(d, a).c, 0) - Math.max(conta(d, b).c, 0) || ORD[ESC[a].risco] - ORD[ESC[b].risco] || IDS.indexOf(a) - IDS.indexOf(b))[0];
 }
 function totais(escolha) {
@@ -532,17 +541,20 @@ function totais(escolha) {
   return { contr, sobra, risco, quadro: fica + dia };
 }
 function totaisOp(escolha) {
-  let contr = 0, sobra = 0, need = 0, hoje = 0, risco = "Baixo";
-  OP.forEach(d => { if (!d.qtd) return; const id = escolha(d), r = conta(d, id); contr += Math.max(r.c, 0); sobra += r.sobra; need += r.need; hoje += d.n; if (ORD[ESC[id].risco] > ORD[risco]) risco = ESC[id].risco; });
-  return { contr, sobra, need, hoje, risco };
+  let need = 0, hoje = 0, risco = "Baixo";
+  OP.forEach(d => { if (!d.qtd) return; const id = escolha(d), r = conta(d, id); need += r.need; hoje += d.n; if (ORD[ESC[id].risco] > ORD[risco]) risco = ESC[id].risco; });
+  const N = Math.ceil(need - 1e-9), H = Math.ceil(hoje - 1e-9);
+  return { contr: Math.max(0, N - H), sobra: Math.max(0, H - N), need: N, hoje: H, risco };
 }
 const COR = { "5x2": "#12224A", "4x2": "#5D78B4", "12x36": "#C9A227", "3x3": "#8A6D14", "4x2_12": "#C0392B" };
 const DIA = D.dia.filter(x => !x.parte).reduce((a, x) => a + x.n, 0);
 const HOJE = D.deps.reduce((a, d) => a + d.n, 0) + D.dia.filter(x => !x.parte).reduce((a, x) => a + x.n, 0);
 const classe = c => c <= 0 ? "ok" : c <= 2 ? "med" : "bad";
-const pill = r => `<span class="pill ${r === "Não serve" ? "ns" : r}">${r}</span>`;
+const pill = r => `<span class="pill ${r === "Não serve" || r === "Alto" ? "ns" : r}">${r}</span>`;
 const th = cols => "<thead><tr>" + cols.map(([t, a]) => `<th class="${a || ""}">${t}</th>`).join("") + "</tr></thead>";
 const mostra = r => r.c > 0 ? sinal(r.c) : r.sobra ? "−" + r.sobra : "0";
+const mostraX = (d, r) => d.tipo === "eq" ? (Math.abs(r.c) < 0.05 ? "0" : sinal1(r.c)) : mostra(r);
+const nX = (d, x) => d.tipo === "eq" ? f1(x) : x;
 const nomeDep = d => `${esc(d.nome)}<u>${d.sub ? `<b>${esc(d.sub)}</b> · ` : ""}${esc(d.regra_txt || "")}</u>`;
 
 /* ---------- gráficos (SVG desenhado na escala) ---------- */
@@ -551,13 +563,13 @@ function barrasV(svg, itens, opts) {
   const passo = [10, 20, 25, 50, 100, 200, 250, 500].find(p => bruto / p <= 5) || 1000, max = Math.ceil(bruto / passo) * passo;
   const bw = (W - m.l - m.r) / itens.length, y = v => m.t + (H - m.t - m.b) * (1 - v / max);
   let g = "";
-  for (let v = 0; v <= max; v += passo) { const yy = y(v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="rgba(174,187,216,.16)"/><text x="${m.l - 8}" y="${yy + 4}" text-anchor="end" font-size="11" fill="#7D8BB0">${fmt(v)}</text>`; }
-  if (opts.ref) { const yr = y(opts.ref); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yr}" y2="${yr}" stroke="#AEBBD8" stroke-dasharray="5 5" stroke-width="1.3"/><text x="${W - m.r}" y="${yr - 6}" text-anchor="end" font-size="11" fill="#AEBBD8" font-family="IBM Plex Mono, monospace">HOJE ${fmt(opts.ref)}</text>`; }
+  for (let v = 0; v <= max; v += passo) { const yy = y(v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="rgba(174,187,216,.16)"/><text x="${m.l - 8}" y="${yy + 4}" text-anchor="end" font-size="13" fill="#7D8BB0">${fmt(v)}</text>`; }
+  if (opts.ref) { const yr = y(opts.ref); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yr}" y2="${yr}" stroke="#AEBBD8" stroke-dasharray="5 5" stroke-width="1.3"/><text x="${W - m.r}" y="${yr - 6}" text-anchor="end" font-size="13" fill="#AEBBD8" font-family="IBM Plex Mono, monospace">HOJE ${fmt(opts.ref)}</text>`; }
   itens.forEach((it, i) => {
     const x = m.l + bw * i + bw * .18, w = bw * .64, yy = y(it.v);
     g += `<rect x="${x}" y="${yy}" width="${w}" height="${H - m.b - yy}" rx="2" fill="${it.cor}"/>`;
     g += `<text x="${x + w / 2}" y="${yy - 8}" text-anchor="middle" font-size="17" font-weight="700" fill="${it.corT || "#F4F6FA"}">${fmt(it.v)}</text>`;
-    if (it.d !== undefined) g += `<text x="${x + w / 2}" y="${yy - 26}" text-anchor="middle" font-size="11" font-weight="600" fill="${it.d > 0 ? "#F0897A" : "#8FD3A6"}" font-family="IBM Plex Mono, monospace">${it.d > 0 ? "+" + it.d : it.d < 0 ? "−" + Math.abs(it.d) : "="}</text>`;
+    if (it.d !== undefined) g += `<text x="${x + w / 2}" y="${yy - 26}" text-anchor="middle" font-size="13" font-weight="600" fill="${it.d > 0 ? "#F0897A" : "#8FD3A6"}" font-family="IBM Plex Mono, monospace">${it.d > 0 ? "+" + it.d : it.d < 0 ? "−" + Math.abs(it.d) : "="}</text>`;
     it.lab.split("\n").forEach((l, k) => { g += `<text x="${x + w / 2}" y="${H - m.b + 18 + k * 14}" text-anchor="middle" font-size="${k ? 10 : 12}" fill="${k ? "#7D8BB0" : "#AEBBD8"}" font-weight="${k ? 400 : 600}" ${k ? 'font-family="IBM Plex Mono, monospace"' : ""}>${esc(l)}</text>`; });
   });
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
@@ -566,16 +578,16 @@ function barrasV(svg, itens, opts) {
 function barrasH(svg, linhas) {
   const W = 1500, rh = 31, m = { l: 290, r: 70, t: 34, b: 14 }, H = m.t + m.b + rh * linhas.length;
   const max = Math.max(4, ...linhas.flatMap(l => [l.a, l.b])), x = v => m.l + (W - m.l - m.r) * v / max;
-  let g = `<rect x="${m.l}" y="6" width="12" height="12" rx="2" fill="#C9A227"/><text x="${m.l + 18}" y="16" font-size="11" fill="#5A6072" font-family="IBM Plex Mono, monospace">ESCALA ESCOLHIDA</text>
-       <rect x="${m.l + 170}" y="6" width="12" height="12" rx="2" fill="#B8C2D6"/><text x="${m.l + 188}" y="16" font-size="11" fill="#5A6072" font-family="IBM Plex Mono, monospace">5X2 EM TODOS</text>`;
-  for (let k = 0; k <= max; k += Math.max(1, Math.round(max / 6))) g += `<line x1="${x(k)}" x2="${x(k)}" y1="${m.t - 4}" y2="${H - m.b}" stroke="#E6E9F0"/><text x="${x(k)}" y="${H}" text-anchor="middle" font-size="10" fill="#9AA3B5">${k}</text>`;
+  let g = `<rect x="${m.l}" y="6" width="12" height="12" rx="2" fill="#C9A227"/><text x="${m.l + 18}" y="16" font-size="13" fill="#5A6072" font-family="IBM Plex Mono, monospace">ESCALA ESCOLHIDA</text>
+       <rect x="${m.l + 170}" y="6" width="12" height="12" rx="2" fill="#B8C2D6"/><text x="${m.l + 188}" y="16" font-size="13" fill="#5A6072" font-family="IBM Plex Mono, monospace">5X2 EM TODOS</text>`;
+  for (let k = 0; k <= max; k += Math.max(1, Math.round(max / 6))) g += `<line x1="${x(k)}" x2="${x(k)}" y1="${m.t - 4}" y2="${H - m.b}" stroke="#E6E9F0"/><text x="${x(k)}" y="${H}" text-anchor="middle" font-size="12.5" fill="#9AA3B5">${k}</text>`;
   linhas.forEach((l, i) => {
     const y0 = m.t + rh * i;
-    g += `<text x="${m.l - 12}" y="${y0 + 15}" text-anchor="end" font-size="13" font-weight="700" fill="#12224A">${esc(l.nome)}</text><text x="${m.l - 12}" y="${y0 + 28}" text-anchor="end" font-size="10.5" fill="#5A6072" font-family="IBM Plex Mono, monospace">${esc(l.esc)}</text>`;
+    g += `<text x="${m.l - 12}" y="${y0 + 15}" text-anchor="end" font-size="14.5" font-weight="700" fill="#12224A">${esc(l.nome)}</text><text x="${m.l - 12}" y="${y0 + 28}" text-anchor="end" font-size="13" fill="#5A6072" font-family="IBM Plex Mono, monospace">${esc(l.esc)}</text>`;
     g += `<rect x="${m.l}" y="${y0 + 3}" width="${Math.max(0, x(Math.max(l.a, 0)) - m.l)}" height="13" rx="2" fill="#C9A227"/>`;
     g += `<rect x="${m.l}" y="${y0 + 18}" width="${Math.max(0, x(Math.max(l.b, 0)) - m.l)}" height="9" rx="2" fill="#B8C2D6"/>`;
-    g += `<text x="${x(Math.max(l.a, 0)) + 6}" y="${y0 + 14}" font-size="12.5" font-weight="700" fill="${l.a > 0 ? "#C0392B" : "#2E7D46"}">${l.a > 0 ? "+" + l.a : l.a < 0 ? "sobra " + Math.abs(l.a) : "0"}</text>`;
-    g += `<text x="${x(Math.max(l.b, 0)) + 6}" y="${y0 + 27}" font-size="10.5" fill="#5A6072">${l.b > 0 ? "+" + l.b : "0"}</text>`;
+    g += `<text x="${x(Math.max(l.a, 0)) + 6}" y="${y0 + 14}" font-size="14.5" font-weight="700" fill="${l.a > 0 ? "#C0392B" : "#2E7D46"}">${l.a > 0 ? "+" + l.a : l.a < 0 ? "sobra " + Math.abs(l.a) : "0"}</text>`;
+    g += `<text x="${x(Math.max(l.b, 0)) + 6}" y="${y0 + 27}" font-size="13" fill="#5A6072">${l.b > 0 ? "+" + l.b : "0"}</text>`;
   });
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.style.width = "100%"; svg.style.minWidth = "760px";
@@ -615,7 +627,7 @@ function grafQ(svg, base, itensEsc, escolhida) {
   const bruto = Math.max(...itens.map(i => i.v)) * 1.1, passo = [5, 10, 20, 25, 50, 100].find(p => bruto / p <= 6) || 200, max = Math.ceil(bruto / passo) * passo;
   const bw = (W - m.l - m.r) / itens.length, y = v => m.t + (H - m.t - m.b) * (1 - v / max);
   let g = "";
-  for (let v = 0; v <= max; v += passo) { const yy = y(v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="#E6E9F0"/><text x="${m.l - 8}" y="${yy + 4}" text-anchor="end" font-size="11" fill="#9AA3B5">${fmt(v)}</text>`; }
+  for (let v = 0; v <= max; v += passo) { const yy = y(v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="#E6E9F0"/><text x="${m.l - 8}" y="${yy + 4}" text-anchor="end" font-size="13" fill="#9AA3B5">${fmt(v)}</text>`; }
   const yr = y(base.v);
   g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yr}" y2="${yr}" stroke="#5A6072" stroke-dasharray="5 5" stroke-width="1.2"/>`;
   itens.forEach((it, i) => {
@@ -624,19 +636,19 @@ function grafQ(svg, base, itensEsc, escolhida) {
     if (it.seg) { let b0 = H - m.b; it.seg.forEach(sg => { const h = (H - m.t - m.b) * sg.v / max; g += `<rect x="${x}" y="${b0 - h}" width="${w}" height="${h}" fill="${sg.cor}" stroke="#fff" stroke-width="1.5"/>`; b0 -= h; }); }
     else g += `<rect x="${x}" y="${yy}" width="${w}" height="${H - m.b - yy}" rx="2" fill="${it.cor}" ${it.ns ? 'fill-opacity=".55"' : ""}/>`;
     g += `<text x="${cx}" y="${yy - 9}" text-anchor="middle" font-size="${esc_ ? 21 : 18}" font-weight="800" fill="#12224A">${fmt(it.v)}</text>`;
-    if (it.d !== undefined) g += `<text x="${cx}" y="${yy - 30}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${it.d > 0 ? "#C0392B" : "#2E7D46"}" font-family="IBM Plex Mono, monospace">${it.d > 0 ? "+" + it.d : it.d < 0 ? "−" + Math.abs(it.d) : "="}</text>`;
-    g += `<text x="${cx}" y="${H - m.b + 19}" text-anchor="middle" font-size="13" font-weight="700" fill="#12224A">${esc(it.lab)}</text>`;
-    g += `<text x="${cx}" y="${H - m.b + 33}" text-anchor="middle" font-size="9.5" fill="${it.ns ? "#C0392B" : "#5A6072"}" font-family="IBM Plex Mono, monospace">${esc(it.sub)}</text>`;
-    if (esc_) { let ly = H - m.b + 52; escolhida.leg.forEach(([cor, txt]) => { g += `<rect x="${x - 2}" y="${ly - 9}" width="10" height="10" rx="2" fill="${cor}"/><text x="${x + 13}" y="${ly}" font-size="11" font-weight="600" fill="#12224A">${esc(txt)}</text>`; ly += 16; }); }
+    if (it.d !== undefined) g += `<text x="${cx}" y="${yy - 30}" text-anchor="middle" font-size="13.5" font-weight="600" fill="${it.d > 0 ? "#C0392B" : "#2E7D46"}" font-family="IBM Plex Mono, monospace">${it.d > 0 ? "+" + it.d : it.d < 0 ? "−" + Math.abs(it.d) : "="}</text>`;
+    g += `<text x="${cx}" y="${H - m.b + 19}" text-anchor="middle" font-size="14.5" font-weight="700" fill="#12224A">${esc(it.lab)}</text>`;
+    g += `<text x="${cx}" y="${H - m.b + 33}" text-anchor="middle" font-size="12" fill="${it.al ? "#C0392B" : "#5A6072"}" font-family="IBM Plex Mono, monospace">${esc(it.sub)}</text>`;
+    if (esc_) { let ly = H - m.b + 52; escolhida.leg.forEach(([cor, txt]) => { g += `<rect x="${x - 2}" y="${ly - 9}" width="10" height="10" rx="2" fill="${cor}"/><text x="${x + 13}" y="${ly}" font-size="13" font-weight="600" fill="#12224A">${esc(txt)}</text>`; ly += 16; }); }
   });
-  g += `<text x="${W - m.r + 8}" y="${yr - 3}" font-size="10.5" fill="#5A6072" font-family="IBM Plex Mono, monospace">HOJE</text><text x="${W - m.r + 8}" y="${yr + 11}" font-size="12" font-weight="700" fill="#12224A">${fmt(base.v)}</text>`;
+  g += `<text x="${W - m.r + 8}" y="${yr - 3}" font-size="13" fill="#5A6072" font-family="IBM Plex Mono, monospace">HOJE</text><text x="${W - m.r + 8}" y="${yr + 11}" font-size="14" font-weight="700" fill="#12224A">${fmt(base.v)}</text>`;
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
   svg.innerHTML = g;
 }
 function grafPainel(svg) {
   const atual = totais(d => S.esc[d.dep]), gs = grupos();
-  const itens = IDS.map(id => { const t = totais(() => id); return { id, v: t.quadro, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.quadro - HOJE, ns: ESC[id].risco === "Não serve" }; });
+  const itens = IDS.map(id => { const t = totais(() => id); return { id, v: t.quadro, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.quadro - HOJE, al: ESC[id].risco === "Alto" }; });
   grafQ(svg, { v: HOJE, sub: "5x1 / 6x1" }, itens, { v: atual.quadro, sub: "POR DEPARTAMENTO", seg: [{ v: DIA, cor: "#DCE1EA" }, ...gs.map(g => ({ v: g.fica, cor: COR[g.id] }))],
     leg: [...[...gs].reverse().map(gr => [COR[gr.id], `${ESC[gr.id].curto} · ${gr.deps.length}`]), ["#DCE1EA", `sem turno · ${D.dia.filter(z => !z.parte).length}`]] });
 }
@@ -653,30 +665,30 @@ function chipsOp(sel) {
 function painelOp() {
   chipsOp("#opChips");
   const a = totaisOp(d => S.esc[d.dep]), gs = gruposOp(), nq = OP.reduce((x, d) => x + d.qtd, 0);
-  $("#opSub").textContent = `${nq} equipamentos, 1 operador por equipamento em cada turno. Cada barra aplica uma escala à frota inteira; a última soma a escala escolhida em cada equipamento.`;
-  const itens = IDS.map(id => { const t = totaisOp(() => id); return { id, v: t.need, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.need - a.hoje, ns: ESC[id].risco === "Não serve" }; });
+  $("#opSub").textContent = `${nq} equipamentos, 1 operador por equipamento em cada turno e o folguista rodando entre equipamentos: 3,6 pessoas por equipamento na 5x1 de hoje. Cada barra aplica uma escala à frota inteira; a última soma a escala escolhida em cada equipamento.`;
+  const itens = IDS.map(id => { const t = totaisOp(() => id); return { id, v: t.need, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.need - a.hoje, al: ESC[id].risco === "Alto" }; });
   grafQ($("#gOp"), { v: a.hoje, sub: "5X1" }, itens, { v: a.need, sub: "POR EQUIPAMENTO", seg: gs.map(g => ({ v: g.need, cor: COR[g.id] })), leg: [...gs].reverse().map(gr => [COR[gr.id], `${ESC[gr.id].curto} · ${gr.deps.length} tipos`]) });
   let h = "";
   gs.forEach(gr => {
-    h += `<tr class="g"><td colspan="3"><i style="background:${COR[gr.id]}"></i>${esc(ESC[gr.id].curto)}<small>${gr.qtd} equip. · ${gr.hoje} → ${gr.need} operadores · contratar ${sinal(gr.contr)}</small></td></tr>`;
-    gr.deps.forEach(({ d, r }) => { const dd = r.need - d.n; h += `<tr class="clic" data-dep="${esc(d.dep)}"><td class="dn"><span class="fdot" style="background:${FRENTE[d.frente]}"></span>${esc(d.nome)}<u>${d.qtd}×</u></td><td class="n">${d.n} → <b>${r.need}</b></td><td class="n ${dd > 0 ? "up" : "eq"}">${dd > 0 ? "+" + dd : dd < 0 ? "−" + Math.abs(dd) : "="}</td></tr>`; });
+    h += `<tr class="g"><td colspan="3"><i style="background:${COR[gr.id]}"></i>${esc(ESC[gr.id].curto)}<small>${gr.qtd} equip. · ${f1(gr.hoje)} → ${f1(gr.need)} operadores · ${sinal1(gr.need - gr.hoje)}</small></td></tr>`;
+    gr.deps.forEach(({ d, r }) => { const dd = r.need - d.n; h += `<tr class="clic" data-dep="${esc(d.dep)}"><td class="dn"><span class="fdot" style="background:${FRENTE[d.frente]}"></span>${esc(d.nome)}<u>${d.qtd}×</u></td><td class="n">${f1(d.n)} → <b>${f1(r.need)}</b></td><td class="n ${dd > 0.05 ? "up" : "eq"}">${sinal1(dd)}</td></tr>`; });
   });
   $("#opLista").innerHTML = h;
   document.querySelectorAll("#opLista tr.clic").forEach(tr => tr.addEventListener("click", () => abre(tr.dataset.dep)));
 }
 function quadroOp() {
   chipsOp("#oqChips");
-  const q = (v, base, cls) => { const dd = v - base; return `<td class="qv ${cls || ""}"><b>${fmt(v)}</b><span class="dl ${dd > 0 ? "up" : "eq"}">${dd > 0 ? "+" + dd : dd < 0 ? "−" + Math.abs(dd) : "="}</span></td>`; };
-  let h = `<thead><tr class="grp"><th class="l" rowspan="2" style="vertical-align:bottom">Equipamento</th><th rowspan="2" style="vertical-align:bottom">Qtd.</th><th rowspan="2" style="vertical-align:bottom">Hoje<u>5x1</u></th><th colspan="${IDS.length}">Operadores com a escala aplicada a toda a frota</th><th colspan="2">Escolha por equipamento</th></tr><tr>
+  const q = (v, base, cls) => { const dd = v - base; return `<td class="qv ${cls || ""}"><b>${f1(v)}</b><span class="dl ${dd > 0.05 ? "up" : "eq"}">${sinal1(dd)}</span></td>`; };
+  let h = `<thead><tr class="grp"><th class="l" rowspan="2" style="vertical-align:bottom">Equipamento</th><th rowspan="2" style="vertical-align:bottom">Qtd.</th><th rowspan="2" style="vertical-align:bottom">Hoje<u>5x1 · 3,6/equip.</u></th><th colspan="${IDS.length}">Operadores com a escala aplicada a toda a frota</th><th colspan="2">Escolha por equipamento</th></tr><tr>
     ${IDS.map(id => `<th>${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}</th>`).join("")}<th>Escala</th><th>Operadores</th></tr></thead><tbody>`;
   ORDF.forEach(fr => {
     const ds = OP.filter(d => d.frente === fr && d.qtd);
     if (!ds.length) return;
     const soma = f => ds.reduce((x, d) => x + f(d), 0), hj = soma(d => d.n);
-    h += `<tr class="fr"><td class="l"><span class="fdot" style="background:${FRENTE[fr]}"></span>${esc(fr)}</td><td>${soma(d => d.qtd)}</td><td>${hj}</td>${IDS.map(id => q(soma(d => conta(d, id).need), hj)).join("")}<td></td>${q(soma(d => conta(d, S.esc[d.dep]).need), hj)}</tr>`;
+    h += `<tr class="fr"><td class="l"><span class="fdot" style="background:${FRENTE[fr]}"></span>${esc(fr)}</td><td>${soma(d => d.qtd)}</td><td>${f1(hj)}</td>${IDS.map(id => q(soma(d => conta(d, id).need), hj)).join("")}<td></td>${q(soma(d => conta(d, S.esc[d.dep]).need), hj)}</tr>`;
     ds.forEach(d => {
       const id = S.esc[d.dep], r = conta(d, id);
-      h += `<tr class="clic" data-dep="${esc(d.dep)}"><td class="l dep">${esc(d.nome)}</td><td class="hoje">${d.qtd}</td><td class="hoje">${d.n}</td>${IDS.map(x => q(conta(d, x).need, d.n, x === id ? "qsel" : "")).join("")}
+      h += `<tr class="clic" data-dep="${esc(d.dep)}"><td class="l dep">${esc(d.nome)}</td><td class="hoje">${d.qtd}</td><td class="hoje">${f1(d.n)}</td>${IDS.map(x => q(conta(d, x).need, d.n, x === id ? "qsel" : "")).join("")}
         <td class="ec"><span style="background:${COR[id]}${id === "12x36" ? ";color:#12224A" : ""}">${esc(ESC[id].curto)}</span></td>${q(r.need, d.n, "fq")}</tr>`;
     });
   });
@@ -687,18 +699,18 @@ function quadroOp() {
 }
 function matrizOp() {
   chipsOp("#omChips");
-  let h = `<thead><tr><th class="l">Equipamento</th><th>Qtd.<u>equipamentos</u></th><th>Operadores<u>por turno</u></th><th>Hoje<u>5x1</u></th>${IDS.map(id => `<th>${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}</th>`).join("")}</tr></thead><tbody>`;
+  let h = `<thead><tr><th class="l">Equipamento</th><th>Qtd.<u>equipamentos</u></th><th>Operadores<u>por turno</u></th><th>Hoje<u>5x1 · 3,6/equip.</u></th>${IDS.map(id => `<th>${esc(ESC[id].curto)}<u>${f1(PPP(ESC[id]))} por equip.</u>${pill(ESC[id].risco)}</th>`).join("")}</tr></thead><tbody>`;
   ORDF.forEach(fr => {
     h += `<tr class="fr"><td class="l" colspan="${IDS.length + 4}"><span class="fdot" style="background:${FRENTE[fr]}"></span>${esc(fr)}</td></tr>`;
     OP.filter(d => d.frente === fr).forEach((d, i) => {
       const sug = d.qtd ? sugerida(d) : null, key = OP.indexOf(d);
       h += `<tr class="clic" data-dep="${esc(d.dep)}"><td class="l dep">${esc(d.nome)}</td>
         <td><div class="pt um"><input type="number" min="0" max="99" step="1" id="oq_${key}" aria-label="${esc(d.nome)}: quantidade" value="${d.qtd}"></div></td>
-        <td><div class="pt um"><input type="number" min="0" max="5" step="1" id="ok_${key}" aria-label="${esc(d.nome)}: operadores por equipamento em cada turno" value="${d.k}"></div></td><td>${d.n}</td>`;
+        <td><div class="pt um"><input type="number" min="0" max="5" step="1" id="ok_${key}" aria-label="${esc(d.nome)}: operadores por equipamento em cada turno" value="${d.k}"></div></td><td>${f1(d.n)}</td>`;
       IDS.forEach(id => {
         if (!d.qtd) { h += `<td class="na">—</td>`; return; }
-        const r = conta(d, id), e = ESC[id], cls = e.risco === "Não serve" ? "ns" : classe(r.c);
-        h += `<td><button type="button" class="cel ${cls}${S.esc[d.dep] === id ? " esc" : ""}" data-dep="${esc(d.dep)}" data-id="${id}" aria-pressed="${S.esc[d.dep] === id}" aria-label="${esc(d.nome)} em ${esc(e.curto)}: ${r.c > 0 ? "contratar " + r.c : r.sobra ? r.sobra + " sobram" : "fecha"}"><b>${id === sug ? "<i>★</i>" : ""}${mostra(r)}</b><small>precisa ${r.need}</small></button></td>`;
+        const r = conta(d, id), e = ESC[id], cls = classe(r.c);
+        h += `<td><button type="button" class="cel ${cls}${S.esc[d.dep] === id ? " esc" : ""}" data-dep="${esc(d.dep)}" data-id="${id}" aria-pressed="${S.esc[d.dep] === id}" aria-label="${esc(d.nome)} em ${esc(e.curto)}: ${r.c > 0 ? "contratar " + r.c : r.sobra ? r.sobra + " sobram" : "fecha"}"><b>${id === sug ? "<i>★</i>" : ""}${mostraX(d, r)}</b><small>precisa ${f1(r.need)}</small></button></td>`;
       });
       h += "</tr>";
     });
@@ -738,15 +750,15 @@ function quadro() {
   D.deps.forEach(d => {
     const id = S.esc[d.dep], r = conta(d, id);
     h += `<tr class="clic" data-dep="${d.dep}"><td class="l dep">${esc(d.nome)}${d.sub ? `<u><b>${esc(d.sub)}</b></u>` : ""}</td><td class="hoje">${d.n}</td>
-      <td class="comp">${d.equipe} turno · ${d.adm_hoje} ADM${d.lideres ? " · " + d.lideres + " lid." : ""}</td>`;
-    IDS.forEach(x => { const y = conta(d, x); h += y ? q(y.fica, d.n, x === id ? "qsel" : "") : `<td class="nm">não se aplica</td>`; });
+      <td class="cmp">${d.equipe} turno · ${d.adm_hoje} ADM${d.lideres ? " · " + d.lideres + " lid." : ""}</td>`;
+    IDS.forEach(x => { const y = conta(d, x); h += y ? q(y.fica, d.n, x === id ? "qsel" : "") : `<td class="nm" title="não se aplica: sem turno da noite">—</td>`; });
     h += `<td class="ec"><span style="background:${COR[id]}${id === "12x36" ? ";color:#12224A" : ""}">${esc(ESC[id].curto)}</span></td>${q(r.fica, d.n, "fq")}</tr>`;
   });
   const nomes = D.dia.filter(z => !z.parte).map(z => `${z.nome} ${z.n}`).join(" · ");
-  h += `<tr><td class="l dep">Sem turno · segunda a sexta<u style="display:block;margin:1px 0 0">${esc(nomes)}</u></td><td class="hoje">${DIA}</td><td class="comp">${D.dia.filter(z => !z.parte).length} deptos</td>
+  h += `<tr><td class="l dep">Sem turno · segunda a sexta<u style="display:block;margin:1px 0 0">${esc(nomes)}</u></td><td class="hoje">${DIA}</td><td class="cmp">${D.dia.filter(z => !z.parte).length} deptos</td>
     <td class="nm" colspan="${IDS.length}" style="text-align:center">não muda em nenhuma escala (o resto do PCM está na linha do PCM)</td><td class="ec"><span style="background:#8A93A6">5x2 de dia</span></td>${q(DIA, DIA, "fq")}</tr>`;
   const atual = totais(d => S.esc[d.dep]);
-  h += `<tr class="tot"><td class="l">Total da oficina</td><td>${fmt(HOJE)}</td><td class="comp">${D.deps.reduce((a, d) => a + d.equipe, 0)} em turno</td>${IDS.map(x => q(totais(() => x).quadro, HOJE)).join("")}<td></td>${q(atual.quadro, HOJE, "fq")}</tr></tbody>`;
+  h += `<tr class="tot"><td class="l">Total da oficina</td><td>${fmt(HOJE)}</td><td class="cmp">${D.deps.reduce((a, d) => a + d.equipe, 0)} em turno</td>${IDS.map(x => q(totais(() => x).quadro, HOJE)).join("")}<td></td>${q(atual.quadro, HOJE, "fq")}</tr></tbody>`;
   $("#tabQ").innerHTML = h;
   document.querySelectorAll("#tabQ tr.clic").forEach(tr => tr.addEventListener("click", () => abre(tr.dataset.dep)));
 }
@@ -761,7 +773,7 @@ function matriz() {
     IDS.forEach(id => {
       const r = conta(d, id), e = ESC[id];
       if (!r) { h += `<td class="na">não se aplica</td>`; return; }
-      const cls = e.risco === "Não serve" ? "ns" : classe(r.c), pe = d.regra === "1turno" ? `resto ${r.adm} no ADM` : `precisa ${r.need}`;
+      const cls = classe(r.c), pe = d.regra === "1turno" ? `resto ${r.adm} no ADM` : `precisa ${r.need}`;
       h += `<td><button type="button" class="cel ${cls}${S.esc[d.dep] === id ? " esc" : ""}" data-dep="${d.dep}" data-id="${id}" aria-pressed="${S.esc[d.dep] === id}" aria-label="${esc(d.nome)} em ${esc(e.curto)}: ${r.c > 0 ? "contratar " + r.c : r.sobra ? r.sobra + " sobram" : "fecha"}"><b>${id === sug ? "<i>★</i>" : ""}${mostra(r)}</b><small>${pe}</small></button></td>`;
     });
     h += "</tr>";
@@ -784,8 +796,8 @@ function escalas() {
     let mini = `<table class="mini"><tr><td class="lab"></td>${Array.from({ length: 14 }, (_, i) => `<th class="${i % 7 === 6 ? "d" : ""}">${DS[i % 7]}</th>`).join("")}</tr>`;
     g.forEach((l, i) => { mini += `<tr><td class="lab">${esc(e.rotulos[i].replace("Turma ", ""))}</td>${l.slice(0, 14).map((v, k) => `<td class="${v === "F" ? "F" + (k % 7 === 6 ? " d" : "") : ""}"></td>`).join("")}</tr>`; });
     mini += "</table>";
-    return `<div class="esc${e.risco === "Não serve" ? " nserve" : ""}"><div><h4>${esc(e.nome)}</h4>${pill(e.risco)}</div><div class="hr">${esc(e.horario)}</div>
-      <div class="big tres"><div><b>${precisa(e, { "Manhã": 1, "Tarde": 1, "Noite": 1 }, false)}</b><span>pessoas para<br>1 posto 24 h</span></div><div><b class="${totais(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totais(() => e.id).contr)}</b><span>oficina<br>em todos</span></div><div><b class="${totaisOp(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totaisOp(() => e.id).contr - totaisOp(() => e.id).sobra)}</b><span>frota<br>líquido</span></div></div>
+    return `<div class="esc${e.risco === "Alto" ? " nserve" : ""}"><div><h4>${esc(e.nome)}</h4>${pill(e.risco)}</div><div class="hr">${esc(e.horario)}</div>
+      <div class="big tres"><div><b>${f1(PPP(e))}</b><span>pessoas por<br>equipamento 24 h</span></div><div><b class="${totais(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totais(() => e.id).contr)}</b><span>oficina<br>em todos</span></div><div><b class="${totaisOp(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totaisOp(() => e.id).contr - totaisOp(() => e.id).sobra)}</b><span>frota<br>líquido</span></div></div>
       <dl><dt>Horas por semana</dt><dd>${hm(e.h_sem - e.he_sem)}${e.he_sem ? " + " + hm(e.he_sem) : ""}</dd><dt>Folgas por semana</dt><dd>${fmt(e.folgas_sem, 2)}</dd><dt>Domingos de folga</dt><dd>${e.dom} a cada ${e.sem} sem.</dd><dt>Máx. dias seguidos</dt><dd>${e.seq}</dd><dt>Turmas</dt><dd>${g.length}</dd></dl>
       <div style="overflow-x:auto">${mini}</div><div class="nt">${esc(e.nota)}</div></div>`;
   }).join("");
@@ -801,11 +813,11 @@ function premissas() {
     "Turma fixa por turno: ninguém alterna dia e noite (quem alterna cai na regra do turno de revezamento, 6 h por dia). O folguista volante reduz o quadro, mas roda entre turnos.",
     "Nas escalas de 12 h, o mínimo comum aos três turnos vai para 12 h e o que passa dele fica como reforço de 8 h em 5x2.",
     `Ficam de fora da conta de turno ${D.tot.lideres} lideranças sem registro no revezamento e ${D.tot.afastados} afastado(s); continuam no quadro.`,
-    `A oficina é CLT urbano no cadastro (${D.tot.clt_urbano} com o dado). Por isso a 4x2 de 12 h não serve, e a noite de 8 h precisa de ajuste até dez/2027.`,
+    `A oficina é CLT urbano no cadastro (${D.tot.clt_urbano} com o dado). Por isso a 4x2 de 12 h entra com risco alto (a noite de 12 h passa de 10 h contadas), e a noite de 8 h precisa de ajuste até dez/2027.`,
     "Mulheres em escala com domingo: folga em um domingo a cada 15 dias (CLT art. 386).",
-    `Frota operacional: ${OP.reduce((x, d) => x + d.qtd, 0)} equipamentos do Detalhamento da frota, cada um com 1 operador por turno nas 24 h (editável). Hoje = a 5x1, com a mesma regra de turma fixa por tipo de equipamento.`,
-    `Operadores de máquinas e motoristas aparecem como CLT urbano no cadastro (${(D.clt_op.op_C || 0) + (D.clt_op.mot_C || 0)} pessoas; ${(D.clt_op.op_R || 0) + (D.clt_op.mot_R || 0)} rurais). Por isso a 4x2 de 12 h também não serve na frota.`,
-    "Frota: sobra de operadores num tipo de equipamento pode cobrir folga de outro da mesma frente, se a pessoa for habilitada nos dois.",
+    `Frota operacional: ${OP.reduce((x, d) => x + d.qtd, 0)} equipamentos do Detalhamento da frota, cada um com 1 operador por turno nas 24 h (editável). Hoje = 5x1 com 3,6 pessoas por equipamento, porque o folguista roda entre equipamentos; cada escala usa o mesmo critério (5x2 4,2 · 4x2 de 8 h 4,5 · 12x36 e 3x3 4,0 · 4x2 de 12 h 3,0) e o total da frota arredonda para cima.`,
+    `Operadores de máquinas e motoristas aparecem como CLT urbano no cadastro (${(D.clt_op.op_C || 0) + (D.clt_op.mot_C || 0)} pessoas; ${(D.clt_op.op_R || 0) + (D.clt_op.mot_R || 0)} rurais). Por isso a 4x2 de 12 h entra na frota com risco alto: só vale com norma coletiva que troque a hora noturna reduzida por adicional maior.`,
+    "Frota: como o folguista roda entre equipamentos, ele precisa ser habilitado nos equipamentos que cobre.",
   ].map(x => `<li>${esc(x)}</li>`).join("");
 }
 
@@ -830,17 +842,20 @@ function abre(dep) {
     : `Anotação na planilha: "${d.nota || "sem anotação"}". Hoje: ${d.n} pessoas (${d.equipe} em turno, ${d.adm_hoje} no ADM${d.lideres ? ", " + d.lideres + " liderança(s)" : ""}${d.afastados ? ", " + d.afastados + " afastado(s)" : ""}). Escala escolhida: ${e.nome}.`;
   $("#mfCompT").textContent = eq ? "Como ficam os operadores" : "Como fica a equipe";
   $("#mfTabT").textContent = eq ? "Todas as escalas neste equipamento" : "Todas as escalas neste departamento";
-  const comp = composicao(d, id).map(([a, b]) => `<div><span>${esc(a)}</span><b>${esc(b)}</b></div>`);
+  const f = e.ciclo / e.trab, v = d.qtd * d.k;
+  const compEq = e.turnos === 3 ? TURNOS.map(t => [`${t}: ${f1(v * f)} operadores em ${e.curto}`, `${v} por dia`])
+    : [[`Dia 07:00–19:00: ${f1(v * f)} operadores em ${e.curto}`, `${v} por dia`], [`Noite 19:00–07:00: ${f1(v * f)} operadores em ${e.curto}`, `${v} por dia`]];
+  const comp = (eq ? compEq : composicao(d, id)).map(([a, b]) => `<div><span>${esc(a)}</span><b>${esc(b)}</b></div>`);
   if (r.adm) comp.push(`<div><span>Horário ADM (segunda a sexta)</span><b>${r.adm}</b></div>`);
   if (r.sobra && !eq) comp.push(`<div><span>Sobram da equipe de turno e vão para o dia</span><b>${r.sobra}</b></div>`);
-  comp.push(eq ? `<div class="fim"><span>${r.c > 0 ? "Contratar" : r.sobra ? "Sobram (cobrem outro equipamento da frente)" : "Fecha com os operadores de hoje"} · ${d.n} → ${r.need} operadores</span><b>${r.c > 0 ? "+" + r.c : r.sobra ? "−" + r.sobra : "0"}</b></div>`
+  comp.push(eq ? `<div class="fim"><span>${r.c > 0.05 ? "Contratar" : r.sobra > 0.05 ? "Sobram (cobrem outro equipamento)" : "Fecha com os operadores de hoje"} · ${f1(d.n)} → ${f1(r.need)} operadores (${f1(d.k * PPP(e))} por equipamento)</span><b>${mostraX(d, r)}</b></div>`
     : `<div class="fim"><span>${r.c > 0 ? "Contratar" : "Fecha com a equipe de hoje"} · quadro ${d.n} → ${r.fica}</span><b>${r.c > 0 ? "+" + r.c : "0"}</b></div>`);
   $("#mfComp").innerHTML = comp.join("");
   $("#mfNota").textContent = e.nota;
   $("#mfTab").innerHTML = th([["Escala", "l"], ["Precisa"], ["Contratar"], [eq ? "Operadores" : "Quadro"], ["Horas/semana"], ["Risco"]]) + "<tbody>" + IDS.map(x => {
     const y = conta(d, x), ex = ESC[x];
     if (!y) return `<tr><td class="l">${esc(ex.curto)}</td><td colspan="5" class="na">não se aplica (sem noite)</td></tr>`;
-    return `<tr${x === id ? ' class="sel"' : ""}><td class="l">${esc(ex.curto)}${x === sugerida(d) ? ' <span class="tag">sugerida</span>' : ""}</td><td>${y.need}</td><td>${mostra(y)}</td><td>${eq ? y.need : y.fica}</td><td>${hm(ex.h_sem - ex.he_sem)}${ex.he_sem ? " + " + hm(ex.he_sem) : ""}</td><td>${pill(ex.risco)}</td></tr>`;
+    return `<tr${x === id ? ' class="sel"' : ""}><td class="l">${esc(ex.curto)}${x === sugerida(d) ? ' <span class="tag">sugerida</span>' : ""}</td><td>${nX(d, y.need)}</td><td>${mostraX(d, y)}</td><td>${eq ? f1(y.need) : y.fica}</td><td>${hm(ex.h_sem - ex.he_sem)}${ex.he_sem ? " + " + hm(ex.he_sem) : ""}</td><td>${pill(ex.risco)}</td></tr>`;
   }).join("") + "</tbody>";
   $("#mfGt").textContent = `Escala ${e.curto} · ${e.grade.length} turmas · ${e.dom} domingos de folga a cada ${e.sem} semanas · no máximo ${e.seq} ${e.seq === 1 ? "dia seguido" : "dias seguidos"}`;
   const dias = e.grade[0].length, DS = "STQQSSD";
@@ -909,9 +924,13 @@ document.addEventListener("keydown", e => {
 
 /* ---------- liga tudo ---------- */
 function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); escalas(); }
-function volante(v) { S.vol = v; $("#vol").checked = v; $("#volOp").checked = v; tudo(); }
+function volante(v) { S.vol = v; $("#vol").checked = v; tudo(); }
 $("#vol").addEventListener("change", e => volante(e.target.checked));
-$("#volOp").addEventListener("change", e => volante(e.target.checked));
+function inclui12(v) { S.inc12 = v; $("#inc12").checked = v; $("#inc12Op").checked = v; D.deps.forEach(d => S.esc[d.dep] = sugerida(d)); OP.forEach(d => { if (d.qtd) S.esc[d.dep] = sugerida(d); }); tudo(); }
+$("#inc12").addEventListener("change", e => inclui12(e.target.checked));
+$("#inc12Op").addEventListener("change", e => inclui12(e.target.checked));
+$("#b412").addEventListener("click", () => { D.deps.forEach(d => S.esc[d.dep] = conta(d, "4x2_12") ? "4x2_12" : "5x2"); tudo(); });
+$("#b412Op").addEventListener("click", () => { OP.forEach(d => S.esc[d.dep] = "4x2_12"); tudo(); });
 $("#bSugOp").addEventListener("click", () => { OP.forEach(d => { if (d.qtd) S.esc[d.dep] = sugerida(d); }); tudo(); });
 $("#b5x2Op").addEventListener("click", () => { OP.forEach(d => S.esc[d.dep] = "5x2"); tudo(); });
 $("#b12Op").addEventListener("click", () => { OP.forEach(d => S.esc[d.dep] = "12x36"); tudo(); });

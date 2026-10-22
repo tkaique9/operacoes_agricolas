@@ -24,8 +24,9 @@ NOTA_OF = {
              "licença do MTE em atividade insalubre. Na noite a hora reduzida continua valendo e gera pagamento a mais.",
     "3x3": "Mesmo quadro da 12x36, com 3 plantões seguidos e 3 dias de folga. Depende de compensação em norma coletiva "
            "e, em atividade insalubre, de licença do MTE ou cláusula coletiva.",
-    "4x2_12": "Não serve na oficina: todos são CLT urbano e, com a hora noturna reduzida, o plantão da noite passa de "
-              "10 h contadas (8 h + 2 h extras é o teto).",
+    "4x2_12": "Risco alto: oficina e frota são CLT urbano e, com a hora noturna reduzida, a noite de 12 h passa de 10 h "
+              "contadas (8 h + 2 h extras é o teto). Só vale com norma coletiva que troque a hora reduzida por adicional maior, "
+              "com a prorrogação de 2 h e a licença em atividade insalubre.",
 }
 ROTULOS_GRADE = {
     "5x2": [f"Turma {x}" for x in "ABCDEFG"], "4x2": [f"Turma {x}" for x in "ABC"],
