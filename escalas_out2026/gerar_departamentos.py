@@ -74,6 +74,12 @@ def clt_operacao():
         if fam:
             cont[f"{fam}_{r[idx['clt_rural']]}"] += 1
     return dict(cont)
+def resumo_grade(g):
+    chk, _ = analise.checar_grade(g)
+    return {"grade": g, "dom": max(x["domingos_folga"] for x in chk), "sem": chk[0]["semanas"],
+            "seq": max(x["max_seguidos"] for x in chk)}
+
+
 REGRA_TXT = {"24h": "Roda 24 h", "azul": "os 4 em azul rodam 24 h", "1turno": "1 por turno nas 24 h, o resto no horário ADM",
              "2turnos": "Turno A e B (sem noite)", "5x2": "5x2", "nao": "Não precisa simular",
              "sem_nota": "Sem anotação (ficou 5x2)"}
@@ -87,13 +93,13 @@ def dados():
     for cid in oficina.SUGS:
         c = cen[cid]
         g = A["modelo_" + cid]["grade"]
-        chk, _ = analise.checar_grade(g)
-        escalas.append({"id": cid, "nome": c["nome"], "curto": c["curto"], "turnos": c["turnos"], "trab": c["trab"],
-                        "ciclo": c["ciclo"], "h_sem": c["h_sem"], "he_sem": c["he_sem"], "folgas_sem": c["folgas_sem"],
-                        "horario": c["horario"], "risco": oficina.RISCO_OF[cid], "nota": NOTA_OF[cid],
-                        "grade": g, "rotulos": ROTULOS_GRADE[cid],
-                        "dom": max(x["domingos_folga"] for x in chk), "sem": chk[0]["semanas"],
-                        "seq": max(x["max_seguidos"] for x in chk)})
+        e = {"id": cid, "nome": c["nome"], "curto": c["curto"], "turnos": c["turnos"], "trab": c["trab"],
+             "ciclo": c["ciclo"], "h_sem": c["h_sem"], "he_sem": c["he_sem"], "folgas_sem": c["folgas_sem"],
+             "horario": c["horario"], "risco": oficina.RISCO_OF[cid], "nota": NOTA_OF[cid], "rotulos": ROTULOS_GRADE[cid]}
+        if cid == "5x2":  # folga separada na página; a junta fica para comparar (a quantidade de gente é a mesma)
+            e["folgas"] = {"separada": resumo_grade(analise.modelo_5x2_desenc()), "junta": resumo_grade(g)}
+            g = e["folgas"]["separada"]["grade"]
+        escalas.append({**e, **resumo_grade(g)})
     deps, dia = [], []
     for d in o["departamentos"]:
         ps = [p for p in o["pessoas"] if p["dep"] == d["dep"]]

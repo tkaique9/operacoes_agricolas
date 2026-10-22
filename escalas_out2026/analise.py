@@ -205,6 +205,23 @@ def modelo_5x2():
     return grade
 
 
+def modelo_5x2_desenc():
+    """Folga desencontrada: as 2 folgas da semana ficam 3 ou 4 dias uma da outra e mudam de dia a cada semana.
+
+    Ciclo de 7 semanas, cada turma começa numa semana: todo dia folgam 2 das 7 turmas, como na folga junta.
+    No máximo 4 dias seguidos e um domingo de folga a cada 3 ou 4 semanas.
+    """
+    ordem = [0, 4, 6, 2, 5, 3, 1]   # primeira folga da semana (0 = segunda); a segunda vem 3 dias depois
+    grade = []
+    for t in range(7):
+        dias = []
+        for w in range(7):
+            s = ordem[(w + t) % 7]
+            dias += ["F" if d in (s, (s + 3) % 7) else "T" for d in range(7)]
+        grade.append(dias)
+    return grade
+
+
 def modelo_4x2():
     return [["T" if (d + 2 * t) % 6 < 4 else "F" for d in range(42)] for t in range(3)]
 

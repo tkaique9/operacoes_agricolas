@@ -13,7 +13,7 @@ Os turnos 24 h saem da 5x1, a 6x1 de dia vira 5x2 e o horário ADM com sábado v
 | `gerar_relatorio.py` | Gráficos, PDF (Edge headless), xlsx e, no fim, chama `gerar_html.py` |
 | `gerar_html.py` + `relatorio_template.html` | Monta o HTML dinâmico com os dados embutidos |
 | `recalcular_planilha.ps1` | Abre a planilha no Excel e grava os resultados das fórmulas |
-| `Escalas_por_Departamento_OUT2026.html` | Validação por departamento (começa pela oficina): cada setor em cada escala, pessoas por turno editáveis, contratar ou sobra, escala sugerida e a grade da escala escolhida |
+| `Escalas_por_Departamento_OUT2026.html` | Validação por departamento (começa pela oficina): cada setor em cada escala, pessoas por turno editáveis, contratar ou sobra, escala sugerida e a grade da escala escolhida. No painel de cada departamento ou equipamento dá para trocar a escala, salvar e passar para o próximo |
 | `oficina.py` | Lê `dados/oficina/ativos_oficina.xlsx` (anotações por departamento e linhas em azul), cruza com a escala de hoje e calcula cada escala com turma fixa por turno |
 | `gerar_departamentos.py` + `departamentos_template.html` | Monta a página por departamento |
 
@@ -28,6 +28,14 @@ arredonda para cima. Quantidade e operadores por turno são editáveis na págin
 A 4x2 de 12 h entra na simulação com **risco alto** (botão "4x2 12 h em todos" e opção de entrar na sugerida): no
 cadastro, operadores de máquinas (335) e motoristas (250) são CLT urbano e, com a hora noturna reduzida, a noite de
 12 h passa de 10 h contadas. Só vale com norma coletiva que troque a hora reduzida por adicional maior.
+
+### 5x2 com folga desencontrada
+
+A apresentação mostra a 5x2 com **folga separada** (`analise.modelo_5x2_desenc`): as 2 folgas da semana ficam 3 ou 4
+dias uma da outra e mudam de dia a cada semana, no máximo 4 dias seguidos e um domingo de folga a cada 3 ou 4 semanas.
+A folga junta (`modelo_5x2`, 2 dias seguidos que andam um dia por semana, até 5 dias seguidos) fica no botão ao lado
+para comparar. A quantidade de gente é a mesma nas duas: todo dia trabalham 5 das 7 turmas, então continua 4,2 por
+equipamento.
 
 ### Oficina por departamento
 

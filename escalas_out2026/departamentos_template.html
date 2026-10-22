@@ -241,6 +241,12 @@ table.mx tr.fr td { background: #F1F3F8; color: var(--navy); font: 600 13px var(
 .capa-indice .mi .pg button:hover, .capa-indice .mi .pg button:focus-visible { color: var(--t1); border-bottom-color: var(--gold); }
 .capa-indice .mi .pg span { color: var(--t3); }
 .esc .big.tres { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.tg { display: inline-flex; align-self: flex-start; border: 1px solid var(--line); border-radius: 2px; overflow: hidden; }
+.tg button { all: unset; cursor: pointer; font: 600 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--navy); background: var(--bgsoft); padding: 5px 9px; }
+.tg button + button { border-left: 1px solid var(--line); }
+.tg button.on { background: var(--navy); color: #fff; }
+.tg button:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+#mfTg { margin: -2px 0 8px; }
 .esc .big.tres b { font-size: 23px; }
 
 /* gráficos e escalas */
@@ -279,8 +285,23 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 15.5
 .mf-k { font: 600 13px var(--f-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
 .mf-titulo { font: 700 20px var(--f-display); letter-spacing: -.01em; margin-top: 3px; }
 .mf-sub { font: 400 14.5px var(--f-serif); color: var(--t2); margin-top: 4px; }
-.mf-fechar { margin-left: auto; font: 600 13px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--gold); border: 0; border-radius: 2px; padding: 7px 12px; cursor: pointer; }
-.mf-corpo { overflow: auto; padding: 14px 20px 18px; display: grid; gap: 14px; }
+.mf-nav { margin-left: auto; display: flex; gap: 6px; flex: 0 0 auto; }
+.mf-seta { font: 600 16px var(--f-mono); color: #fff; background: transparent; border: 1px solid rgba(255,255,255,.35); border-radius: 2px; padding: 3px 11px; cursor: pointer; }
+.mf-seta:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+.mf-seta:disabled { opacity: .3; cursor: default; }
+.mf-gh { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-bottom: 8px; }
+.mf-gh h3 { margin: 0; }
+.mf-esc { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.mf-esc .tg { flex-wrap: wrap; } .mf-esc .tg button { white-space: nowrap; }
+.mf-st { font: 600 12.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--green); }
+.mf-st.pend { color: var(--red); }
+.salva { font: 600 11.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--green); margin-left: 4px; }
+.tg button:disabled { opacity: .4; cursor: default; }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn:disabled:hover { border-color: var(--line); background: var(--bgsoft); }
+.btn.pri:disabled:hover { border-color: var(--gold); background: var(--gold); }
+.mf-fechar { font: 600 13px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--gold); border: 0; border-radius: 2px; padding: 7px 12px; cursor: pointer; }
+.mf-corpo { overflow: auto; padding: 14px 20px 18px; display: grid; grid-auto-rows: max-content; gap: 14px; }
 .mf-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; }
 .comp { display: grid; gap: 6px; }
 .comp div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--bgsoft); border-left: 3px solid var(--navy); padding: 7px 10px; color: var(--navy); font-weight: 600; font-size: 15px; }
@@ -442,7 +463,7 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 15.5
 
   <article class="slide" id="escalas" data-mod="Referência" data-title="As escalas" data-desc="Horas, folgas, domingos e risco de cada escala">
     <div class="s-head"><div><div class="s-eyebrow">08 · Referência</div><h2 class="s-title">As escalas</h2>
-      <p class="s-sub">Duas primeiras semanas de cada escala. F verde = folga; vermelho = folga no domingo.</p></div></div>
+      <p class="s-sub">Duas primeiras semanas de cada escala. F verde = folga; vermelho = folga no domingo. Na 5x2, folga separada ou junta: a quantidade de gente é a mesma.</p></div></div>
     <div class="escalas" id="cardsEsc"></div>
   </article>
 
@@ -459,13 +480,13 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 15.5
   <div class="mf-fundo" id="mfFundo"></div>
   <div class="mf-caixa" role="dialog" aria-modal="true" aria-labelledby="mfTit">
     <div class="mf-topo"><div><div class="mf-k" id="mfK"></div><div class="mf-titulo" id="mfTit"></div><div class="mf-sub" id="mfSub"></div></div>
-      <button type="button" class="mf-fechar" id="mfFechar">Fechar</button></div>
+      <div class="mf-nav"><button type="button" class="mf-seta" id="mfAnt" aria-label="Anterior" title="Anterior">‹</button><button type="button" class="mf-seta" id="mfProx" aria-label="Próximo" title="Próximo">›</button><button type="button" class="mf-fechar" id="mfFechar">Fechar</button></div></div>
     <div class="mf-corpo">
       <div class="mf-cols">
         <div><div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3 id="mfCompT">Como fica a equipe</h3><div class="comp" id="mfComp"></div><p class="nota" id="mfNota"></p></div></div>
         <div><div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3 id="mfTabT">Todas as escalas neste departamento</h3><div class="rolo"><table class="tb" id="mfTab"></table></div></div></div>
       </div>
-      <div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><h3 id="mfGt"></h3><div class="rolo"><table class="grade" id="mfGrade"></table></div><p class="nota" id="mfGn"></p></div>
+      <div class="card fix" style="box-shadow:none;border:1px solid var(--line)"><div class="mf-gh"><h3 id="mfGt"></h3><div class="mf-esc" id="mfEsc"></div></div><div id="mfTg"></div><div class="rolo"><table class="grade" id="mfGrade"></table></div><p class="nota" id="mfGn"></p></div>
     </div>
   </div>
 </div>
@@ -490,7 +511,11 @@ const ESC = Object.fromEntries(D.escalas.map(e => [e.id, e]));
 const IDS = D.escalas.map(e => e.id);
 const TURNOS = ["Manhã", "Tarde", "Noite"];
 const ORD = { "Baixo": 0, "Médio": 1, "Alto": 2, "Não serve": 9 };
-const S = { vol: false, adm: false, inc12: false, P: {}, esc: {} };
+const S = { vol: false, adm: false, inc12: false, folga: "separada", P: {}, esc: {} };
+// grade em uso: na 5x2 a folga pode ser separada ou junta (a conta de gente é a mesma)
+const gr = e => e.folgas ? e.folgas[S.folga] : e;
+const togFolga = () => `<div class="tg" role="group" aria-label="Folgas da 5x2">${[["separada", "Folga separada"], ["junta", "Folga junta"]]
+  .map(([k, t]) => `<button type="button" data-folga="${k}" aria-pressed="${S.folga === k}"${S.folga === k ? ' class="on"' : ""}>${t}</button>`).join("")}</div>`;
 D.deps.forEach(d => { S.P[d.dep] = { ...d.postos }; });
 /* frota: o folguista roda entre equipamentos, então a conta é por equipamento (5x1 = 3,6 pessoas por equipamento);
    cada tipo fica fracionado e o total da frota arredonda para cima */
@@ -792,13 +817,13 @@ function grafico() {
 }
 function escalas() {
   $("#cardsEsc").innerHTML = D.escalas.map(e => {
-    const g = e.grade, DS = "STQQSSD";
+    const v = gr(e), g = v.grade, DS = "STQQSSD";
     let mini = `<table class="mini"><tr><td class="lab"></td>${Array.from({ length: 14 }, (_, i) => `<th class="${i % 7 === 6 ? "d" : ""}">${DS[i % 7]}</th>`).join("")}</tr>`;
     g.forEach((l, i) => { mini += `<tr><td class="lab">${esc(e.rotulos[i].replace("Turma ", ""))}</td>${l.slice(0, 14).map((v, k) => `<td class="${v === "F" ? "F" + (k % 7 === 6 ? " d" : "") : ""}"></td>`).join("")}</tr>`; });
     mini += "</table>";
-    return `<div class="esc${e.risco === "Alto" ? " nserve" : ""}"><div><h4>${esc(e.nome)}</h4>${pill(e.risco)}</div><div class="hr">${esc(e.horario)}</div>
+    return `<div class="esc${e.risco === "Alto" ? " nserve" : ""}"><div><h4>${esc(e.nome)}</h4>${pill(e.risco)}</div><div class="hr">${esc(e.horario)}</div>${e.folgas ? togFolga() : ""}
       <div class="big tres"><div><b>${f1(PPP(e))}</b><span>pessoas por<br>equipamento 24 h</span></div><div><b class="${totais(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totais(() => e.id).contr)}</b><span>oficina<br>em todos</span></div><div><b class="${totaisOp(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totaisOp(() => e.id).contr - totaisOp(() => e.id).sobra)}</b><span>frota<br>líquido</span></div></div>
-      <dl><dt>Horas por semana</dt><dd>${hm(e.h_sem - e.he_sem)}${e.he_sem ? " + " + hm(e.he_sem) : ""}</dd><dt>Folgas por semana</dt><dd>${fmt(e.folgas_sem, 2)}</dd><dt>Domingos de folga</dt><dd>${e.dom} a cada ${e.sem} sem.</dd><dt>Máx. dias seguidos</dt><dd>${e.seq}</dd><dt>Turmas</dt><dd>${g.length}</dd></dl>
+      <dl><dt>Horas por semana</dt><dd>${hm(e.h_sem - e.he_sem)}${e.he_sem ? " + " + hm(e.he_sem) : ""}</dd><dt>Folgas por semana</dt><dd>${fmt(e.folgas_sem, 2)}${e.folgas ? (S.folga === "separada" ? " separadas" : " juntas") : ""}</dd><dt>Domingos de folga</dt><dd>${v.dom} a cada ${v.sem} sem.</dd><dt>Máx. dias seguidos</dt><dd>${v.seq}</dd><dt>Turmas</dt><dd>${g.length}</dd></dl>
       <div style="overflow-x:auto">${mini}</div><div class="nt">${esc(e.nota)}</div></div>`;
   }).join("");
 }
@@ -814,6 +839,7 @@ function premissas() {
     "Nas escalas de 12 h, o mínimo comum aos três turnos vai para 12 h e o que passa dele fica como reforço de 8 h em 5x2.",
     `Ficam de fora da conta de turno ${D.tot.lideres} lideranças sem registro no revezamento e ${D.tot.afastados} afastado(s); continuam no quadro.`,
     `A oficina é CLT urbano no cadastro (${D.tot.clt_urbano} com o dado). Por isso a 4x2 de 12 h entra com risco alto (a noite de 12 h passa de 10 h contadas), e a noite de 8 h precisa de ajuste até dez/2027.`,
+    "5x2 com folga desencontrada: as 2 folgas da semana ficam separadas (3 ou 4 dias uma da outra) e mudam de dia a cada semana; no máximo 4 dias seguidos e um domingo de folga a cada 3 ou 4 semanas. Não reduz gente: todo dia trabalham 5 das 7 turmas, como na folga junta, então continua 4,2 por equipamento. No mesmo turno, cada folga sozinha dá 39h40 de descanso (a lei pede 35 h).",
     "Mulheres em escala com domingo: folga em um domingo a cada 15 dias (CLT art. 386).",
     `Frota operacional: ${OP.reduce((x, d) => x + d.qtd, 0)} equipamentos do Detalhamento da frota, cada um com 1 operador por turno nas 24 h (editável). Hoje = 5x1 com 3,6 pessoas por equipamento, porque o folguista roda entre equipamentos; cada escala usa o mesmo critério (5x2 4,2 · 4x2 de 8 h 4,5 · 12x36 e 3x3 4,0 · 4x2 de 12 h 3,0) e o total da frota arredonda para cima.`,
     `Operadores de máquinas e motoristas aparecem como CLT urbano no cadastro (${(D.clt_op.op_C || 0) + (D.clt_op.mot_C || 0)} pessoas; ${(D.clt_op.op_R || 0) + (D.clt_op.mot_R || 0)} rurais). Por isso a 4x2 de 12 h entra na frota com risco alto: só vale com norma coletiva que troque a hora noturna reduzida por adicional maior.`,
@@ -835,13 +861,19 @@ function composicao(d, id) {
   return out;
 }
 function abre(dep) {
-  const d = D.deps.find(x => x.dep === dep) || OP.find(x => x.dep === dep), id = S.esc[dep], e = ESC[id], r = conta(d, id), eq = d.tipo === "eq";
+  S.mf = { dep, id: S.esc[dep], ok: false };
+  mostraMf();
+  $("#mf").hidden = false; $("#mfFechar").focus();
+}
+// S.mf.id é a escala que o painel mostra; vira a escolhida do departamento só no Salvar
+function mostraMf() {
+  const dep = S.mf.dep, d = D.deps.find(x => x.dep === dep) || OP.find(x => x.dep === dep), id = S.mf.id, e = ESC[id], r = conta(d, id), eq = d.tipo === "eq", salva = ESC[S.esc[dep]];
   $("#mfK").textContent = eq ? `${d.frente} · roda 24 h · hoje em 5x1` : `${d.dep} · ${cap(d.regra_txt)}`;
   $("#mfTit").textContent = `${d.nome}${d.sub ? " · " + d.sub : ""}`;
-  $("#mfSub").textContent = eq ? `${d.nota}. Hoje (5x1): ${d.n} operadores. Escala escolhida: ${e.nome}.`
-    : `Anotação na planilha: "${d.nota || "sem anotação"}". Hoje: ${d.n} pessoas (${d.equipe} em turno, ${d.adm_hoje} no ADM${d.lideres ? ", " + d.lideres + " liderança(s)" : ""}${d.afastados ? ", " + d.afastados + " afastado(s)" : ""}). Escala escolhida: ${e.nome}.`;
+  $("#mfSub").textContent = eq ? `${d.nota}. Hoje (5x1): ${f1(d.n)} operadores. Escala salva: ${salva.nome}.`
+    : `Anotação na planilha: "${d.nota || "sem anotação"}". Hoje: ${d.n} pessoas (${d.equipe} em turno, ${d.adm_hoje} no ADM${d.lideres ? ", " + d.lideres + " liderança(s)" : ""}${d.afastados ? ", " + d.afastados + " afastado(s)" : ""}). Escala salva: ${salva.nome}.`;
   $("#mfCompT").textContent = eq ? "Como ficam os operadores" : "Como fica a equipe";
-  $("#mfTabT").textContent = eq ? "Todas as escalas neste equipamento" : "Todas as escalas neste departamento";
+  $("#mfTabT").innerHTML = `${eq ? "Todas as escalas neste equipamento" : "Todas as escalas neste departamento"}<span class="h3u">clique para ver</span>`;
   const f = e.ciclo / e.trab, v = d.qtd * d.k;
   const compEq = e.turnos === 3 ? TURNOS.map(t => [`${t}: ${f1(v * f)} operadores em ${e.curto}`, `${v} por dia`])
     : [[`Dia 07:00–19:00: ${f1(v * f)} operadores em ${e.curto}`, `${v} por dia`], [`Noite 19:00–07:00: ${f1(v * f)} operadores em ${e.curto}`, `${v} por dia`]];
@@ -855,20 +887,62 @@ function abre(dep) {
   $("#mfTab").innerHTML = th([["Escala", "l"], ["Precisa"], ["Contratar"], [eq ? "Operadores" : "Quadro"], ["Horas/semana"], ["Risco"]]) + "<tbody>" + IDS.map(x => {
     const y = conta(d, x), ex = ESC[x];
     if (!y) return `<tr><td class="l">${esc(ex.curto)}</td><td colspan="5" class="na">não se aplica (sem noite)</td></tr>`;
-    return `<tr${x === id ? ' class="sel"' : ""}><td class="l">${esc(ex.curto)}${x === sugerida(d) ? ' <span class="tag">sugerida</span>' : ""}</td><td>${nX(d, y.need)}</td><td>${mostraX(d, y)}</td><td>${eq ? f1(y.need) : y.fica}</td><td>${hm(ex.h_sem - ex.he_sem)}${ex.he_sem ? " + " + hm(ex.he_sem) : ""}</td><td>${pill(ex.risco)}</td></tr>`;
+    return `<tr class="clic${x === id ? " sel" : ""}" data-id="${x}"><td class="l">${esc(ex.curto)}${x === sugerida(d) ? ' <span class="tag">sugerida</span>' : ""}${x === S.esc[dep] ? '<span class="salva">salva</span>' : ""}</td><td>${nX(d, y.need)}</td><td>${mostraX(d, y)}</td><td>${eq ? f1(y.need) : y.fica}</td><td>${hm(ex.h_sem - ex.he_sem)}${ex.he_sem ? " + " + hm(ex.he_sem) : ""}</td><td>${pill(ex.risco)}</td></tr>`;
   }).join("") + "</tbody>";
-  $("#mfGt").textContent = `Escala ${e.curto} · ${e.grade.length} turmas · ${e.dom} domingos de folga a cada ${e.sem} semanas · no máximo ${e.seq} ${e.seq === 1 ? "dia seguido" : "dias seguidos"}`;
-  const dias = e.grade[0].length, DS = "STQQSSD";
+  S.mfEsc = id; gradeMf(e); escolhaMf(d);
+  const L = listaMf(), i = L.indexOf(dep);
+  $("#mfAnt").disabled = i <= 0; $("#mfProx").disabled = i < 0 || i >= L.length - 1;
+}
+function escolhaMf(d) {
+  const pend = S.mf.id !== S.esc[S.mf.dep];
+  $("#mfEsc").innerHTML = `<div class="tg" role="group" aria-label="Escala">${IDS.map(x => `<button type="button" data-mfesc="${x}" aria-pressed="${x === S.mf.id}"${x === S.mf.id ? ' class="on"' : ""}${conta(d, x) ? "" : " disabled"}>${x === sugerida(d) ? "★ " : ""}${esc(ESC[x].curto)}</button>`).join("")}</div>`
+    + `<button type="button" class="btn pri" id="mfSalvar"${pend ? "" : " disabled"}>Salvar</button><span class="mf-st${pend ? " pend" : ""}" role="status">${pend ? "Falta salvar" : S.mf.ok ? "Salvo" : ""}</span>`;
+}
+// anterior / próximo seguem a ordem da tabela de onde o painel foi aberto
+function listaMf() {
+  const sl = document.querySelector(".slide.active");
+  return [...new Set(sl ? [...sl.querySelectorAll("tr.clic[data-dep]")].map(t => t.dataset.dep) : [])];
+}
+function gradeMf(e) {
+  const v = gr(e);
+  $("#mfGt").textContent = `Escala ${e.curto} · ${v.grade.length} turmas · ${v.dom} domingos de folga a cada ${v.sem} semanas · no máximo ${v.seq} ${v.seq === 1 ? "dia seguido" : "dias seguidos"}`;
+  $("#mfTg").innerHTML = e.folgas ? togFolga() : "";
+  const dias = v.grade[0].length, DS = "STQQSSD";
   let g = `<thead><tr><th style="background:transparent"></th>`;
   for (let w = 0; w < dias / 7; w++) g += `<th colspan="7" class="semana${w ? " wk" : ""}">Semana ${w + 1}</th>`;
   g += `</tr><tr><th style="background:transparent"></th>` + Array.from({ length: dias }, (_, i) => `<th class="${i % 7 === 6 ? "dom" : ""}${i % 7 === 0 && i ? " wk" : ""}">${DS[i % 7]}</th>`).join("") + "</tr></thead><tbody>";
-  e.grade.forEach((l, i) => { g += `<tr><td class="lab">${esc(e.rotulos[i])}</td>` + l.map((v, k) => `<td class="${v === "F" ? "F" + (k % 7 === 6 ? " d" : "") : ""}${k % 7 === 0 && k ? " wk" : ""}">${v === "F" ? "F" : ""}</td>`).join("") + "</tr>"; });
+  v.grade.forEach((l, i) => { g += `<tr><td class="lab">${esc(e.rotulos[i])}</td>` + l.map((v, k) => `<td class="${v === "F" ? "F" + (k % 7 === 6 ? " d" : "") : ""}${k % 7 === 0 && k ? " wk" : ""}">${v === "F" ? "F" : ""}</td>`).join("") + "</tr>"; });
   $("#mfGrade").innerHTML = g + "</tbody>";
-  $("#mfGn").textContent = `${e.horario}. F = folga; vermelho = folga no domingo. Em equipe pequena, cada pessoa segue uma das linhas.`;
-  $("#mf").hidden = false; $("#mfFechar").focus();
+  const fol = !e.folgas ? "" : S.folga === "separada" ? " Folga separada: as 2 folgas da semana ficam 3 ou 4 dias uma da outra e mudam de dia a cada semana."
+    : " Folga junta: 2 dias seguidos, que andam um dia para trás a cada semana.";
+  $("#mfGn").textContent = `${e.horario}. F = folga; vermelho = folga no domingo.${fol} Em equipe pequena, cada pessoa segue uma das linhas.`;
 }
+document.addEventListener("click", ev => {
+  const b = ev.target.closest("[data-folga]");
+  if (!b) return;
+  S.folga = b.dataset.folga; escalas();
+  document.querySelectorAll("#cardsEsc .esc").forEach(x => x.style.animation = "none");  // troca sem repetir a entrada
+  if (!$("#mf").hidden && S.mfEsc) gradeMf(ESC[S.mfEsc]);
+});
 function fecha() { $("#mf").hidden = true; }
 $("#mfFechar").addEventListener("click", fecha);
+$("#mfEsc").addEventListener("click", ev => {
+  const b = ev.target.closest("[data-mfesc]");
+  if (b) { S.mf.id = b.dataset.mfesc; S.mf.ok = false; mostraMf(); $(`#mfEsc [data-mfesc="${S.mf.id}"]`).focus(); return; }
+  if (ev.target.closest("#mfSalvar")) {
+    S.esc[S.mf.dep] = S.mf.id; S.mf.ok = true; tudo(); mostraMf();
+    ($("#mfProx").disabled ? $("#mfFechar") : $("#mfProx")).focus();
+  }
+});
+$("#mfTab").addEventListener("click", ev => { const tr = ev.target.closest("tr[data-id]"); if (tr) { S.mf.id = tr.dataset.id; S.mf.ok = false; mostraMf(); } });
+function vizinho(k, btn) {
+  const L = listaMf(), i = L.indexOf(S.mf.dep);
+  if (i < 0 || !L[i + k]) return;
+  abre(L[i + k]);
+  if (!btn.disabled) btn.focus();
+}
+$("#mfAnt").addEventListener("click", ev => vizinho(-1, ev.currentTarget));
+$("#mfProx").addEventListener("click", ev => vizinho(1, ev.currentTarget));
 $("#mfFundo").addEventListener("click", fecha);
 
 /* ---------- navegação ---------- */
