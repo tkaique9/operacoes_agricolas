@@ -25,6 +25,12 @@ equipamentos, a conta é por equipamento: 5x1 = 3,6 pessoas por equipamento (hoj
 4x2 de 8 h = 4,5 (+75), 12x36 e 3x3 = 4,0 (+33), 4x2 de 12 h = 3,0 (−51). Cada tipo fica fracionado e o total da frota
 arredonda para cima. Quantidade e operadores por turno são editáveis na página.
 
+A frente **Atividades de tratos** (pedido de 23/10/2026) entra com o turno e o folguista anotados de cada equipamento:
+12 tratores de cata mato, 1 caminhão, 1 retroescavadeira e 1 uniport em 1 turno sem folguista; 3 tratores de
+adubação em 3 turnos e 5 bombeiros em 2 turnos, com folguista; 3 tratores de manutenção da irrigação, 2 quadriciclos e
+2 tratores de formiga no ADM. O hoje conta o mesmo regime na 5x1 (sem folguista e ADM, 1 por turno; com folguista,
+1,2 por turno).
+
 No quadro por equipamento, cada equipamento tem **turnos** (3 · 24 h, 2 · sem noite, 1 · só de dia ou ADM, que é
 segunda a sexta, de dia, sempre em 5x2) e **folguista** (com ou sem). Sem folguista ficam só as turmas inteiras da
 escala e o equipamento para na folga do operador: na 5x2 roda 71% dos dias e na 4x2 67%; na 12x36 e na 3x3 as duas

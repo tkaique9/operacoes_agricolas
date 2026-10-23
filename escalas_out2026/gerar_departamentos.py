@@ -55,9 +55,20 @@ FROTA = [
     ("Bombeiro controle de praga", "Apoio", 1), ("Trator de apoio (pátio)", "Apoio", 1),
     ("Escavadeira", "Estradas e terraplanagem", 1), ("Rolo compactador", "Estradas e terraplanagem", 1),
     ("Caminhão molhar trajeto", "Estradas e terraplanagem", 1),
+    # atividades de tratos culturais (pedido de 23/10/2026), com os turnos ("1", "2", "3" ou "adm", que é segunda a
+    # sexta, de dia, em 5x2) e o folguista anotados; os de cima rodam 24 h com folguista
+    ("Trator cata mato", "Atividades de tratos", 12, "1", False),
+    ("Trator adubação", "Atividades de tratos", 3, "3", True),
+    ("Caminhão", "Atividades de tratos", 1, "1", False),
+    ("Retroescavadeira", "Atividades de tratos", 1, "1", False),
+    ("Trator manutenção irrigação", "Atividades de tratos", 3, "adm", False),
+    ("Uniport", "Atividades de tratos", 1, "1", False),
+    ("Bombeiro", "Atividades de tratos", 5, "2", True),
+    ("Quadriciclo", "Atividades de tratos", 2, "adm", False),
+    ("Trator formiga", "Atividades de tratos", 2, "adm", False),
 ]
 FRENTES = {"Colheita (CCT)": "#2F6FD0", "Preparo e plantio": "#E06A3A", "Apoio": "#1FA37A",
-           "Estradas e terraplanagem": "#E0A21A"}
+           "Estradas e terraplanagem": "#E0A21A", "Atividades de tratos": "#8E5BB5"}
 
 
 def clt_operacao():
@@ -135,7 +146,12 @@ def dados():
            "afastados": sum(1 for p in o["pessoas"] if p["tipo"] == "Afastado"),
            "clt_urbano": o["clt_rural"].get("C", 0), "sem_clt": o["clt_rural"].get(None, 0),
            "rural": o["clt_rural"].get("R", 0)}
-    frota = [{"nome": n, "frente": f, "qtd": q} for n, f, q in FROTA]
+    frota = []
+    for n, f, q, *reg in FROTA:
+        e = {"nome": n, "frente": f, "qtd": q}
+        if reg:   # turnos e folguista anotados
+            e["reg"], e["folg"] = reg
+        frota.append(e)
     return {"area": "Oficina e Operacional", "base": "20/10/2026", "escalas": escalas, "deps": deps, "dia": dia, "tot": tot,
             "frota": frota, "frentes": FRENTES, "clt_op": clt_operacao()}
 
