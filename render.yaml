@@ -1,0 +1,13 @@
+# Render Blueprint: Web Service Node (server.js) que publica as páginas de public/ e guarda as
+# alterações das páginas de escalas no Postgres do Supabase (DATABASE_URL).
+services:
+  - type: web
+    name: operacoes-agricolas
+    runtime: node
+    plan: free
+    buildCommand: npm install && ./render-build.sh
+    startCommand: node server.js
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        sync: false

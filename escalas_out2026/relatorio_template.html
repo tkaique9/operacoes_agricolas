@@ -141,7 +141,7 @@ footer { padding-block: 26px 40px; color: var(--muted); font-size: 13px; }
 </div></header>
 <nav class="secoes" aria-label="Seções"><div class="wrap">
   <a href="#resumo">Resumo</a><a href="#quem">Quem muda</a><a href="#sugestoes">Sugestões</a><a href="#grade">Escala</a>
-  <a href="#risco">Risco no MTE</a><a href="#simulador">Simulador</a><a href="#outros">6x1, ADM e 12x36</a><a href="#lei">Lei e plano</a>
+  <a href="#risco">Risco no MTE</a><a href="#simulador">Simulador</a><a href="#outros">6x1, ADM e 12x36</a><a href="#lei">Lei e plano</a><a href="Escalas_por_Departamento_OUT2026.html" style="margin-left:auto;color:var(--ink);border:1px solid var(--line)">Por departamento ↗</a>
 </div></nav>
 
 <section id="resumo"><div class="wrap">
@@ -239,6 +239,7 @@ footer { padding-block: 26px 40px; color: var(--muted); font-size: 13px; }
 </div></section>
 <footer><div class="wrap" id="rodape"></div></footer>
 
+<script src="salvar.js"></script>
 <script>
 const D = /*DADOS*/null;
 const $ = s => document.querySelector(s);
@@ -445,7 +446,7 @@ function outros() {
   $("#rodape").textContent = "Simulação para a diretoria. Validar com o jurídico e o departamento pessoal antes de implantar. Gerado a partir de escalas.xlsx e ativoss.xlsx (20/10/2026).";
 }
 
-function tudo() { resumo(); sugestoes(); mostraGrade(); risco(); simulador(); }
+function tudo() { resumo(); sugestoes(); mostraGrade(); risco(); simulador(); if (window.salvaSite) salvaSite.mudou(); }
 function init() {
   const ops = D.cenarios.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join("");
   $("#selGrade").innerHTML = ops; $("#selGrade").value = SEL;
@@ -459,4 +460,10 @@ function init() {
   quem(); outros(); tudo();
 }
 init();
+// alterações salvas no servidor (só no Render, salvar.js): abre no que foi salvo por último
+const CTL = ["#sAgr", "#sInd", "#s6x1", "#rend", "#sal", "#ben", "#adic", "#refl"];
+const escolhas = () => ({ sel: SEL, v: CTL.map(id => $(id).value) });
+const PADRAO = escolhas();
+if (window.salvaSite) salvaSite({ nome: "relatorio", onde: $("nav.secoes .wrap"), solto: true, estado: escolhas,
+  aplica: st => { st = st || PADRAO; SEL = st.sel || PADRAO.sel; $("#selGrade").value = SEL; CTL.forEach((id, i) => { $(id).value = (st.v || [])[i] ?? PADRAO.v[i]; }); tudo(); } });
 </script>
