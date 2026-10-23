@@ -5,3 +5,4 @@ arquivo_rsc0819/dados/
 __pycache__/
 *.pyc
 .claude/
+public/

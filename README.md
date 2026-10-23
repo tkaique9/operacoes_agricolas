@@ -197,3 +197,15 @@ o total pode ser maior que a soma do que aparece; o saldo a realizar tem de fech
   verde-água `#3FA79C`, Monitoramento com drone roxo `#8E6CB8`, Cocho navy `#12224A`.
 - Farol da meta: verde na meta ou acima, âmbar de 50% a 99%, vermelho abaixo de 50% — sempre
   com o número escrito ao lado.
+
+## Publicar no Render
+
+O repositório já tem o `render.yaml` (Blueprint de **site estático**, sem servidor nem custo):
+
+1. No Render: **New → Blueprint**, escolha este repositório e confirme.
+2. A cada push na `main` o Render roda `render-build.sh`, que copia só as páginas
+   (`index.html`, `arquivo_rsc0819/index.html` e os relatórios de `escalas_out2026/`) para
+   `public/` e publica essa pasta. Scripts Python, templates e planilhas não vão para o site.
+
+Endereços: `/` (tratos culturais), `/arquivo_rsc0819/`, `/escalas_out2026/…` e o atalho
+`/escalas` para o relatório de escalas. Página nova? Inclua-a no `render-build.sh`.

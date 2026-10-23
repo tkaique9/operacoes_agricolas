@@ -1,0 +1,20 @@
+# Render Blueprint: site estático (páginas HTML prontas, sem servidor).
+# Publica só as páginas em public/; scripts, templates e planilhas não vão para o site.
+services:
+  - type: web
+    name: operacoes-agricolas
+    runtime: static
+    buildCommand: ./render-build.sh
+    staticPublishPath: ./public
+    pullRequestPreviewsEnabled: false
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /escalas
+        destination: /escalas_out2026/Relatorio_Escalas_EC141_OUT2026.html
