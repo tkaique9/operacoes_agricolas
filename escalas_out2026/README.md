@@ -25,6 +25,15 @@ equipamentos, a conta é por equipamento: 5x1 = 3,6 pessoas por equipamento (hoj
 4x2 de 8 h = 4,5 (+75), 12x36 e 3x3 = 4,0 (+33), 4x2 de 12 h = 3,0 (−51). Cada tipo fica fracionado e o total da frota
 arredonda para cima. Quantidade e operadores por turno são editáveis na página.
 
+No quadro por equipamento, cada equipamento tem **turnos** (3 · 24 h, 2 · sem noite, 1 · só de dia ou ADM, que é
+segunda a sexta, de dia, sempre em 5x2) e **folguista** (com ou sem). Sem folguista ficam só as turmas inteiras da
+escala e o equipamento para na folga do operador: na 5x2 roda 71% dos dias e na 4x2 67%; na 12x36 e na 3x3 as duas
+turmas se revezam e ele roda todo dia. Com 2 turnos as escalas de 12 h não se aplicam, como na oficina.
+
+Na oficina, a opção **Todos na mesma escala** (na matriz e no painel do departamento) tira o reforço de 8 h em 5x2
+das escalas de 12 h: o dia de 12 h cobre o maior entre manhã e tarde e a noite, o maior entre tarde e noite
+(Caminhões / Veículos em 12x36: 6 no dia e 4 na noite, em vez de 4 + 4 e 2 de reforço).
+
 A 4x2 de 12 h entra na simulação com **risco alto** (botão "4x2 12 h em todos" e opção de entrar na sugerida): no
 cadastro, operadores de máquinas (335) e motoristas (250) são CLT urbano e, com a hora noturna reduzida, a noite de
 12 h passa de 10 h contadas. Só vale com norma coletiva que troque a hora reduzida por adicional maior.
