@@ -18,7 +18,8 @@
   --red: #C0392B; --green: #2E7D46; --amber: #A6620A;
   --ink: #2B2B2B; --mut: #5A6072; --line: #D6DAE2; --bgsoft: #F4F6FA; --white: #FFFFFF;
   --ok: #E2F1E6; --med: #FBEEDA; --bad: #FAE1DD; --tot: #FFF3D0; --sel: #FDF2D3;
-  --esc: #E4F3E8; --esc2: #C8E6D0; --esc-linha: #8CC59C;   /* escolhida (verde claro) e subtotal (o mesmo verde, mais forte) */ --na: #EEF0F4; --na-ink: #9AA3B5;
+  --esc: #E4F3E8;   /* escolhida: verde claro */
+  --sub: #D3DBEA; --sub-linha: #8E9FC2;   /* subtotal da frente: azul-acinzentado, mais forte */ --na: #EEF0F4; --na-ink: #9AA3B5;
   --t1: #F4F6FA; --t2: #AEBBD8; --t3: #7D8BB0; --linha: rgba(174,187,216,.20); --linha2: rgba(174,187,216,.34);
   --gold-dim: rgba(201,162,39,.14); --gold-line: rgba(201,162,39,.50); --gold-glow: rgba(201,162,39,.26);
   --f-display: "Archivo", "Segoe UI", -apple-system, Helvetica, Arial, sans-serif;
@@ -237,7 +238,9 @@ button.mod.off:hover { border-color: var(--gold-line); color: var(--t1); }
 table.qd tr.fr td { background: #F1F3F8 !important; color: var(--navy); font-weight: 700; border-top: 2px solid #D6DAE2; height: 30px; }
 table.qd tr.fr td.l { font: 600 13px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; }
 table.qd tr.fr td.qv b { font-size: 16.5px; color: var(--navy); }
-table.qd tr.fr td { background: var(--esc2) !important; border-top: 2px solid var(--esc-linha); }
+table.qd tr.fr td { background: var(--sub) !important; border-top: 1px solid var(--sub-linha); border-bottom: 2px solid var(--sub-linha); }
+/* nome da frente no começo do grupo (o subtotal fica no fim) */
+table.qd tr.frh td { background: var(--white) !important; height: 28px; padding: 6px 9px 2px 16px; color: var(--navy); font: 600 13px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; text-align: left; border-top: 2px solid var(--fc, #D6DAE2); box-shadow: inset 6px 0 0 var(--fc, transparent); }
 table.qd tr.fr td.l { box-shadow: inset 6px 0 0 var(--fc, transparent); padding-left: 16px; }
 table.qd td.qv .pc { display: block; font: 600 13px var(--f-mono); font-style: normal; letter-spacing: .02em; color: var(--red); margin-top: 1px; }
 table.qd td.qv .pc.dn { color: var(--green); }
@@ -855,12 +858,13 @@ function quadroOp() {
     const ds = OP.filter(d => d.frente === fr && d.qtd);
     if (!ds.length) return;
     const soma = f => ds.reduce((x, d) => x + f(d), 0), hj = soma(d => d.n);
-    h += `<tr class="fr" style="--fc:${FRENTE[fr]}"><td class="l"><span class="fdot" style="background:${FRENTE[fr]}"></span>${esc(fr)}</td><td>${soma(d => d.qtd)}</td><td>${f1(hj)}</td><td class="reg"></td><td class="reg"></td>${IDS.map(id => q(soma(d => needEq(d, id)), hj, "", 1)).join("")}<td></td>${q(soma(d => conta(d, S.esc[d.dep]).need), hj, "fq", 1)}</tr>`;
+    h += `<tr class="frh" style="--fc:${FRENTE[fr]}"><td class="l" colspan="${IDS.length + 7}"><span class="fdot" style="background:${FRENTE[fr]}"></span>${esc(fr)}</td></tr>`;
     ds.forEach(d => {
       const id = S.esc[d.dep], r = conta(d, id);
       h += `<tr class="clic" data-dep="${esc(d.dep)}"><td class="l dep">${esc(d.nome)}</td><td class="hoje">${d.qtd}</td><td class="hoje">${f1(d.n)}</td>${sels(d)}${IDS.map(x => { const y = conta(d, x); return y ? q(y.need, d.n, x === id ? "qsel" : "", 0, roda(d, x)) : `<td class="nm">—</td>`; }).join("")}
         <td class="ec"><span style="background:${COR[id]}${id === "12x36" ? ";color:#12224A" : ""}">${d.reg === "adm" ? "ADM · 5x2" : esc(ESC[id].curto)}</span></td>${q(r.need, d.n, "fq", 0, roda(d, id))}</tr>`;
     });
+    h += `<tr class="fr" style="--fc:${FRENTE[fr]}"><td class="l"><span class="fdot" style="background:${FRENTE[fr]}"></span>Subtotal · ${esc(fr)}</td><td>${soma(d => d.qtd)}</td><td>${f1(hj)}</td><td class="reg"></td><td class="reg"></td>${IDS.map(id => q(soma(d => needEq(d, id)), hj, "", 1)).join("")}<td></td>${q(soma(d => conta(d, S.esc[d.dep]).need), hj, "fq", 1)}</tr>`;
   });
   const a = totaisOp(d => S.esc[d.dep]);
   h += `<tr class="tot"><td class="l">Total da frota</td><td>${OP.reduce((x, d) => x + d.qtd, 0)}</td><td>${a.hoje}</td><td class="reg"></td><td class="reg"></td>${IDS.map(id => q(totaisOp(() => id).need, a.hoje, "", 1)).join("")}<td></td>${q(a.need, a.hoje, "fq", 1)}</tr></tbody>`;
