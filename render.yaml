@@ -14,7 +14,3 @@ services:
       - path: /*
         name: Cache-Control
         value: no-cache
-    routes:
-      - type: rewrite
-        source: /escalas
-        destination: /escalas_out2026/Relatorio_Escalas_EC141_OUT2026.html
