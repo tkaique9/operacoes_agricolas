@@ -36,6 +36,8 @@ const gh = async (metodo, rota, corpo) => {
   const txt = await r.text();
   return { status: r.status, json: txt ? JSON.parse(txt) : null };
 };
+// erro com o motivo do GitHub, para aparecer no log e na página (token vencido, sem permissão…)
+const erroGh = (oque, r) => Object.assign(new Error(`GitHub ${r.status} ao ${oque}: ${(r.json && r.json.message) || ""}`), { publico: true });
 let branchPronto = null;
 function garanteBranch() {
   // cria o branch de dados a partir do branch padrão na primeira gravação
@@ -44,7 +46,7 @@ function garanteBranch() {
     const repo = await gh("GET", "");
     const base = await gh("GET", `/git/ref/heads/${repo.json.default_branch}`);
     const r = await gh("POST", "/git/refs", { ref: `refs/heads/${BRANCH}`, sha: base.json.object.sha });
-    if (r.status !== 201 && r.status !== 422) throw new Error(`não criou o branch ${BRANCH}: ${r.status}`);
+    if (r.status !== 201 && r.status !== 422) throw erroGh(`criar o branch ${BRANCH}`, r);
   })().catch(e => { branchPronto = null; throw e; });
   return branchPronto;
 }
@@ -53,10 +55,10 @@ async function le(nome) {
   if (cache.has(nome)) return cache.get(nome).doc;
   let doc = null, sha = null;
   if (TOKEN) {
-    await garanteBranch();
+    // branch ainda não criado = nada salvo: só a primeira gravação cria
     const r = await gh("GET", `/contents/estado/${nome}.json?ref=${BRANCH}`);
     if (r.status === 200) { doc = JSON.parse(Buffer.from(r.json.content, "base64").toString("utf-8")); sha = r.json.sha; }
-    else if (r.status !== 404) throw new Error(`GitHub respondeu ${r.status} ao ler`);
+    else if (r.status !== 404) throw erroGh("ler", r);
   } else {
     try { doc = JSON.parse(fs.readFileSync(path.join(LOCAL, `${nome}.json`), "utf-8")); } catch (e) {}
   }
@@ -67,10 +69,11 @@ async function le(nome) {
 async function grava(nome, doc, msg) {
   const txt = JSON.stringify(doc, null, 1) + "\n";
   if (TOKEN) {
+    await garanteBranch();
     const c = cache.get(nome) || {};
     const r = await gh("PUT", `/contents/estado/${nome}.json`, { message: msg, branch: BRANCH,
       content: Buffer.from(txt, "utf-8").toString("base64"), ...(c.sha ? { sha: c.sha } : {}) });
-    if (r.status !== 200 && r.status !== 201) { cache.delete(nome); throw new Error(`GitHub respondeu ${r.status} ao gravar`); }
+    if (r.status !== 200 && r.status !== 201) { cache.delete(nome); throw erroGh("gravar", r); }
     cache.set(nome, { doc, sha: r.json.content.sha });
   } else {
     fs.mkdirSync(LOCAL, { recursive: true });
@@ -152,6 +155,6 @@ http.createServer(async (req, res) => {
     arquivo(req, res, url);
   } catch (e) {
     console.error(e);
-    if (!res.headersSent) envia(res, 500, { erro: "não foi possível salvar agora" });
+    if (!res.headersSent) envia(res, 500, { erro: e.publico ? e.message : "não foi possível salvar agora" });
   }
 }).listen(process.env.PORT || 3000, () => console.log(`no ar na porta ${process.env.PORT || 3000}; estado em ${TOKEN ? `GitHub ${REPO}@${BRANCH}` : LOCAL}`));
