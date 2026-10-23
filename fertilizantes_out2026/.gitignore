@@ -1,0 +1,4 @@
+# dependências do Node e arquivos intermediários da geração
+node_modules/
+build/
+~$*

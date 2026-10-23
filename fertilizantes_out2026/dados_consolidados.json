@@ -1,0 +1,1436 @@
+{
+  "fonte": {
+    "arquivo": "Necessidade Fertilizante OUT 2026.xlsx",
+    "abas": {
+      "A": "LOC. 1.000ha",
+      "B": "LOC. 450ha"
+    }
+  },
+  "usina": {
+    "nome": "Usina CRV Industrial",
+    "departamento": "Departamento Agrícola",
+    "unidade": "Unidade Capinópolis - MG"
+  },
+  "plantio_projetado_ha": {
+    "fundacao": 1400,
+    "renovacao": 1000,
+    "fonte": "nota A42"
+  },
+  "cenarios": {
+    "A": {
+      "aba": "LOC. 1.000ha",
+      "nome": "Cenário A · Localizada 1.000 ha",
+      "data_base": "2026-10-16",
+      "data_limite_localizada": "2026-11-30",
+      "termino_safra": "2026-12-15",
+      "dias_limite_localizada": 45,
+      "dias_safra": 60,
+      "ritmo_localizada_ha_dia": 50.78,
+      "dias_k_vinhaca": 20,
+      "area_localizada_estimada_ha": 1015.6,
+      "realizado": {
+        "cargill_localizada_ha": 753.37,
+        "crv_localizada_ha": 5795.19,
+        "crv_mineral_ha": 8441.24
+      },
+      "consumo_realizado": [
+        {
+          "produto": "46-00-00",
+          "area_ha": 3201.48,
+          "dose_kg_ha": 200,
+          "volume_t": 640.296,
+          "fazendas": "36 fazendas",
+          "linha": 27
+        },
+        {
+          "produto": "16-00-20",
+          "area_ha": 2126.89,
+          "dose_kg_ha": 500,
+          "volume_t": 1063.445,
+          "fazendas": "25 fazendas",
+          "linha": 28
+        }
+      ],
+      "quadro_localizada": {
+        "total_ha": 8517.09,
+        "partes_ha": [
+          3201.48,
+          2126.89,
+          753.37
+        ]
+      },
+      "cargill": {
+        "colhida_ha": 1664.37,
+        "a_colher_ha": 2614.59,
+        "tratos_ha": 1200,
+        "realizado_ha": 753.37,
+        "a_tratar_ha": 446.63
+      },
+      "crv": {
+        "colhida_ha": 19370.44,
+        "plantio_ha": 1000,
+        "a_colher_ha": 29726,
+        "a_colher_partes": [
+          11593,
+          9354,
+          8779
+        ],
+        "tratos_ha": 28726,
+        "realizado_ha": 14236.43,
+        "bisada_ha": 3076.93,
+        "tch_bisada": 65,
+        "bisada_t": 200000.44999999998,
+        "a_tratar_localizada_ha": 568.97,
+        "a_tratar_mineral_ha": 10843.67,
+        "h38_digitado": false
+      },
+      "total_a_tratar_ha": 11859.269999999999,
+      "doses_kg_ha": {
+        "46-00-00": 200,
+        "16-00-20": 500
+      },
+      "balanco": {
+        "46-00-00": {
+          "necessidade_t": 113.794,
+          "estoque_t": 356.97,
+          "a_receber_t": 1150,
+          "disponivel_t": 1506.97,
+          "saldo_t": 1393.176
+        },
+        "16-00-20": {
+          "necessidade_t": 5421.835,
+          "estoque_t": 1132,
+          "a_receber_t": 2030,
+          "disponivel_t": 3162,
+          "saldo_t": -2259.835
+        }
+      },
+      "compra_16_t": 2259.835,
+      "estoque": [
+        {
+          "produto": "16-00-20",
+          "estoque_t": 1132,
+          "dose_t_ha": 0.5,
+          "area_eq_ha": 2264.0,
+          "grupo": "Socaria",
+          "linha": 49
+        },
+        {
+          "produto": "46-00-00",
+          "estoque_t": 356.97,
+          "dose_t_ha": 0.2,
+          "area_eq_ha": 1784.8500000000001,
+          "grupo": "Socaria",
+          "linha": 50
+        },
+        {
+          "produto": "21-00-00",
+          "estoque_t": 126,
+          "dose_t_ha": 0.4,
+          "area_eq_ha": 315.0,
+          "grupo": "Socaria",
+          "linha": 51
+        },
+        {
+          "produto": "25-00-00",
+          "estoque_t": 0.85,
+          "dose_t_ha": 0.4,
+          "area_eq_ha": 2.125,
+          "grupo": "Socaria",
+          "linha": 52
+        },
+        {
+          "produto": "13-00-34",
+          "estoque_t": 4,
+          "dose_t_ha": 0.5,
+          "area_eq_ha": 8.0,
+          "grupo": "Socaria",
+          "linha": 53
+        },
+        {
+          "produto": "06-26-25",
+          "estoque_t": 689.5,
+          "dose_t_ha": 0.6,
+          "area_eq_ha": 1149.1666666666667,
+          "grupo": "Plantio",
+          "linha": 54
+        },
+        {
+          "produto": "06-30-25",
+          "estoque_t": 139.86,
+          "dose_t_ha": 0.6,
+          "area_eq_ha": 233.10000000000002,
+          "grupo": "Plantio",
+          "linha": 55
+        },
+        {
+          "produto": "06-27-24",
+          "estoque_t": 6,
+          "dose_t_ha": 0.6,
+          "area_eq_ha": 10.0,
+          "grupo": "Plantio",
+          "linha": 56
+        },
+        {
+          "produto": "05-25-25",
+          "estoque_t": 2.95,
+          "dose_t_ha": 0.6,
+          "area_eq_ha": 4.916666666666667,
+          "grupo": "Plantio",
+          "linha": 57
+        },
+        {
+          "produto": "Oxyfertil",
+          "estoque_t": 142.19,
+          "dose_t_ha": 0.5,
+          "area_eq_ha": 284.38,
+          "grupo": "Não classificado",
+          "linha": 58
+        }
+      ],
+      "derivados": {
+        "necessidade_total_t": 5535.629,
+        "participacao_16": 0.9794433478110618,
+        "cobertura_16_estoque": 0.20878540199028559,
+        "cobertura_16_disponivel": 0.5831973861248083,
+        "deficit_16_ha": 4519.67,
+        "a_receber_total_t": 3180,
+        "nutrientes_t": {
+          "N": 919.83884,
+          "K2O": 1084.367
+        },
+        "nutrientes_por_ha": {
+          "16-00-20": {
+            "N": 80.0,
+            "K2O": 100.0
+          },
+          "46-00-00": {
+            "N": 92.0,
+            "K2O": 0
+          }
+        },
+        "deficit_nutrientes_t": {
+          "N": 361.5736,
+          "K2O": 451.96700000000004
+        },
+        "excedente_46_N_t": 640.86096,
+        "area": {
+          "tratos_total_ha": 29926,
+          "realizado_total_ha": 14989.800000000001,
+          "pct_realizado_total": 0.5008955423377666,
+          "pct_realizado_crv": 0.4955938870709462,
+          "pct_realizado_cargill": 0.6278083333333333,
+          "pct_mineral_no_restante": 0.9143623511396571,
+          "ritmo_para_fechar_na_safra_ha_dia": 197.65449999999998
+        },
+        "curva_16": {
+          "premissa": "aplicação uniforme do 16-00-20 entre a data-base e o término da safra",
+          "consumo_diario_t": 90.36391666666667,
+          "dias_cobertura_estoque": 12.527124119417135,
+          "dias_cobertura_disponivel": 34.9918431674885,
+          "data_esgota_estoque": "2026-10-28",
+          "data_esgota_disponivel": "2026-11-20",
+          "pontos": [
+            {
+              "dia": 0,
+              "data": "2026-10-16",
+              "necessidade_acum_t": 0.0
+            },
+            {
+              "dia": 5,
+              "data": "2026-10-21",
+              "necessidade_acum_t": 451.81958333333336
+            },
+            {
+              "dia": 10,
+              "data": "2026-10-26",
+              "necessidade_acum_t": 903.6391666666667
+            },
+            {
+              "dia": 15,
+              "data": "2026-10-31",
+              "necessidade_acum_t": 1355.45875
+            },
+            {
+              "dia": 20,
+              "data": "2026-11-05",
+              "necessidade_acum_t": 1807.2783333333334
+            },
+            {
+              "dia": 25,
+              "data": "2026-11-10",
+              "necessidade_acum_t": 2259.0979166666666
+            },
+            {
+              "dia": 30,
+              "data": "2026-11-15",
+              "necessidade_acum_t": 2710.9175
+            },
+            {
+              "dia": 35,
+              "data": "2026-11-20",
+              "necessidade_acum_t": 3162.7370833333334
+            },
+            {
+              "dia": 40,
+              "data": "2026-11-25",
+              "necessidade_acum_t": 3614.556666666667
+            },
+            {
+              "dia": 45,
+              "data": "2026-11-30",
+              "necessidade_acum_t": 4066.3762500000003
+            },
+            {
+              "dia": 50,
+              "data": "2026-12-05",
+              "necessidade_acum_t": 4518.195833333333
+            },
+            {
+              "dia": 55,
+              "data": "2026-12-10",
+              "necessidade_acum_t": 4970.015416666667
+            },
+            {
+              "dia": 60,
+              "data": "2026-12-15",
+              "necessidade_acum_t": 5421.835
+            }
+          ]
+        },
+        "estoque_total_t": 2600.32,
+        "estoque_por_grupo_t": {
+          "Socaria": 1619.82,
+          "Plantio": 838.3100000000001,
+          "Não classificado": 142.19
+        },
+        "area_eq_por_grupo_ha": {
+          "Socaria": 4373.975,
+          "Plantio": 1397.1833333333334,
+          "Não classificado": 284.38
+        },
+        "sens_preco_por_100": {
+          "compra_16_R$": 225983.5,
+          "custo_ha_16_R$": 50.0,
+          "excedente_46_R$": 139317.6
+        }
+      }
+    },
+    "B": {
+      "aba": "LOC. 450ha",
+      "nome": "Cenário B · Localizada 450 ha",
+      "data_base": "2026-10-16",
+      "data_limite_localizada": "2026-11-30",
+      "termino_safra": "2026-12-15",
+      "dias_limite_localizada": 45,
+      "dias_safra": 60,
+      "ritmo_localizada_ha_dia": 50.78,
+      "dias_k_vinhaca": 0,
+      "area_localizada_estimada_ha": 0.0,
+      "realizado": {
+        "cargill_localizada_ha": 753.37,
+        "crv_localizada_ha": 5795.19,
+        "crv_mineral_ha": 8441.24
+      },
+      "consumo_realizado": [
+        {
+          "produto": "46-00-00",
+          "area_ha": 3201.48,
+          "dose_kg_ha": 200,
+          "volume_t": 640.296,
+          "fazendas": "36 fazendas",
+          "linha": 27
+        },
+        {
+          "produto": "16-00-20",
+          "area_ha": 2126.89,
+          "dose_kg_ha": 500,
+          "volume_t": 1063.445,
+          "fazendas": "25 fazendas",
+          "linha": 28
+        }
+      ],
+      "quadro_localizada": {
+        "total_ha": 8517.09,
+        "partes_ha": [
+          3201.48,
+          2126.89,
+          753.37
+        ]
+      },
+      "cargill": {
+        "colhida_ha": 1664.37,
+        "a_colher_ha": 2614.59,
+        "tratos_ha": 1200,
+        "realizado_ha": 753.37,
+        "a_tratar_ha": 446.63
+      },
+      "crv": {
+        "colhida_ha": 19370.44,
+        "plantio_ha": 1000,
+        "a_colher_ha": 29726,
+        "a_colher_partes": [
+          11593,
+          9354,
+          8779
+        ],
+        "tratos_ha": 28726,
+        "realizado_ha": 14236.43,
+        "bisada_ha": 3076.93,
+        "tch_bisada": 65,
+        "bisada_t": 200000.44999999998,
+        "a_tratar_localizada_ha": 0,
+        "a_tratar_mineral_ha": 11412.64,
+        "h38_digitado": true
+      },
+      "total_a_tratar_ha": 11859.269999999999,
+      "doses_kg_ha": {
+        "46-00-00": 200,
+        "16-00-20": 500
+      },
+      "balanco": {
+        "46-00-00": {
+          "necessidade_t": 0.0,
+          "estoque_t": 356.97,
+          "a_receber_t": 1150,
+          "disponivel_t": 1506.97,
+          "saldo_t": 1506.97
+        },
+        "16-00-20": {
+          "necessidade_t": 5706.32,
+          "estoque_t": 1132,
+          "a_receber_t": 2030,
+          "disponivel_t": 3162,
+          "saldo_t": -2544.3199999999997
+        }
+      },
+      "compra_16_t": 2544.3199999999997,
+      "estoque": [
+        {
+          "produto": "16-00-20",
+          "estoque_t": 1132,
+          "dose_t_ha": 0.5,
+          "area_eq_ha": 2264.0,
+          "grupo": "Socaria",
+          "linha": 49
+        },
+        {
+          "produto": "46-00-00",
+          "estoque_t": 356.97,
+          "dose_t_ha": 0.2,
+          "area_eq_ha": 1784.8500000000001,
+          "grupo": "Socaria",
+          "linha": 50
+        },
+        {
+          "produto": "21-00-00",
+          "estoque_t": 126,
+          "dose_t_ha": 0.4,
+          "area_eq_ha": 315.0,
+          "grupo": "Socaria",
+          "linha": 51
+        },
+        {
+          "produto": "25-00-00",
+          "estoque_t": 0.85,
+          "dose_t_ha": 0.4,
+          "area_eq_ha": 2.125,
+          "grupo": "Socaria",
+          "linha": 52
+        },
+        {
+          "produto": "13-00-34",
+          "estoque_t": 4,
+          "dose_t_ha": 0.5,
+          "area_eq_ha": 8.0,
+          "grupo": "Socaria",
+          "linha": 53
+        },
+        {
+          "produto": "06-26-25",
+          "estoque_t": 689.5,
+          "dose_t_ha": 0.6,
+          "area_eq_ha": 1149.1666666666667,
+          "grupo": "Plantio",
+          "linha": 54
+        },
+        {
+          "produto": "06-30-25",
+          "estoque_t": 139.86,
+          "dose_t_ha": 0.6,
+          "area_eq_ha": 233.10000000000002,
+          "grupo": "Plantio",
+          "linha": 55
+        },
+        {
+          "produto": "06-27-24",
+          "estoque_t": 6,
+          "dose_t_ha": 0.6,
+          "area_eq_ha": 10.0,
+          "grupo": "Plantio",
+          "linha": 56
+        },
+        {
+          "produto": "05-25-25",
+          "estoque_t": 2.95,
+          "dose_t_ha": 0.6,
+          "area_eq_ha": 4.916666666666667,
+          "grupo": "Plantio",
+          "linha": 57
+        },
+        {
+          "produto": "Oxyfertil",
+          "estoque_t": 142.19,
+          "dose_t_ha": 0.5,
+          "area_eq_ha": 284.38,
+          "grupo": "Não classificado",
+          "linha": 58
+        }
+      ],
+      "derivados": {
+        "necessidade_total_t": 5706.32,
+        "participacao_16": 1.0,
+        "cobertura_16_estoque": 0.19837653689242807,
+        "cobertura_16_disponivel": 0.5541224466906869,
+        "deficit_16_ha": 5088.639999999999,
+        "a_receber_total_t": 3180,
+        "nutrientes_t": {
+          "N": 913.0111999999999,
+          "K2O": 1141.264
+        },
+        "nutrientes_por_ha": {
+          "16-00-20": {
+            "N": 80.0,
+            "K2O": 100.0
+          },
+          "46-00-00": {
+            "N": 92.0,
+            "K2O": 0
+          }
+        },
+        "deficit_nutrientes_t": {
+          "N": 407.09119999999996,
+          "K2O": 508.864
+        },
+        "excedente_46_N_t": 693.2062000000001,
+        "area": {
+          "tratos_total_ha": 29926,
+          "realizado_total_ha": 14989.800000000001,
+          "pct_realizado_total": 0.5008955423377666,
+          "pct_realizado_crv": 0.4955938870709462,
+          "pct_realizado_cargill": 0.6278083333333333,
+          "pct_mineral_no_restante": 0.9623391659014425,
+          "ritmo_para_fechar_na_safra_ha_dia": 197.65449999999998
+        },
+        "curva_16": {
+          "premissa": "aplicação uniforme do 16-00-20 entre a data-base e o término da safra",
+          "consumo_diario_t": 95.10533333333333,
+          "dias_cobertura_estoque": 11.902592213545683,
+          "dias_cobertura_disponivel": 33.24734680144121,
+          "data_esgota_estoque": "2026-10-27",
+          "data_esgota_disponivel": "2026-11-18",
+          "pontos": [
+            {
+              "dia": 0,
+              "data": "2026-10-16",
+              "necessidade_acum_t": 0.0
+            },
+            {
+              "dia": 5,
+              "data": "2026-10-21",
+              "necessidade_acum_t": 475.52666666666664
+            },
+            {
+              "dia": 10,
+              "data": "2026-10-26",
+              "necessidade_acum_t": 951.0533333333333
+            },
+            {
+              "dia": 15,
+              "data": "2026-10-31",
+              "necessidade_acum_t": 1426.58
+            },
+            {
+              "dia": 20,
+              "data": "2026-11-05",
+              "necessidade_acum_t": 1902.1066666666666
+            },
+            {
+              "dia": 25,
+              "data": "2026-11-10",
+              "necessidade_acum_t": 2377.633333333333
+            },
+            {
+              "dia": 30,
+              "data": "2026-11-15",
+              "necessidade_acum_t": 2853.16
+            },
+            {
+              "dia": 35,
+              "data": "2026-11-20",
+              "necessidade_acum_t": 3328.6866666666665
+            },
+            {
+              "dia": 40,
+              "data": "2026-11-25",
+              "necessidade_acum_t": 3804.213333333333
+            },
+            {
+              "dia": 45,
+              "data": "2026-11-30",
+              "necessidade_acum_t": 4279.74
+            },
+            {
+              "dia": 50,
+              "data": "2026-12-05",
+              "necessidade_acum_t": 4755.266666666666
+            },
+            {
+              "dia": 55,
+              "data": "2026-12-10",
+              "necessidade_acum_t": 5230.793333333333
+            },
+            {
+              "dia": 60,
+              "data": "2026-12-15",
+              "necessidade_acum_t": 5706.32
+            }
+          ]
+        },
+        "estoque_total_t": 2600.32,
+        "estoque_por_grupo_t": {
+          "Socaria": 1619.82,
+          "Plantio": 838.3100000000001,
+          "Não classificado": 142.19
+        },
+        "area_eq_por_grupo_ha": {
+          "Socaria": 4373.975,
+          "Plantio": 1397.1833333333334,
+          "Não classificado": 284.38
+        },
+        "sens_preco_por_100": {
+          "compra_16_R$": 254431.99999999997,
+          "custo_ha_16_R$": 50.0,
+          "excedente_46_R$": 150697.0
+        }
+      }
+    }
+  },
+  "sensibilidade_dias": [
+    {
+      "dias": 0,
+      "localizada_crv_ha": 0.0,
+      "mineral_ha": 11412.64,
+      "necessidade_16_t": 5706.32,
+      "necessidade_46_t": 0.0,
+      "compra_16_t": 2544.3199999999997,
+      "excedente_46_t": 1506.97
+    },
+    {
+      "dias": 10,
+      "localizada_crv_ha": 61.170000000000016,
+      "mineral_ha": 11351.47,
+      "necessidade_16_t": 5675.735,
+      "necessidade_46_t": 12.234000000000004,
+      "compra_16_t": 2513.7349999999997,
+      "excedente_46_t": 1494.736
+    },
+    {
+      "dias": 20,
+      "localizada_crv_ha": 568.97,
+      "mineral_ha": 10843.67,
+      "necessidade_16_t": 5421.835,
+      "necessidade_46_t": 113.794,
+      "compra_16_t": 2259.835,
+      "excedente_46_t": 1393.176
+    },
+    {
+      "dias": 30,
+      "localizada_crv_ha": 1076.77,
+      "mineral_ha": 10335.869999999999,
+      "necessidade_16_t": 5167.9349999999995,
+      "necessidade_46_t": 215.354,
+      "compra_16_t": 2005.9349999999995,
+      "excedente_46_t": 1291.616
+    },
+    {
+      "dias": 45,
+      "localizada_crv_ha": 1838.4699999999998,
+      "mineral_ha": 9574.17,
+      "necessidade_16_t": 4787.085,
+      "necessidade_46_t": 367.69399999999996,
+      "compra_16_t": 1625.085,
+      "excedente_46_t": 1139.276
+    }
+  ],
+  "checks": [
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "B11",
+      "item": "Dias até limite da localizada",
+      "planilha": 45.0,
+      "recalculado": 45.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "C11",
+      "item": "Dias até término da safra",
+      "planilha": 60.0,
+      "recalculado": 60.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "C14",
+      "item": "Área estimada de localizada",
+      "planilha": 1015.6,
+      "recalculado": 1015.6,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "B24",
+      "item": "Total CRV adubado",
+      "planilha": 14236.43,
+      "recalculado": 14236.43,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "E27",
+      "item": "Consumo realizado 46-00-00",
+      "planilha": 640.296,
+      "recalculado": 640.296,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "E28",
+      "item": "Consumo realizado 16-00-20",
+      "planilha": 1063.445,
+      "recalculado": 1063.445,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "H36",
+      "item": "Cargill a tratar",
+      "planilha": 446.63,
+      "recalculado": 446.63,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "D38",
+      "item": "CRV áreas à colher",
+      "planilha": 29726.0,
+      "recalculado": 29726.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "E38",
+      "item": "CRV área de tratos",
+      "planilha": 28726.0,
+      "recalculado": 28726.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "F38",
+      "item": "Realizado localizada = B22",
+      "planilha": 5795.19,
+      "recalculado": 5795.19,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "F39",
+      "item": "Realizado mineral = B23",
+      "planilha": 8441.24,
+      "recalculado": 8441.24,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "F40",
+      "item": "Total realizado CRV",
+      "planilha": 14236.43,
+      "recalculado": 14236.43,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "C45",
+      "item": "Cana bisada (t)",
+      "planilha": 200000.45,
+      "recalculado": 200000.45,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "G39",
+      "item": "Área bisada = A45",
+      "planilha": 3076.93,
+      "recalculado": 3076.93,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "H38",
+      "item": "CRV a tratar com localizada",
+      "planilha": 568.97,
+      "recalculado": 568.97,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "H39",
+      "item": "CRV a tratar com mineral",
+      "planilha": 10843.67,
+      "recalculado": 10843.67,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "H40",
+      "item": "Total a tratar",
+      "planilha": 11859.27,
+      "recalculado": 11859.27,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K38",
+      "item": "Necessidade 46-00-00",
+      "planilha": 113.794,
+      "recalculado": 113.794,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K39",
+      "item": "Necessidade 16-00-20",
+      "planilha": 5421.835,
+      "recalculado": 5421.835,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "B40",
+      "item": "Área colhida total",
+      "planilha": 21034.81,
+      "recalculado": 21034.81,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "D40",
+      "item": "Área à colher total",
+      "planilha": 32340.59,
+      "recalculado": 32340.59,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "E40",
+      "item": "Área de tratos total",
+      "planilha": 29926.0,
+      "recalculado": 29926.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "B50",
+      "item": "Necessidade 46-00-00 no resumo",
+      "planilha": 113.794,
+      "recalculado": 113.794,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "E50",
+      "item": "Disponível 46-00-00",
+      "planilha": 1506.97,
+      "recalculado": 1506.97,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "F50",
+      "item": "Diferença 46-00-00",
+      "planilha": 1393.176,
+      "recalculado": 1393.176,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "B51",
+      "item": "Necessidade 16-00-20 no resumo",
+      "planilha": 5421.835,
+      "recalculado": 5421.835,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "E51",
+      "item": "Disponível 16-00-20",
+      "planilha": 3162.0,
+      "recalculado": 3162.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "F51",
+      "item": "Diferença 16-00-20",
+      "planilha": -2259.835,
+      "recalculado": -2259.835,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "B56",
+      "item": "Necessidade de aquisição 16-00-20",
+      "planilha": 2259.835,
+      "recalculado": 2259.835,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K49",
+      "item": "Área equivalente 16-00-20",
+      "planilha": 2264.0,
+      "recalculado": 2264.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K50",
+      "item": "Área equivalente 46-00-00",
+      "planilha": 1784.85,
+      "recalculado": 1784.85,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K51",
+      "item": "Área equivalente 21-00-00",
+      "planilha": 315.0,
+      "recalculado": 315.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K52",
+      "item": "Área equivalente 25-00-00",
+      "planilha": 2.125,
+      "recalculado": 2.125,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K53",
+      "item": "Área equivalente 13-00-34",
+      "planilha": 8.0,
+      "recalculado": 8.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K54",
+      "item": "Área equivalente 06-26-25",
+      "planilha": 1149.166667,
+      "recalculado": 1149.166667,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K55",
+      "item": "Área equivalente 06-30-25",
+      "planilha": 233.1,
+      "recalculado": 233.1,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K56",
+      "item": "Área equivalente 06-27-24",
+      "planilha": 10.0,
+      "recalculado": 10.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K57",
+      "item": "Área equivalente 05-25-25",
+      "planilha": 4.916667,
+      "recalculado": 4.916667,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K58",
+      "item": "Área equivalente Oxyfertil",
+      "planilha": 284.38,
+      "recalculado": 284.38,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K60",
+      "item": "Área equivalente SOCARIA",
+      "planilha": 4373.975,
+      "recalculado": 4373.975,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "K61",
+      "item": "Área equivalente PLANTIO",
+      "planilha": 1397.183333,
+      "recalculado": 1397.183333,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "J49/C51",
+      "item": "Estoque 16-00-20 (quadro × resumo)",
+      "planilha": 1132.0,
+      "recalculado": 1132.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "J50/C50",
+      "item": "Estoque 46-00-00 (quadro × resumo)",
+      "planilha": 356.97,
+      "recalculado": 356.97,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "B11",
+      "item": "Dias até limite da localizada",
+      "planilha": 45.0,
+      "recalculado": 45.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "C11",
+      "item": "Dias até término da safra",
+      "planilha": 60.0,
+      "recalculado": 60.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "C14",
+      "item": "Área estimada de localizada",
+      "planilha": 0.0,
+      "recalculado": 0.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "B24",
+      "item": "Total CRV adubado",
+      "planilha": 14236.43,
+      "recalculado": 14236.43,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "E27",
+      "item": "Consumo realizado 46-00-00",
+      "planilha": 640.296,
+      "recalculado": 640.296,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "E28",
+      "item": "Consumo realizado 16-00-20",
+      "planilha": 1063.445,
+      "recalculado": 1063.445,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "H36",
+      "item": "Cargill a tratar",
+      "planilha": 446.63,
+      "recalculado": 446.63,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "D38",
+      "item": "CRV áreas à colher",
+      "planilha": 29726.0,
+      "recalculado": 29726.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "E38",
+      "item": "CRV área de tratos",
+      "planilha": 28726.0,
+      "recalculado": 28726.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "F38",
+      "item": "Realizado localizada = B22",
+      "planilha": 5795.19,
+      "recalculado": 5795.19,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "F39",
+      "item": "Realizado mineral = B23",
+      "planilha": 8441.24,
+      "recalculado": 8441.24,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "F40",
+      "item": "Total realizado CRV",
+      "planilha": 14236.43,
+      "recalculado": 14236.43,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "C45",
+      "item": "Cana bisada (t)",
+      "planilha": 200000.45,
+      "recalculado": 200000.45,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "G39",
+      "item": "Área bisada = A45",
+      "planilha": 3076.93,
+      "recalculado": 3076.93,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "H39",
+      "item": "CRV a tratar com mineral",
+      "planilha": 11412.64,
+      "recalculado": 11412.64,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "H40",
+      "item": "Total a tratar",
+      "planilha": 11859.27,
+      "recalculado": 11859.27,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K38",
+      "item": "Necessidade 46-00-00",
+      "planilha": 0.0,
+      "recalculado": 0.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K39",
+      "item": "Necessidade 16-00-20",
+      "planilha": 5706.32,
+      "recalculado": 5706.32,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "B40",
+      "item": "Área colhida total",
+      "planilha": 21034.81,
+      "recalculado": 21034.81,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "D40",
+      "item": "Área à colher total",
+      "planilha": 32340.59,
+      "recalculado": 32340.59,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "E40",
+      "item": "Área de tratos total",
+      "planilha": 29926.0,
+      "recalculado": 29926.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "B50",
+      "item": "Necessidade 46-00-00 no resumo",
+      "planilha": 0.0,
+      "recalculado": 0.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "E50",
+      "item": "Disponível 46-00-00",
+      "planilha": 1506.97,
+      "recalculado": 1506.97,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "F50",
+      "item": "Diferença 46-00-00",
+      "planilha": 1506.97,
+      "recalculado": 1506.97,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "B51",
+      "item": "Necessidade 16-00-20 no resumo",
+      "planilha": 5706.32,
+      "recalculado": 5706.32,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "E51",
+      "item": "Disponível 16-00-20",
+      "planilha": 3162.0,
+      "recalculado": 3162.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "F51",
+      "item": "Diferença 16-00-20",
+      "planilha": -2544.32,
+      "recalculado": -2544.32,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "B56",
+      "item": "Necessidade de aquisição 16-00-20",
+      "planilha": 2544.32,
+      "recalculado": 2544.32,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K49",
+      "item": "Área equivalente 16-00-20",
+      "planilha": 2264.0,
+      "recalculado": 2264.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K50",
+      "item": "Área equivalente 46-00-00",
+      "planilha": 1784.85,
+      "recalculado": 1784.85,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K51",
+      "item": "Área equivalente 21-00-00",
+      "planilha": 315.0,
+      "recalculado": 315.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K52",
+      "item": "Área equivalente 25-00-00",
+      "planilha": 2.125,
+      "recalculado": 2.125,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K53",
+      "item": "Área equivalente 13-00-34",
+      "planilha": 8.0,
+      "recalculado": 8.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K54",
+      "item": "Área equivalente 06-26-25",
+      "planilha": 1149.166667,
+      "recalculado": 1149.166667,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K55",
+      "item": "Área equivalente 06-30-25",
+      "planilha": 233.1,
+      "recalculado": 233.1,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K56",
+      "item": "Área equivalente 06-27-24",
+      "planilha": 10.0,
+      "recalculado": 10.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K57",
+      "item": "Área equivalente 05-25-25",
+      "planilha": 4.916667,
+      "recalculado": 4.916667,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K58",
+      "item": "Área equivalente Oxyfertil",
+      "planilha": 284.38,
+      "recalculado": 284.38,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K60",
+      "item": "Área equivalente SOCARIA",
+      "planilha": 4373.975,
+      "recalculado": 4373.975,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "K61",
+      "item": "Área equivalente PLANTIO",
+      "planilha": 1397.183333,
+      "recalculado": 1397.183333,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "J49/C51",
+      "item": "Estoque 16-00-20 (quadro × resumo)",
+      "planilha": 1132.0,
+      "recalculado": 1132.0,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "J50/C50",
+      "item": "Estoque 46-00-00 (quadro × resumo)",
+      "planilha": 356.97,
+      "recalculado": 356.97,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 1.000ha",
+      "celula": "B56",
+      "item": "Sensibilidade 20 dias = cenário A",
+      "planilha": 2259.835,
+      "recalculado": 2259.835,
+      "ok": true
+    },
+    {
+      "aba": "LOC. 450ha",
+      "celula": "B56",
+      "item": "Sensibilidade 0 dias = cenário B",
+      "planilha": 2544.32,
+      "recalculado": 2544.32,
+      "ok": true
+    }
+  ],
+  "inconsistencias": [
+    {
+      "id": 1,
+      "gravidade": "Alta",
+      "onde": "Ambas as abas, linhas 26 a 29",
+      "achado": "Quadro de vinhaça localizada não fecha: total B26 = 8517.09 ha, mas B27+B28+B29 = 6081.74 ha (diferença 2435.35 ha). B27+B28 = 5328.37 ha também difere de B22 = 5795.19 ha. As linhas 27 a 29 não têm descrição na coluna A.",
+      "efeito": "Não afeta a necessidade restante (calculada pelas áreas da seção 3), mas impede conciliar o consumo realizado por produto."
+    },
+    {
+      "id": 2,
+      "gravidade": "Média",
+      "onde": "LOC. 450ha!H38",
+      "achado": "H38 está digitado como 0; na aba A é a fórmula =C14-H36. Com C13 = 0 a fórmula daria -446,63 ha, por isso o valor fixo está certo neste cenário, mas não se atualiza se C13 mudar.",
+      "efeito": "Se alguém alterar os dias de K na aba B, a necessidade não acompanha."
+    },
+    {
+      "id": 3,
+      "gravidade": "Baixa",
+      "onde": "Ambas as abas, H36",
+      "achado": "H36 = 1200 - F36 usa 1.200 digitado em vez de referenciar E36.",
+      "efeito": "Risco de divergência se a área de tratos da Cargill mudar."
+    },
+    {
+      "id": 4,
+      "gravidade": "Média",
+      "onde": "Ambas as abas, D38",
+      "achado": "Área à colher da CRV = 11.593 + 9.354 + 8.779 ha digitados na fórmula, sem identificar a que corresponde cada parcela.",
+      "efeito": "Sem rastreabilidade por bloco/fazenda; impede a visão de necessidade por área produtiva."
+    },
+    {
+      "id": 5,
+      "gravidade": "Média",
+      "onde": "Ambas as abas, K58 × K60/K61",
+      "achado": "Oxyfertil (142,19 t; 284,38 ha equivalentes) não entra no subtotal SOCARIA nem no PLANTIO.",
+      "efeito": "Estoque sem destino definido; pode reduzir compra se tiver uso agronômico validado."
+    },
+    {
+      "id": 6,
+      "gravidade": "Baixa",
+      "onde": "Colunas C, I e A dos quadros",
+      "achado": "A mesma fórmula aparece como '16-00-20.' e '16-00-20' (e '46-00-00.' e '46-00-00').",
+      "efeito": "Quebra PROCV/tabela dinâmica que consolidem por produto."
+    },
+    {
+      "id": 7,
+      "gravidade": "Média",
+      "onde": "Ambas as abas, quadro de estoque (I47:K58)",
+      "achado": "21-00-00 (126 t), 13-00-34 (4 t), 25-00-00 (0,85 t) e Oxyfertil (142,19 t) estão em estoque mas fora do balanço de necessidade (B50:F51).",
+      "efeito": "O saldo a comprar considera só 16-00-20 e 46-00-00."
+    },
+    {
+      "id": 8,
+      "gravidade": "Média",
+      "onde": "Ambas as abas, A42",
+      "achado": "Plantio projetado de 2.400 ha (1.400 fundação + 1.000 renovação) sem necessidade de fertilizante calculada; o estoque de fórmulas de plantio cobre 1.397,18 ha pela dose implícita de 600 kg/ha.",
+      "efeito": "Possível necessidade adicional de fórmulas de plantio fora deste balanço — validar escopo e época."
+    },
+    {
+      "id": 9,
+      "gravidade": "Alta",
+      "onde": "Planilha inteira",
+      "achado": "Não há preços, datas de entrega do 'comprado a receber', prazo de fornecimento, distribuição mensal da demanda nem ritmo de aplicação do fertilizante mineral.",
+      "efeito": "Orçamento, curva real de abastecimento e aderência ao cronograma não podem ser calculados."
+    },
+    {
+      "id": 10,
+      "gravidade": "Baixa",
+      "onde": "LOC. 450ha, seções",
+      "achado": "Seções numeradas '1. Projeção' e '1. Áreas adubadas' (numeração repetida); grafias 'Fertlizante' e 'Rítmo'.",
+      "efeito": "Apenas apresentação."
+    }
+  ]
+}
