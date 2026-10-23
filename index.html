@@ -654,10 +654,10 @@ html[data-acento="creme"]{--accent:#F0DFA8}
    branco, as tabelas inteiras (sem rolagem) e os gráficos redesenhados nesse tamanho.
    A capa não sai no papel. */
 .deck-imp{display:flex;gap:8px}
-.deck-imp button{font:500 11px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--tm-ink-2);
+.deck-imp button,.deck-imp a{text-decoration:none;font:500 11px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--tm-ink-2);
   background:transparent;border:1px solid var(--tm-linha-2);border-radius:2px;padding:6px 12px;cursor:pointer;
   transition:color .25s,border-color .25s,background-color .25s}
-.deck-imp button:hover{color:var(--tm-ink);border-color:var(--accent);background:var(--accent-dim)}
+.deck-imp button:hover,.deck-imp a:hover{color:var(--tm-ink);border-color:var(--accent);background:var(--accent-dim)}
 @media screen and (max-width:760px){ .deck-imp{display:none} }
 @page{size:A4 landscape;margin:9mm}
 html.imprimindo,html.imprimindo body{height:auto;overflow:visible;background:#fff!important}
@@ -1054,7 +1054,7 @@ nav.toc a.on{color:var(--tm-ink);border-bottom-color:var(--accent);font-weight:6
 <div class="deck-dots" id="deck-dots"></div>
 <span class="deck-hint">Trocar de página: botões, bolinhas ou &larr; &rarr;</span>
 <button id="deck-next" type="button">Próxima &rsaquo;</button>
-<span class="deck-imp"><button type="button" id="imp-pag" title="Imprimir a página aberta">Imprimir página</button><button type="button" id="imp-tudo" title="Imprimir o relatório inteiro, uma página por folha">Imprimir relatório</button></span>
+<span class="deck-imp"><button type="button" id="imp-pag" title="Imprimir a página aberta">Imprimir página</button><button type="button" id="imp-tudo" title="Imprimir o relatório inteiro, uma página por folha">Imprimir relatório</button><a href="escalas_out2026/Relatorio_Escalas_EC141_OUT2026.html" title="Abrir o relatório de escalas">Relatório de escalas</a></span>
 <span class="deck-count" id="deck-count">–</span>
 </div>
 
