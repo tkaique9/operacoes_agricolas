@@ -134,6 +134,6 @@ http.createServer(async (req, res) => {
     arquivo(req, res, url);
   } catch (e) {
     console.error(e);
-    if (!res.headersSent) envia(res, 500, { erro: "não foi possível salvar agora" });
+    if (!res.headersSent) envia(res, 500, { erro: "não foi possível salvar agora", motivo: [e.code, e.message].filter(Boolean).join(": ") });
   }
 }).listen(process.env.PORT || 3000, () => console.log(`no ar na porta ${process.env.PORT || 3000}; estado em ${DATABASE_URL ? "Supabase (esc_est)" : LOCAL}`));
