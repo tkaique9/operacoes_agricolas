@@ -7,7 +7,8 @@ cp index.html public/
 cp arquivo_rsc0819/index.html public/arquivo_rsc0819/
 cp escalas_out2026/Escalas_por_Departamento_OUT2026.html \
    escalas_out2026/Relatorio_Escalas_EC141_OUT2026.html \
-   escalas_out2026/Relatorio_Escalas_EC141_OUT2026.pdf public/escalas_out2026/
+   escalas_out2026/Relatorio_Escalas_EC141_OUT2026.pdf \
+   escalas_out2026/salvar.js public/escalas_out2026/
 # /escalas/: atalho para o relatório de escalas (página de redirecionamento)
 mkdir -p public/escalas
 cat > public/escalas/index.html <<'HTML'

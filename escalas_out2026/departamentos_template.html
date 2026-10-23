@@ -588,6 +588,7 @@ body.maxi-on .deck { z-index: 150; }
   <span class="count" id="count">–</span>
 </div>
 
+<script src="salvar.js"></script>
 <script>
 const D = /*DADOS*/null;
 const $ = s => document.querySelector(s);
@@ -1217,7 +1218,7 @@ addEventListener("afterprint", voltaImpressao);
 const PAGINA_IMPRESSAO = "https://tkaique9.github.io/operacoes_agricolas/escalas_out2026/Escalas_por_Departamento_OUT2026.html";
 const IMPRIME_AQUI = (() => {
   try { if (window.self !== window.top) return false; } catch (e) { return false; }
-  return location.protocol === "file:" || /(^|\.)github\.io$/.test(location.hostname) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  return location.protocol === "file:" || /(^|\.)github\.io$/.test(location.hostname) || /\.onrender\.com$/.test(location.hostname) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
 })();
 const b64 = t => btoa(String.fromCharCode(...new TextEncoder().encode(t))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 const de64 = t => new TextDecoder().decode(Uint8Array.from(atob(t.replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0)));
@@ -1261,7 +1262,7 @@ $("#impPag").addEventListener("click", () => imprime("pagina"));
 $("#impTudo").addEventListener("click", () => imprime("tudo"));
 
 /* ---------- liga tudo ---------- */
-function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); escalas(); }
+function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); escalas(); if (window.salvaSite) salvaSite.mudou(); }
 function volante(v) { S.vol = v; $("#vol").checked = v; tudo(); }
 $("#vol").addEventListener("change", e => volante(e.target.checked));
 function inclui12(v) { S.inc12 = v; $("#inc12").checked = v; $("#inc12Op").checked = v; D.deps.forEach(d => S.esc[d.dep] = sugerida(d)); OP.forEach(d => { if (d.qtd) S.esc[d.dep] = sugerida(d); }); tudo(); }
@@ -1289,6 +1290,15 @@ const PED = (() => { try { const h = new URLSearchParams(location.hash.slice(1))
 if (PED) { try { if (PED.s) aplicaEstado(JSON.parse(de64(PED.s))); } catch (e) {} tudo(); }
 const ini = SL.findIndex(s => s.id === (PED ? PED.pag : location.hash.slice(1)));
 vai(ini > 0 ? ini : 0);
+// alterações salvas no servidor (só no Render, salvar.js): abre no que foi salvo por último
+function zera() {
+  S.vol = S.adm = S.inc12 = false; S.folga = "separada";
+  $("#vol").checked = $("#adm").checked = $("#inc12").checked = $("#inc12Op").checked = false;
+  D.deps.forEach(d => { S.P[d.dep] = { ...d.postos }; S.nt[d.dep] = NT0(d); S.esc[d.dep] = sugerida(d); });
+  OP.forEach(d => { d.qtd = d.qtd0; d.k = 1; atualizaOp(d); S.esc[d.dep] = sugerida(d); });
+}
+if (!PED && window.salvaSite) salvaSite({ nome: "departamentos", onde: document.querySelector(".imp"), estado,
+  aplica: st => { zera(); if (st) aplicaEstado(st); tudo(); } });
 if (PED) {
   addEventListener("afterprint", () => setTimeout(() => window.close(), 400), { once: true });
   document.fonts.ready.then(() => setTimeout(() => imprime(PED.qual === "pagina" ? "pagina" : "tudo"), 400));

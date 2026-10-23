@@ -200,12 +200,28 @@ o total pode ser maior que a soma do que aparece; o saldo a realizar tem de fech
 
 ## Publicar no Render
 
-O repositório já tem o `render.yaml` (Blueprint de **site estático**, sem servidor nem custo):
+O site roda como **Web Service** Node (`server.js`, sem dependências; `render.yaml` traz a
+configuração). O servidor publica as páginas e guarda as alterações das páginas de escalas.
 
-1. No Render: **New → Blueprint**, escolha este repositório e confirme.
-2. A cada push na `main` o Render roda `render-build.sh`, que copia só as páginas
-   (`index.html`, `arquivo_rsc0819/index.html` e os relatórios de `escalas_out2026/`) para
-   `public/` e publica essa pasta. Scripts Python, templates e planilhas não vão para o site.
+- **Build Command:** `./render-build.sh` — copia só as páginas (`index.html`,
+  `arquivo_rsc0819/index.html`, os relatórios de `escalas_out2026/` e o `salvar.js`) para
+  `public/`. Scripts Python, templates e planilhas não vão para o site. Página nova? Inclua-a aqui.
+- **Start Command:** `node server.js`
+- **Variável `GITHUB_TOKEN`:** token *fine-grained* do GitHub só para este repositório, com
+  **Contents: Read and write**.
 
-Endereços: `/` (tratos culturais), `/arquivo_rsc0819/`, `/escalas_out2026/…` e o atalho
-`/escalas` para o relatório de escalas. Página nova? Inclua-a no `render-build.sh`.
+Endereços: `/` (tratos culturais), `/arquivo_rsc0819/`, `/escalas/` (relatório de escalas) e
+`/escalas_out2026/Escalas_por_Departamento_OUT2026.html`.
+
+### Alterações salvas e Desfazer
+
+No relatório de escalas e na página por departamento, tudo o que se muda (escala de cada
+departamento, pessoas por turno, equipamentos, opções do simulador) é salvo sozinho, menos de
+1 s depois, e vale para todo mundo que abrir o site. **↶ Desfazer** (ou Ctrl+Z) volta uma
+alteração por vez, até a página como veio; o histórico guarda as últimas 100.
+
+Cada alteração é um commit em `estado/<página>.json` no branch **`dados`** (criado sozinho na
+primeira gravação). Fica fora da `main` para não refazer o deploy a cada clique; o histórico
+completo está no Git. Para começar do zero, apague o arquivo nesse branch e reinicie o serviço.
+Aberta do disco, no GitHub Pages ou no claude.ai a página funciona como antes, sem salvar.
+Para testar na máquina: `bash render-build.sh && node server.js` (sem token, grava em `estado-local/`).
