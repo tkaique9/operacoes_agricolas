@@ -1,14 +1,13 @@
 // Servidor do Render: publica as páginas de public/ (montada pelo render-build.sh) e guarda as
-// alterações feitas nas páginas de escalas. Cada alteração vira um commit no arquivo
-// estado/<página>.json do branch GITHUB_BRANCH (padrão "dados", fora da main para não disparar
-// deploy a cada clique). Sem GITHUB_TOKEN (rodando na máquina), grava em estado-local/.
+// alterações feitas nas páginas de escalas no Postgres do Supabase (tabela esc_est, ver
+// supabase/schema.sql), como nos outros projetos. Sem DATABASE_URL (rodando na máquina), grava
+// em estado-local/.
 //
 //   GET  /api/estado/<página>            estado atual e quantas versões dá para desfazer
 //   PUT  /api/estado/<página>            {estado}: grava, guardando o anterior no histórico
 //   POST /api/estado/<página>/desfazer   volta ao estado anterior
 //
-// Variáveis: GITHUB_TOKEN (token com permissão de escrita em Contents no repositório),
-// GITHUB_REPO (padrão tkaique9/operacoes_agricolas), GITHUB_BRANCH (padrão dados), PORT.
+// Variáveis: DATABASE_URL (connection string do Supabase, Session pooler), PORT.
 "use strict";
 const http = require("http");
 const fs = require("fs");
@@ -16,70 +15,50 @@ const path = require("path");
 
 const PUBLIC = path.join(__dirname, "public");
 const LOCAL = path.join(__dirname, "estado-local");
-const TOKEN = process.env.GITHUB_TOKEN || "";
-const REPO = process.env.GITHUB_REPO || "tkaique9/operacoes_agricolas";
-const BRANCH = process.env.GITHUB_BRANCH || "dados";
+const DATABASE_URL = process.env.DATABASE_URL || "";
 const HISTORICO = 100;            // versões guardadas para o Desfazer
 const MAX_CORPO = 512 * 1024;
 const NOME_OK = /^[a-z0-9_-]{1,60}$/;
 const TIPOS = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
   ".json": "application/json; charset=utf-8", ".pdf": "application/pdf", ".png": "image/png", ".svg": "image/svg+xml", ".ico": "image/x-icon" };
 
-/* ---------- onde o estado fica: GitHub ou pasta local ---------- */
-const gh = async (metodo, rota, corpo) => {
-  const r = await fetch(`https://api.github.com/repos/${REPO}${rota}`, {
-    method: metodo,
-    headers: { Authorization: `Bearer ${TOKEN}`, Accept: "application/vnd.github+json", "User-Agent": "operacoes-agricolas",
-      ...(corpo ? { "Content-Type": "application/json" } : {}) },
-    body: corpo ? JSON.stringify(corpo) : undefined,
-  });
-  const txt = await r.text();
-  return { status: r.status, json: txt ? JSON.parse(txt) : null };
-};
-// erro com o motivo do GitHub, para aparecer no log e na página (token vencido, sem permissão…)
-const erroGh = (oque, r) => Object.assign(new Error(`GitHub ${r.status} ao ${oque}: ${(r.json && r.json.message) || ""}`), { publico: true });
-let branchPronto = null;
-function garanteBranch() {
-  // cria o branch de dados a partir do branch padrão na primeira gravação
-  if (!branchPronto) branchPronto = (async () => {
-    if ((await gh("GET", `/branches/${BRANCH}`)).status === 200) return;
-    const repo = await gh("GET", "");
-    const base = await gh("GET", `/git/ref/heads/${repo.json.default_branch}`);
-    const r = await gh("POST", "/git/refs", { ref: `refs/heads/${BRANCH}`, sha: base.json.object.sha });
-    if (r.status !== 201 && r.status !== 422) throw erroGh(`criar o branch ${BRANCH}`, r);
-  })().catch(e => { branchPronto = null; throw e; });
-  return branchPronto;
+/* ---------- onde o estado fica: Supabase ou pasta local ---------- */
+if (process.env.RENDER && !DATABASE_URL) console.error("[estado] ATENÇÃO: DATABASE_URL não configurada: as alterações vão para o disco do Render e somem no próximo deploy.");
+let pool = null, tabela = null;
+function banco() {
+  if (!pool) {
+    const { Pool } = require("pg");
+    // PGSSLMODE=disable só para um banco local de testes; no Supabase a conexão é sempre com SSL
+    pool = new Pool({ connectionString: DATABASE_URL, ssl: process.env.PGSSLMODE === "disable" ? false : { rejectUnauthorized: false }, max: 3 });
+  }
+  // a tabela também é criada aqui, para o primeiro deploy funcionar mesmo sem rodar o schema.sql
+  if (!tabela) tabela = pool.query(fs.readFileSync(path.join(__dirname, "supabase", "schema.sql"), "utf-8")).catch(e => { tabela = null; throw e; });
+  return tabela.then(() => pool);
 }
-const cache = new Map();          // nome -> {doc, sha}
+const cache = new Map();          // nome -> doc
 async function le(nome) {
-  if (cache.has(nome)) return cache.get(nome).doc;
-  let doc = null, sha = null;
-  if (TOKEN) {
-    // branch ainda não criado = nada salvo: só a primeira gravação cria
-    const r = await gh("GET", `/contents/estado/${nome}.json?ref=${BRANCH}`);
-    if (r.status === 200) { doc = JSON.parse(Buffer.from(r.json.content, "base64").toString("utf-8")); sha = r.json.sha; }
-    else if (r.status !== 404) throw erroGh("ler", r);
+  if (cache.has(nome)) return cache.get(nome);
+  let doc = null;
+  if (DATABASE_URL) {
+    const r = await (await banco()).query("select doc from esc_est where pag = $1", [nome]);
+    if (r.rows.length) doc = r.rows[0].doc;
   } else {
     try { doc = JSON.parse(fs.readFileSync(path.join(LOCAL, `${nome}.json`), "utf-8")); } catch (e) {}
   }
   doc = doc || { estado: null, quando: null, anteriores: [] };
-  cache.set(nome, { doc, sha });
+  cache.set(nome, doc);
   return doc;
 }
-async function grava(nome, doc, msg) {
-  const txt = JSON.stringify(doc, null, 1) + "\n";
-  if (TOKEN) {
-    await garanteBranch();
-    const c = cache.get(nome) || {};
-    const r = await gh("PUT", `/contents/estado/${nome}.json`, { message: msg, branch: BRANCH,
-      content: Buffer.from(txt, "utf-8").toString("base64"), ...(c.sha ? { sha: c.sha } : {}) });
-    if (r.status !== 200 && r.status !== 201) { cache.delete(nome); throw erroGh("gravar", r); }
-    cache.set(nome, { doc, sha: r.json.content.sha });
+async function grava(nome, doc) {
+  if (DATABASE_URL) {
+    await (await banco()).query(
+      "insert into esc_est (pag, doc, atu_em) values ($1, $2, now()) on conflict (pag) do update set doc = excluded.doc, atu_em = now()",
+      [nome, JSON.stringify(doc)]);
   } else {
     fs.mkdirSync(LOCAL, { recursive: true });
-    fs.writeFileSync(path.join(LOCAL, `${nome}.json`), txt);
-    cache.set(nome, { doc, sha: null });
+    fs.writeFileSync(path.join(LOCAL, `${nome}.json`), JSON.stringify(doc, null, 1) + "\n");
   }
+  cache.set(nome, doc);
 }
 // uma gravação por vez: duas pessoas salvando juntas não perdem o histórico
 let fila = Promise.resolve();
@@ -112,7 +91,7 @@ async function api(req, res, nome, acao) {
       const novo = { estado, quando: new Date().toISOString(),
         // o primeiro anterior é null: desfazer até o fim volta a página como ela veio
         anteriores: [{ estado: d.estado, quando: d.quando }, ...d.anteriores].slice(0, HISTORICO) };
-      await grava(nome, novo, `Alteração em ${nome}`);
+      await grava(nome, novo);
       return novo;
     });
     return envia(res, 200, resposta(doc));
@@ -123,7 +102,7 @@ async function api(req, res, nome, acao) {
       if (!d.anteriores.length) return d;
       const [volta, ...resto] = d.anteriores;
       const novo = { estado: volta.estado, quando: volta.quando, anteriores: resto };
-      await grava(nome, novo, `Desfazer em ${nome}`);
+      await grava(nome, novo);
       return novo;
     });
     return envia(res, 200, resposta(doc));
@@ -155,6 +134,6 @@ http.createServer(async (req, res) => {
     arquivo(req, res, url);
   } catch (e) {
     console.error(e);
-    if (!res.headersSent) envia(res, 500, { erro: e.publico ? e.message : "não foi possível salvar agora" });
+    if (!res.headersSent) envia(res, 500, { erro: "não foi possível salvar agora" });
   }
-}).listen(process.env.PORT || 3000, () => console.log(`no ar na porta ${process.env.PORT || 3000}; estado em ${TOKEN ? `GitHub ${REPO}@${BRANCH}` : LOCAL}`));
+}).listen(process.env.PORT || 3000, () => console.log(`no ar na porta ${process.env.PORT || 3000}; estado em ${DATABASE_URL ? "Supabase (esc_est)" : LOCAL}`));

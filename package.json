@@ -1,7 +1,15 @@
 {
   "name": "operacoes-agricolas",
   "private": true,
-  "description": "Servidor do Render: páginas + alterações salvas no Git (server.js)",
-  "scripts": { "build": "./render-build.sh", "start": "node server.js" },
-  "engines": { "node": ">=18" }
+  "description": "Servidor do Render: páginas + alterações salvas no Supabase (server.js)",
+  "scripts": {
+    "build": "npm install && ./render-build.sh",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "pg": "^8.23.1"
+  }
 }

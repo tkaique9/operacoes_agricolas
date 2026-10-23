@@ -200,15 +200,15 @@ o total pode ser maior que a soma do que aparece; o saldo a realizar tem de fech
 
 ## Publicar no Render
 
-O site roda como **Web Service** Node (`server.js`, sem dependências; `render.yaml` traz a
-configuração). O servidor publica as páginas e guarda as alterações das páginas de escalas.
+O site roda como **Web Service** Node (`server.js`; `render.yaml` traz a configuração). O servidor publica as páginas e guarda as alterações das páginas de escalas.
 
-- **Build Command:** `./render-build.sh` — copia só as páginas (`index.html`,
+- **Build Command:** `npm install && ./render-build.sh` — instala o driver `pg` e copia só as páginas (`index.html`,
   `arquivo_rsc0819/index.html`, os relatórios de `escalas_out2026/` e o `salvar.js`) para
   `public/`. Scripts Python, templates e planilhas não vão para o site. Página nova? Inclua-a aqui.
 - **Start Command:** `node server.js`
-- **Variável `GITHUB_TOKEN`:** token *fine-grained* do GitHub só para este repositório, com
-  **Contents: Read and write**.
+- **Variável `DATABASE_URL`:** connection string do Postgres do Supabase (painel do Supabase →
+  **Connect** → **Session pooler**, trocando `[YOUR-PASSWORD]` pela senha do banco), como nos
+  outros projetos.
 
 Endereços: `/` (tratos culturais), `/arquivo_rsc0819/`, `/escalas/` (relatório de escalas) e
 `/escalas_out2026/Escalas_por_Departamento_OUT2026.html`.
@@ -220,8 +220,9 @@ departamento, pessoas por turno, equipamentos, opções do simulador) é salvo s
 1 s depois, e vale para todo mundo que abrir o site. **↶ Desfazer** (ou Ctrl+Z) volta uma
 alteração por vez, até a página como veio; o histórico guarda as últimas 100.
 
-Cada alteração é um commit em `estado/<página>.json` no branch **`dados`** (criado sozinho na
-primeira gravação). Fica fora da `main` para não refazer o deploy a cada clique; o histórico
-completo está no Git. Para começar do zero, apague o arquivo nesse branch e reinicie o serviço.
+Fica tudo no Supabase, na tabela `esc_est` (uma linha por página: o estado atual e o histórico
+do Desfazer). O `server.js` cria a tabela sozinho ao conectar; o mesmo SQL está em
+`supabase/schema.sql` para rodar no SQL Editor, com o RLS ligado. Para começar do zero, apague a
+linha da página na tabela e reinicie o serviço.
 Aberta do disco, no GitHub Pages ou no claude.ai a página funciona como antes, sem salvar.
-Para testar na máquina: `bash render-build.sh && node server.js` (sem token, grava em `estado-local/`).
+Para testar na máquina: `bash render-build.sh && node server.js` (sem `DATABASE_URL`, grava em `estado-local/`).
