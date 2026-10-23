@@ -1292,10 +1292,10 @@ const ini = SL.findIndex(s => s.id === (PED ? PED.pag : location.hash.slice(1)))
 vai(ini > 0 ? ini : 0);
 // alterações salvas no servidor (só no Render, salvar.js): abre no que foi salvo por último
 function zera() {
-  S.vol = S.adm = S.inc12 = false; S.folga = "separada";
-  $("#vol").checked = $("#adm").checked = $("#inc12").checked = $("#inc12Op").checked = false;
+  S.vol = S.adm = S.inc12 = S.uma = false; S.folga = "separada";
+  $("#vol").checked = $("#adm").checked = $("#inc12").checked = $("#inc12Op").checked = $("#uma").checked = false;
   D.deps.forEach(d => { S.P[d.dep] = { ...d.postos }; S.nt[d.dep] = NT0(d); S.esc[d.dep] = sugerida(d); });
-  OP.forEach(d => { d.qtd = d.qtd0; d.k = 1; atualizaOp(d); S.esc[d.dep] = sugerida(d); });
+  OP.forEach(d => { d.qtd = d.qtd0; d.k = 1; d.reg = "3"; d.folg = true; atualizaOp(d); S.esc[d.dep] = sugerida(d); });
 }
 if (!PED && window.salvaSite) salvaSite({ nome: "departamentos", onde: document.querySelector(".imp"), estado,
   aplica: st => { zera(); if (st) aplicaEstado(st); tudo(); } });
