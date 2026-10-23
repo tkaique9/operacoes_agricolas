@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Monta public/ com as páginas publicadas no Render (ver render.yaml).
 set -euo pipefail
+# driver do Postgres (pg) para o server.js; fica aqui para valer com qualquer Build Command
+npm install --omit=dev --no-audit --no-fund
 rm -rf public
 mkdir -p public/arquivo_rsc0819 public/escalas_out2026
 cp index.html public/
