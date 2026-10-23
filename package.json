@@ -1,0 +1,7 @@
+{
+  "name": "operacoes-agricolas",
+  "private": true,
+  "description": "Servidor do Render: páginas + alterações salvas no Git (server.js)",
+  "scripts": { "build": "./render-build.sh", "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

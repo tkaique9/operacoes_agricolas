@@ -1,16 +1,17 @@
-# Render Blueprint: site estático (páginas HTML prontas, sem servidor).
-# Publica só as páginas em public/; scripts, templates e planilhas não vão para o site.
+# Render Blueprint: Web Service Node (server.js) que publica as páginas de public/ e guarda as
+# alterações das páginas de escalas no branch "dados" do GitHub. Sem dependências: npm não é usado.
 services:
   - type: web
     name: operacoes-agricolas
-    runtime: static
+    runtime: node
+    plan: free
     buildCommand: ./render-build.sh
-    staticPublishPath: ./public
-    pullRequestPreviewsEnabled: false
-    headers:
-      - path: /*
-        name: X-Content-Type-Options
-        value: nosniff
-      - path: /*
-        name: Cache-Control
-        value: no-cache
+    startCommand: node server.js
+    healthCheckPath: /
+    envVars:
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: GITHUB_REPO
+        value: tkaique9/operacoes_agricolas
+      - key: GITHUB_BRANCH
+        value: dados
