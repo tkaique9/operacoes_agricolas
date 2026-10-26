@@ -241,6 +241,8 @@ footer { padding-block: 26px 40px; color: var(--muted); font-size: 13px; }
 
 <script src="salvar.js"></script>
 <script>
+// a página é em português: o tradutor automático do navegador trocava palavras (Escavadeira → Escavador)
+document.documentElement.setAttribute("translate", "no"); document.documentElement.classList.add("notranslate");
 const D = /*DADOS*/null;
 const $ = s => document.querySelector(s);
 const fmt = (x, d = 0) => Number(x).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });

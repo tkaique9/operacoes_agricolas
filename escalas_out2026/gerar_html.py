@@ -225,7 +225,8 @@ def gerar(A=None):
     ARTIFACT.parent.mkdir(exist_ok=True)
     ARTIFACT.write_text(pagina, encoding="utf-8")
     corte = pagina.index("</style>") + len("</style>")
-    LOCAL.write_text("<!doctype html>\n<html lang=\"pt-BR\"><head><meta charset=\"utf-8\">\n"
+    LOCAL.write_text("<!doctype html>\n<html lang=\"pt-BR\" translate=\"no\" class=\"notranslate\"><head><meta charset=\"utf-8\">\n"
+                     "<meta name=\"google\" content=\"notranslate\">\n"
                      "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n"
                      + pagina[:corte] + "\n</head><body>\n" + pagina[corte:] + "\n</body></html>\n", encoding="utf-8")
     return LOCAL
