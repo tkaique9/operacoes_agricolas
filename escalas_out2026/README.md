@@ -68,8 +68,9 @@ equipamento.
 
 `python gerar_departamentos.py`. Regra de cada departamento em `oficina.REGRAS`, tirada das anotações da planilha.
 "Garantir por turno" começa na média de hoje arredondada (2,5 vira 2), no mínimo 1 nos departamentos 24 h; PCM e
-caldeiraria com 1 por turno. Com turma fixa por turno: 5x2 em todos dá +32; a escala sugerida (a de menos contratação
-dentro da lei) dá +20, quase toda em 12x36. A 4x2 de 12 h entra com risco alto (CLT urbano, noite com hora reduzida).
+caldeiraria com 1 por turno; Colhedoras de Cana com **5 frentes × 2 pessoas por turno** (10 por turno nas 24 h; frentes
+em `gerar_departamentos.FRENTES_DEP`, editáveis no painel do departamento). Com turma fixa por turno: 5x2 em todos dá
++36; a escala sugerida (a de menos contratação dentro da lei) dá +24, quase toda em 12x36. A 4x2 de 12 h entra com risco alto (CLT urbano, noite com hora reduzida).
 
 ## Para refazer
 

@@ -42,7 +42,9 @@ NOMES = {  # nomes como a diretoria lê (a planilha vem sem acento)
     "102.005.001": "Caminhões / Veículos", "102.005.003": "Veículos Leves", "102.006.001": "Bombas / Irrigação",
     "102.006.002": "Implementos Agrícolas", "102.006.003": "Reboques",
 }
-SUB = {"102.001.011": "Ferramentaria"}  # o grupo em azul do PCM
+SUB = {"102.001.011": "Ferramentaria"}
+# frentes atendidas por departamento: garantir por turno = frentes x pessoas por frente (nas 24 h)
+FRENTES_DEP = {"102.004.001": (5, 2)}   # colhedoras: 5 frentes de colheita, pelo menos 2 pessoas por turno em cada  # o grupo em azul do PCM
 
 # Frota operacional que roda 24 h (hoje em 5x1), do "Detalhamento da frota" enviado pela operação em 22/10/2026:
 # equipamento, frente, quantidade. Cada equipamento leva 1 operador por turno (editável na página).
@@ -135,6 +137,10 @@ def dados():
                     sem_origem=sum(1 for p in ps if p["tipo"] == "Sem escala de origem" and (d["regra"] != "azul" or p["azul"])),
                     resto_5x2=(d["n"] - d["equipe"] - tipos.get("Sem registro", 0) - tipos.get("Afastado", 0)
                                if d["regra"] in ("azul",) else 0))
+        if d["dep"] in FRENTES_DEP:
+            nf, pf = FRENTES_DEP[d["dep"]]
+            base["frentes"] = {"n": nf, "p": pf}
+            base["postos"] = {t: nf * pf for t in oficina.TURNOS}
         deps.append(base)
     # o resto do PCM (fora dos 4 em azul) também vai para 5x2 de dia
     for b in deps:
