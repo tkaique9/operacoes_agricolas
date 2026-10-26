@@ -534,7 +534,7 @@ html.imprimindo table.lista { font-size: 12.5px; line-height: 1.2; }
 html.imprimindo table.lista td { padding: 1px 6px; }
 html.imprimindo table.lista td.dn { padding-left: 18px; }
 html.imprimindo table.lista tr.g td { padding: 3px 6px; font-size: 13px; }
-html.imprimindo .painel > .card { break-inside: avoid; page-break-inside: avoid; }
+html.imprimindo .painel > .card:first-child { break-inside: avoid; page-break-inside: avoid; }   /* o gráfico não parte; a lista pode continuar na folha seguinte */
 html.imprimindo .cols { flex: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 html.imprimindo .escalas { flex: none; grid-template-columns: repeat(4, minmax(0, 1fr)); }
 html.imprimindo .esc { break-inside: avoid; page-break-inside: avoid; }
@@ -650,7 +650,7 @@ body.maxi-on .deck { z-index: 150; }
 
   <article class="slide" id="op-matriz" data-mod="Operacional" data-title="Matriz da frota" data-desc="Contratar ou sobra por equipamento; quantidade e operadores por turno editáveis">
     <div class="s-head"><div><div class="s-eyebrow">07 · Operacional · Validação</div><h2 class="s-title">Cada equipamento em cada escala</h2>
-      <p class="s-sub">Operadores a mais (+) ou a menos (−) que na 5x1 de hoje. Não é contratar nem demitir: os motoristas e operadores ativos passam do que a frota precisa, e quem fica sem equipamento fica sem atividade.<span class="tela"> Clique na célula para escolher a escala; ajuste a quantidade de equipamentos e os operadores por turno.</span></p></div>
+      <p class="s-sub">Operadores a mais (+) ou a menos (−) que na 5x1 de hoje; não é contratar nem demitir, quem sobra fica sem atividade.<span class="tela"> Clique na célula para escolher a escala; ajuste a quantidade de equipamentos e os operadores por turno.</span></p></div>
       <div class="chips" id="omChips"></div></div>
     <div class="card">
       <div class="barra">
@@ -1548,7 +1548,9 @@ addEventListener("resize", () => { clearTimeout(IMP.rz); IMP.rz = setTimeout(() 
 
 /* ---------- impressão ---------- */
 // liga o modo de impressão, encaixa cada página na folha A4 deitada e, depois de imprimir, volta ao normal
-const FOLHA = { l: 1040, a: 689, min: .68 };   // área útil da folha (margens de 13 mm em cima, 9 mm dos lados e rodapé), em px de tela; menor redução
+// área útil da folha (margens de 13 mm em cima, 9 mm dos lados e rodapé), em px de tela, com folga de 1,3% para a
+// diferença entre a medida na tela e o papel (sem ela, a página que cabia no limite passava para a folha seguinte); menor redução
+const FOLHA = { l: 1040, a: 680, min: .68 };
 const IMP = { pedido: null };
 function encaixa(sl) {
   // a página que passa da folha diminui até caber (no mínimo 68%). A que não cabe nem assim vai para o menor
