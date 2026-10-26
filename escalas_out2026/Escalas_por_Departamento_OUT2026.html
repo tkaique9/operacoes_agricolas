@@ -245,18 +245,32 @@ table.qd tr.fr td.l { box-shadow: inset 6px 0 0 var(--fc, transparent); padding-
 table.qd td.qv .pc { display: block; font: 600 13px var(--f-mono); font-style: normal; letter-spacing: .02em; color: var(--red); margin-top: 1px; }
 table.qd td.qv .pc.dn { color: var(--green); }
 table.qd td.qv .pc.eq { color: var(--na-ink); }
-/* resumo: quadro por área, gráfico resumo e detalhamento por departamento */
-table.rs-tab td, table.rs-det td { height: auto; padding-top: 3px; padding-bottom: 3px; }
-table.rs-tab td.dep u, table.rs-det td.dep u { display: inline; margin-left: 8px; }
-table.rs-tab td.qv small.pcr, table.rs-det td.qv small.pcr { display: block; font: 600 12px var(--f-mono); color: var(--mut); }
-table.rs-tab td.qv .dl, table.rs-det td.qv .dl { margin-left: 5px; }
-table.rs-tab td.cmp { white-space: normal; font-size: 12.5px; max-width: 260px; }
-table.rs-det td.dep { min-width: 200px; }
-table.rs-det td.ec .et, table.rs-tab td.ec .et { font: 600 12px var(--f-mono); padding: 2px 6px; border-radius: 2px; color: #fff; white-space: nowrap; }
-.rs-leg { display: flex; flex-wrap: wrap; gap: 4px 14px; padding-top: 4px; font: 600 13px var(--f-display); color: var(--navy); }
-.rs-leg i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
-#rsGraf { width: 100%; height: 100%; display: block; }
-html.imprimindo #rsGraf { height: auto; }
+/* resumo para a diretoria: uma coluna por área, cada departamento numa linha */
+.rs-grid { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.rs-a { min-height: 0; padding: 9px 12px 8px; }
+.rs-a h3 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.rs-a h3 small { font: 500 12px var(--f-mono); letter-spacing: .04em; text-transform: none; color: var(--mut); }
+.rs-tot { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; padding: 2px 0 6px; border-bottom: 2px solid var(--navy); }
+.rs-tot b { font: 800 22px var(--f-display); letter-spacing: -.02em; color: var(--navy); }
+.rs-tot .df { font: 700 16px var(--f-display); } .rs-tot i { font: 600 13px var(--f-mono); font-style: normal; color: var(--mut); }
+.rs-esc { font: 500 12px var(--f-mono); color: var(--mut); padding: 3px 0 2px; line-height: 1.3; }
+ul.rs-dl { list-style: none; margin: 0; padding: 0; }
+ul.rs-dl li { display: grid; grid-template-columns: minmax(0, 1fr) auto 76px 46px; align-items: center; gap: 6px; padding: 1px 0; border-bottom: 1px solid var(--line); font: 600 13px var(--f-display); line-height: 1.3; color: var(--ink); }
+ul.rs-dl li.nv { border-top: 2px solid #C9CFDB; }
+ul.rs-dl li .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--navy); }
+ul.rs-dl li .nm small { font: 500 11.5px var(--f-mono); color: #8A6D14; margin-left: 4px; }
+ul.rs-dl li .et { font: 600 11.5px var(--f-mono); padding: 1px 5px; border-radius: 2px; color: #fff; white-space: nowrap; }
+ul.rs-dl li .nr { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--mut); font-weight: 500; }
+ul.rs-dl li .nr b { color: var(--navy); font-weight: 700; }
+ul.rs-dl li .df, .rs-tot .df { text-align: right; font-variant-numeric: tabular-nums; }
+.df.up { color: var(--red); } .df.dn { color: var(--green); } .df.eq { color: var(--na-ink); }
+ul.rs-dl li.sep { display: block; border-bottom: 0; padding: 5px 0 1px; font: 600 11.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--mut); }
+.rs-safra { margin-top: 10px; padding: 8px 10px; background: var(--bgsoft); border-left: 3px solid var(--red); font: 400 13.5px var(--f-serif); color: var(--ink); line-height: 1.4; }
+.rs-safra b { font: 700 15px var(--f-display); color: var(--navy); }
+@media screen and (max-width: 1180px) { .rs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media screen and (max-width: 900px) { .rs-grid { grid-template-columns: minmax(0, 1fr); flex: 0 0 auto; } }
+html.imprimindo .rs-grid { flex: none; grid-template-columns: repeat(4, minmax(300px, 1fr)); }
+html.imprimindo .rs-a .rolo { overflow: visible; }
 
 /* painéis: os indicadores ficam no card do gráfico, ao lado do título */
 .cab-g { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px 14px; flex-wrap: wrap; flex: 0 0 auto; margin-bottom: 4px; }
@@ -621,17 +635,10 @@ body.maxi-on .deck { z-index: 150; }
     </div>
   </article>
 
-  <article class="slide" id="resumo" data-mod="Resumo" data-title="Resumo geral" data-desc="Pessoas em cada escala por área, a escolha e o gráfico resumo">
-    <div class="s-head"><div><div class="s-eyebrow">00 · Resumo · Geral</div><h2 class="s-title">Resumo geral: pessoas em cada escala e a escolha</h2></div>
+  <article class="slide" id="resumo" data-mod="Resumo" data-title="Resumo para a diretoria" data-desc="Como fica o quadro: a escala e as pessoas de cada departamento, hoje e com a escala">
+    <div class="s-head"><div><div class="s-eyebrow">00 · Resumo · Diretoria</div><h2 class="s-title">Como fica o quadro: hoje e com as escalas escolhidas</h2></div>
       <div class="chips" id="rsChips"></div></div>
-    <div class="card fix"><div class="rolo"><table class="tb qd rs-tab" id="rsTab"></table></div></div>
-    <div class="card"><div class="cab-g"><h3>Gráfico resumo<span class="h3u">pessoas por área em cada escala · diferença e % sobre hoje</span></h3><div class="rs-leg" id="rsLeg"></div></div><div class="rolo" style="overflow:hidden"><svg id="rsGraf" class="bars" role="img" aria-label="Pessoas por área em cada escala"></svg></div></div>
-  </article>
-
-  <article class="slide" id="resumo-det" data-mod="Resumo" data-title="Detalhamento por departamento" data-desc="Cada departamento e equipamento em cada escala e a escala escolhida">
-    <div class="s-head"><div><div class="s-eyebrow">00 · Resumo · Detalhamento</div><h2 class="s-title">Detalhamento por departamento: pessoas em cada escala</h2></div>
-      <div class="chips" id="rdChips"></div></div>
-    <div class="card"><div class="rolo"><table class="tb qd rs-det" id="rdTab"></table></div></div>
+    <div class="rs-grid" id="rsGrid"></div>
   </article>
 
   <article class="slide" id="escalas" data-mod="Referência" data-title="As escalas" data-desc="Horas, folgas, domingos e risco de cada escala">
@@ -1448,7 +1455,7 @@ function maximiza(sl) {
   c.classList.add("maxi"); document.body.classList.add("maxi-on");
   sl.querySelector(".maxb").setAttribute("aria-pressed", "true"); c.querySelector(".maxbar button").focus();
 }
-["quadro", "matriz", "op-quadro", "op-matriz", ...AREAS.flatMap(a => [a.k + "-quadro", a.k + "-matriz"]), "resumo-det"].forEach(id => {
+["quadro", "matriz", "op-quadro", "op-matriz", ...AREAS.flatMap(a => [a.k + "-quadro", a.k + "-matriz"])].forEach(id => {
   const sl = document.getElementById(id), c = sl.querySelector(".card"), hd = sl.querySelector(".s-head");
   hd.insertAdjacentHTML("beforeend", `<button type="button" class="maxb" aria-pressed="false" title="Ver só a tabela, em tela cheia"><span aria-hidden="true">⤢</span>Tela cheia</button>`);
   c.insertAdjacentHTML("afterbegin", `<div class="maxbar"><div><small>${esc(sl.querySelector(".s-eyebrow").textContent)}</small><b>${esc(sl.querySelector(".s-title").textContent)}</b></div><button type="button" class="btn">Sair da tela cheia ✕</button></div>`);
@@ -1457,7 +1464,7 @@ function maximiza(sl) {
 });
 
 // os gráficos dos painéis acompanham o tamanho da tela
-addEventListener("resize", () => { clearTimeout(IMP.rz); IMP.rz = setTimeout(() => { if (!NA_FOLHA()) { painel(); painelOp(); AREAS.forEach(painelArea); grafResumo($("#rsGraf"), areasResumo()); } }, 200); });
+addEventListener("resize", () => { clearTimeout(IMP.rz); IMP.rz = setTimeout(() => { if (!NA_FOLHA()) { painel(); painelOp(); AREAS.forEach(painelArea); } }, 200); });
 
 /* ---------- campo de partículas ---------- */
 (function () {
@@ -1501,14 +1508,14 @@ function preparaImpressao(qual) {
   restauraMax();
   const html = document.documentElement;
   html.classList.add("imprimindo"); html.classList.toggle("imprimir-pagina", qual === "pagina");
-  painel(); painelOp(); AREAS.forEach(painelArea); grafResumo($("#rsGraf"), areasResumo()); grafico();   // gráficos redesenhados no tamanho da folha
+  painel(); painelOp(); AREAS.forEach(painelArea); grafico();   // gráficos redesenhados no tamanho da folha
   SL.forEach(sl => { sl.style.zoom = ""; sl.style.width = ""; });
   SL.forEach(sl => { if (getComputedStyle(sl).display !== "none") encaixa(sl); });
 }
 function voltaImpressao() {
   document.documentElement.classList.remove("imprimindo", "imprimir-pagina"); IMP.pedido = null;
   SL.forEach(sl => { sl.style.zoom = ""; sl.style.width = ""; });
-  painel(); painelOp(); AREAS.forEach(painelArea); grafResumo($("#rsGraf"), areasResumo()); grafico();
+  painel(); painelOp(); AREAS.forEach(painelArea); grafico();
 }
 addEventListener("beforeprint", () => { IMP.viu = true; if (!IMP.pedido) preparaImpressao("tudo"); });
 addEventListener("afterprint", voltaImpressao);
@@ -1564,110 +1571,50 @@ $("#impPag").addEventListener("click", () => imprime("pagina"));
 $("#impTudo").addEventListener("click", () => imprime("tudo"));
 
 /* ---------- liga tudo ---------- */
-/* ---------- resumo: quadro por área, gráfico resumo e detalhamento por departamento ----------
-   cada área com as pessoas em cada escala (a escala aplicada a todos daquela área) e na escala escolhida; na frota a
-   base é de operadores necessários (3,6 por equipamento na 5x1), não o quadro */
+/* ---------- resumo para a diretoria: como fica o quadro ----------
+   uma coluna por área (oficina, frota, ADM, rural) com a escala e as pessoas de cada departamento, hoje e com a escala */
 const ESC_CURTO = { "5x2": "5x2 rot.", "4x2": "4x2 8 h", "12x36": "12x36", "3x3": "3x3", "4x2_12": "4x2 12 h" };
-const COR_AREA = { oficina: "#2F6FD0", frota: "#E0A21A", adm: "#8E5BB5", rural: "#1FA37A" };
 const pctTxt = (v, base) => base && Math.abs(v) > 0.05 ? `${v > 0 ? "+" : "−"}${fmt(Math.abs(v) / base * 100, 1)}%` : "";
 const etq = id => id === "dia" ? `<span class="et" style="background:#8A93A6">5x2 dia</span>` : id === "adm" ? `<span class="et" style="background:#8A93A6">ADM 5x2</span>`
   : `<span class="et" style="background:${COR[id]}${id === "12x36" ? ";color:#12224A" : ""}">${ESC_CURTO[id] || ESC[id].curto}</span>`;
-const dlTxt = (d, nf = fmt) => Math.abs(d) < 0.05 ? `<span class="dl eq">=</span>` : `<span class="dl ${d > 0 ? "up" : "eq"}">${d > 0 ? "+" : "−"}${nf(Math.abs(d))}</span>`;
-const celRs = (v, base, nf, cls = "", pc = false) => v === null || v === undefined ? `<td class="nm">—</td>`
-  : `<td class="qv ${cls}"><b>${nf(v)}</b>${dlTxt(v - base, nf)}${pc ? `<small class="pcr">${pctTxt(v - base, base)}</small>` : ""}</td>`;
-// as áreas do resumo, cada uma com o hoje, o total em cada escala e o da escolha
-function areasResumo() {
-  const of = totais(d => S.esc[d.dep]), fr = totaisOp(d => S.esc[d.dep]);
-  return [
-    { k: "oficina", nome: "Oficina", sub: "pessoas", hoje: HOJE, por: id => totais(() => id).quadro, esc: of.quadro, contr: of.contr, risco: of.risco,
-      escTxt: `${grupos().map(g => `${ESC[g.id].curto} em ${g.deps.length}`).join(" · ")} deptos; ${DIA} de dia` },
-    { k: "frota", nome: "Frota operacional", sub: "operadores necessários", hoje: fr.hoje, por: id => totaisOp(() => id).need, esc: fr.need, contr: fr.contr, risco: fr.risco,
-      escTxt: `${gruposOp().map(g => `${ESC[g.id].curto} em ${g.deps.length}`).join(" · ")} tipos` },
-    ...AREAS.map(a => { const t = totaisArea(a, d => S.esc[d.dep]);
-      return { k: a.k, nome: a.nome, sub: "pessoas", hoje: a.dados.n, por: id => totaisArea(a, () => id).quadro, esc: t.quadro, contr: t.contr, risco: t.risco,
-        escTxt: `${gruposArea(a).map(g => `${ESC[g.id].curto} em ${g.deps.length}`).join(" · ")} (${a.n24} em ${qtdGrupos(a)} 24 h); ${fmt(a.dia)} de dia` }; }),
-  ];
+const dfTxt = (v, f = fmt) => Math.abs(v) < 0.05 ? `<span class="df eq">=</span>` : `<span class="df ${v > 0 ? "up" : "dn"}">${v > 0 ? "+" : "−"}${f(Math.abs(v))}</span>`;
+const linhaRs = (nome, sub, id, h, f, nf = fmt, tit = "") => `<li title="${esc(tit || nome)}"><span class="nm">${esc(nome)}${sub ? `<small>${esc(sub)}</small>` : ""}</span>${etq(id)}<span class="nr">${nf(h)} → <b>${nf(f)}</b></span>${dfTxt(f - h, nf)}</li>`;
+function colunaRs(titulo, nota, hoje, fica, escTxt, linhas, extra = "", nf = fmt) {
+  return `<div class="card rs-a"><h3>${esc(titulo)}<small>${esc(nota)}</small></h3>
+    <div class="rs-tot"><b>${nf(hoje)} → ${nf(fica)}</b>${dfTxt(fica - hoje, nf)}<i>${pctTxt(fica - hoje, hoje)}</i></div>
+    <div class="rs-esc">${esc(escTxt)}</div><div class="rolo"><ul class="rs-dl">${linhas}</ul>${extra}</div></div>`;
 }
-function chipsResumo(sel, L) {
-  const H = L.reduce((x, l) => x + l.hoje, 0), E = L.reduce((x, l) => x + l.esc, 0), sf = (AREAS.find(a => a.dados.safra) || {}).dados?.safra || null;
-  $(sel).innerHTML = [[fmt(H), "Quadro hoje"], [fmt(E), "Com a escolha"], [sinal(E - H), `Diferença · ${pctTxt(E - H, H) || "0%"}`, E > H ? "pos" : "zero"],
+const escUsadas = pares => { const c = {}; pares.forEach(([id, n]) => { c[id] = (c[id] || 0) + n; }); return Object.entries(c).sort((x, y) => y[1] - x[1]).map(([id, n]) => `${id === "dia" ? "5x2 dia" : id === "adm" ? "ADM 5x2" : ESC[id].curto} ${n}`).join(" · "); };
+function resumoFinal() {
+  const of = totais(d => S.esc[d.dep]), fr = totaisOp(d => S.esc[d.dep]);
+  const ar = AREAS.map(a => ({ a, t: totaisArea(a, d => S.esc[d.dep]) }));
+  const T = { hoje: HOJE + fr.hoje + ar.reduce((x, { a }) => x + a.dados.n, 0), fica: of.quadro + fr.need + ar.reduce((x, { t }) => x + t.quadro, 0) };
+  const sf = (AREAS.find(a => a.dados.safra) || {}).dados?.safra || null;
+  $("#rsChips").innerHTML = [[fmt(T.hoje), "Quadro hoje"], [fmt(T.fica), "Com as escalas"], [sinal(T.fica - T.hoje), `Diferença · ${pctTxt(T.fica - T.hoje, T.hoje) || "0%"}`, T.fica > T.hoje ? "pos" : "zero"],
     ...(sf ? [[`−${fmt(sf.demitir)}`, "Rural: fim da safra", "pos"]] : [])]
     .map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
-}
-// gráfico resumo: uma barra por escala, empilhada por área, com o total e a diferença sobre hoje
-function grafResumo(svg, L) {
-  const box = svg.parentElement, cw = box ? box.clientWidth : 0, ch = box ? box.clientHeight : 0;
-  const W = 1000, H = NA_FOLHA() ? 380 : cw > 200 && ch > 100 ? Math.max(230, Math.min(700, Math.round(W * ch / cw))) : 420, m = { l: 50, r: 20, t: 44, b: 52 };
-  const ops = [{ id: "hoje", lab: "Hoje", sub: "5x1 / 6x1 / 5x2", v: l => l.hoje }, ...IDS.map(id => ({ id, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), al: ESC[id].risco === "Alto", v: l => l.por(id) })),
-    { id: "esc", lab: "Escolhida", sub: "POR DEPARTAMENTO", v: l => l.esc }];
-  const tot = ops.map(o => L.reduce((x, l) => x + o.v(l), 0)), base = tot[0];
-  const bruto = Math.max(...tot) * 1.12, passo = [50, 100, 200, 250, 500].find(p => bruto / p <= 6) || 1000, max = Math.ceil(bruto / passo) * passo;
-  const bw = (W - m.l - m.r) / ops.length, y = v => m.t + (H - m.t - m.b) * (1 - v / max);
-  let g = "";
-  for (let v = 0; v <= max; v += passo) { const yy = y(v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="#E6E9F0"/><text x="${m.l - 8}" y="${yy + 4}" text-anchor="end" font-size="12.5" fill="#9AA3B5">${fmt(v)}</text>`; }
-  g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(base)}" y2="${y(base)}" stroke="#5A6072" stroke-dasharray="5 5" stroke-width="1.2"/>`;
-  ops.forEach((o, i) => {
-    const x = m.l + bw * i + bw * .16, w = bw * .68, cx = x + w / 2, esc_ = o.id === "esc";
-    if (esc_) g += `<rect x="${x - 6}" y="${m.t - 38}" width="${w + 12}" height="${H - m.t + 36}" rx="4" fill="#FDF2D3"/>`;
-    let b0 = H - m.b;
-    L.forEach(l => { const v = o.v(l), h = (H - m.t - m.b) * v / max;
-      g += `<rect x="${x}" y="${b0 - h}" width="${w}" height="${h}" fill="${COR_AREA[l.k] || "#8A93A6"}" stroke="#fff" stroke-width="1.2"/>`;
-      if (h > 15) g += `<text x="${cx}" y="${b0 - h / 2 + 4.5}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">${fmt(v)}</text>`;
-      b0 -= h; });
-    const t = tot[i], d = t - base, yy = y(t);
-    g += `<text x="${cx}" y="${yy - 8}" text-anchor="middle" font-size="${esc_ ? 19 : 17}" font-weight="800" fill="#12224A">${fmt(t)}</text>`;
-    if (i) g += `<text x="${cx}" y="${yy - 27}" text-anchor="middle" font-size="12.5" font-weight="600" fill="${d > 0 ? "#C0392B" : d < 0 ? "#2E7D46" : "#5A6072"}" font-family="IBM Plex Mono, monospace">${d > 0 ? "+" + fmt(d) : d < 0 ? "−" + fmt(-d) : "="}${d ? ` · ${pctTxt(d, base)}` : ""}</text>`;
-    g += `<text x="${cx}" y="${H - m.b + 18}" text-anchor="middle" font-size="14" font-weight="700" fill="#12224A">${esc(o.lab)}</text>`;
-    g += `<text x="${cx}" y="${H - m.b + 33}" text-anchor="middle" font-size="11.5" fill="${o.al ? "#C0392B" : "#5A6072"}" font-family="IBM Plex Mono, monospace">${esc(o.sub)}</text>`;
-  });
-  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-  svg.innerHTML = g;
-}
-function resumoFinal() {
-  const L = areasResumo();
-  chipsResumo("#rsChips", L); chipsResumo("#rdChips", L);
-  // resumo geral: cada área em cada escala e na escolha
-  const T = { hoje: L.reduce((x, l) => x + l.hoje, 0), esc: L.reduce((x, l) => x + l.esc, 0), por: id => L.reduce((x, l) => x + l.por(id), 0) };
-  const cab = `<thead><tr class="grp"><th class="l" rowspan="2" style="vertical-align:bottom">Área</th><th rowspan="2" style="vertical-align:bottom">Hoje</th><th colspan="${IDS.length}">Pessoas com a escala aplicada à área toda</th><th colspan="2">Escolhida</th></tr><tr>
-    ${IDS.map(id => `<th>${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}</th>`).join("")}<th>Pessoas</th><th class="l">Escalas</th></tr></thead><tbody>`;
-  $("#rsTab").innerHTML = cab + L.map(l => `<tr><td class="l dep">${esc(l.nome)}<u>${esc(l.sub)}</u></td><td class="hoje">${fmt(l.hoje)}</td>${IDS.map(id => celRs(l.por(id), l.hoje, fmt, "", true)).join("")}${celRs(l.esc, l.hoje, fmt, "fq", true)}<td class="l cmp">${esc(l.escTxt)}</td></tr>`).join("")
-    + `<tr class="tot"><td class="l">Total</td><td>${fmt(T.hoje)}</td>${IDS.map(id => celRs(T.por(id), T.hoje, fmt, "", true)).join("")}${celRs(T.esc, T.hoje, fmt, "fq", true)}<td class="l cmp">a frota conta operadores necessários, não o quadro</td></tr></tbody>`;
-  $("#rsLeg").innerHTML = L.map(l => `<span><i style="background:${COR_AREA[l.k] || "#8A93A6"}"></i>${esc(l.nome)}</span>`).join("");
-  grafResumo($("#rsGraf"), L);
-  // detalhamento: cada departamento (na frota, cada tipo de equipamento) em cada escala e na escala escolhida
-  const linha = (nome, sub, hoje, val, escId, fica, nf = fmt, dot = "") => {
-    const id = escId === "dia" || escId === "adm" ? null : escId;
-    return `<tr><td class="l dep">${dot}${esc(nome)}${sub ? `<u>${esc(sub)}</u>` : ""}</td><td class="hoje">${nf(hoje)}</td>${IDS.map(x => celRs(val(x), hoje, nf, x === id ? "qsel" : "")).join("")}<td class="ec">${etq(escId)}</td>${celRs(fica, hoje, nf, "fq")}</tr>`;
-  };
-  const sub = (nome, l) => `<tr class="fr" style="--fc:${COR_AREA[l.k] || "#8A93A6"}"><td class="l">Subtotal · ${esc(nome)}</td><td>${fmt(l.hoje)}</td>${IDS.map(id => celRs(l.por(id), l.hoje, fmt, "", true)).join("")}<td></td>${celRs(l.esc, l.hoje, fmt, "fq", true)}</tr>`;
-  const grupo = (l, nota) => `<tr class="frh" style="--fc:${COR_AREA[l.k] || "#8A93A6"}"><td class="l" colspan="${IDS.length + 4}">${esc(l.nome)} · ${esc(nota)}</td></tr>`;
-  const n = (d, id) => { const r = conta(d, id); return r ? r.fica : null; };
-  let h = `<thead><tr class="grp"><th class="l" rowspan="2" style="vertical-align:bottom">Departamento / equipamento</th><th rowspan="2" style="vertical-align:bottom">Hoje</th><th colspan="${IDS.length}">Pessoas em cada escala</th><th colspan="2">Escolhida</th></tr><tr>
-    ${IDS.map(id => `<th>${esc(ESC[id].curto)}<br>${pill(ESC[id].risco)}</th>`).join("")}<th>Escala</th><th>Pessoas</th></tr></thead><tbody>`;
-  // oficina
+  // oficina: departamentos com turno e, embaixo, os de segunda a sexta
   const dias = D.dia.filter(z => !z.parte);
-  h += grupo(L[0], "pessoas por departamento");
-  D.deps.forEach(d => { h += linha(d.sub ? `${d.sub} · PCM` : d.nome, "", d.n, x => n(d, x), S.esc[d.dep], conta(d, S.esc[d.dep]).fica); });
-  h += linha("Segunda a sexta", `${dias.length} deptos · não muda`, DIA, () => DIA, "dia", DIA);
-  h += sub("oficina", L[0]);
-  // frota
-  h += grupo(L[1], "operadores necessários por tipo de equipamento");
-  OP.filter(d => d.qtd).forEach(d => {
-    const r = conta(d, S.esc[d.dep]) || conta(d, "5x2");
-    h += linha(d.nome, `${d.qtd}× · ${d.frente}`, d.n, x => { const y = conta(d, x); return y ? y.need : null; }, d.reg === "adm" ? "adm" : S.esc[d.dep], r.need, f1, `<span class="fdot" style="background:${FRENTE[d.frente]}"></span>`);
+  let lo = D.deps.map(d => { const id = S.esc[d.dep], r = conta(d, id); return linhaRs(d.sub ? `${d.sub} · PCM` : d.nome, "", id, d.n, r.fica); }).join("");
+  lo += `<li class="sep">Segunda a sexta</li>` + dias.map(z => linhaRs(z.nome, "", "dia", z.n, z.n)).join("");
+  const colOf = colunaRs("Oficina", "pessoas", HOJE, of.quadro, escUsadas([...D.deps.map(d => [S.esc[d.dep], 1]), ["dia", dias.length]]) + " departamentos", lo);
+  // frota: operadores necessários por tipo de equipamento
+  const ops = OP.filter(d => d.qtd);
+  const lf = ORDF.map(fr_ => ops.filter(d => d.frente === fr_)).filter(l => l.length).map((l, k) => l.map((d, i) => {
+    const id = d.reg === "adm" ? "adm" : S.esc[d.dep], r = conta(d, S.esc[d.dep]) || conta(d, "5x2");
+    const li = linhaRs(d.nome, `${d.qtd}×`, id, d.n, r.need, f1, `${d.nome} · ${d.frente}`);
+    return k && !i ? li.replace("<li ", '<li class="nv" ') : li;   // traço entre as frentes
+  }).join("")).join("");
+  const colFr = colunaRs("Frota operacional", "operadores necessários", fr.hoje, fr.need, escUsadas(ops.map(d => [d.reg === "adm" ? "adm" : S.esc[d.dep], 1])) + " tipos", lf, "");
+  // ADM e rural: os grupos 24 h e, embaixo, os departamentos de segunda a sexta
+  const colAr = ar.map(({ a, t }) => {
+    let l = a.itens.map(d => { const id = S.esc[d.dep], r = conta(d, id); return linhaRs(d.nome, "", id, d.n, r.fica); }).join("");
+    l += `<li class="sep">Segunda a sexta</li>` + a.dados.deps.filter(d => d.dia).map(d => linhaRs(d.nome, "", "dia", d.dia, d.dia)).join("");
+    const s_ = a.dados.safra;
+    const extra = s_ ? `<div class="rs-safra">Fim da safra: quadro de hoje <b>${fmt(s_.quadro)}</b> → <b>${fmt(s_.quadro - s_.demitir)}</b> (−${fmt(s_.demitir)}: ${esc(s_.demitir_por.map(([n, v]) => `${n} ${v}`).join(", "))}).</div>` : "";
+    return colunaRs(a.nome, "pessoas", a.dados.n, t.quadro, escUsadas([...a.itens.map(d => [S.esc[d.dep], 1]), ["dia", a.dados.deps.filter(d => d.dia).length]]) + " departamentos", l, extra);
   });
-  h += sub("frota", L[1]);
-  // ADM e rural
-  AREAS.forEach((a, k) => {
-    const l = L[2 + k], deps = a.dados.deps.filter(d => d.dia);
-    h += grupo(l, `${a.grupos} 24 h e segunda a sexta`);
-    a.itens.forEach(d => { h += linha(d.nome, `hoje ${d.hoje}`, d.n, x => n(d, x), S.esc[d.dep], conta(d, S.esc[d.dep]).fica); });
-    h += linha("Segunda a sexta", `${deps.length} deptos · não muda`, a.dia, () => a.dia, "dia", a.dia);
-    h += sub(a.nome, l);
-  });
-  h += `<tr class="tot"><td class="l">Total</td><td>${fmt(T.hoje)}</td>${IDS.map(id => celRs(T.por(id), T.hoje, fmt, "", true)).join("")}<td></td>${celRs(T.esc, T.hoje, fmt, "fq", true)}</tr></tbody>`;
-  $("#rdTab").innerHTML = h;
+  $("#rsGrid").innerHTML = [colOf, colFr, ...colAr].join("");
 }
 function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); AREAS.forEach(a => { painelArea(a); quadroArea(a); matrizArea(a); }); resumoFinal(); escalas(); if (window.salvaSite) salvaSite.mudou(); }
 function volante(v) { S.vol = v; $("#vol").checked = v; tudo(); }
