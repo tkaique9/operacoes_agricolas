@@ -270,7 +270,11 @@ ul.rs-dl li.sep { display: block; border-bottom: 0; padding: 5px 0 1px; font: 60
 .rs-safra b { font: 700 15px var(--f-display); color: var(--navy); }
 @media screen and (max-width: 1180px) { .rs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media screen and (max-width: 900px) { .rs-grid { grid-template-columns: minmax(0, 1fr); flex: 0 0 auto; } }
-html.imprimindo .rs-grid { flex: none; grid-template-columns: repeat(4, minmax(300px, 1fr)); }
+html.imprimindo .rs-grid { flex: none; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+html.imprimindo .rs-grid > .rs-a { break-inside: avoid; page-break-inside: avoid; }
+html.imprimindo .rs-grid > .rs-a:nth-child(3) { break-before: page; page-break-before: always; }   /* ADM e rural na segunda folha */
+html.imprimindo ul.rs-dl { column-count: 2; column-gap: 16px; column-rule: 1px solid var(--line); }
+html.imprimindo ul.rs-dl li { break-inside: avoid; page-break-inside: avoid; }
 html.imprimindo .rs-a .rolo { overflow: visible; }
 .rs-graf { flex: 0 0 auto; height: 32vh; min-height: 220px; }
 .rs-leg { display: flex; flex-wrap: wrap; gap: 4px 14px; padding-top: 4px; font: 600 13px var(--f-display); color: var(--navy); }
@@ -483,7 +487,10 @@ html.imprimindo .aviso { display: none !important; }
 .imp button { font: 500 13px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--t2); background: transparent; border: 1px solid var(--linha2); border-radius: 2px; padding: 6px 12px; cursor: pointer; transition: color .25s, border-color .25s, background-color .25s; }
 .imp button:hover { color: var(--t1); border-color: var(--gold); background: var(--gold-dim); }
 @media screen and (max-width: 760px) { .imp { display: none; } }
-@page { size: A4 landscape; margin: 9mm 9mm 12mm;
+@page { size: A4 landscape; margin: 13mm 9mm 12mm;
+  @top-left { content: "Estudo comparativo de escalas · EC 141/2026"; font: 500 8pt "IBM Plex Mono", Consolas, monospace; color: #7D8BB0; }
+  @top-center { content: ""; }
+  @top-right { content: "Simulação para a diretoria"; font: 500 8pt "IBM Plex Mono", Consolas, monospace; color: #7D8BB0; }
   @bottom-left { content: "CRV Industrial · Escalas de trabalho · EC 141/2026"; font: 500 8pt "IBM Plex Mono", Consolas, monospace; color: #7D8BB0; }
   @bottom-right { content: counter(page) " de " counter(pages); font: 500 8pt "IBM Plex Mono", Consolas, monospace; color: #7D8BB0; } }
 html.imprimindo, html.imprimindo body { height: auto; overflow: visible; background: #fff !important; }
@@ -509,9 +516,16 @@ html.imprimindo .card, html.imprimindo .esc { flex: none; box-shadow: none; bord
 html.imprimindo .esc.nserve { border-top-color: var(--red); }
 html.imprimindo .rolo, html.imprimindo .esc > div[style] { flex: none; overflow: visible !important; max-height: none; height: auto; }
 html.imprimindo .painel { flex: none; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
-html.imprimindo .painel svg { height: auto; }
+html.imprimindo .painel svg { height: auto; max-height: 470px; }   /* reduzida, a folha fica mais larga e o gráfico crescia junto */
+html.imprimindo table.lista { font-size: 12.5px; line-height: 1.2; }
+html.imprimindo table.lista td { padding: 1px 6px; }
+html.imprimindo table.lista td.dn { padding-left: 18px; }
+html.imprimindo table.lista tr.g td { padding: 3px 6px; font-size: 13px; }
+html.imprimindo .painel > .card { break-inside: avoid; page-break-inside: avoid; }
 html.imprimindo .cols { flex: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 html.imprimindo .escalas { flex: none; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+html.imprimindo .esc { break-inside: avoid; page-break-inside: avoid; }
+html.imprimindo .esc.hoje { border-top-color: #8A93A6; }
 html.imprimindo table.tb th, html.imprimindo table.tb tr.tot td { position: static; }
 html.imprimindo table.tb tr, html.imprimindo table.lista tr { break-inside: avoid; page-break-inside: avoid; }
 html.imprimindo .card h3 { break-after: avoid; page-break-after: avoid; }
@@ -1498,7 +1512,7 @@ addEventListener("resize", () => { clearTimeout(IMP.rz); IMP.rz = setTimeout(() 
 
 /* ---------- impressão ---------- */
 // liga o modo de impressão, encaixa cada página na folha A4 deitada e, depois de imprimir, volta ao normal
-const FOLHA = { l: 1040, a: 704, min: .68 };   // área útil da folha (margens de 9 mm e rodapé), em px de tela; menor redução
+const FOLHA = { l: 1040, a: 689, min: .68 };   // área útil da folha (margens de 13 mm em cima, 9 mm dos lados e rodapé), em px de tela; menor redução
 const IMP = { pedido: null };
 function encaixa(sl) {
   // a página que passa da folha diminui até caber (no mínimo 68%). A que não cabe nem assim vai para o menor
