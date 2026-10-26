@@ -17,6 +17,7 @@ Os turnos 24 h saem da 5x1, a 6x1 de dia vira 5x2 e o horário ADM com sábado v
 | `oficina.py` | Lê `dados/oficina/ativos_oficina.xlsx` (anotações por departamento e linhas em azul), cruza com a escala de hoje e calcula cada escala com turma fixa por turno |
 | `gerar_departamentos.py` + `departamentos_template.html` | Monta a página por departamento |
 | `adm.py` → `adm.json` | Lê a planilha **ESCALA ADM** (`dados/adm/escala_adm.xlsx`, fora do git: tem nome e matrícula) e grava só as contagens por departamento e por central 24 h, que entram na aba ADM |
+| `rural.py` → `rural.json` | Lê a planilha **ESCALA RURAL** (`dados/rural/escala_rural.xlsx`, fora do git) e grava só as contagens por departamento (pela coluna Dpto, o agrupamento novo) e do grupo que roda 3 turnos, que entram na aba Rural |
 
 ### Operacional (frota 24 h)
 
@@ -55,6 +56,17 @@ Central de Operações Agrícolas e 1 da Central de Rastreamento), **COA** (idem
 Irrigação). Na 12x36, na 3x3 e na 4x2 de 12 h fecham com as 4 de hoje; na 5x2 e na 4x2 de 8 h precisam de 6 (+2 cada,
 +6 no total). Pessoas por turno, turnos e escala mudam na matriz e no painel de cada central. Para atualizar: trocar a
 planilha em `dados/adm/`, rodar `python adm.py` e `python gerar_departamentos.py`.
+
+### Rural
+
+Aba **Rural** (páginas 11 a 13), no mesmo modelo do ADM (o código das duas abas é um só: `AREAS` no script da página),
+a partir da planilha ESCALA RURAL de 26/10/2026: 166 pessoas, 104 trabalhadores rurais (contrato rural) e 62 auxiliares
+agrícolas (CLT urbano). Os departamentos seguem a coluna Dpto da planilha (Capinópolis I recebe 11 da Zona 3;
+Fertirrigação I, 5 da Irrigação Localizada). Os 148 marcados ADM ficam de segunda a sexta, em 5x2, e não mudam. Os 18
+marcados **3t** (atreladores de cana picada e de pátio, lavagem de colhedora e apoio regiões, todos auxiliares agrícolas)
+rodam 3 turnos nas 24 h, juntos em Atreladores Pátio: hoje 18 em 5x2, o que dá 4 por turno com turma fixa. Na 5x2
+rotativa e na 4x2 de 8 h fecham com os 18; na 12x36 e na 3x3 sobram 2; na 4x2 de 12 h, 6. Para atualizar: trocar a
+planilha em `dados/rural/`, rodar `python rural.py` e `python gerar_departamentos.py`.
 
 ### 5x2 com folga desencontrada
 

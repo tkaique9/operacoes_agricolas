@@ -67,16 +67,20 @@ def main():
     for c in centrais.values():
         # hoje em 12x36: 4 pessoas por posto 24 h (2 de dia e 2 de noite se revezando)
         c["postos"] = max(1, round(c["esc"].get("12x36", 0) / 4))
+        c["hoje"] = "12x36"
         c["deps"] = [[CURTO.get(k) or NOMES.get(k, k), v] for k, v in c["deps"].most_common()]
         c["esc"] = dict(c["esc"])
     lista = []
     for d in sorted(deps.values(), key=lambda x: x["dep"]):
         d["esc"], d["tipo"] = dict(d["esc"]), dict(d["tipo"])
         d["dia"] = d["n"] - d.get("central", 0)   # quem fica de segunda a sexta
+        t = d["tipo"]
+        d["comp"] = " · ".join(x for x in [f'{t["adm"]} ADM' if t.get("adm") else "", f'{t["sem_cartao"]} sem cartão' if t.get("sem_cartao") else "",
+                                          f'+{d["central"]} nas centrais 24 h' if d.get("central") else ""] if x)
         lista.append(d)
-    saida = {"fonte": "ESCALA ADM.xlsx (26/10/2026)", "n": sum(d["n"] for d in lista),
+    saida = {"fonte": "ESCALA ADM.xlsx (26/10/2026)", "n": sum(d["n"] for d in lista), "hoje_txt": "5x2 / 12x36",
              "areas": {k: {"nome": v[0], "cor": v[1]} for k, v in AREAS.items()},
-             "deps": lista, "centrais": [centrais[k] for k in CENTRAIS if k in centrais]}
+             "deps": lista, "grupos": [centrais[k] for k in CENTRAIS if k in centrais]}
     SAIDA.write_text(json.dumps(saida, ensure_ascii=False, indent=1), encoding="utf-8")
     return saida
 
@@ -84,6 +88,6 @@ def main():
 if __name__ == "__main__":
     s = main()
     print(s["n"], "pessoas;", len(s["deps"]), "departamentos;",
-          ", ".join(f'{c["nome"]} {c["n"]} ({c["postos"]} posto)' for c in s["centrais"]))
+          ", ".join(f'{c["nome"]} {c["n"]} ({c["postos"]} posto)' for c in s["grupos"]))
     print("de dia:", sum(d["dia"] for d in s["deps"]), "| tipos:",
           dict(sum((collections.Counter(d["tipo"]) for d in s["deps"]), collections.Counter())))

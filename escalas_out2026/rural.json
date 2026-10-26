@@ -1,0 +1,135 @@
+{
+ "fonte": "ESCALA RURAL.xlsx (26/10/2026)",
+ "n": 166,
+ "hoje_txt": "5x2",
+ "funcoes": {
+  "aux. agrícolas": 62,
+  "trab. rurais": 104
+ },
+ "areas": {
+  "130.002": {
+   "nome": "Turmas rurais",
+   "cor": "#2F6FD0"
+  },
+  "130.006": {
+   "nome": "Reflorestamento",
+   "cor": "#1FA37A"
+  },
+  "130.022": {
+   "nome": "Auxiliares de tratos",
+   "cor": "#E0A21A"
+  },
+  "130.023": {
+   "nome": "Auxiliares do CCT",
+   "cor": "#E06A3A"
+  },
+  "130.028": {
+   "nome": "Pátio e outros",
+   "cor": "#8A93A6"
+  }
+ },
+ "deps": [
+  {
+   "dep": "130.002.002",
+   "nome": "Turma Rural · Ituiutaba II",
+   "area": "130.002",
+   "n": 28,
+   "dia": 28,
+   "comp": "28 trab. rurais"
+  },
+  {
+   "dep": "130.002.003",
+   "nome": "Turma Rural · Ituiutaba III",
+   "area": "130.002",
+   "n": 18,
+   "dia": 18,
+   "comp": "18 trab. rurais"
+  },
+  {
+   "dep": "130.002.004",
+   "nome": "Turma Rural · Capinópolis I",
+   "area": "130.002",
+   "n": 28,
+   "dia": 28,
+   "comp": "28 trab. rurais · 11 vindos de Zona 3"
+  },
+  {
+   "dep": "130.002.050",
+   "nome": "Turma Rural · Zona 3",
+   "area": "130.002",
+   "n": 16,
+   "dia": 16,
+   "comp": "16 trab. rurais"
+  },
+  {
+   "dep": "130.006.001",
+   "nome": "Reflorestamento",
+   "area": "130.006",
+   "n": 14,
+   "dia": 14,
+   "comp": "14 trab. rurais"
+  },
+  {
+   "dep": "130.022.001",
+   "nome": "Auxiliares · Adubação Pátio",
+   "area": "130.022",
+   "n": 1,
+   "dia": 1,
+   "comp": "1 aux. agrícola"
+  },
+  {
+   "dep": "130.022.012",
+   "nome": "Auxiliares · Dosador Herbicida",
+   "area": "130.022",
+   "n": 3,
+   "dia": 3,
+   "comp": "3 aux. agrícolas"
+  },
+  {
+   "dep": "130.022.025",
+   "nome": "Auxiliares · Fertirrigação I",
+   "area": "130.022",
+   "n": 38,
+   "dia": 38,
+   "comp": "38 aux. agrícolas · 5 vindos de Irrigação Localizada"
+  },
+  {
+   "dep": "130.028.009",
+   "nome": "Auxiliares · Pátio / Outros",
+   "area": "130.028",
+   "n": 2,
+   "dia": 2,
+   "comp": "2 aux. agrícolas"
+  }
+ ],
+ "grupos": [
+  {
+   "id": "130.023.004",
+   "nome": "Atreladores, lavagem e apoio · 3 turnos",
+   "n": 18,
+   "hoje": "5x2",
+   "postos": 4,
+   "deps": [
+    [
+     "Atreladores Cana Picada",
+     5
+    ],
+    [
+     "Atreladores Pátio",
+     5
+    ],
+    [
+     "Lavagem Colhedora",
+     4
+    ],
+    [
+     "Apoio Regiões",
+     4
+    ]
+   ],
+   "funcoes": {
+    "aux. agrícolas": 18
+   }
+  }
+ ]
+}
