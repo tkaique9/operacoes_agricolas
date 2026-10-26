@@ -18,6 +18,7 @@ Os turnos 24 h saem da 5x1, a 6x1 de dia vira 5x2 e o horário ADM com sábado v
 | `gerar_departamentos.py` + `departamentos_template.html` | Monta a página por departamento |
 | `adm.py` → `adm.json` | Lê a planilha **ESCALA ADM** (`dados/adm/escala_adm.xlsx`, fora do git: tem nome e matrícula) e grava só as contagens por departamento e por central 24 h, que entram na aba ADM |
 | `rural.py` → `rural.json` | Lê a planilha **ESCALA RURAL** (`dados/rural/escala_rural.xlsx`, fora do git) e grava só as contagens por departamento (pela coluna Dpto, o agrupamento novo) e do grupo que roda 3 turnos, que entram na aba Rural |
+| `pessoal_frota.py` → `pessoal_frota.json` | Lê a planilha **Quadro motorista operador** (`dados/frota/quadro_motorista_operador.xlsx`, fora do git: tem nome, matrícula e CPF) e grava só quantos motoristas e operadores estão ativos, no total e por atividade |
 
 ### Operacional (frota 24 h)
 
@@ -45,6 +46,17 @@ das escalas de 12 h: o dia de 12 h cobre o maior entre manhã e tarde e a noite,
 A 4x2 de 12 h entra na simulação com **risco alto** (botão "4x2 12 h em todos" e opção de entrar na sugerida): no
 cadastro, operadores de máquinas (335) e motoristas (250) são CLT urbano e, com a hora noturna reduzida, a noite de
 12 h passa de 10 h contadas. Só vale com norma coletiva que troque a hora reduzida por adicional maior.
+
+### Motoristas e operadores (painel da frota)
+
+No topo do painel da frota, o resumo compara os ativos do Quadro motorista operador de 26/10/2026 (591: 328 operadores e
+263 motoristas; 1 com rescisão anotada fica fora; o papel vem da função) com o que a frota precisa hoje (5x1), na escala
+escolhida e em cada escala. O que sobra fica **sem atividade**. Contam como operador trator, plantadora, transbordo,
+colhedora, retroescavadeira, quadriciclo, uniport, pá carregadeira, carregadeira, motoniveladora, escavadeira e rolo;
+os outros equipamentos (caminhões, bombeiro, caçamba, prancha, IMAVE) contam como motorista (`papelEq` no script). Com
+a escala escolhida: 245 operadores e 139 motoristas, 207 sem atividade. Muitos ativos estão em atividades que ainda não
+estão na lista da frota (ônibus, pipas, comboio, caminhões e tratores da irrigação, máquinas de herbicida) e aparecem
+como sem atividade; a lista por atividade abre em "Ativos por atividade".
 
 ### ADM agrícola
 

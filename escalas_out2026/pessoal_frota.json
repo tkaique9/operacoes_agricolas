@@ -1,0 +1,185 @@
+{
+ "fonte": "Quadro motorista operador.xlsx (26/10/2026)",
+ "ativos": {
+  "operador": 328,
+  "motorista": 263
+ },
+ "fora": 1,
+ "atividades": [
+  {
+   "papel": "motorista",
+   "nome": "Caminhão canavieiro",
+   "n": 125
+  },
+  {
+   "papel": "motorista",
+   "nome": "Caminhão irrigação transporte vinhaça/água",
+   "n": 27
+  },
+  {
+   "papel": "motorista",
+   "nome": "Caminhão pipa apoio",
+   "n": 18
+  },
+  {
+   "papel": "motorista",
+   "nome": "Caminhão pipa colheita mecanizada",
+   "n": 16
+  },
+  {
+   "papel": "motorista",
+   "nome": "Ônibus CCT",
+   "n": 15
+  },
+  {
+   "papel": "motorista",
+   "nome": "Caminhão prancha",
+   "n": 11
+  },
+  {
+   "papel": "motorista",
+   "nome": "Caminhão caçamba",
+   "n": 11
+  },
+  {
+   "papel": "motorista",
+   "nome": "Caminhão comboio",
+   "n": 10
+  },
+  {
+   "papel": "motorista",
+   "nome": "Caminhão pipa herbicida",
+   "n": 8
+  },
+  {
+   "papel": "motorista",
+   "nome": "Caminhão canavieiro pátio",
+   "n": 7
+  },
+  {
+   "papel": "motorista",
+   "nome": "Ônibus tratos",
+   "n": 4
+  },
+  {
+   "papel": "motorista",
+   "nome": "Caminhão irrigação apoio",
+   "n": 3
+  },
+  {
+   "papel": "motorista",
+   "nome": "Caminhão suprimentos",
+   "n": 2
+  },
+  {
+   "papel": "motorista",
+   "nome": "Veículos leves",
+   "n": 2
+  },
+  {
+   "papel": "motorista",
+   "nome": "Trator transbordo",
+   "n": 2
+  },
+  {
+   "papel": "motorista",
+   "nome": "Ambulância",
+   "n": 1
+  },
+  {
+   "papel": "motorista",
+   "nome": "Veículo diretoria",
+   "n": 1
+  },
+  {
+   "papel": "operador",
+   "nome": "Trator transbordo",
+   "n": 151
+  },
+  {
+   "papel": "operador",
+   "nome": "Colhedora (cana picada)",
+   "n": 78
+  },
+  {
+   "papel": "operador",
+   "nome": "Trator irrigação apoio",
+   "n": 32
+  },
+  {
+   "papel": "operador",
+   "nome": "Trator irrigação aplicação vinhaça/água",
+   "n": 16
+  },
+  {
+   "papel": "operador",
+   "nome": "Máquinas herbicida",
+   "n": 11
+  },
+  {
+   "papel": "operador",
+   "nome": "Motoniveladora",
+   "n": 8
+  },
+  {
+   "papel": "operador",
+   "nome": "Trator pátio",
+   "n": 6
+  },
+  {
+   "papel": "operador",
+   "nome": "Pá carregadeira apoio indústria",
+   "n": 6
+  },
+  {
+   "papel": "operador",
+   "nome": "Motosserra",
+   "n": 5
+  },
+  {
+   "papel": "operador",
+   "nome": "Uniport",
+   "n": 3
+  },
+  {
+   "papel": "operador",
+   "nome": "Escavadeira",
+   "n": 3
+  },
+  {
+   "papel": "operador",
+   "nome": "Carregadeira adubação pátio",
+   "n": 2
+  },
+  {
+   "papel": "operador",
+   "nome": "Irrigação localizada",
+   "n": 2
+  },
+  {
+   "papel": "operador",
+   "nome": "Máquinas reflorestamento",
+   "n": 1
+  },
+  {
+   "papel": "operador",
+   "nome": "Bombas / irrigação",
+   "n": 1
+  },
+  {
+   "papel": "operador",
+   "nome": "Eletroímã",
+   "n": 1
+  },
+  {
+   "papel": "operador",
+   "nome": "Trator eletroímã",
+   "n": 1
+  },
+  {
+   "papel": "operador",
+   "nome": "Pá carregadeira",
+   "n": 1
+  }
+ ]
+}

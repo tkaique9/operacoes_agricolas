@@ -242,6 +242,20 @@ table.qd tr.fr td.l { box-shadow: inset 6px 0 0 var(--fc, transparent); padding-
 table.qd td.qv .pc { display: block; font: 600 13px var(--f-mono); font-style: normal; letter-spacing: .02em; color: var(--red); margin-top: 1px; }
 table.qd td.qv .pc.dn { color: var(--green); }
 table.qd td.qv .pc.eq { color: var(--na-ink); }
+/* motoristas e operadores no painel da frota */
+table.qd td.qv small.sa { margin-left: 6px; font: 600 12.5px var(--f-mono); letter-spacing: .02em; }
+#opResumo td { height: auto; padding-top: 3px; padding-bottom: 3px; }
+#opResumo td.dep u { display: inline; margin-left: 8px; }
+.ativ-p { margin: 6px 0 2px; font: 400 14px var(--f-serif); color: var(--mut); line-height: 1.4; }
+table.qd td.qv small.sa.ok { color: var(--amber); } table.qd td.qv small.sa.fa { color: var(--red); }
+table.qd th.escol { box-shadow: inset 0 -3px 0 var(--gold); } table.qd td.escol { background: var(--sel) !important; }
+details.ativ { margin-top: 6px; }
+details.ativ summary { cursor: pointer; font: 600 13px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); }
+.ativ-l { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 28px; margin-top: 6px; }
+.ativ-l h4 { margin: 2px 0 4px; font: 700 14.5px var(--f-display); color: var(--navy); }
+.ativ-l ul { margin: 0; padding: 0; list-style: none; columns: 2; column-gap: 20px; font: 400 14px var(--f-serif); color: var(--ink); }
+.ativ-l li { display: flex; justify-content: space-between; gap: 8px; break-inside: avoid; border-bottom: 1px solid var(--line); padding: 2px 0; }
+.ativ-l li b { font: 700 14px var(--f-display); color: var(--navy); }
 table.qd.ar td.cmp { white-space: normal; min-width: 200px; max-width: 330px; }
 table.qd th .pch { font-weight: 600; } table.qd th .pch.up { color: #F0897A; } table.qd th .pch.dn { color: #8FD3A6; }
 table.mx tr.fr td { background: #F1F3F8; color: var(--navy); font: 600 13px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; height: 26px; border-top: 2px solid #D6DAE2; }
@@ -524,6 +538,7 @@ body.maxi-on .deck { z-index: 150; }
     <div class="s-head"><div><div class="s-eyebrow">05 · Operacional · Painel</div><h2 class="s-title">Frota operacional: operadores hoje e em cada escala</h2>
       <p class="s-sub" id="opSub"></p></div>
       <div class="chips" id="opChips"></div></div>
+    <div class="card fix" id="opResumoCard" hidden><h3>Motoristas e operadores<span class="h3u">ativos no quadro × o que a frota precisa · o que sobra fica sem atividade</span></h3><div class="rolo"><table class="tb qd" id="opResumo"></table></div><details class="ativ" id="opAtiv"></details></div>
     <div class="painel">
       <div class="card"><h3>Operadores em cada escala<span class="h3u">operadores · diferença sobre hoje (5x1)</span></h3><div class="rolo" style="overflow:hidden"><svg id="gOp" class="bars" role="img" aria-label="Operadores da frota hoje e em cada escala"></svg></div></div>
       <div class="card"><h3>Escala escolhida em cada equipamento<span class="h3u">operadores hoje → com a escala</span></h3><div class="rolo"><table class="lista" id="opLista"></table></div></div>
@@ -853,8 +868,37 @@ function chipsOp(sel) {
   $(sel).innerHTML = [[fmt(a.hoje), "Hoje (5x1)"], [fmt(a.need), "Escolhida"], [sinal(a.contr), "Contratar", a.contr > 0 ? "" : "zero"], [sinal(t5.contr), "5x2 em todos", "pos"]]
     .map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
 }
+/* motoristas e operadores ativos (planilha Quadro motorista operador, pessoal_frota.py) contra o que a frota precisa em
+   cada escala; o que sobra fica sem atividade. Máquinas agrícolas, colhedora e máquinas de estrada são de operador;
+   caminhões e o resto, de motorista */
+const PES = D.pessoal || null;
+const papelEq = d => /trator|plantadora|transbordo|colhedora|retro|quadriciclo|uniport|carregadeira|motoniveladora|escavadeira|rolo/i.test(d.nome) ? "operador" : "motorista";
+const ROT_PAPEL = { operador: "Operadores", motorista: "Motoristas" };
+function resumoOp() {
+  if (!PES) return;
+  $("#opResumoCard").hidden = false;
+  const papeis = ["operador", "motorista"], dos = p => OP.filter(d => d.qtd && papelEq(d) === p);
+  const need = (p, f) => Math.ceil(dos(p).reduce((x, d) => x + f(d), 0) - 1e-9);
+  const cols = [["Hoje (5x1)", d => d.n], ["Escolhida", d => (conta(d, S.esc[d.dep]) || conta(d, "5x2")).need],
+    ...IDS.map(id => [ESC[id].curto, d => (conta(d, id) || conta(d, "5x2")).need])];
+  const cel = (at, pr, i) => { const sb = at - pr; return `<td class="qv${i === 1 ? " escol" : ""}"><b>${fmt(pr)}</b><small class="sa ${sb >= 0 ? "ok" : "fa"}">${sb >= 0 ? `${fmt(sb)} sem ativ.` : `faltam ${fmt(-sb)}`}</small></td>`; };
+  let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th>${cols.map(([t], i) => `<th${i === 1 ? ' class="escol"' : ""}>${esc(t)}<u>precisa · sem atividade</u></th>`).join("")}</tr></thead><tbody>`;
+  papeis.forEach(p => {
+    const at = PES.ativos[p] || 0, eqs = dos(p);
+    h += `<tr><td class="l dep">${ROT_PAPEL[p]}<u>${eqs.length} tipos · ${eqs.reduce((x, d) => x + d.qtd, 0)} equipamentos</u></td><td class="hoje">${fmt(at)}</td>${cols.map(([, f], i) => cel(at, need(p, f), i)).join("")}</tr>`;
+  });
+  const AT = papeis.reduce((x, p) => x + (PES.ativos[p] || 0), 0);
+  h += `<tr class="tot"><td class="l">Total</td><td>${fmt(AT)}</td>${cols.map(([, f], i) => cel(AT, papeis.reduce((x, p) => x + need(p, f), 0), i)).join("")}</tr></tbody>`;
+  $("#opResumo").innerHTML = h;
+  const tipos = p => [...new Set(dos(p).map(d => d.nome))].join(", ");
+  const papelTxt = `Contam como operador: ${tipos("operador")}. Como motorista: ${tipos("motorista")}. Ativos: ${PES.fonte}${PES.fora ? `; ${PES.fora} com rescisão anotada fica${PES.fora > 1 ? "m" : ""} fora` : ""}.`;
+  const aberto = $("#opAtiv").open;
+  $("#opAtiv").innerHTML = `<summary>Ativos por atividade e o que conta como operador ou motorista</summary><p class="ativ-p">${esc(papelTxt)}</p><div class="ativ-l">${papeis.map(p => `<div><h4>${ROT_PAPEL[p]} · ${fmt(PES.ativos[p] || 0)}</h4><ul>${PES.atividades.filter(a => a.papel === p).map(a => `<li>${esc(a.nome)}<b>${a.n}</b></li>`).join("")}</ul></div>`).join("")}</div>`;
+  $("#opAtiv").open = aberto;
+}
 function painelOp() {
   chipsOp("#opChips");
+  resumoOp();
   const a = totaisOp(d => S.esc[d.dep]), gs = gruposOp(), nq = OP.reduce((x, d) => x + d.qtd, 0);
   $("#opSub").textContent = `${nq} equipamentos, 1 operador por equipamento em cada turno e o folguista rodando entre equipamentos: 3,6 pessoas por equipamento na 5x1 de hoje; as atividades de tratos entram no turno e com o folguista anotados. Cada barra aplica uma escala à frota inteira; a última soma a escala escolhida em cada equipamento.`;
   const itens = IDS.map(id => { const t = totaisOp(() => id); return { id, v: t.need, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.need - a.hoje, al: ESC[id].risco === "Alto" }; });
