@@ -5,7 +5,7 @@ python rural.py  ->  rural.json  (só contagens; a planilha, com nome e matrícu
 Colunas usadas: Departamento (F, o de hoje), Nome da Função (I), Dpto (J, o agrupamento novo anotado na planilha), K (escala
 de hoje, 5X2) e L ("ADM" = segunda a sexta; "3t" = 3 turnos nas 24 h). Quem foi marcado "3t" (atreladores de cana picada e
 de pátio, lavagem de colhedora e apoio regiões) fica junto em Atreladores Pátio, no Dpto anotado. Linhas sem matrícula
-("CONTRATAR") são vagas a contratar.
+("CONTRATAR") não entram: a conta é só com quem já está no quadro.
 
 Fim da safra: a planilha "quadro rural" (dados/rural/quadro_rural.xlsx) tem todo mundo ativo hoje; quem está nela e não
 está na escala (pela matrícula) sai no fim da safra.
@@ -60,7 +60,7 @@ def matricula(v):
 
 
 def safra(linhas):
-    """Quadro de hoje x escala: quem sai no fim da safra (está no quadro, não está na escala) e as vagas a contratar."""
+    """Quadro de hoje x escala: quem sai no fim da safra (está no quadro e não está na escala)."""
     if not QUADRO.exists():
         return None
     quadro = {}
@@ -69,11 +69,10 @@ def safra(linhas):
         if m and str(r[4]).strip() == "A":
             quadro[m] = str(r[6] or "").strip()
     escala = {matricula(r[1]) for r in linhas[1:] if r and matricula(r[1])}
-    vagas = collections.Counter(str(r[9] or r[5] or "").split()[0] for r in linhas[1:] if r and r[1] and not matricula(r[1]))
     sai = collections.Counter(quadro[m] for m in quadro.keys() - escala)
     nome = lambda k: CURTO.get(k) or NOMES.get(k, k)
-    return {"quadro": len(quadro), "fica": len(quadro.keys() & escala), "demitir": sum(sai.values()), "contratar": sum(vagas.values()),
-            "demitir_por": [[nome(k), v] for k, v in sai.most_common()], "contratar_por": [[nome(k), v] for k, v in vagas.most_common()]}
+    return {"quadro": len(quadro), "fica": len(quadro.keys() & escala), "demitir": sum(sai.values()),
+            "demitir_por": [[nome(k), v] for k, v in sai.most_common()]}
 
 
 def main():
@@ -81,7 +80,7 @@ def main():
     deps, grupos = {}, {}
     funcoes = collections.Counter()
     for r in linhas[1:]:
-        if not r[1]:
+        if not r or not matricula(r[1]):   # sem matrícula ("CONTRATAR") não entra
             continue
         origem = str(r[5] or "").strip()
         dpto = str(r[9] or "").split()[0] if r[9] else origem
@@ -113,7 +112,7 @@ def main():
         saida_grupos.append({"id": g["id"], "nome": g["nome"], "n": g["n"], "hoje": g["hoje"], "postos": postos_5x2(g["n"]),
                              "deps": [[CURTO.get(k, NOMES.get(k, k)), v] for k, v in g["deps"].most_common()],
                              "funcoes": dict(g["funcoes"])})
-    saida = {"fonte": "ESCALA RURAL.xlsx (26/10/2026)", "n": len(linhas) - 1 - sum(1 for r in linhas[1:] if not r[1]),
+    saida = {"fonte": "ESCALA RURAL.xlsx (26/10/2026)", "n": sum(1 for r in linhas[1:] if r and matricula(r[1])),
              "hoje_txt": "5x2", "funcoes": dict(funcoes),
              "areas": {k: {"nome": v[0], "cor": v[1]} for k, v in AREAS.items()}, "deps": lista, "grupos": saida_grupos,
              "safra": safra(linhas)}

@@ -1,10 +1,10 @@
 {
  "fonte": "ESCALA RURAL.xlsx (26/10/2026)",
- "n": 166,
+ "n": 163,
  "hoje_txt": "5x2",
  "funcoes": {
   "aux. agrícolas": 62,
-  "trab. rurais": 104
+  "trab. rurais": 101
  },
  "areas": {
   "130.002": {
@@ -49,9 +49,9 @@
    "dep": "130.002.004",
    "nome": "Turma Rural · Capinópolis I",
    "area": "130.002",
-   "n": 28,
-   "dia": 28,
-   "comp": "28 trab. rurais · 11 vindos de Zona 3"
+   "n": 25,
+   "dia": 25,
+   "comp": "25 trab. rurais · 8 vindos de Zona 3"
   },
   {
    "dep": "130.002.050",
@@ -136,7 +136,6 @@
   "quadro": 197,
   "fica": 163,
   "demitir": 34,
-  "contratar": 3,
   "demitir_por": [
    [
     "Atreladores Cana Picada",
@@ -161,12 +160,6 @@
    [
     "Pátio / Outros",
     1
-   ]
-  ],
-  "contratar_por": [
-   [
-    "Capinópolis I",
-    3
    ]
   ]
  }

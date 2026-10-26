@@ -1027,8 +1027,7 @@ function chipsArea(a, s) {
     const por = l => l.map(([n, v]) => `${n} ${v}`).join(" · ");
     $a(a, s).innerHTML = [[fmt(sf.quadro), "Quadro hoje", "", "todos os ativos da área rural"],
       [`−${fmt(sf.demitir)}`, "Demitir no fim da safra", "pos", `não estão na escala: ${por(sf.demitir_por)}`],
-      [sinal(sf.contratar), "Contratar", sf.contratar ? "" : "zero", por(sf.contratar_por)],
-      [fmt(sf.fica + sf.contratar), "Após a safra", "", `${sf.fica} que ficam + ${sf.contratar} a contratar`]]
+      [fmt(sf.quadro - sf.demitir), "Após a safra", "", `${fmt(sf.quadro)} − ${fmt(sf.demitir)}: ficam os da escala`]]
       .map(([v, k, c, t]) => `<div class="chip" title="${esc(t)}"><div class="v ${c}">${v}</div><div class="k">${k}</div></div>`).join("");
     return;
   }

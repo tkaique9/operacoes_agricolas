@@ -72,9 +72,9 @@ planilha em `dados/adm/`, rodar `python adm.py` e `python gerar_departamentos.py
 ### Rural
 
 Aba **Rural** (páginas 11 a 13), no mesmo modelo do ADM (o código das duas abas é um só: `AREAS` no script da página),
-a partir da planilha ESCALA RURAL de 26/10/2026: 166 pessoas, 104 trabalhadores rurais (contrato rural) e 62 auxiliares
-agrícolas (CLT urbano). Os departamentos seguem a coluna Dpto da planilha (Capinópolis I recebe 11 da Zona 3;
-Fertirrigação I, 5 da Irrigação Localizada). Os 148 marcados ADM ficam de segunda a sexta, em 5x2, e não mudam. Os 18
+a partir da planilha ESCALA RURAL de 26/10/2026: 163 pessoas, 101 trabalhadores rurais (contrato rural) e 62 auxiliares
+agrícolas (CLT urbano). Os departamentos seguem a coluna Dpto da planilha (Capinópolis I recebe 8 da Zona 3;
+Fertirrigação I, 5 da Irrigação Localizada). Os 145 marcados ADM ficam de segunda a sexta, em 5x2, e não mudam. Os 18
 marcados **3t** (atreladores de cana picada e de pátio, lavagem de colhedora e apoio regiões, todos auxiliares agrícolas)
 rodam 3 turnos nas 24 h, juntos em Atreladores Pátio: hoje 18 em 5x2, o que dá 4 por turno com turma fixa. Na 5x2
 rotativa e na 4x2 de 8 h fecham com os 18; na 12x36 e na 3x3 sobram 2; na 4x2 de 12 h, 6. Para atualizar: trocar a
@@ -82,9 +82,9 @@ planilha em `dados/rural/`, rodar `python rural.py` e `python gerar_departamento
 
 Fim da safra: a planilha **quadro rural** (`dados/rural/quadro_rural.xlsx`, fora do git) tem os 197 ativos de hoje. Pela
 matrícula, 163 estão na escala e **34 saem no fim da safra** (22 atreladores de cana picada, 4 queimadores, 3 da
-irrigação localizada, 3 do apoio regiões, 1 da adubação pátio e 1 do pátio/outros); a escala tem ainda 3 vagas a
-**contratar** (linhas "CONTRATAR" da Zona 3, que vão para Capinópolis I). 197 − 34 + 3 = 166. Esses números ficam nos
-quadros do painel Rural (o detalhe aparece ao passar o mouse).
+irrigação localizada, 3 do apoio regiões, 1 da adubação pátio e 1 do pátio/outros): 197 − 34 = 163 depois da safra. As
+3 linhas "CONTRATAR" da escala não entram (a conta é só com quem já está no quadro). Esses números ficam nos quadros do
+painel Rural (o detalhe aparece ao passar o mouse).
 
 ### 5x2 com folga desencontrada
 
