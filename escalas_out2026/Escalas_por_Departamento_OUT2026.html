@@ -310,6 +310,7 @@ table.mx tr.fr td { background: #F1F3F8; color: var(--navy); font: 600 13px var(
 .esc.hoje { box-shadow: inset 0 2px 0 #8A93A6, 0 24px 60px -14px rgba(0,0,0,.55); }
 .pill.Hoje { background: #E7EAF1; color: var(--navy); }
 .esc .big.dois { grid-template-columns: 1fr 1.3fr; }
+.esc .big.um { grid-template-columns: 1fr; }
 .esc .big b.dt { font-size: 19px; padding-top: 3px; }
 .esc .p5 { font: 500 12px var(--f-mono); color: var(--mut); margin-top: -2px; }
 .esc .p5 b { font: 700 15px var(--f-display); color: var(--navy); }
@@ -632,7 +633,7 @@ body.maxi-on .deck { z-index: 150; }
 
   <article class="slide" id="escalas" data-mod="Referência" data-title="As escalas" data-desc="Horas, folgas, domingos e risco de cada escala">
     <div class="s-head"><div><div class="s-eyebrow">11 · Referência</div><h2 class="s-title">As escalas</h2>
-      <p class="s-sub">A 5x1 e a 6x1 são as de hoje, para comparar; o % é quanto muda a quantidade de pessoas por equipamento sobre a 5x1. Duas primeiras semanas de cada escala. F verde = folga; vermelho = folga no domingo. Na 5x2, folga separada ou junta: a quantidade de gente é a mesma.</p></div></div>
+      <p class="s-sub">A 5x1 e a 6x1 são as de hoje; o % é quanto muda a quantidade de pessoas por equipamento sobre a 5x1 (a 6x1 não roda 24 h e fica fora dessa comparação). Duas primeiras semanas de cada escala. F verde = folga; vermelho = folga no domingo. Na 5x2, folga separada ou junta: a quantidade de gente é a mesma.</p></div></div>
     <div class="escalas" id="cardsEsc"></div>
   </article>
 
@@ -1227,10 +1228,11 @@ const HOJE_ESC = [
     horario: "Hoje nos turnos 24 h: 07:00–15:20 · 15:00–23:20 · 23:00–07:20 (30 min de intervalo)",
     grade: [0, 1, 2, 3, 4, 5].map(t => Array.from({ length: 42 }, (_, d) => (d + t) % 6 === 5 ? "F" : "T")), rotulos: [..."ABCDEF"],
     nota: "Escala de hoje nos turnos 24 h: 5 dias de trabalho e 1 de folga, que anda um dia por semana (6 turmas por turno). É a base do % das outras escalas. Com a EC 141 (2 folgas por semana a partir de 15/12/2026) deixa de valer." },
-  { id: "6x1", nome: "6x1 · 6 dias e 1 de folga", turnos: 3, trab: 6, ciclo: 7, h_sem: 44, he_sem: 0, folgas_sem: 1,
-    horario: "Hoje de dia e no ADM com sábado: segunda a sábado, 7h20 por dia",
-    grade: [0, 1, 2, 3, 4, 5, 6].map(t => Array.from({ length: 14 }, (_, d) => d % 7 === t ? "F" : "T")), rotulos: [..."ABCDEFG"], domTxt: "só a turma G",
-    nota: "Escala de hoje de dia e no ADM com sábado (folga no domingo). Para rodar 24 h, a folga fica escalonada, uma turma de folga em cada dia da semana: 3,5 pessoas por equipamento. A EC 141 acaba com a 6x1 em 15/12/2026." },
+  // a 6x1 não roda 24 h: fica fora da comparação por equipamento (semEq)
+  { id: "6x1", nome: "6x1 · 6 dias e 1 de folga", semEq: true, turnos: 3, trab: 6, ciclo: 7, h_sem: 44, he_sem: 0, folgas_sem: 1,
+    horario: "Hoje de dia e no ADM com sábado: segunda a sábado, 7h20 por dia, folga no domingo",
+    grade: [Array.from({ length: 14 }, (_, d) => d % 7 === 6 ? "F" : "T")], rotulos: ["Todos"], domTxt: "todos",
+    nota: "Escala de hoje de dia e no ADM com sábado: segunda a sábado e folga no domingo. Não roda 24 h, então não entra na comparação por equipamento, que é só sobre a 5x1. A EC 141 acaba com a 6x1 em 15/12/2026." },
 ];
 // domingos de folga, semanas do ciclo e maior sequência de trabalho de uma grade (como o checar_grade do analise.py)
 function resumoGrade(g) {
@@ -1245,9 +1247,10 @@ function escalas() {
     g.forEach((l, i) => { mini += `<tr><td class="lab">${esc(e.rotulos[i].replace("Turma ", ""))}</td>${l.slice(0, 14).map((v, k) => `<td class="${v === "F" ? "F" + (k % 7 === 6 ? " d" : "") : ""}"></td>`).join("")}</tr>`; });
     mini += "</table>";
     // quanto muda a quantidade de pessoas por equipamento (24 h) sobre a 5x1 de hoje
-    const p5 = e.id === "5x1" ? `<div class="p5">base: ${f1(base)} pessoas por equipamento</div>`
+    const p5 = e.semEq ? "" : e.id === "5x1" ? `<div class="p5">base: ${f1(base)} pessoas por equipamento</div>`
       : `<div class="p5 ${pp > 0.05 ? "up" : pp < -0.05 ? "dn" : ""}"><b>${pp > 0 ? "+" : "−"}${fmt(Math.abs(pp), 1)}%</b> por equipamento sobre a 5x1</div>`;
-    const big = hoje ? `<div class="big dois"><div><b>${f1(PPP(e))}</b><span>pessoas por<br>equipamento 24 h</span></div><div><b class="dt">15/12/2026</b><span>deixa de valer<br>com a EC 141</span></div></div>`
+    const big = e.semEq ? `<div class="big um"><div><b class="dt">15/12/2026</b><span>deixa de valer com a EC 141</span></div></div>`
+      : hoje ? `<div class="big dois"><div><b>${f1(PPP(e))}</b><span>pessoas por<br>equipamento 24 h</span></div><div><b class="dt">15/12/2026</b><span>deixa de valer<br>com a EC 141</span></div></div>`
       : `<div class="big tres"><div><b>${f1(PPP(e))}</b><span>pessoas por<br>equipamento 24 h</span></div><div><b class="${totais(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totais(() => e.id).contr)}</b><span>oficina<br>em todos</span></div><div><b class="${totaisOp(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totaisOp(() => e.id).contr - totaisOp(() => e.id).sobra)}</b><span>frota<br>líquido</span></div></div>`;
     return `<div class="esc${hoje ? " hoje" : e.risco === "Alto" ? " nserve" : ""}"><div><h4>${esc(e.nome)}</h4>${hoje ? '<span class="pill Hoje">Hoje</span>' : pill(e.risco)}</div><div class="hr">${esc(e.horario)}</div>${!hoje && e.folgas ? togFolga() : ""}
       ${big}${p5}
