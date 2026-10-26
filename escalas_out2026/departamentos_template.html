@@ -242,6 +242,19 @@ table.qd tr.fr td.l { box-shadow: inset 6px 0 0 var(--fc, transparent); padding-
 table.qd td.qv .pc { display: block; font: 600 13px var(--f-mono); font-style: normal; letter-spacing: .02em; color: var(--red); margin-top: 1px; }
 table.qd td.qv .pc.dn { color: var(--green); }
 table.qd td.qv .pc.eq { color: var(--na-ink); }
+/* resumo para a diretoria */
+.rs-cols { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) minmax(0, 1fr); gap: 12px; }
+.rs-cols > .card { min-height: 0; }
+ul.rs-l, ol.rs-l { margin: 0; padding-left: 20px; display: grid; gap: 5px; font: 400 14.5px var(--f-serif); color: var(--ink); line-height: 1.38; }
+ol.rs-l li::marker { font: 700 14px var(--f-display); color: #8A6D14; }
+.rs-l b { font-family: var(--f-display); font-weight: 700; color: var(--navy); }
+table.rs-tab td { height: auto; padding-top: 4px; padding-bottom: 4px; }
+table.rs-tab td.dep u { display: inline; margin-left: 8px; }
+table.rs-tab td.qv small.pcr { margin-left: 6px; font: 600 12.5px var(--f-mono); color: var(--mut); }
+table.rs-tab td.cmp { white-space: normal; font-size: 13px; }
+@media screen and (max-width: 1180px) { .rs-cols { grid-template-columns: minmax(0, 1fr); } .rs-cols > .card { flex: 0 0 auto; } }
+html.imprimindo .rs-cols { flex: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) minmax(0, 1fr); }
+
 /* painéis: os indicadores ficam no card do gráfico, ao lado do título */
 .cab-g { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px 14px; flex-wrap: wrap; flex: 0 0 auto; margin-bottom: 4px; }
 .cab-g h3 { margin-top: 6px; }
@@ -598,6 +611,17 @@ body.maxi-on .deck { z-index: 150; }
       </div>
       <div class="rolo"><table class="tb mx" id="tabOm"></table></div>
       <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><b style="color:var(--red)">4x2 de 12 h</b>: risco alto (CLT urbano, noite com hora reduzida)</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
+    </div>
+  </article>
+
+  <article class="slide" id="resumo" data-mod="Resumo" data-title="Resumo para a diretoria" data-desc="Todas as áreas: números, leitura do analista, decisões e riscos">
+    <div class="s-head"><div><div class="s-eyebrow">00 · Resumo · Diretoria</div><h2 class="s-title">Resumo para a diretoria: fim da 6x1 (EC 141/2026)</h2></div>
+      <div class="chips" id="rsChips"></div></div>
+    <div class="card fix"><div class="rolo"><table class="tb qd rs-tab" id="rsTab"></table></div></div>
+    <div class="rs-cols">
+      <div class="card"><h3>Leitura do analista</h3><div class="rolo"><ul class="rs-l" id="rsLeitura"></ul></div></div>
+      <div class="card"><h3>Decisões para a diretoria</h3><div class="rolo"><ol class="rs-l" id="rsDecisoes"></ol></div></div>
+      <div class="card"><h3>Riscos e limites do relatório</h3><div class="rolo"><ul class="rs-l" id="rsRiscos"></ul></div></div>
     </div>
   </article>
 
@@ -1037,7 +1061,7 @@ function slidesArea(a) {
 }
 // as páginas de cada área entram antes da Referência; os botões da matriz mudam só os grupos daquela área
 function montaAreas() {
-  const ref = document.getElementById("escalas");
+  const ref = document.getElementById("resumo") || document.getElementById("escalas");
   AREAS.forEach(a => {
     ref.insertAdjacentHTML("beforebegin", slidesArea(a));
     $a(a, "Sug").addEventListener("click", () => { a.itens.forEach(d => S.esc[d.dep] = sugerida(d)); tudo(); });
@@ -1529,7 +1553,66 @@ $("#impPag").addEventListener("click", () => imprime("pagina"));
 $("#impTudo").addEventListener("click", () => imprime("tudo"));
 
 /* ---------- liga tudo ---------- */
-function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); AREAS.forEach(a => { painelArea(a); quadroArea(a); matrizArea(a); }); escalas(); if (window.salvaSite) salvaSite.mudou(); }
+/* ---------- resumo para a diretoria ----------
+   uma página com todas as áreas, para imprimir e apresentar: números da escolha atual, leitura, decisões e riscos */
+const predom = gs => [...gs].sort((x, y) => y[1] - x[1]).map(([id, n]) => `${ESC[id].curto} em ${n}`).join(" · ");
+const pctTxt = (v, base) => base ? `${v > 0 ? "+" : v < 0 ? "−" : ""}${fmt(Math.abs(v) / base * 100, 1)}%` : "";
+function resumoFinal() {
+  const of = totais(d => S.esc[d.dep]), of5 = totais(() => "5x2"), fr = totaisOp(d => S.esc[d.dep]), fr5 = totaisOp(() => "5x2");
+  const nq = OP.reduce((x, d) => x + d.qtd, 0), ndep = D.deps.length + D.dia.filter(z => !z.parte).length;
+  const L = [
+    { nome: "Oficina", sub: `${ndep} departamentos · pessoas`, hoje: HOJE, esc: of.quadro, c: of.contr, c5: of5.contr, risco: of.risco,
+      pred: `${predom(grupos().map(g => [g.id, g.deps.length]))} deptos; ${DIA} de dia` },
+    { nome: "Frota operacional", sub: `${nq} equipamentos · operadores necessários`, hoje: fr.hoje, esc: fr.need, c: fr.contr, c5: fr5.contr, risco: fr.risco,
+      pred: `${predom(gruposOp().map(g => [g.id, g.deps.length]))} tipos` },
+    ...AREAS.map(a => { const t = totaisArea(a, d => S.esc[d.dep]), t5 = totaisArea(a, () => "5x2");
+      return { nome: a.nome, sub: `${a.dados.deps.length} departamentos · pessoas`, hoje: a.dados.n, esc: t.quadro, c: t.contr, c5: t5.contr, risco: t.risco,
+        pred: `${a.n24} em ${qtdGrupos(a)} 24 h (${predom(gruposArea(a).map(g => [g.id, g.deps.length]))}); ${fmt(a.dia)} em 5x2 de dia` }; }),
+  ];
+  const T = L.reduce((t, l) => ({ hoje: t.hoje + l.hoje, esc: t.esc + l.esc, c: t.c + l.c, c5: t.c5 + l.c5 }), { hoje: 0, esc: 0, c: 0, c5: 0 });
+  const riscoMax = L.map(l => l.risco).sort((x, y) => ORD[y] - ORD[x])[0];
+  const ativos = PES ? (PES.ativos.operador || 0) + (PES.ativos.motorista || 0) : 0, semAtiv = Math.max(0, ativos - fr.need);
+  const sf = (AREAS.find(a => a.dados.safra) || {}).dados?.safra || null;
+  $("#rsChips").innerHTML = [[fmt(T.hoje), "Base hoje"], [sinal(T.c), "Contratar", T.c > 0 ? "pos" : "zero"], [sinal(T.c5), "5x2 em tudo", "pos"],
+    ...(PES ? [[fmt(semAtiv), "Sem atividade"]] : []), ...(sf ? [[`−${fmt(sf.demitir)}`, "Fim da safra", "pos"]] : [])]
+    .map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
+  const q = (v, base, sinalOn) => `<td class="qv"><b>${sinalOn ? sinal(v) : fmt(v)}</b>${sinalOn && base && v ? `<small class="pcr">${pctTxt(v, base)}</small>` : ""}</td>`;
+  $("#rsTab").innerHTML = `<thead><tr><th class="l">Área</th><th>Hoje</th><th>Com a escolha</th><th>Contratar<u>na escolha</u></th><th>Com 5x2<u>em tudo</u></th><th>Risco</th><th class="l">Escalas escolhidas</th></tr></thead><tbody>`
+    + L.map(l => `<tr><td class="l dep">${esc(l.nome)}<u>${esc(l.sub)}</u></td><td class="hoje">${fmt(l.hoje)}</td><td class="qv"><b>${fmt(l.esc)}</b></td>${q(l.c, l.hoje, 1)}${q(l.c5, l.hoje, 1)}<td>${pill(l.risco)}</td><td class="l cmp">${esc(l.pred)}</td></tr>`).join("")
+    + `<tr class="tot"><td class="l">Total</td><td>${fmt(T.hoje)}</td><td>${fmt(T.esc)}</td>${q(T.c, T.hoje, 1)}${q(T.c5, T.hoje, 1)}<td>${pill(riscoMax)}</td><td class="l cmp">a frota conta operadores necessários (3,6 por equipamento na 5x1), não o quadro</td></tr></tbody>`;
+  // maior aumento da oficina e o desencontro entre a lista da frota e os ativos
+  const top = D.deps.map(d => ({ d, c: (conta(d, S.esc[d.dep]) || { c: 0 }).c })).sort((x, y) => y.c - x.c)[0];
+  const at = re => PES ? PES.atividades.filter(a => re.test(a.nome)).reduce((x, a) => x + a.n, 0) : 0, eq = re => OP.filter(d => re.test(d.nome)).reduce((x, d) => x + d.qtd, 0);
+  const conf = [["transbordo", /transbordo/i], ["colhedora", /colhedora/i], ["caminhão canavieiro", /canavieiro/i]].map(([n, re]) => [n, at(re), eq(re)]).filter(([, a, e]) => a && e);
+  const of12 = grupos().find(g => g.id === "12x36");
+  const li = [
+    `Com as escalas escolhidas, <b>${sinal(T.c)}</b> pessoas (${pctTxt(T.c, T.hoje)} sobre ${fmt(T.hoje)}): oficina ${sinal(L[0].c)}, frota ${sinal(L[1].c)}${L.slice(2).map(l => `, ${esc(l.nome)} ${sinal(l.c)}`).join("")}. Com 5x2 em tudo seriam <b>${sinal(T.c5)}</b>.`,
+    `A <b>12x36</b> é a que menos contrata nos postos 24 h${of12 ? ` (${of12.deps.length} departamentos da oficina)` : ""}, mas depende de acordo coletivo (CLT art. 59-A): risco médio. A 5x2 é a de menor risco e a mais cara em gente.`,
+    top && top.c > 0 ? `Na oficina, o maior aumento é <b>${esc(top.d.nome)}</b> (${sinal(top.c)}${S.fr[top.d.dep] ? `, com ${S.fr[top.d.dep].n} frentes × ${S.fr[top.d.dep].p} por turno` : ""}).` : "",
+    PES ? `A frota precisa de <b>${fmt(fr.need)}</b> motoristas e operadores na escolha e há <b>${fmt(ativos)}</b> ativos: ${fmt(semAtiv)} sem atividade. As ${fmt(fr.contr)} contratações da frota podem virar realocação, se a lista de equipamentos estiver completa.` : "",
+    ...AREAS.map(a => a.dados.safra ? `${esc(a.nome)}: <b>${fmt(a.dados.safra.demitir)}</b> saem no fim da safra (${esc(a.dados.safra.demitir_por.slice(0, 3).map(([n, v]) => `${n} ${v}`).join(", "))}…); depois da safra, ${fmt(a.dados.safra.quadro - a.dados.safra.demitir)}.`
+      : `${esc(a.nome)}: ${qtdGrupos(a)} 24 h ${(c => c > 0 ? `precisa${a.itens.length > 1 ? "m" : ""} de ${sinal(c)}` : `fecha${a.itens.length > 1 ? "m" : ""} sem contratar`)(totaisArea(a, d => S.esc[d.dep]).contr)}; ${fmt(a.dia)} seguem em 5x2 de dia.`),
+  ].filter(Boolean);
+  $("#rsLeitura").innerHTML = li.map(x => `<li>${x}</li>`).join("");
+  const de = [
+    `Aprovar a escala por área: <b>12x36</b> nos postos 24 h e <b>5x2</b> (folga desencontrada) nos de dia; a 4x2 de 12 h fica de fora.`,
+    `Abrir já a negociação do <b>acordo coletivo</b> (12x36 e compensação de jornada): tem de estar assinado antes de <b>15/12/2026</b>, quando valem as 2 folgas e as 42 h.`,
+    `Autorizar as <b>${sinal(L[0].c)}</b> contratações da oficina (${sinal(L[0].c5)} se a decisão for 5x2 em todos).`,
+    PES ? `Frota: antes de contratar, validar com a operação a lista de equipamentos e cruzar com os ${fmt(ativos)} motoristas e operadores ativos.` : `Frota: validar a lista de equipamentos com a operação antes de contratar ${sinal(L[1].c)}.`,
+    ...AREAS.filter(a => a.dados.safra).map(a => `${esc(a.nome)}: aprovar o desligamento de <b>${fmt(a.dados.safra.demitir)}</b> no fim da safra.`),
+    `Pedir o plano para as <b>40 h de dez/2027</b>: turno da noite e jornada da 5x2 de dia.`,
+  ];
+  $("#rsDecisoes").innerHTML = de.map(x => `<li>${x}</li>`).join("");
+  const ri = [
+    `<b>4x2 de 12 h</b>: risco alto. Operadores, motoristas e oficina são CLT urbano; com a hora noturna reduzida, a noite de 12 h passa de 10 h contadas.`,
+    `<b>Noite de 8 h</b> (23:00–07:20): com a hora reduzida conta cerca de 8h23; ajustar o horário ou o acordo até dez/2027.`,
+    `<b>Mulheres</b> em escala com domingo: folga em um domingo a cada 15 dias (CLT art. 386).`,
+    conf.length ? `<b>Lista da frota parcial</b>: ${conf.map(([n, a, e]) => `${n} ${a} ativos para ${e} equipamentos`).join("; ")}. O "sem atividade" está superestimado até a lista ser completada.` : "",
+    `<b>Bases</b>: oficina e frota de ${D.base}; ADM, rural e motoristas de 26/10/2026. Custos e folha estão no relatório geral, não aqui.`,
+  ].filter(Boolean);
+  $("#rsRiscos").innerHTML = ri.map(x => `<li>${x}</li>`).join("");
+}
+function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); AREAS.forEach(a => { painelArea(a); quadroArea(a); matrizArea(a); }); resumoFinal(); escalas(); if (window.salvaSite) salvaSite.mudou(); }
 function volante(v) { S.vol = v; $("#vol").checked = v; tudo(); }
 $("#vol").addEventListener("change", e => volante(e.target.checked));
 function inclui12(v) { S.inc12 = v; $("#inc12").checked = v; $("#inc12Op").checked = v; D.deps.forEach(d => S.esc[d.dep] = sugerida(d)); OP.forEach(d => { if (d.qtd) S.esc[d.dep] = sugerida(d); }); AD.forEach(d => S.esc[d.dep] = sugerida(d)); tudo(); }

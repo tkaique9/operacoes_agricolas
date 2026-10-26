@@ -47,6 +47,15 @@ A 4x2 de 12 h entra na simulação com **risco alto** (botão "4x2 12 h em todos
 cadastro, operadores de máquinas (335) e motoristas (250) são CLT urbano e, com a hora noturna reduzida, a noite de
 12 h passa de 10 h contadas. Só vale com norma coletiva que troque a hora reduzida por adicional maior.
 
+### Resumo para a diretoria
+
+Página 14 (módulo Resumo, antes da Referência), feita para imprimir numa folha A4 e apresentar: indicadores (base de hoje,
+contratar na escolha, 5x2 em tudo, motoristas e operadores sem atividade, fim da safra), o quadro por área (oficina,
+frota, ADM e rural: hoje, com a escolha, contratar e %, 5x2 em tudo, risco e escalas escolhidas) e três colunas de
+texto: leitura do analista, decisões para a diretoria e riscos e limites do relatório. Tudo sai das escalas escolhidas na
+página (`resumoFinal()`), então muda junto quando a escolha muda. Na frota a base é de operadores necessários (3,6 por
+equipamento na 5x1), não o quadro.
+
 ### Motoristas e operadores (painel da frota)
 
 No topo do painel da frota, o resumo compara os ativos do Quadro motorista operador de 26/10/2026 (591: 328 operadores e
