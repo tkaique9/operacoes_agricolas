@@ -1022,6 +1022,16 @@ function montaAreas() {
   });
 }
 function chipsArea(a, s) {
+  const sf = a.dados.safra;
+  if (sf && s === "PChips") {   // rural: os quadros do painel mostram o fim da safra (quadro de hoje x escala); o detalhe fica na dica
+    const por = l => l.map(([n, v]) => `${n} ${v}`).join(" · ");
+    $a(a, s).innerHTML = [[fmt(sf.quadro), "Quadro hoje", "", "todos os ativos da área rural"],
+      [`−${fmt(sf.demitir)}`, "Demitir no fim da safra", "pos", `não estão na escala: ${por(sf.demitir_por)}`],
+      [sinal(sf.contratar), "Contratar", sf.contratar ? "" : "zero", por(sf.contratar_por)],
+      [fmt(sf.fica + sf.contratar), "Após a safra", "", `${sf.fica} que ficam + ${sf.contratar} a contratar`]]
+      .map(([v, k, c, t]) => `<div class="chip" title="${esc(t)}"><div class="v ${c}">${v}</div><div class="k">${k}</div></div>`).join("");
+    return;
+  }
   const t = totaisArea(a, d => S.esc[d.dep]), t5 = totaisArea(a, () => "5x2");
   $a(a, s).innerHTML = [[fmt(a.dados.n), "Hoje"], [fmt(t.quadro), "Escolhida"], [sinal(t.contr), "Contratar", t.contr > 0 ? "" : "zero"], [sinal(t5.contr), `5x2 em ${a.td}`, t5.contr > 0 ? "pos" : "zero"]]
     .map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");

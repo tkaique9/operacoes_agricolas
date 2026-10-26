@@ -131,5 +131,43 @@
     "aux. agrícolas": 18
    }
   }
- ]
+ ],
+ "safra": {
+  "quadro": 197,
+  "fica": 163,
+  "demitir": 34,
+  "contratar": 3,
+  "demitir_por": [
+   [
+    "Atreladores Cana Picada",
+    22
+   ],
+   [
+    "Queimadores",
+    4
+   ],
+   [
+    "Apoio Regiões",
+    3
+   ],
+   [
+    "Irrigação Localizada",
+    3
+   ],
+   [
+    "Adubação Pátio",
+    1
+   ],
+   [
+    "Pátio / Outros",
+    1
+   ]
+  ],
+  "contratar_por": [
+   [
+    "Capinópolis I",
+    3
+   ]
+  ]
+ }
 }

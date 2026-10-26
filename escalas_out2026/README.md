@@ -80,6 +80,12 @@ rodam 3 turnos nas 24 h, juntos em Atreladores Pátio: hoje 18 em 5x2, o que dá
 rotativa e na 4x2 de 8 h fecham com os 18; na 12x36 e na 3x3 sobram 2; na 4x2 de 12 h, 6. Para atualizar: trocar a
 planilha em `dados/rural/`, rodar `python rural.py` e `python gerar_departamentos.py`.
 
+Fim da safra: a planilha **quadro rural** (`dados/rural/quadro_rural.xlsx`, fora do git) tem os 197 ativos de hoje. Pela
+matrícula, 163 estão na escala e **34 saem no fim da safra** (22 atreladores de cana picada, 4 queimadores, 3 da
+irrigação localizada, 3 do apoio regiões, 1 da adubação pátio e 1 do pátio/outros); a escala tem ainda 3 vagas a
+**contratar** (linhas "CONTRATAR" da Zona 3, que vão para Capinópolis I). 197 − 34 + 3 = 166. Esses números ficam nos
+quadros do painel Rural (o detalhe aparece ao passar o mouse).
+
 ### 5x2 com folga desencontrada
 
 A apresentação mostra a 5x2 com **folga separada** (`analise.modelo_5x2_desenc`): as 2 folgas da semana ficam 3 ou 4
