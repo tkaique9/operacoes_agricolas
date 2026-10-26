@@ -49,12 +49,14 @@ cadastro, operadores de máquinas (335) e motoristas (250) são CLT urbano e, co
 
 ### Resumo para a diretoria
 
-Página 14 (módulo Resumo, antes da Referência), feita para imprimir numa folha A4 e apresentar: indicadores (base de hoje,
-contratar na escolha, 5x2 em tudo, motoristas e operadores sem atividade, fim da safra), o quadro por área (oficina,
-frota, ADM e rural: hoje, com a escolha, contratar e %, 5x2 em tudo, risco e escalas escolhidas) e três colunas de
-texto: leitura do analista, decisões para a diretoria e riscos e limites do relatório. Tudo sai das escalas escolhidas na
-página (`resumoFinal()`), então muda junto quando a escolha muda. Na frota a base é de operadores necessários (3,6 por
-equipamento na 5x1), não o quadro.
+Página 14 (módulo Resumo, antes da Referência), para imprimir numa folha A4 e apresentar **como fica o quadro**: no topo,
+quadro hoje, com as escalas escolhidas, a diferença e o rural no fim da safra; embaixo, uma coluna por área (oficina,
+frota, ADM e rural) com cada departamento (na frota, cada tipo de equipamento), a escala escolhida e as pessoas hoje →
+com a escala. Tudo sai das escolhas feitas na página (`resumoFinal()`). Na frota a base é de operadores necessários
+(3,6 por equipamento na 5x1), não o quadro.
+
+A capa traz o título **Estudo comparativo de escalas** e o símbolo da CRV em branco (`logo_crv_branco_datauri.txt`,
+feito do logo azul: o azul vira branco e o fundo branco, transparente).
 
 ### Motoristas e operadores (painel da frota)
 

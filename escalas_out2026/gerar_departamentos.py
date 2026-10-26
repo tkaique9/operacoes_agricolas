@@ -170,7 +170,7 @@ def dados():
 
 def gerar():
     js = json.dumps(dados(), ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
-    logo = (AQUI / "logo_crv_datauri.txt").read_text(encoding="ascii").strip()
+    logo = (AQUI / "logo_crv_branco_datauri.txt").read_text(encoding="ascii").strip()   # símbolo da CRV em branco, sobre o fundo azul
     pagina = TEMPLATE.read_text(encoding="utf-8").replace("/*DADOS*/null", js).replace("/*LOGO*/", logo)
     ARTIFACT.parent.mkdir(exist_ok=True)
     ARTIFACT.write_text(pagina, encoding="utf-8")
