@@ -47,13 +47,15 @@ A 4x2 de 12 h entra na simulação com **risco alto** (botão "4x2 12 h em todos
 cadastro, operadores de máquinas (335) e motoristas (250) são CLT urbano e, com a hora noturna reduzida, a noite de
 12 h passa de 10 h contadas. Só vale com norma coletiva que troque a hora reduzida por adicional maior.
 
-### Resumo para a diretoria
+### Resumo (páginas 14 e 15)
 
-Página 14 (módulo Resumo, antes da Referência), para imprimir numa folha A4 e apresentar **como fica o quadro**: no topo,
-quadro hoje, com as escalas escolhidas, a diferença e o rural no fim da safra; embaixo, uma coluna por área (oficina,
-frota, ADM e rural) com cada departamento (na frota, cada tipo de equipamento), a escala escolhida e as pessoas hoje →
-com a escala. Tudo sai das escolhas feitas na página (`resumoFinal()`). Na frota a base é de operadores necessários
-(3,6 por equipamento na 5x1), não o quadro.
+**Resumo geral** (uma folha A4): no topo, quadro hoje, com a escolha, a diferença e o rural no fim da safra; o quadro por
+área (oficina, frota, ADM e rural) com as pessoas em cada escala, aplicada à área toda, e na escala escolhida, com a
+diferença e o % sobre hoje; e o **gráfico resumo**, uma barra por escala empilhada por área. **Detalhamento por
+departamento** (duas folhas): cada departamento da oficina, cada tipo de equipamento da frota e cada grupo 24 h do ADM e
+do rural, com as pessoas em cada escala e a escala escolhida; quem fica de segunda a sexta entra numa linha por área, e
+cada área tem subtotal. Tudo sai das escolhas feitas na página (`resumoFinal()`). Na frota a base é de operadores
+necessários (3,6 por equipamento na 5x1), não o quadro.
 
 A capa traz o título **Estudo comparativo de escalas** e o símbolo da CRV em branco (`logo_crv_branco_datauri.txt`,
 feito do logo azul: o azul vira branco e o fundo branco, transparente).
