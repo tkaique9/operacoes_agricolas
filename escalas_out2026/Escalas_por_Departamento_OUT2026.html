@@ -245,6 +245,14 @@ table.qd tr.fr td.l { box-shadow: inset 6px 0 0 var(--fc, transparent); padding-
 table.qd td.qv .pc { display: block; font: 600 13px var(--f-mono); font-style: normal; letter-spacing: .02em; color: var(--red); margin-top: 1px; }
 table.qd td.qv .pc.dn { color: var(--green); }
 table.qd td.qv .pc.eq { color: var(--na-ink); }
+/* painéis: os indicadores ficam no card do gráfico, ao lado do título */
+.cab-g { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px 14px; flex-wrap: wrap; flex: 0 0 auto; margin-bottom: 4px; }
+.cab-g h3 { margin-top: 6px; }
+.chips.claro { gap: 7px; }
+.chips.claro .chip { background: var(--bgsoft); border-color: var(--line); padding: 4px 10px; min-width: 92px; }
+.chips.claro .chip .v { color: var(--navy); font-size: 19px; }
+.chips.claro .chip .v.pos { color: var(--red); } .chips.claro .chip .v.zero { color: var(--green); }
+.chips.claro .chip .k { color: var(--mut); font-size: 11.5px; margin-top: 1px; }
 /* motoristas e operadores no painel da frota */
 table.qd td.qv small.sa { margin-left: 6px; font: 600 12.5px var(--f-mono); letter-spacing: .02em; }
 #opResumo td { height: auto; padding-top: 3px; padding-bottom: 3px; }
@@ -494,11 +502,9 @@ body.maxi-on .deck { z-index: 150; }
   </article>
 
   <article class="slide" id="painel" data-mod="Oficina" data-title="Painel" data-desc="O quadro da oficina hoje, em cada escala e na escolha por departamento">
-    <div class="s-head"><div><div class="s-eyebrow">01 · Oficina · Painel</div><h2 class="s-title">Quadro da oficina: hoje e em cada escala</h2>
-      <p class="s-sub">Cada barra aplica uma escala a todos os departamentos com turno. A última soma a escala escolhida em cada um.</p></div>
-      <div class="chips" id="pChips"></div></div>
+    <div class="s-head"><div><div class="s-eyebrow">01 · Oficina · Painel</div><h2 class="s-title">Quadro da oficina: hoje e em cada escala</h2></div></div>
     <div class="painel">
-      <div class="card"><h3>Quadro em cada escala<span class="h3u">pessoas · diferença sobre hoje</span></h3><div class="rolo" style="overflow:hidden"><svg id="gPainel" class="bars" role="img" aria-label="Quadro da oficina hoje e em cada escala"></svg></div></div>
+      <div class="card"><div class="cab-g"><h3>Quadro em cada escala</h3><div class="chips claro" id="pChips"></div></div><div class="rolo" style="overflow:hidden"><svg id="gPainel" class="bars" role="img" aria-label="Quadro da oficina hoje e em cada escala"></svg></div></div>
       <div class="card"><h3>Escala escolhida em cada departamento<span class="h3u">hoje → com a escala</span></h3><div class="rolo"><table class="lista" id="pLista"></table></div></div>
     </div>
   </article>
@@ -540,12 +546,10 @@ body.maxi-on .deck { z-index: 150; }
   </article>
 
   <article class="slide" id="op-painel" data-mod="Operacional" data-title="Painel da frota" data-desc="Operadores para rodar a frota 24 h: hoje em 5x1 e em cada escala">
-    <div class="s-head"><div><div class="s-eyebrow">05 · Operacional · Painel</div><h2 class="s-title">Frota operacional: operadores hoje e em cada escala</h2>
-      <p class="s-sub" id="opSub"></p></div>
-      <div class="chips" id="opChips"></div></div>
+    <div class="s-head"><div><div class="s-eyebrow">05 · Operacional · Painel</div><h2 class="s-title">Frota operacional: operadores hoje e em cada escala</h2></div></div>
     <div class="card fix" id="opResumoCard" hidden><h3>Motoristas e operadores<span class="h3u">ativos no quadro × o que a frota precisa · o que sobra fica sem atividade</span></h3><div class="rolo"><table class="tb qd" id="opResumo"></table></div><details class="ativ" id="opAtiv"></details></div>
     <div class="painel">
-      <div class="card"><h3>Operadores em cada escala<span class="h3u">operadores · diferença sobre hoje (5x1)</span></h3><div class="rolo" style="overflow:hidden"><svg id="gOp" class="bars" role="img" aria-label="Operadores da frota hoje e em cada escala"></svg></div></div>
+      <div class="card"><div class="cab-g"><h3>Operadores em cada escala</h3><div class="chips claro" id="opChips"></div></div><div class="rolo" style="overflow:hidden"><svg id="gOp" class="bars" role="img" aria-label="Operadores da frota hoje e em cada escala"></svg></div></div>
       <div class="card"><h3>Escala escolhida em cada equipamento<span class="h3u">operadores hoje → com a escala</span></h3><div class="rolo"><table class="lista" id="opLista"></table></div></div>
     </div>
   </article>
@@ -784,7 +788,7 @@ function barrasV(svg, itens, opts) {
   svg.innerHTML = g;
 }
 function barrasH(svg, linhas) {
-  const W = NA_FOLHA() ? 1040 : 1500, rh = 31, m = { l: 290, r: 70, t: 34, b: 14 }, H = m.t + m.b + rh * linhas.length;
+  const W = NA_FOLHA() ? 1040 : 1500, rh = 31, m = { l: 290, r: 140, t: 34, b: 14 }, H = m.t + m.b + rh * linhas.length;
   const max = Math.max(4, ...linhas.flatMap(l => [l.a, l.b])), x = v => m.l + (W - m.l - m.r) * v / max;
   let g = `<rect x="${m.l}" y="6" width="12" height="12" rx="2" fill="#C9A227"/><text x="${m.l + 18}" y="16" font-size="13" fill="#5A6072" font-family="IBM Plex Mono, monospace">ESCALA ESCOLHIDA</text>
        <rect x="${m.l + 170}" y="6" width="12" height="12" rx="2" fill="#B8C2D6"/><text x="${m.l + 188}" y="16" font-size="13" fill="#5A6072" font-family="IBM Plex Mono, monospace">5X2 EM TODOS</text>`;
@@ -794,8 +798,8 @@ function barrasH(svg, linhas) {
     g += `<text x="${m.l - 12}" y="${y0 + 15}" text-anchor="end" font-size="14.5" font-weight="700" fill="#12224A">${esc(l.nome)}</text><text x="${m.l - 12}" y="${y0 + 28}" text-anchor="end" font-size="13" fill="#5A6072" font-family="IBM Plex Mono, monospace">${esc(l.esc)}</text>`;
     g += `<rect x="${m.l}" y="${y0 + 3}" width="${Math.max(0, x(Math.max(l.a, 0)) - m.l)}" height="13" rx="2" fill="#C9A227"/>`;
     g += `<rect x="${m.l}" y="${y0 + 18}" width="${Math.max(0, x(Math.max(l.b, 0)) - m.l)}" height="9" rx="2" fill="#B8C2D6"/>`;
-    g += `<text x="${x(Math.max(l.a, 0)) + 6}" y="${y0 + 14}" font-size="14.5" font-weight="700" fill="${l.a > 0 ? "#C0392B" : "#2E7D46"}">${l.a > 0 ? "+" + l.a : l.a < 0 ? "sobra " + Math.abs(l.a) : "0"}</text>`;
-    g += `<text x="${x(Math.max(l.b, 0)) + 6}" y="${y0 + 27}" font-size="13" fill="#5A6072">${l.b > 0 ? "+" + l.b : "0"}</text>`;
+    g += `<text x="${x(Math.max(l.a, 0)) + 6}" y="${y0 + 14}" font-size="14.5" font-weight="700" fill="${l.a > 0 ? "#C0392B" : "#2E7D46"}">${l.a > 0 ? "+" + l.a : l.a < 0 ? "sobra " + Math.abs(l.a) : "0"}${l.a && l.n ? ` (${l.a > 0 ? "+" : "−"}${fmt(Math.abs(l.a) / l.n * 100)}%)` : ""}</text>`;
+    g += `<text x="${x(Math.max(l.b, 0)) + 6}" y="${y0 + 27}" font-size="13" fill="#5A6072">${l.b > 0 ? `+${l.b}${l.n ? ` (+${fmt(l.b / l.n * 100)}%)` : ""}` : "0"}</text>`;
   });
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.style.width = "100%"; svg.style.minWidth = "760px";
@@ -832,7 +836,8 @@ function grupos() {
 }
 const NA_FOLHA = () => document.documentElement.classList.contains("imprimindo");
 function grafQ(svg, base, itensEsc, escolhida) {
-  const W = 1000, H = NA_FOLHA() ? 760 : 500, m = { l: 46, r: 62, t: 40, b: 128 };
+  const box = svg.parentElement, cw = box ? box.clientWidth : 0, ch = box ? box.clientHeight : 0;
+  const W = 1000, H = NA_FOLHA() ? 760 : cw > 200 && ch > 120 ? Math.max(360, Math.min(760, Math.round(W * ch / cw))) : 500, m = { l: 46, r: 62, t: 40, b: 128 };
   const itens = [{ id: "hoje", v: base.v, lab: "Hoje", sub: base.sub, cor: "#B8C2D6" }, ...itensEsc,
     { id: "esc", v: escolhida.v, lab: "Escolhida", sub: escolhida.sub, d: escolhida.v - base.v, seg: escolhida.seg }];
   const bruto = Math.max(...itens.map(i => i.v)) * 1.1, passo = [5, 10, 20, 25, 50, 100].find(p => bruto / p <= 6) || 200, max = Math.ceil(bruto / passo) * passo;
@@ -847,7 +852,7 @@ function grafQ(svg, base, itensEsc, escolhida) {
     if (it.seg) { let b0 = H - m.b; it.seg.forEach(sg => { const h = (H - m.t - m.b) * sg.v / max; g += `<rect x="${x}" y="${b0 - h}" width="${w}" height="${h}" fill="${sg.cor}" stroke="#fff" stroke-width="1.5"/>`; b0 -= h; }); }
     else g += `<rect x="${x}" y="${yy}" width="${w}" height="${H - m.b - yy}" rx="2" fill="${it.cor}" ${it.ns ? 'fill-opacity=".55"' : ""}/>`;
     g += `<text x="${cx}" y="${yy - 9}" text-anchor="middle" font-size="${esc_ ? 21 : 18}" font-weight="800" fill="#12224A">${fmt(it.v)}</text>`;
-    if (it.d !== undefined) g += `<text x="${cx}" y="${yy - 30}" text-anchor="middle" font-size="13.5" font-weight="600" fill="${it.d > 0 ? "#C0392B" : "#2E7D46"}" font-family="IBM Plex Mono, monospace">${it.d > 0 ? "+" + it.d : it.d < 0 ? "−" + Math.abs(it.d) : "="}</text>`;
+    if (it.d !== undefined) g += `<text x="${cx}" y="${yy - 30}" text-anchor="middle" font-size="13.5" font-weight="600" fill="${it.d > 0 ? "#C0392B" : "#2E7D46"}" font-family="IBM Plex Mono, monospace">${it.d > 0 ? "+" + it.d : it.d < 0 ? "−" + Math.abs(it.d) : "="}${it.d && base.v ? ` · ${it.d > 0 ? "+" : "−"}${fmt(Math.abs(it.d) / base.v * 100, 1)}%` : ""}</text>`;
     g += `<text x="${cx}" y="${H - m.b + 19}" text-anchor="middle" font-size="14.5" font-weight="700" fill="#12224A">${esc(it.lab)}</text>`;
     g += `<text x="${cx}" y="${H - m.b + 33}" text-anchor="middle" font-size="12" fill="${it.al ? "#C0392B" : "#5A6072"}" font-family="IBM Plex Mono, monospace">${esc(it.sub)}</text>`;
     if (esc_) { let ly = H - m.b + 52; escolhida.leg.forEach(([cor, txt]) => { g += `<rect x="${x - 2}" y="${ly - 9}" width="10" height="10" rx="2" fill="${cor}"/><text x="${x + 13}" y="${ly}" font-size="13" font-weight="600" fill="#12224A">${esc(txt)}</text>`; ly += 16; }); }
@@ -905,7 +910,6 @@ function painelOp() {
   chipsOp("#opChips");
   resumoOp();
   const a = totaisOp(d => S.esc[d.dep]), gs = gruposOp(), nq = OP.reduce((x, d) => x + d.qtd, 0);
-  $("#opSub").textContent = `${nq} equipamentos, 1 operador por equipamento em cada turno e o folguista rodando entre equipamentos: 3,6 pessoas por equipamento na 5x1 de hoje; as atividades de tratos entram no turno e com o folguista anotados. Cada barra aplica uma escala à frota inteira; a última soma a escala escolhida em cada equipamento.`;
   const itens = IDS.map(id => { const t = totaisOp(() => id); return { id, v: t.need, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.need - a.hoje, al: ESC[id].risco === "Alto" }; });
   grafQ($("#gOp"), { v: a.hoje, sub: "5X1" }, itens, { v: a.need, sub: "POR EQUIPAMENTO", seg: gs.map(g => ({ v: g.need, cor: COR[g.id] })), leg: [...gs].reverse().map(gr => [COR[gr.id], `${ESC[gr.id].curto} · ${gr.deps.length} tipos`]) });
   let h = "";
@@ -981,11 +985,9 @@ function slidesArea(a) {
   const pl = a.itens.length === 1 ? a.grupo : a.grupos;
   return `
   <article class="slide" id="${a.k}-painel" data-mod="${esc(a.mod)}" data-title="Painel ${esc(a.mod)}" data-desc="${esc(a.nome)}: pessoas hoje e em cada escala">
-    <div class="s-head"><div><div class="s-eyebrow">00 · ${esc(a.mod)} · Painel</div><h2 class="s-title">${esc(a.nome)}: pessoas hoje e em cada escala</h2>
-      <p class="s-sub" id="${a.k}Sub"></p></div>
-      <div class="chips" id="${a.k}PChips"></div></div>
+    <div class="s-head"><div><div class="s-eyebrow">00 · ${esc(a.mod)} · Painel</div><h2 class="s-title">${esc(a.nome)}: pessoas hoje e em cada escala</h2></div></div>
     <div class="painel">
-      <div class="card"><h3>Pessoas em cada escala<span class="h3u">pessoas · diferença sobre hoje</span></h3><div class="rolo" style="overflow:hidden"><svg id="${a.k}Graf" class="bars" role="img" aria-label="${esc(a.nome)} hoje e em cada escala"></svg></div></div>
+      <div class="card"><div class="cab-g"><h3>Pessoas em cada escala</h3><div class="chips claro" id="${a.k}PChips"></div></div><div class="rolo" style="overflow:hidden"><svg id="${a.k}Graf" class="bars" role="img" aria-label="${esc(a.nome)} hoje e em cada escala"></svg></div></div>
       <div class="card"><h3>${esc(a.Grupos)} e departamentos<span class="h3u">hoje → com a escala</span></h3><div class="rolo"><table class="lista" id="${a.k}Lista"></table></div></div>
     </div>
   </article>
@@ -1040,7 +1042,6 @@ const qtdGrupos = a => `${a.itens.length} ${a.itens.length === 1 ? a.grupo : a.g
 function painelArea(a) {
   chipsArea(a, "PChips");
   const t = totaisArea(a, d => S.esc[d.dep]), gs = gruposArea(a), hojes = [...new Set(a.itens.map(d => d.hoje))].join(" e ");
-  $a(a, "Sub").textContent = `${fmt(a.dados.n)} pessoas em ${a.dados.deps.length} departamentos${a.dados.funcoes ? ` (${somaTxt(a.dados.funcoes)})` : ""}. ${fmt(a.dia)} ficam de segunda a sexta, em 5x2, e não mudam; ${a.n24} pessoas em ${qtdGrupos(a)} 24 h (hoje em ${hojes}) entram em cada escala.`;
   const itens = IDS.map(id => { const x = totaisArea(a, () => id); return { id, v: x.quadro, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: x.quadro - a.dados.n, al: ESC[id].risco === "Alto" }; });
   grafQ($a(a, "Graf"), { v: a.dados.n, sub: a.dados.hoje_txt || "hoje" }, itens, { v: t.quadro, sub: `POR ${a.grupo.toUpperCase()}`, seg: [{ v: a.dia, cor: "#DCE1EA" }, ...gs.map(g => ({ v: g.fica, cor: COR[g.id] }))],
     leg: [...[...gs].reverse().map(g => [COR[g.id], `${ESC[g.id].curto} · ${g.deps.length}`]), ["#DCE1EA", `5x2 de dia · ${a.dia}`]] });
@@ -1158,7 +1159,7 @@ function matriz() {
 }
 function grafico() {
   chips("#gChips");
-  const linhas = D.deps.map(d => { const r = conta(d, S.esc[d.dep]), r5 = conta(d, "5x2"); return { nome: d.sub ? d.sub + " · PCM" : d.nome, esc: ESC[S.esc[d.dep]].curto, a: r.c, b: Math.max(r5.c, 0) }; })
+  const linhas = D.deps.map(d => { const r = conta(d, S.esc[d.dep]), r5 = conta(d, "5x2"); return { nome: d.sub ? d.sub + " · PCM" : d.nome, esc: ESC[S.esc[d.dep]].curto, a: r.c, b: Math.max(r5.c, 0), n: d.n }; })
     .sort((x, y) => y.a - x.a || y.b - x.b);
   barrasH($("#gDep"), linhas);
 }
@@ -1367,6 +1368,9 @@ function maximiza(sl) {
   hd.querySelector(".maxb").addEventListener("click", () => maximiza(sl));
   c.querySelector(".maxbar button").addEventListener("click", () => { restauraMax(); hd.querySelector(".maxb").focus(); });
 });
+
+// os gráficos dos painéis acompanham o tamanho da tela
+addEventListener("resize", () => { clearTimeout(IMP.rz); IMP.rz = setTimeout(() => { if (!NA_FOLHA()) { painel(); painelOp(); AREAS.forEach(painelArea); } }, 200); });
 
 /* ---------- campo de partículas ---------- */
 (function () {
