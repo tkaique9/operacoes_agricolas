@@ -271,6 +271,13 @@ ul.rs-dl li.sep { display: block; border-bottom: 0; padding: 5px 0 1px; font: 60
 @media screen and (max-width: 900px) { .rs-grid { grid-template-columns: minmax(0, 1fr); flex: 0 0 auto; } }
 html.imprimindo .rs-grid { flex: none; grid-template-columns: repeat(4, minmax(300px, 1fr)); }
 html.imprimindo .rs-a .rolo { overflow: visible; }
+.rs-graf { flex: 0 0 auto; height: 32vh; min-height: 220px; }
+.rs-leg { display: flex; flex-wrap: wrap; gap: 4px 14px; padding-top: 4px; font: 600 13px var(--f-display); color: var(--navy); }
+.rs-leg i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+#rsGraf { width: 100%; height: 100%; display: block; }
+html.imprimindo .rs-graf { height: auto; break-before: page; page-break-before: always; }   /* no papel: colunas numa folha, gráfico na seguinte */
+html.imprimindo ul.rs-dl li .nm { white-space: normal; }
+html.imprimindo #rsGraf { height: auto; }
 
 /* painéis: os indicadores ficam no card do gráfico, ao lado do título */
 .cab-g { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px 14px; flex-wrap: wrap; flex: 0 0 auto; margin-bottom: 4px; }
@@ -639,6 +646,7 @@ body.maxi-on .deck { z-index: 150; }
     <div class="s-head"><div><div class="s-eyebrow">00 · Resumo · Diretoria</div><h2 class="s-title">Como fica o quadro: hoje e com as escalas escolhidas</h2></div>
       <div class="chips" id="rsChips"></div></div>
     <div class="rs-grid" id="rsGrid"></div>
+    <div class="card rs-graf"><div class="cab-g"><h3>Gráfico resumo<span class="h3u">pessoas por área em cada escala · diferença e % sobre hoje</span></h3><div class="rs-leg" id="rsLeg"></div></div><div class="rolo" style="overflow:hidden"><svg id="rsGraf" class="bars" role="img" aria-label="Pessoas por área em cada escala"></svg></div></div>
   </article>
 
   <article class="slide" id="escalas" data-mod="Referência" data-title="As escalas" data-desc="Horas, folgas, domingos e risco de cada escala">
@@ -1464,7 +1472,7 @@ function maximiza(sl) {
 });
 
 // os gráficos dos painéis acompanham o tamanho da tela
-addEventListener("resize", () => { clearTimeout(IMP.rz); IMP.rz = setTimeout(() => { if (!NA_FOLHA()) { painel(); painelOp(); AREAS.forEach(painelArea); } }, 200); });
+addEventListener("resize", () => { clearTimeout(IMP.rz); IMP.rz = setTimeout(() => { if (!NA_FOLHA()) { painel(); painelOp(); AREAS.forEach(painelArea); graficoResumo(); } }, 200); });
 
 /* ---------- campo de partículas ---------- */
 (function () {
@@ -1508,14 +1516,14 @@ function preparaImpressao(qual) {
   restauraMax();
   const html = document.documentElement;
   html.classList.add("imprimindo"); html.classList.toggle("imprimir-pagina", qual === "pagina");
-  painel(); painelOp(); AREAS.forEach(painelArea); grafico();   // gráficos redesenhados no tamanho da folha
+  painel(); painelOp(); AREAS.forEach(painelArea); graficoResumo(); grafico();   // gráficos redesenhados no tamanho da folha
   SL.forEach(sl => { sl.style.zoom = ""; sl.style.width = ""; });
   SL.forEach(sl => { if (getComputedStyle(sl).display !== "none") encaixa(sl); });
 }
 function voltaImpressao() {
   document.documentElement.classList.remove("imprimindo", "imprimir-pagina"); IMP.pedido = null;
   SL.forEach(sl => { sl.style.zoom = ""; sl.style.width = ""; });
-  painel(); painelOp(); AREAS.forEach(painelArea); grafico();
+  painel(); painelOp(); AREAS.forEach(painelArea); graficoResumo(); grafico();
 }
 addEventListener("beforeprint", () => { IMP.viu = true; if (!IMP.pedido) preparaImpressao("tudo"); });
 addEventListener("afterprint", voltaImpressao);
@@ -1585,6 +1593,50 @@ function colunaRs(titulo, nota, hoje, fica, escTxt, linhas, extra = "", nf = fmt
     <div class="rs-esc">${esc(escTxt)}</div><div class="rolo"><ul class="rs-dl">${linhas}</ul>${extra}</div></div>`;
 }
 const escUsadas = pares => { const c = {}; pares.forEach(([id, n]) => { c[id] = (c[id] || 0) + n; }); return Object.entries(c).sort((x, y) => y[1] - x[1]).map(([id, n]) => `${id === "dia" ? "5x2 dia" : id === "adm" ? "ADM 5x2" : ESC[id].curto} ${n}`).join(" · "); };
+// gráfico resumo: uma barra por escala, empilhada por área, com o total e a diferença sobre hoje
+const COR_AREA = { oficina: "#2F6FD0", frota: "#E0A21A", adm: "#8E5BB5", rural: "#1FA37A" };
+function areasResumo() {
+  const of = totais(d => S.esc[d.dep]), fr = totaisOp(d => S.esc[d.dep]);
+  return [
+    { k: "oficina", nome: "Oficina", hoje: HOJE, por: id => totais(() => id).quadro, esc: of.quadro },
+    { k: "frota", nome: "Frota operacional", hoje: fr.hoje, por: id => totaisOp(() => id).need, esc: fr.need },
+    ...AREAS.map(a => ({ k: a.k, nome: a.nome, hoje: a.dados.n, por: id => totaisArea(a, () => id).quadro, esc: totaisArea(a, d => S.esc[d.dep]).quadro })),
+  ];
+}
+function grafResumo(svg, L) {
+  const box = svg.parentElement, cw = box ? box.clientWidth : 0, ch = box ? box.clientHeight : 0;
+  const W = 1000, H = NA_FOLHA() ? 380 : cw > 200 && ch > 100 ? Math.max(230, Math.min(700, Math.round(W * ch / cw))) : 420, m = { l: 50, r: 20, t: 44, b: 52 };
+  const ops = [{ id: "hoje", lab: "Hoje", sub: "5x1 / 6x1 / 5x2", v: l => l.hoje }, ...IDS.map(id => ({ id, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), al: ESC[id].risco === "Alto", v: l => l.por(id) })),
+    { id: "esc", lab: "Escolhida", sub: "POR DEPARTAMENTO", v: l => l.esc }];
+  const tot = ops.map(o => L.reduce((x, l) => x + o.v(l), 0)), base = tot[0];
+  const bruto = Math.max(...tot) * 1.12, passo = [50, 100, 200, 250, 500].find(p => bruto / p <= 6) || 1000, max = Math.ceil(bruto / passo) * passo;
+  const bw = (W - m.l - m.r) / ops.length, y = v => m.t + (H - m.t - m.b) * (1 - v / max);
+  let g = "";
+  for (let v = 0; v <= max; v += passo) { const yy = y(v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="#E6E9F0"/><text x="${m.l - 8}" y="${yy + 4}" text-anchor="end" font-size="12.5" fill="#9AA3B5">${fmt(v)}</text>`; }
+  g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(base)}" y2="${y(base)}" stroke="#5A6072" stroke-dasharray="5 5" stroke-width="1.2"/>`;
+  ops.forEach((o, i) => {
+    const x = m.l + bw * i + bw * .16, w = bw * .68, cx = x + w / 2, esc_ = o.id === "esc";
+    if (esc_) g += `<rect x="${x - 6}" y="${m.t - 38}" width="${w + 12}" height="${H - m.t + 36}" rx="4" fill="#FDF2D3"/>`;
+    let b0 = H - m.b;
+    L.forEach(l => { const v = o.v(l), h = (H - m.t - m.b) * v / max;
+      g += `<rect x="${x}" y="${b0 - h}" width="${w}" height="${h}" fill="${COR_AREA[l.k] || "#8A93A6"}" stroke="#fff" stroke-width="1.2"/>`;
+      if (h > 15) g += `<text x="${cx}" y="${b0 - h / 2 + 4.5}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">${fmt(v)}</text>`;
+      b0 -= h; });
+    const t = tot[i], d = t - base, yy = y(t);
+    g += `<text x="${cx}" y="${yy - 8}" text-anchor="middle" font-size="${esc_ ? 19 : 17}" font-weight="800" fill="#12224A">${fmt(t)}</text>`;
+    if (i) g += `<text x="${cx}" y="${yy - 27}" text-anchor="middle" font-size="12.5" font-weight="600" fill="${d > 0 ? "#C0392B" : d < 0 ? "#2E7D46" : "#5A6072"}" font-family="IBM Plex Mono, monospace">${d > 0 ? "+" + fmt(d) : d < 0 ? "−" + fmt(-d) : "="}${d ? ` · ${pctTxt(d, base)}` : ""}</text>`;
+    g += `<text x="${cx}" y="${H - m.b + 18}" text-anchor="middle" font-size="14" font-weight="700" fill="#12224A">${esc(o.lab)}</text>`;
+    g += `<text x="${cx}" y="${H - m.b + 33}" text-anchor="middle" font-size="11.5" fill="${o.al ? "#C0392B" : "#5A6072"}" font-family="IBM Plex Mono, monospace">${esc(o.sub)}</text>`;
+  });
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  svg.innerHTML = g;
+}
+function graficoResumo() {
+  const L = areasResumo();
+  $("#rsLeg").innerHTML = L.map(l => `<span><i style="background:${COR_AREA[l.k] || "#8A93A6"}"></i>${esc(l.nome)}</span>`).join("");
+  grafResumo($("#rsGraf"), L);
+}
 function resumoFinal() {
   const of = totais(d => S.esc[d.dep]), fr = totaisOp(d => S.esc[d.dep]);
   const ar = AREAS.map(a => ({ a, t: totaisArea(a, d => S.esc[d.dep]) }));
@@ -1615,6 +1667,7 @@ function resumoFinal() {
     return colunaRs(a.nome, "pessoas", a.dados.n, t.quadro, escUsadas([...a.itens.map(d => [S.esc[d.dep], 1]), ["dia", a.dados.deps.filter(d => d.dia).length]]) + " departamentos", l, extra);
   });
   $("#rsGrid").innerHTML = [colOf, colFr, ...colAr].join("");
+  graficoResumo();
 }
 function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); AREAS.forEach(a => { painelArea(a); quadroArea(a); matrizArea(a); }); resumoFinal(); escalas(); if (window.salvaSite) salvaSite.mudou(); }
 function volante(v) { S.vol = v; $("#vol").checked = v; tudo(); }
