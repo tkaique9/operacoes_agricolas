@@ -568,13 +568,6 @@ body.maxi-on .deck { z-index: 150; }
     <div class="escalas" id="cardsEsc"></div>
   </article>
 
-  <article class="slide" id="premissas" data-mod="Referência" data-title="Sem turno e premissas" data-desc="Quem vai para segunda a sexta e como a conta foi feita">
-    <div class="s-head"><div><div class="s-eyebrow">12 · Premissas</div><h2 class="s-title">Sem turno e premissas da conta</h2></div></div>
-    <div class="cols">
-      <div class="card"><h3>Vão para segunda a sexta</h3><div class="rolo"><table class="tb" id="tabDia"></table></div></div>
-      <div class="card"><h3>Premissas e pontos de atenção</h3><div class="rolo"><ul class="prem" id="prem"></ul></div></div>
-    </div>
-  </article>
 </main>
 
 <div class="mf" id="mf" hidden>
@@ -812,7 +805,7 @@ function capa() {
 function indice() {
   $("#capaIndice").innerHTML = MODS.map(mo => {
     const ks = SL.map((sl, i) => [sl, i]).filter(([sl]) => sl.dataset.mod === mo);
-    return `<div class="mi"><span class="n">${String(ks[0][1]).padStart(2, "0")}–${String(ks[ks.length - 1][1]).padStart(2, "0")}</span><span class="t">${esc(mo)}</span>
+    return `<div class="mi"><span class="n">${String(ks[0][1]).padStart(2, "0")}${ks.length > 1 ? "–" + String(ks[ks.length - 1][1]).padStart(2, "0") : ""}</span><span class="t">${esc(mo)}</span>
       <span class="pg">${ks.map(([sl, i], j) => `${j ? "<span>·</span>" : ""}<button type="button" data-i="${i}">${esc(sl.dataset.title)}</button>`).join("")}</span></div>`;
   }).join("");
   document.querySelectorAll("#capaIndice button").forEach(b => b.addEventListener("click", () => vai(+b.dataset.i)));
@@ -1137,31 +1130,6 @@ function escalas() {
       <div style="overflow-x:auto">${mini}</div><div class="nt">${esc(e.nota)}</div></div>`;
   }).join("");
 }
-function premissas() {
-  $("#tabDia").innerHTML = th([["Departamento", "l"], ["Pessoas"], ["Anotação na planilha", "l"]]) + "<tbody>" +
-    D.dia.map(d => `<tr><td class="l dep">${esc(d.nome)}<u>${d.sub ? `<b>${esc(d.sub)}</b> · ` : ""}${esc(d.vai)}${d.lideres ? ` · ${d.lideres} lideranças` : ""}</u></td><td>${d.n}</td><td class="l mut" style="white-space:normal">${esc(d.nota || "sem anotação")}</td></tr>`).join("") +
-    `<tr class="tot"><td class="l">Total</td><td>${D.dia.reduce((a, d) => a + d.n, 0)}</td><td></td></tr></tbody>`;
-  $("#prem").innerHTML = [
-    "Garantir por turno: pessoas trabalhando todo dia naquele turno. Começa na média de hoje arredondada (2,5 vira 2), no mínimo 1 nos departamentos 24 h; Ferramentaria e Caldeiraria com 1 por turno, como anotado; Veículos Leves com manhã e tarde.",
-    "Caldeiraria: 1 pessoa por turno nas 24 h, tirada da própria equipe; o resto da equipe fica no horário ADM.",
-    "Quadro em cada escala = pessoas de hoje + contratações. Quem sobra continua no departamento, de dia (segunda a sexta).",
-    "Turma fixa por turno: ninguém alterna dia e noite (quem alterna cai na regra do turno de revezamento, 6 h por dia). O folguista volante reduz o quadro, mas roda entre turnos.",
-    "Nas escalas de 12 h, o mínimo comum aos três turnos vai para 12 h e o que passa dele fica como reforço de 8 h em 5x2.",
-    "Com “Todos na mesma escala”, ninguém fica no reforço de 8 h: o dia de 12 h cobre o maior entre manhã e tarde e a noite de 12 h, o maior entre tarde e noite.",
-    `Ficam de fora da conta de turno ${D.tot.lideres} lideranças sem registro no revezamento e ${D.tot.afastados} afastado(s); continuam no quadro.`,
-    `A oficina é CLT urbano no cadastro (${D.tot.clt_urbano} com o dado). Por isso a 4x2 de 12 h entra com risco alto (a noite de 12 h passa de 10 h contadas), e a noite de 8 h precisa de ajuste até dez/2027.`,
-    "5x2 com folga desencontrada: as 2 folgas da semana ficam separadas (3 ou 4 dias uma da outra) e mudam de dia a cada semana; no máximo 4 dias seguidos e um domingo de folga a cada 3 ou 4 semanas. Não reduz gente: todo dia trabalham 5 das 7 turmas, como na folga junta, então continua 4,2 por equipamento. No mesmo turno, cada folga sozinha dá 39h40 de descanso (a lei pede 35 h).",
-    "Turnos de cada departamento: 3 (24 h), 2 (manhã e tarde, sem noite) ou 1 (só de dia: a manhã nas escalas de 8 h, o plantão 07:00–19:00 nas de 12 h). Começa pela anotação da planilha e muda no painel do departamento.",
-    ...AREAS.map(a => a.premissa(a)),
-    "Frentes (painel do departamento): garantir por turno = frentes × pessoas por frente em cada turno. Colhedoras de Cana: 5 frentes de colheita com pelo menos 2 pessoas por turno em cada uma, 10 por turno nas 24 h.",
-    "Mulheres em escala com domingo: folga em um domingo a cada 15 dias (CLT art. 386).",
-    `Frota operacional: ${OP.reduce((x, d) => x + d.qtd, 0)} equipamentos do Detalhamento da frota, cada um com 1 operador por turno nas 24 h (editável). Hoje = 5x1 com 3,6 pessoas por equipamento, porque o folguista roda entre equipamentos; cada escala usa o mesmo critério (5x2 4,2 · 4x2 de 8 h 4,5 · 12x36 e 3x3 4,0 · 4x2 de 12 h 3,0) e o total da frota arredonda para cima.`,
-    `Operadores de máquinas e motoristas aparecem como CLT urbano no cadastro (${(D.clt_op.op_C || 0) + (D.clt_op.mot_C || 0)} pessoas; ${(D.clt_op.op_R || 0) + (D.clt_op.mot_R || 0)} rurais). Por isso a 4x2 de 12 h entra na frota com risco alto: só vale com norma coletiva que troque a hora noturna reduzida por adicional maior.`,
-    "Frota: como o folguista roda entre equipamentos, ele precisa ser habilitado nos equipamentos que cobre.",
-    "Atividades de tratos: cada equipamento entra no turno e com o folguista anotados pela operação (cata mato, caminhão, retroescavadeira e uniport em 1 turno sem folguista; adubação em 3 turnos e bombeiro em 2, com folguista; manutenção da irrigação, quadriciclo e formiga no ADM). Hoje conta o mesmo regime na 5x1: sem folguista e no ADM, 1 operador por turno; com folguista, 1,2.",
-    "Frota, turnos e folguista de cada equipamento (no quadro por equipamento): 3 turnos (24 h), 2 (manhã e tarde), 1 (só de dia) ou ADM (segunda a sexta, de dia, sempre em 5x2); com 2 turnos as escalas de 12 h não se aplicam, como na oficina. Sem folguista ficam só as turmas inteiras da escala e o equipamento para na folga do operador: na 5x2 roda 71% dos dias, na 4x2 67%; na 12x36 e na 3x3 as duas turmas se revezam e ele roda todo dia.",
-  ].map(x => `<li>${esc(x)}</li>`).join("");
-}
 
 /* ---------- painel do departamento ---------- */
 function composicao(d, id, nt = S.nt[d.dep]) {
@@ -1305,7 +1273,7 @@ const SL = [...document.querySelectorAll(".slide")];
 SL.forEach((sl, i) => { const e = sl.querySelector(".s-eyebrow"); if (e && i) e.textContent = e.textContent.replace(/^\d+/, String(i).padStart(2, "0")); });
 const MODS = [...new Set(SL.map(sl => sl.dataset.mod).filter(Boolean))];
 let atual = 0;
-$("#mods").innerHTML = MODS.map(mo => { const ks = SL.map((sl, i) => i).filter(i => SL[i].dataset.mod === mo); return `<button type="button" class="mod off" data-mod="${esc(mo)}" data-i="${ks[0]}">${esc(mo)}<u>${ks[0]}–${ks[ks.length - 1]}</u></button>`; }).join("");
+$("#mods").innerHTML = MODS.map(mo => { const ks = SL.map((sl, i) => i).filter(i => SL[i].dataset.mod === mo); return `<button type="button" class="mod off" data-mod="${esc(mo)}" data-i="${ks[0]}">${esc(mo)}<u>${ks[0]}${ks.length > 1 ? "–" + ks[ks.length - 1] : ""}</u></button>`; }).join("");
 $("#toc").innerHTML = SL.slice(1).map((s, i) => `<a href="#${s.id}" data-i="${i + 1}" data-mod="${esc(s.dataset.mod)}"><b>${i + 1}</b>${esc(s.dataset.title)}</a>`).join("");
 document.querySelectorAll("#mods button").forEach(b => b.addEventListener("click", () => vai(+b.dataset.i)));
 $("#dots").innerHTML = SL.map((s, i) => `<button type="button" aria-label="${esc(s.dataset.title)}" data-i="${i}"></button>`).join("");
@@ -1484,7 +1452,7 @@ OP.forEach(d => { atualizaOp(d); S.esc[d.dep] = sugerida(d); });
 AD.forEach(d => { S.esc[d.dep] = sugerida(d); });
 indice();
 $("#meta").textContent = `${D.area} · base de ${D.base}`;
-premissas(); tudo();
+tudo();
 // pedido de impressão vindo do claude.ai (#imprimir=…): aplica as escolhas, abre a impressão e fecha a aba depois
 const PED = (() => { try { const h = new URLSearchParams(location.hash.slice(1)); return h.has("imprimir") ? { qual: h.get("imprimir"), pag: h.get("p"), s: h.get("s") } : null; } catch (e) { return null; } })();
 if (PED) { try { if (PED.s) aplicaEstado(JSON.parse(de64(PED.s))); } catch (e) {} tudo(); }
