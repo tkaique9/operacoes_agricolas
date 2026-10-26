@@ -399,6 +399,30 @@ ul.prem { margin: 0; padding-left: 18px; display: grid; gap: 7px; font: 400 15.5
 .aviso a { font: 600 13px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--gold); border-radius: 2px; padding: 7px 12px; text-decoration: none; }
 .aviso button { all: unset; cursor: pointer; font: 600 15px var(--f-mono); color: var(--mut); padding: 2px 6px; margin-left: auto; }
 html.imprimindo .aviso { display: none !important; }
+/* escolher as páginas a imprimir */
+.impsel { position: fixed; inset: 0; z-index: 270; display: grid; place-items: center; }
+.impsel[hidden] { display: none; }
+.impsel-fundo { position: absolute; inset: 0; background: rgba(6,12,28,.72); backdrop-filter: blur(2px); }
+.impsel-caixa { position: relative; width: min(780px, 94vw); max-height: 86vh; display: flex; flex-direction: column; background: var(--white); color: var(--ink);
+  border-radius: 4px; border-top: 3px solid var(--gold); box-shadow: 0 24px 70px rgba(0,0,0,.5); }
+.impsel-topo { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); font: 700 18px var(--f-display); color: var(--navy); }
+.impsel-topo button { all: unset; cursor: pointer; margin-left: auto; font: 600 16px var(--f-mono); color: var(--mut); padding: 2px 6px; }
+.impsel-lista { overflow: auto; padding: 10px 16px 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 22px; align-content: start; }
+.impsel-lista fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.impsel-lista legend { padding: 0; margin-bottom: 2px; }
+.impsel-lista legend label { font: 600 12.5px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: #8A6D14; }
+.impsel-lista label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.impsel-it { padding: 4px 6px; border-radius: 3px; font: 600 15px var(--f-display); color: var(--navy); }
+.impsel-it:hover { background: var(--bgsoft); }
+.impsel-it .n { font: 600 12px var(--f-mono); color: var(--mut); min-width: 18px; }
+.impsel input { width: 16px; height: 16px; margin: 0; accent-color: var(--navy); flex: none; }
+.impsel-pe { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 16px; border-top: 1px solid var(--line); }
+.impsel-pe .esp { flex: 1; }
+#impSelN { font: 500 13px var(--f-mono); color: var(--mut); }
+@media screen and (max-width: 640px) { .impsel-lista { grid-template-columns: minmax(0, 1fr); } }
+html.imprimindo .impsel { display: none !important; }
+html.imprimindo.imprimir-escolha .slide:not(.imp-sel) { display: none !important; }
+html.imprimindo.imprimir-escolha .slide.imp-primeira { break-before: auto; page-break-before: auto; }
 .mf-st { font: 600 12.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--green); }
 .mf-st.pend { color: var(--red); }
 .salva { font: 600 11.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--green); margin-left: 4px; }
@@ -678,6 +702,14 @@ body.maxi-on .deck { z-index: 150; }
   </div>
 </div>
 
+<div class="impsel" id="impSel" role="dialog" aria-modal="true" aria-labelledby="impSelT" hidden>
+  <div class="impsel-fundo" id="impSelFundo"></div>
+  <div class="impsel-caixa">
+    <div class="impsel-topo"><span id="impSelT">Escolher as páginas para imprimir</span><button type="button" id="impSelFechar" aria-label="Fechar">✕</button></div>
+    <div class="impsel-lista" id="impSelLista"></div>
+    <div class="impsel-pe"><button type="button" class="btn" id="impSelTodas">Todas</button><button type="button" class="btn" id="impSelNenhuma">Nenhuma</button><span class="esp"></span><span id="impSelN"></span><button type="button" class="btn pri" id="impSelOk">Imprimir</button></div>
+  </div>
+</div>
 <div class="aviso" id="aviso" role="status" hidden><span id="avisoTxt"></span><a id="avisoLink" target="_blank" rel="noopener" hidden>Abrir e imprimir</a><button type="button" id="avisoFechar" aria-label="Fechar aviso">✕</button></div>
 
 <div class="deck-nav">
@@ -685,7 +717,7 @@ body.maxi-on .deck { z-index: 150; }
   <div class="dots" id="dots"></div>
   <span class="hint">Trocar de página: botões, bolinhas ou ← →</span>
   <button type="button" id="next">Próxima ›</button>
-  <span class="imp"><button type="button" id="impPag" title="Imprimir a página aberta">Imprimir página</button><button type="button" id="impTudo" title="Imprimir o relatório inteiro, uma página por folha A4">Imprimir relatório</button></span>
+  <span class="imp"><button type="button" id="impPag" title="Imprimir a página aberta">Imprimir página</button><button type="button" id="impEsc" title="Marcar as páginas que vão para a impressão">Escolher páginas</button><button type="button" id="impTudo" title="Imprimir o relatório inteiro, uma página por folha A4">Imprimir relatório</button></span>
   <span class="count" id="count">–</span>
 </div>
 
@@ -1468,6 +1500,7 @@ $("#next").addEventListener("click", () => vai(atual + 1));
 document.querySelectorAll("#dots button").forEach(b => b.addEventListener("click", () => vai(+b.dataset.i)));
 document.querySelectorAll("#toc a").forEach(a => a.addEventListener("click", e => { e.preventDefault(); vai(+a.dataset.i); }));
 document.addEventListener("keydown", e => {
+  if (!$("#impSel").hidden) { if (e.key === "Escape") fechaSel(); return; }
   if (e.key === "Escape" && !$("#mf").hidden) { fecha(); return; }
   if (e.key === "Escape" && document.body.classList.contains("maxi-on")) { restauraMax(); return; }
   if (!$("#mf").hidden || e.target.closest("input,select,textarea")) return;
@@ -1540,13 +1573,16 @@ function preparaImpressao(qual) {
   if (qual === "pagina" && atual === 0) qual = "tudo";
   restauraMax();
   const html = document.documentElement;
-  html.classList.add("imprimindo"); html.classList.toggle("imprimir-pagina", qual === "pagina");
+  html.classList.add("imprimindo"); html.classList.toggle("imprimir-pagina", qual === "pagina"); html.classList.toggle("imprimir-escolha", qual === "escolha");
+  SL.forEach(sl => sl.classList.remove("imp-sel", "imp-primeira"));
+  if (qual === "escolha") { const sel = SL.filter(sl => (IMP.sel || []).includes(sl.id)); sel.forEach(sl => sl.classList.add("imp-sel")); if (sel[0]) sel[0].classList.add("imp-primeira"); }
   painel(); painelOp(); AREAS.forEach(painelArea); grafico();   // gráficos redesenhados no tamanho da folha
   SL.forEach(sl => { sl.style.zoom = ""; sl.style.width = ""; });
   SL.forEach(sl => { if (getComputedStyle(sl).display !== "none") encaixa(sl); });
 }
 function voltaImpressao() {
-  document.documentElement.classList.remove("imprimindo", "imprimir-pagina"); IMP.pedido = null;
+  document.documentElement.classList.remove("imprimindo", "imprimir-pagina", "imprimir-escolha"); IMP.pedido = null;
+  SL.forEach(sl => sl.classList.remove("imp-sel", "imp-primeira"));
   SL.forEach(sl => { sl.style.zoom = ""; sl.style.width = ""; });
   painel(); painelOp(); AREAS.forEach(painelArea); grafico();
 }
@@ -1587,7 +1623,7 @@ $("#avisoFechar").addEventListener("click", () => { $("#aviso").hidden = true; }
 $("#avisoLink").addEventListener("click", () => { $("#aviso").hidden = true; });
 function imprime(qual) {
   if (!IMPRIME_AQUI) {
-    const url = `${PAGINA_IMPRESSAO}#imprimir=${qual}&p=${encodeURIComponent(SL[atual].id)}&s=${b64(JSON.stringify(estado()))}`;
+    const url = `${PAGINA_IMPRESSAO}#imprimir=${qual}&p=${encodeURIComponent(SL[atual].id)}${qual === "escolha" ? `&sel=${encodeURIComponent((IMP.sel || []).join(","))}` : ""}&s=${b64(JSON.stringify(estado()))}`;
     let w = null;
     try { w = window.open(url, "_blank"); } catch (e) {}
     if (!w) aviso("O claude.ai não deixou abrir a aba de impressão. Abra por aqui:", url);
@@ -1602,6 +1638,44 @@ function imprime(qual) {
 }
 $("#impPag").addEventListener("click", () => imprime("pagina"));
 $("#impTudo").addEventListener("click", () => imprime("tudo"));
+// escolher as páginas a imprimir: a lista por módulo, marcada com a última escolha (guardada neste navegador)
+const IMP_SEL_CHAVE = "escalas.paginasImpressao";
+const fechaSel = () => { $("#impSel").hidden = true; };
+const marcadas = () => [...document.querySelectorAll("#impSelLista input[value]:checked")].map(x => x.value);
+function contaSel() {
+  const n = marcadas().length;
+  $("#impSelN").textContent = `${n} de ${SL.length - 1} página${SL.length - 1 > 1 ? "s" : ""}`;
+  $("#impSelOk").disabled = !n;
+  document.querySelectorAll("#impSelLista input[data-mod]").forEach(c => {
+    const its = [...c.closest("fieldset").querySelectorAll("input[value]")], k = its.filter(x => x.checked).length;
+    c.checked = k === its.length; c.indeterminate = k > 0 && k < its.length;
+  });
+}
+function abreSel() {
+  let salva = null;
+  try { const v = JSON.parse(localStorage.getItem(IMP_SEL_CHAVE) || "null"); if (Array.isArray(v)) salva = v; } catch (e) {}
+  const mods = [];
+  SL.slice(1).forEach(sl => { const m = sl.dataset.mod || "Outras"; let g = mods.find(x => x.m === m); if (!g) mods.push(g = { m, sls: [] }); g.sls.push(sl); });
+  $("#impSelLista").innerHTML = mods.map(g => `<fieldset><legend><label><input type="checkbox" data-mod="${esc(g.m)}">${esc(g.m)}</label></legend>${g.sls.map(sl =>
+    `<label class="impsel-it"><input type="checkbox" value="${esc(sl.id)}"${!salva || salva.includes(sl.id) ? " checked" : ""}><span class="n">${String(SL.indexOf(sl)).padStart(2, "0")}</span>${esc(sl.dataset.title || sl.id)}</label>`).join("")}</fieldset>`).join("");
+  contaSel(); $("#impSel").hidden = false; $("#impSelOk").focus();
+}
+$("#impSelLista").addEventListener("change", ev => {
+  const c = ev.target;
+  if (c.dataset.mod !== undefined) c.closest("fieldset").querySelectorAll("input[value]").forEach(x => { x.checked = c.checked; });
+  contaSel();
+});
+$("#impSelTodas").addEventListener("click", () => { document.querySelectorAll("#impSelLista input[value]").forEach(x => { x.checked = true; }); contaSel(); });
+$("#impSelNenhuma").addEventListener("click", () => { document.querySelectorAll("#impSelLista input[value]").forEach(x => { x.checked = false; }); contaSel(); });
+$("#impSelFechar").addEventListener("click", fechaSel);
+$("#impSelFundo").addEventListener("click", fechaSel);
+$("#impSelOk").addEventListener("click", () => {
+  const ids = marcadas();
+  if (!ids.length) return;
+  try { localStorage.setItem(IMP_SEL_CHAVE, JSON.stringify(ids)); } catch (e) {}
+  fechaSel(); IMP.sel = ids; imprime("escolha");
+});
+$("#impEsc").addEventListener("click", abreSel);
 
 /* ---------- liga tudo ---------- */
 /* ---------- resumo para a diretoria: como fica o quadro ----------
@@ -1674,7 +1748,7 @@ indice();
 $("#meta").textContent = `${D.area} · base de ${D.base}`;
 tudo();
 // pedido de impressão vindo do claude.ai (#imprimir=…): aplica as escolhas, abre a impressão e fecha a aba depois
-const PED = (() => { try { const h = new URLSearchParams(location.hash.slice(1)); return h.has("imprimir") ? { qual: h.get("imprimir"), pag: h.get("p"), s: h.get("s") } : null; } catch (e) { return null; } })();
+const PED = (() => { try { const h = new URLSearchParams(location.hash.slice(1)); return h.has("imprimir") ? { qual: h.get("imprimir"), pag: h.get("p"), s: h.get("s"), sel: h.get("sel") } : null; } catch (e) { return null; } })();
 if (PED) { try { if (PED.s) aplicaEstado(JSON.parse(de64(PED.s))); } catch (e) {} tudo(); }
 const ini = SL.findIndex(s => s.id === (PED ? PED.pag : location.hash.slice(1)));
 vai(ini > 0 ? ini : 0);
@@ -1690,7 +1764,8 @@ if (!PED && window.salvaSite) salvaSite({ nome: "departamentos", onde: document.
   aplica: st => { zera(); if (st) aplicaEstado(st); tudo(); } });
 if (PED) {
   addEventListener("afterprint", () => setTimeout(() => window.close(), 400), { once: true });
-  document.fonts.ready.then(() => setTimeout(() => imprime(PED.qual === "pagina" ? "pagina" : "tudo"), 400));
+  if (PED.qual === "escolha") IMP.sel = (PED.sel || "").split(",").filter(Boolean);
+  document.fonts.ready.then(() => setTimeout(() => imprime(PED.qual === "pagina" ? "pagina" : PED.qual === "escolha" && IMP.sel.length ? "escolha" : "tudo"), 400));
 }
 </script>
 
