@@ -72,7 +72,7 @@ header.top, nav.toc { transition: opacity .5s ease .2s, visibility 0s linear .2s
 .chip { position: relative; overflow: hidden; border-radius: 3px; border: 1px solid var(--linha2); background: rgba(255,255,255,.035); padding: 8px 14px; min-width: 128px; }
 .chip::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--gold); }
 .chip .v { font: 700 21px var(--f-display); letter-spacing: -.02em; color: var(--gold); line-height: 1.1; }
-.chip .v.pos { color: #F0897A; } .chip .v.zero { color: #8FD3A6; }
+.chip .v.pos { color: #F0897A; } .chip .v.zero { color: #8FD3A6; } .chip .v.sa { color: #F5A35C; }
 .chip .k { font: 500 12.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--t2); margin-top: 3px; }
 .card { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; background: var(--white); color: var(--ink); border-radius: 4px; border: 1px solid rgba(255,255,255,.16);
   box-shadow: inset 0 2px 0 var(--gold), 0 28px 70px -12px rgba(0,0,0,.58), 0 0 90px -34px var(--gold-glow); padding: 10px 14px 10px; }
@@ -286,7 +286,7 @@ html.imprimindo #rsGraf { height: auto; }
 .chips.claro { gap: 7px; }
 .chips.claro .chip { background: var(--bgsoft); border-color: var(--line); padding: 4px 10px; min-width: 92px; }
 .chips.claro .chip .v { color: var(--navy); font-size: 19px; }
-.chips.claro .chip .v.pos { color: var(--red); } .chips.claro .chip .v.zero { color: var(--green); }
+.chips.claro .chip .v.pos { color: var(--red); } .chips.claro .chip .v.zero { color: var(--green); } .chips.claro .chip .v.sa { color: var(--amber); }
 .chips.claro .chip .k { color: var(--mut); font-size: 11.5px; margin-top: 1px; }
 /* motoristas e operadores no painel da frota */
 table.qd td.qv small.sa { margin-left: 6px; font: 600 12.5px var(--f-mono); letter-spacing: .02em; }
@@ -506,7 +506,7 @@ html.imprimindo .s-title { color: var(--navy); font-size: 25px; }
 html.imprimindo .s-sub { display: block; color: var(--mut); max-width: none; }
 html.imprimindo .chip { background: #fff; border-color: var(--line); }
 html.imprimindo .chip .v { color: var(--navy); }
-html.imprimindo .chip .v.pos { color: var(--red); } html.imprimindo .chip .v.zero { color: var(--green); }
+html.imprimindo .chip .v.pos { color: var(--red); } html.imprimindo .chip .v.zero { color: var(--green); } html.imprimindo .chip .v.sa { color: var(--amber); }
 html.imprimindo .chip .k { color: var(--mut); }
 html.imprimindo .card, html.imprimindo .esc { flex: none; box-shadow: none; border: 1px solid var(--line); border-top: 2px solid var(--gold); }
 html.imprimindo .esc.nserve { border-top-color: var(--red); }
@@ -633,7 +633,7 @@ body.maxi-on .deck { z-index: 150; }
 
   <article class="slide" id="op-matriz" data-mod="Operacional" data-title="Matriz da frota" data-desc="Contratar ou sobra por equipamento; quantidade e operadores por turno editáveis">
     <div class="s-head"><div><div class="s-eyebrow">07 · Operacional · Validação</div><h2 class="s-title">Cada equipamento em cada escala</h2>
-      <p class="s-sub">Operadores a contratar (+) ou que sobram (−) em relação à 5x1 de hoje.<span class="tela"> Clique na célula para escolher a escala; ajuste a quantidade de equipamentos e os operadores por turno.</span></p></div>
+      <p class="s-sub">Operadores a mais (+) ou a menos (−) que na 5x1 de hoje. Não é contratar nem demitir: os motoristas e operadores ativos passam do que a frota precisa, e quem fica sem equipamento fica sem atividade.<span class="tela"> Clique na célula para escolher a escala; ajuste a quantidade de equipamentos e os operadores por turno.</span></p></div>
       <div class="chips" id="omChips"></div></div>
     <div class="card">
       <div class="barra">
@@ -889,15 +889,16 @@ function barrasH(svg, linhas) {
 function capa() {
   const n24 = D.deps.reduce((a, d) => a + d.n, 0), t5 = totais(() => "5x2"), atual = totais(d => S.esc[d.dep]);
   const o = totaisOp(d => S.esc[d.dep]), o5 = totaisOp(() => "5x2"), nq = OP.reduce((x, d) => x + d.qtd, 0);
+  const so = semAtivOp(d => S.esc[d.dep]), so5 = semAtivOp(() => "5x2");
   const ar = AREAS.map(a => totaisArea(a, d => S.esc[d.dep])), ar5 = AREAS.map(a => totaisArea(a, () => "5x2")), sc = l => l.reduce((x, t) => x + t.contr, 0);
   const quem = ["oficina", "frota", ...AREAS.map(a => a.mod)].reduce((t, x, i, l) => t + (i ? (i === l.length - 1 ? " e " : ", ") : "") + x, "");
   $("#capaBase").textContent = `Base de ${D.base}`;
   $("#capaSub").textContent = `Oficina ${fmt(HOJE)} pessoas · frota ${nq} equipamentos${AREAS.map(a => ` · ${a.nome} ${fmt(a.dados.n)} pessoas`).join("")}. A 5x2 e as 2 folgas por semana valem a partir de 15/12/2026.`;
   $("#capaKpis").innerHTML = [
     [`${fmt(HOJE)} → ${fmt(atual.quadro)}`, "Quadro da oficina", `contratar ${sinal(atual.contr)} na escolha · ${sinal(t5.contr)} com 5x2 em todos`, ""],
-    [`${fmt(o.hoje)} → ${fmt(o.need)}`, "Operadores da frota", `contratar ${sinal(o.contr)} na escolha · ${sinal(o5.contr)} com 5x2 em toda a frota`, ""],
-    [sinal(t5.contr + o5.contr + sc(ar5)), "5x2 em tudo", `${quem} · risco baixo`, "pos"],
-    [sinal(atual.contr + o.contr + sc(ar)), "Escolha atual", `risco ${[atual.risco, o.risco, ...ar.map(t => t.risco)].sort((x, y) => ORD[y] - ORD[x])[0].toLowerCase()} · ${quem}`, ""],
+    [`${fmt(o.hoje)} → ${fmt(o.need)}`, "Operadores da frota", so ? `${fmt(so.ativos)} ativos · sem atividade: ${fmt(so.sem)} na escolha, ${fmt(so5.sem)} com 5x2 em toda a frota` : `contratar ${sinal(o.contr)} na escolha · ${sinal(o5.contr)} com 5x2 em toda a frota`, ""],
+    [sinal(t5.contr + contrOp(o5, so5) + sc(ar5)), "5x2 em tudo", `${quem} · risco baixo`, "pos"],
+    [sinal(atual.contr + contrOp(o, so) + sc(ar)), "Escolha atual", `risco ${[atual.risco, o.risco, ...ar.map(t => t.risco)].sort((x, y) => ORD[y] - ORD[x])[0].toLowerCase()} · ${quem}`, ""],
   ].map(([n, l, e, c]) => `<div class="capa-kpi"><div class="n ${c}">${n}</div><div class="l">${l}<em>${e}</em></div></div>`).join("");
 }
 function indice() {
@@ -952,10 +953,14 @@ function gruposOp() {
   OP.forEach(d => { if (!d.qtd) return; const id = S.esc[d.dep], r = conta(d, id); (g[id] ||= { id, deps: [], need: 0, hoje: 0, contr: 0, qtd: 0 }); g[id].deps.push({ d, r }); g[id].need += r.need; g[id].hoje += d.n; g[id].contr += Math.max(r.c, 0); g[id].qtd += d.qtd; });
   return IDS.filter(id => g[id]).map(id => g[id]);
 }
+// na frota não é contratar nem demitir: os ativos passam do que a frota precisa e o que sobra fica sem atividade
 function chipsOp(sel) {
-  const a = totaisOp(d => S.esc[d.dep]), t5 = totaisOp(() => "5x2");
-  $(sel).innerHTML = [[fmt(a.hoje), "Hoje (5x1)"], [fmt(a.need), "Escolhida"], [sinal(a.contr), "Contratar", a.contr > 0 ? "" : "zero"], [sinal(t5.contr), "5x2 em todos", "pos"]]
-    .map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
+  const a = totaisOp(d => S.esc[d.dep]), t5 = totaisOp(() => "5x2"), s = semAtivOp(d => S.esc[d.dep]), s5 = semAtivOp(() => "5x2"), s0 = semAtivOp(null);
+  const sem = (x, rot, txt) => x.sem >= 0 ? [fmt(x.sem), rot, "sa", `${fmt(x.ativos)} ativos − ${fmt(x.precisa)} que a frota precisa ${txt}`]
+    : [fmt(-x.sem), rot.replace(/Sem ativ(idade|\.)/, "Faltam"), "pos", `a frota precisa de ${fmt(x.precisa)} e há ${fmt(x.ativos)} ativos`];
+  const itens = s ? [[fmt(s0.precisa), "Hoje (5x1)"], [fmt(s.precisa), "Escolhida"], sem(s, "Sem atividade", "na escolhida"), sem(s5, "Sem ativ. · 5x2", "com 5x2 em todos")]
+    : [[fmt(a.hoje), "Hoje (5x1)"], [fmt(a.need), "Escolhida"], [sinal(a.contr), "Contratar", a.contr > 0 ? "" : "zero"], [sinal(t5.contr), "5x2 em todos", "pos"]];
+  $(sel).innerHTML = itens.map(([v, k, c, t]) => `<div class="chip"${t ? ` title="${esc(t)}"` : ""}><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
 }
 /* motoristas e operadores ativos (planilha Quadro motorista operador, pessoal_frota.py) contra o que a frota precisa em
    cada escala; o que sobra fica sem atividade. Máquinas agrícolas, colhedora e máquinas de estrada são de operador;
@@ -963,6 +968,17 @@ function chipsOp(sel) {
 const PES = D.pessoal || null;
 const papelEq = d => /trator|plantadora|transbordo|colhedora|retro|quadriciclo|uniport|carregadeira|motoniveladora|escavadeira|rolo/i.test(d.nome) ? "operador" : "motorista";
 const ROT_PAPEL = { operador: "Operadores", motorista: "Motoristas" };
+// ativos, o que a frota precisa (como na tabela do painel: cada papel arredonda para cima) e o que fica sem atividade;
+// escolha nula = hoje (5x1)
+function semAtivOp(escolha) {
+  if (!PES) return null;
+  const ps = ["operador", "motorista"], ativos = ps.reduce((x, p) => x + (PES.ativos[p] || 0), 0);
+  const precisa = ps.reduce((x, p) => x + Math.ceil(OP.filter(d => d.qtd && papelEq(d) === p)
+    .reduce((y, d) => y + (escolha ? (conta(d, escolha(d)) || conta(d, "5x2")).need : d.n), 0) - 1e-9), 0);
+  return { ativos, precisa, sem: ativos - precisa };
+}
+// contratar na frota só quando falta gente (precisa mais que os ativos)
+const contrOp = (t, s) => s ? Math.max(0, -s.sem) : t.contr;
 function resumoOp() {
   if (!PES) return;
   $("#opResumoCard").hidden = false;
@@ -1049,7 +1065,8 @@ function matrizOp() {
     });
   });
   const a = totaisOp(d => S.esc[d.dep]);
-  h += `<tr class="tot"><td class="l">Total da frota</td><td>${OP.reduce((x, d) => x + d.qtd, 0)}</td><td></td><td>${a.hoje}</td>${IDS.map(id => { const t = totaisOp(() => id); return `<td>${sinal(t.contr)}<small class="s">${fmt(t.sobra)} sobram</small></td>`; }).join("")}</tr></tbody>`;
+  h += `<tr class="tot"><td class="l">Total da frota</td><td>${OP.reduce((x, d) => x + d.qtd, 0)}</td><td></td><td>${a.hoje}</td>${IDS.map(id => { const t = totaisOp(() => id), sa = semAtivOp(() => id);
+    return `<td>${sinal(t.need - t.hoje)}<small class="s">${sa ? (sa.sem >= 0 ? `${fmt(sa.sem)} sem atividade` : `faltam ${fmt(-sa.sem)}`) : `${fmt(t.sobra)} sobram`}</small></td>`; }).join("")}</tr></tbody>`;
   $("#tabOm").innerHTML = h;
   document.querySelectorAll("#tabOm button.cel").forEach(b => b.addEventListener("click", e => { e.stopPropagation(); S.esc[b.dataset.dep] = b.dataset.id; tudo(); }));
   document.querySelectorAll("#tabOm tr.clic").forEach(tr => tr.addEventListener("click", e => { if (e.target.closest("input,button")) return; abre(tr.dataset.dep); }));
@@ -1340,11 +1357,11 @@ function mostraMf() {
   const comp = (eq ? compEq : composicao(d, id, nt)).map(([a, b]) => `<div><span>${esc(a)}</span><b>${esc(b)}</b></div>`);
   if (r.adm) comp.push(`<div><span>Horário ADM (segunda a sexta)</span><b>${r.adm}</b></div>`);
   if (r.sobra && !eq) comp.push(`<div><span>Sobram da equipe de turno e vão para o dia</span><b>${r.sobra}</b></div>`);
-  comp.push(eq ? `<div class="fim"><span>${r.c > 0.05 ? "Contratar" : r.sobra > 0.05 ? "Sobram (cobrem outro equipamento)" : "Fecha com os operadores de hoje"} · ${f1(d.n)} → ${f1(r.need)} operadores (${f1(d.k * pe * ff)} por equipamento)</span><b>${mostraX(d, r)}</b></div>`
+  comp.push(eq ? `<div class="fim"><span>${r.c > 0.05 ? "A mais que hoje" : r.sobra > 0.05 ? "A menos que hoje (ficam sem atividade ou cobrem outro equipamento)" : "Igual a hoje"} · ${f1(d.n)} → ${f1(r.need)} operadores (${f1(d.k * pe * ff)} por equipamento)</span><b>${mostraX(d, r)}</b></div>`
     : `<div class="fim"><span>${r.c > 0 ? "Contratar" : "Fecha com a equipe de hoje"} · quadro ${d.n} → ${r.fica}</span><b>${r.c > 0 ? "+" + r.c : "0"}</b></div>`);
   $("#mfComp").innerHTML = comp.join("");
   $("#mfNota").textContent = e.nota;
-  $("#mfTab").innerHTML = th([["Escala", "l"], ["Precisa"], ["Contratar"], [eq ? "Operadores" : "Quadro"], ["Horas/semana"], ["Risco"]]) + "<tbody>" + IDS.map(x => {
+  $("#mfTab").innerHTML = th([["Escala", "l"], ["Precisa"], [eq ? "Sobre hoje" : "Contratar"], [eq ? "Operadores" : "Quadro"], ["Horas/semana"], ["Risco"]]) + "<tbody>" + IDS.map(x => {
     const y = conta(d, x, nt), ex = ESC[x];
     if (!y) return `<tr><td class="l">${esc(ex.curto)}</td><td colspan="5" class="na">${eq && d.reg === "adm" ? "não se aplica (ADM fica na 5x2)" : "não se aplica (sem noite)"}</td></tr>`;
     return `<tr class="clic${x === id ? " sel" : ""}" data-id="${x}"><td class="l">${esc(ex.curto)}${x === sugerida(d, nt) ? ' <span class="tag">sugerida</span>' : ""}${x === S.esc[dep] ? '<span class="salva">salva</span>' : ""}</td><td>${nX(d, y.need)}</td><td>${mostraX(d, y)}</td><td>${eq ? f1(y.need) : y.fica}</td><td>${hm(ex.h_sem - ex.he_sem)}${ex.he_sem ? " + " + hm(ex.he_sem) : ""}</td><td>${pill(ex.risco)}</td></tr>`;
