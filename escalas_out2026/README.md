@@ -16,6 +16,7 @@ Os turnos 24 h saem da 5x1, a 6x1 de dia vira 5x2 e o horário ADM com sábado v
 | `Escalas_por_Departamento_OUT2026.html` | Validação por departamento (começa pela oficina): cada setor em cada escala, pessoas por turno editáveis, contratar ou sobra, escala sugerida e a grade da escala escolhida. No painel de cada departamento ou equipamento dá para trocar a escala, salvar e passar para o próximo. As tabelas grandes têm **Tela cheia**. **Imprimir página** e **Imprimir relatório** (ou Ctrl+P) saem em A4 deitado, fundo branco, uma página por folha, reduzida até 68% quando precisa; a matriz da frota vai em duas folhas com o cabeçalho repetido. A capa não sai no papel. No claude.ai a página roda num quadro que bloqueia a impressão: os botões abrem a cópia do GitHub Pages numa aba nova, com as escolhas feitas, e ela já abre a janela de impressão (por isso a main precisa estar publicada). No painel de cada departamento escolhe-se também quantos turnos ele precisa: 3 (24 h), 2 (sem noite) ou 1 (só de dia) |
 | `oficina.py` | Lê `dados/oficina/ativos_oficina.xlsx` (anotações por departamento e linhas em azul), cruza com a escala de hoje e calcula cada escala com turma fixa por turno |
 | `gerar_departamentos.py` + `departamentos_template.html` | Monta a página por departamento |
+| `adm.py` → `adm.json` | Lê a planilha **ESCALA ADM** (`dados/adm/escala_adm.xlsx`, fora do git: tem nome e matrícula) e grava só as contagens por departamento e por central 24 h, que entram na aba ADM |
 
 ### Operacional (frota 24 h)
 
@@ -43,6 +44,17 @@ das escalas de 12 h: o dia de 12 h cobre o maior entre manhã e tarde e a noite,
 A 4x2 de 12 h entra na simulação com **risco alto** (botão "4x2 12 h em todos" e opção de entrar na sugerida): no
 cadastro, operadores de máquinas (335) e motoristas (250) são CLT urbano e, com a hora noturna reduzida, a noite de
 12 h passa de 10 h contadas. Só vale com norma coletiva que troque a hora reduzida por adicional maior.
+
+### ADM agrícola
+
+Aba **ADM** (páginas 8 a 10: painel, quadro e matriz), no mesmo modelo da Operacional, a partir da planilha ESCALA
+ADM de 26/10/2026: 97 pessoas em 24 departamentos. Quem está em 5x2 (85: 7 ADM e 78 sem cartão de ponto) fica de
+segunda a sexta e não muda em nenhuma escala. As três centrais que rodam 24 h, hoje em 12x36 com 4 pessoas cada (1 por
+turno), entram na simulação com turma fixa por turno, como a oficina: **Monitoramento** (em amarelo na planilha; 3 da
+Central de Operações Agrícolas e 1 da Central de Rastreamento), **COA** (idem) e **COI** (4 da Central de Operações de
+Irrigação). Na 12x36, na 3x3 e na 4x2 de 12 h fecham com as 4 de hoje; na 5x2 e na 4x2 de 8 h precisam de 6 (+2 cada,
++6 no total). Pessoas por turno, turnos e escala mudam na matriz e no painel de cada central. Para atualizar: trocar a
+planilha em `dados/adm/`, rodar `python adm.py` e `python gerar_departamentos.py`.
 
 ### 5x2 com folga desencontrada
 

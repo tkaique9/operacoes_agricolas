@@ -152,8 +152,10 @@ def dados():
         if reg:   # turnos e folguista anotados
             e["reg"], e["folg"] = reg
         frota.append(e)
-    return {"area": "Oficina e Operacional", "base": "20/10/2026", "escalas": escalas, "deps": deps, "dia": dia, "tot": tot,
-            "frota": frota, "frentes": FRENTES, "clt_op": clt_operacao()}
+    adm = AQUI / "adm.json"   # ADM da área agrícola, só contagens (python adm.py)
+    return {"area": "Oficina, Operacional e ADM", "base": "20/10/2026", "escalas": escalas, "deps": deps, "dia": dia,
+            "tot": tot, "frota": frota, "frentes": FRENTES, "clt_op": clt_operacao(),
+            "adm": json.loads(adm.read_text(encoding="utf-8")) if adm.exists() else None}
 
 
 def gerar():

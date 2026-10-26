@@ -1,0 +1,403 @@
+{
+ "fonte": "ESCALA ADM.xlsx (26/10/2026)",
+ "n": 97,
+ "areas": {
+  "101.005": {
+   "nome": "Controle agrícola e apoio",
+   "cor": "#2F6FD0"
+  },
+  "101.006": {
+   "nome": "CCT · corte, carregamento e transporte",
+   "cor": "#E06A3A"
+  },
+  "101.007": {
+   "nome": "Tratos culturais",
+   "cor": "#1FA37A"
+  },
+  "101.008": {
+   "nome": "Controladoria",
+   "cor": "#8A93A6"
+  },
+  "101.014": {
+   "nome": "Centrais de operações",
+   "cor": "#8E5BB5"
+  }
+ },
+ "deps": [
+  {
+   "dep": "101.005.002",
+   "nome": "Controle Agrícola",
+   "area": "101.005",
+   "n": 7,
+   "esc": {
+    "5x2": 7
+   },
+   "tipo": {
+    "adm": 5,
+    "sem_cartao": 2
+   },
+   "dia": 7
+  },
+  {
+   "dep": "101.005.003",
+   "nome": "Topografia",
+   "area": "101.005",
+   "n": 4,
+   "esc": {
+    "5x2": 4
+   },
+   "tipo": {
+    "sem_cartao": 4
+   },
+   "dia": 4
+  },
+  {
+   "dep": "101.005.005",
+   "nome": "Fiscais de Área",
+   "area": "101.005",
+   "n": 3,
+   "esc": {
+    "5x2": 3
+   },
+   "tipo": {
+    "sem_cartao": 3
+   },
+   "dia": 3
+  },
+  {
+   "dep": "101.005.006",
+   "nome": "Cercas",
+   "area": "101.005",
+   "n": 1,
+   "esc": {
+    "5x2": 1
+   },
+   "tipo": {
+    "sem_cartao": 1
+   },
+   "dia": 1
+  },
+  {
+   "dep": "101.005.007",
+   "nome": "Estradas",
+   "area": "101.005",
+   "n": 1,
+   "esc": {
+    "5x2": 1
+   },
+   "tipo": {
+    "sem_cartao": 1
+   },
+   "dia": 1
+  },
+  {
+   "dep": "101.005.009",
+   "nome": "Gestão de Transporte de Pessoal",
+   "area": "101.005",
+   "n": 1,
+   "esc": {
+    "5x2": 1
+   },
+   "tipo": {
+    "sem_cartao": 1
+   },
+   "dia": 1
+  },
+  {
+   "dep": "101.006.001",
+   "nome": "Gerência CCT",
+   "area": "101.006",
+   "n": 2,
+   "esc": {
+    "5x2": 2
+   },
+   "tipo": {
+    "sem_cartao": 2
+   },
+   "dia": 2
+  },
+  {
+   "dep": "101.006.002",
+   "nome": "Coordenação CCT",
+   "area": "101.006",
+   "n": 6,
+   "esc": {
+    "5x2": 6
+   },
+   "tipo": {
+    "sem_cartao": 6
+   },
+   "dia": 6
+  },
+  {
+   "dep": "101.006.003",
+   "nome": "Supervisão CCT · Mecanizado",
+   "area": "101.006",
+   "n": 20,
+   "esc": {
+    "5x2": 20
+   },
+   "tipo": {
+    "adm": 1,
+    "sem_cartao": 19
+   },
+   "dia": 20
+  },
+  {
+   "dep": "101.006.005",
+   "nome": "Supervisão · Central / Pátio",
+   "area": "101.006",
+   "n": 3,
+   "esc": {
+    "5x2": 3
+   },
+   "tipo": {
+    "sem_cartao": 3
+   },
+   "dia": 3
+  },
+  {
+   "dep": "101.006.006",
+   "nome": "Controle CCT",
+   "area": "101.006",
+   "n": 1,
+   "esc": {
+    "5x2": 1
+   },
+   "tipo": {
+    "adm": 1
+   },
+   "dia": 1
+  },
+  {
+   "dep": "101.007.003",
+   "nome": "Gerência de Tratos",
+   "area": "101.007",
+   "n": 2,
+   "esc": {
+    "5x2": 2
+   },
+   "tipo": {
+    "sem_cartao": 2
+   },
+   "dia": 2
+  },
+  {
+   "dep": "101.007.004",
+   "nome": "Fiscais · Herbicida",
+   "area": "101.007",
+   "n": 4,
+   "esc": {
+    "5x2": 4
+   },
+   "tipo": {
+    "sem_cartao": 4
+   },
+   "dia": 4
+  },
+  {
+   "dep": "101.007.005",
+   "nome": "Fiscais · Irrigação",
+   "area": "101.007",
+   "n": 4,
+   "esc": {
+    "5x2": 4
+   },
+   "tipo": {
+    "sem_cartao": 4
+   },
+   "dia": 4
+  },
+  {
+   "dep": "101.007.006",
+   "nome": "Fiscais · Adubação",
+   "area": "101.007",
+   "n": 1,
+   "esc": {
+    "5x2": 1
+   },
+   "tipo": {
+    "sem_cartao": 1
+   },
+   "dia": 1
+  },
+  {
+   "dep": "101.007.008",
+   "nome": "Fiscais · Controle de Pragas",
+   "area": "101.007",
+   "n": 10,
+   "esc": {
+    "5x2": 10
+   },
+   "tipo": {
+    "sem_cartao": 10
+   },
+   "dia": 10
+  },
+  {
+   "dep": "101.007.009",
+   "nome": "Fiscais · Outros Tratos",
+   "area": "101.007",
+   "n": 3,
+   "esc": {
+    "5x2": 3
+   },
+   "tipo": {
+    "sem_cartao": 3
+   },
+   "dia": 3
+  },
+  {
+   "dep": "101.007.010",
+   "nome": "Fiscais · Irrigação Localizada",
+   "area": "101.007",
+   "n": 3,
+   "esc": {
+    "5x2": 3
+   },
+   "tipo": {
+    "sem_cartao": 3
+   },
+   "dia": 3
+  },
+  {
+   "dep": "101.007.012",
+   "nome": "Fiscais · Reflorestamento",
+   "area": "101.007",
+   "n": 1,
+   "esc": {
+    "5x2": 1
+   },
+   "tipo": {
+    "sem_cartao": 1
+   },
+   "dia": 1
+  },
+  {
+   "dep": "101.008.001",
+   "nome": "Controladoria",
+   "area": "101.008",
+   "n": 1,
+   "esc": {
+    "5x2": 1
+   },
+   "tipo": {
+    "sem_cartao": 1
+   },
+   "dia": 1
+  },
+  {
+   "dep": "101.014.001",
+   "nome": "Central de Operações Agrícolas",
+   "area": "101.014",
+   "n": 7,
+   "esc": {
+    "12x36": 6,
+    "5x2": 1
+   },
+   "tipo": {
+    "sem_cartao": 1
+   },
+   "central": 6,
+   "dia": 1
+  },
+  {
+   "dep": "101.014.002",
+   "nome": "Central de Operações de Irrigação",
+   "area": "101.014",
+   "n": 6,
+   "esc": {
+    "12x36": 4,
+    "5x2": 2
+   },
+   "tipo": {
+    "sem_cartao": 2
+   },
+   "central": 4,
+   "dia": 2
+  },
+  {
+   "dep": "101.014.003",
+   "nome": "Central de Rastreamento e Sensor de Fadiga",
+   "area": "101.014",
+   "n": 3,
+   "esc": {
+    "5x2": 1,
+    "12x36": 2
+   },
+   "tipo": {
+    "sem_cartao": 1
+   },
+   "central": 2,
+   "dia": 1
+  },
+  {
+   "dep": "101.014.004",
+   "nome": "Central de Agricultura de Precisão",
+   "area": "101.014",
+   "n": 3,
+   "esc": {
+    "5x2": 3
+   },
+   "tipo": {
+    "sem_cartao": 3
+   },
+   "dia": 3
+  }
+ ],
+ "centrais": [
+  {
+   "id": "MONITORAMENTO",
+   "nome": "Monitoramento",
+   "n": 4,
+   "esc": {
+    "12x36": 4
+   },
+   "deps": [
+    [
+     "Op. Agrícolas",
+     3
+    ],
+    [
+     "Rastreamento",
+     1
+    ]
+   ],
+   "postos": 1
+  },
+  {
+   "id": "COA",
+   "nome": "COA · Central de Operações Agrícolas",
+   "n": 4,
+   "esc": {
+    "12x36": 4
+   },
+   "deps": [
+    [
+     "Op. Agrícolas",
+     3
+    ],
+    [
+     "Rastreamento",
+     1
+    ]
+   ],
+   "postos": 1
+  },
+  {
+   "id": "COI",
+   "nome": "COI · Central de Operações de Irrigação",
+   "n": 4,
+   "esc": {
+    "12x36": 4
+   },
+   "deps": [
+    [
+     "Op. Irrigação",
+     4
+    ]
+   ],
+   "postos": 1
+  }
+ ]
+}
