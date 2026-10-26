@@ -319,7 +319,33 @@ table.mx tr.fr td { background: #F1F3F8; color: var(--navy); font: 600 13px var(
 
 /* gráficos e escalas */
 .bars text { font-family: var(--f-display); }
-.escalas { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.escalas { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; }
+@media screen and (max-width: 1600px) { .escalas { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.escalas .mini td, .escalas .mini th { width: 11px; height: 13px; font-size: 9.5px; }
+.esc.hoje { box-shadow: inset 0 2px 0 #8A93A6, 0 24px 60px -14px rgba(0,0,0,.55); }
+.pill.Hoje { background: #E7EAF1; color: var(--navy); }
+.esc .big.dois { grid-template-columns: 1fr 1.3fr; }
+.esc .big.um { grid-template-columns: 1fr; }
+.esc .big b.dt { font-size: 19px; padding-top: 3px; }
+.esc .p5 { font: 500 12px var(--f-mono); color: var(--mut); margin-top: -2px; }
+.esc .p5 b { font: 700 15px var(--f-display); color: var(--navy); }
+.esc .p5.up b { color: var(--red); } .esc .p5.dn b { color: var(--green); }
+/* as 7 escalas numa linha: letras um pouco menores para caber */
+@media screen and (min-width: 1601px) {
+  .escalas .esc { padding: 10px 10px 8px; gap: 7px; }
+  .escalas .esc h4 { font-size: 16px; }
+  .escalas .esc .hr { font-size: 13px; line-height: 1.35; }
+  .escalas .esc .big div { padding: 6px; }
+  .escalas .esc .big b, .escalas .esc .big.tres b { font-size: 21px; }
+  .escalas .esc .big b.dt { font-size: 16px; }
+  .escalas .esc .big span { font-size: 10px; letter-spacing: 0; }
+  .escalas .esc .big.tres { gap: 4px; }
+  .escalas .esc dl { font-size: 13.5px; gap: 2px 6px; }
+  .escalas .esc dt { font-size: 11px; letter-spacing: .02em; }
+  .escalas .esc .nt { font-size: 13px; line-height: 1.38; }
+  .escalas .esc .p5 { font-size: 11px; }
+  .escalas .tg button { font-size: 10.5px; padding: 4px 6px; letter-spacing: .04em; }
+}
 .esc { background: var(--white); color: var(--ink); border-radius: 4px; padding: 12px 12px 10px; min-width: 0; display: flex; flex-direction: column; gap: 8px;
   box-shadow: inset 0 2px 0 var(--gold), 0 24px 60px -14px rgba(0,0,0,.55); }
 .esc.nserve { box-shadow: inset 0 2px 0 var(--red), 0 24px 60px -14px rgba(0,0,0,.55); }
@@ -477,7 +503,7 @@ html.imprimindo .rolo, html.imprimindo .esc > div[style] { flex: none; overflow:
 html.imprimindo .painel { flex: none; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
 html.imprimindo .painel svg { height: auto; }
 html.imprimindo .cols { flex: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-html.imprimindo .escalas { flex: none; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+html.imprimindo .escalas { flex: none; grid-template-columns: repeat(4, minmax(0, 1fr)); }
 html.imprimindo table.tb th, html.imprimindo table.tb tr.tot td { position: static; }
 html.imprimindo table.tb tr, html.imprimindo table.lista tr { break-inside: avoid; page-break-inside: avoid; }
 html.imprimindo .card h3 { break-after: avoid; page-break-after: avoid; }
@@ -617,7 +643,7 @@ body.maxi-on .deck { z-index: 150; }
 
   <article class="slide" id="escalas" data-mod="Referência" data-title="As escalas" data-desc="Horas, folgas, domingos e risco de cada escala">
     <div class="s-head"><div><div class="s-eyebrow">11 · Referência</div><h2 class="s-title">As escalas</h2>
-      <p class="s-sub">Duas primeiras semanas de cada escala. F verde = folga; vermelho = folga no domingo. Na 5x2, folga separada ou junta: a quantidade de gente é a mesma.</p></div></div>
+      <p class="s-sub">A 5x1 e a 6x1 são as de hoje; o % é quanto muda a quantidade de pessoas por equipamento sobre a 5x1 (a 6x1 não roda 24 h e fica fora dessa comparação). Duas primeiras semanas de cada escala. F verde = folga; vermelho = folga no domingo. Na 5x2, folga separada ou junta: a quantidade de gente é a mesma.</p></div></div>
     <div class="escalas" id="cardsEsc"></div>
   </article>
 
@@ -1206,17 +1232,42 @@ function grafico() {
     .sort((x, y) => y.a - x.a || y.b - x.b);
   barrasH($("#gDep"), linhas);
 }
+// escalas de hoje, só para comparar (não entram na simulação): a 5x1 dos turnos 24 h e a 6x1 de dia e do ADM com sábado
+const HOJE_ESC = [
+  { id: "5x1", nome: "5x1 · 3 turnos de 8 h", turnos: 3, trab: 5, ciclo: 6, h_sem: (7 + 50 / 60) * 7 * 5 / 6, he_sem: 0, folgas_sem: 7 / 6,
+    horario: "Hoje nos turnos 24 h: 07:00–15:20 · 15:00–23:20 · 23:00–07:20 (30 min de intervalo)",
+    grade: [0, 1, 2, 3, 4, 5].map(t => Array.from({ length: 42 }, (_, d) => (d + t) % 6 === 5 ? "F" : "T")), rotulos: [..."ABCDEF"],
+    nota: "Escala de hoje nos turnos 24 h: 5 dias de trabalho e 1 de folga, que anda um dia por semana (6 turmas por turno). É a base do % das outras escalas. Com a EC 141 (2 folgas por semana a partir de 15/12/2026) deixa de valer." },
+  // a 6x1 não roda 24 h: fica fora da comparação por equipamento (semEq)
+  { id: "6x1", nome: "6x1 · 6 dias e 1 de folga", semEq: true, turnos: 3, trab: 6, ciclo: 7, h_sem: 44, he_sem: 0, folgas_sem: 1,
+    horario: "Hoje de dia e no ADM com sábado: segunda a sábado, 7h20 por dia, folga no domingo",
+    grade: [Array.from({ length: 14 }, (_, d) => d % 7 === 6 ? "F" : "T")], rotulos: ["Todos"], domTxt: "todos",
+    nota: "Escala de hoje de dia e no ADM com sábado: segunda a sábado e folga no domingo. Não roda 24 h, então não entra na comparação por equipamento, que é só sobre a 5x1. A EC 141 acaba com a 6x1 em 15/12/2026." },
+];
+// domingos de folga, semanas do ciclo e maior sequência de trabalho de uma grade (como o checar_grade do analise.py)
+function resumoGrade(g) {
+  const seq = Math.max(...g.map(l => { let m = 0, s = 0; [...l, ...l].forEach(x => { s = x === "T" ? s + 1 : 0; m = Math.max(m, s); }); return m; }));
+  return { grade: g, sem: g[0].length / 7, seq, dom: Math.max(...g.map(l => l.filter((x, i) => i % 7 === 6 && x === "F").length)) };
+}
 function escalas() {
-  $("#cardsEsc").innerHTML = D.escalas.map(e => {
-    const v = gr(e), g = v.grade, DS = "STQQSSD";
+  const base = PPP(H5X1);
+  const carta = (e, hoje) => {
+    const v = hoje ? resumoGrade(e.grade) : gr(e), g = v.grade, DS = "STQQSSD", pp = (PPP(e) / base - 1) * 100;
     let mini = `<table class="mini"><tr><td class="lab"></td>${Array.from({ length: 14 }, (_, i) => `<th class="${i % 7 === 6 ? "d" : ""}">${DS[i % 7]}</th>`).join("")}</tr>`;
     g.forEach((l, i) => { mini += `<tr><td class="lab">${esc(e.rotulos[i].replace("Turma ", ""))}</td>${l.slice(0, 14).map((v, k) => `<td class="${v === "F" ? "F" + (k % 7 === 6 ? " d" : "") : ""}"></td>`).join("")}</tr>`; });
     mini += "</table>";
-    return `<div class="esc${e.risco === "Alto" ? " nserve" : ""}"><div><h4>${esc(e.nome)}</h4>${pill(e.risco)}</div><div class="hr">${esc(e.horario)}</div>${e.folgas ? togFolga() : ""}
-      <div class="big tres"><div><b>${f1(PPP(e))}</b><span>pessoas por<br>equipamento 24 h</span></div><div><b class="${totais(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totais(() => e.id).contr)}</b><span>oficina<br>em todos</span></div><div><b class="${totaisOp(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totaisOp(() => e.id).contr - totaisOp(() => e.id).sobra)}</b><span>frota<br>líquido</span></div></div>
-      <dl><dt>Horas por semana</dt><dd>${hm(e.h_sem - e.he_sem)}${e.he_sem ? " + " + hm(e.he_sem) : ""}</dd><dt>Folgas por semana</dt><dd>${fmt(e.folgas_sem, 2)}${e.folgas ? (S.folga === "separada" ? " separadas" : " juntas") : ""}</dd><dt>Domingos de folga</dt><dd>${v.dom} a cada ${v.sem} sem.</dd><dt>Máx. dias seguidos</dt><dd>${v.seq}</dd><dt>Turmas</dt><dd>${g.length}</dd></dl>
+    // quanto muda a quantidade de pessoas por equipamento (24 h) sobre a 5x1 de hoje
+    const p5 = e.semEq ? "" : e.id === "5x1" ? `<div class="p5">base: ${f1(base)} pessoas por equipamento</div>`
+      : `<div class="p5 ${pp > 0.05 ? "up" : pp < -0.05 ? "dn" : ""}"><b>${pp > 0 ? "+" : "−"}${fmt(Math.abs(pp), 1)}%</b> por equipamento sobre a 5x1</div>`;
+    const big = e.semEq ? `<div class="big um"><div><b class="dt">15/12/2026</b><span>deixa de valer com a EC 141</span></div></div>`
+      : hoje ? `<div class="big dois"><div><b>${f1(PPP(e))}</b><span>pessoas por<br>equipamento 24 h</span></div><div><b class="dt">15/12/2026</b><span>deixa de valer<br>com a EC 141</span></div></div>`
+      : `<div class="big tres"><div><b>${f1(PPP(e))}</b><span>pessoas por<br>equipamento 24 h</span></div><div><b class="${totais(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totais(() => e.id).contr)}</b><span>oficina<br>em todos</span></div><div><b class="${totaisOp(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totaisOp(() => e.id).contr - totaisOp(() => e.id).sobra)}</b><span>frota<br>líquido</span></div></div>`;
+    return `<div class="esc${hoje ? " hoje" : e.risco === "Alto" ? " nserve" : ""}"><div><h4>${esc(e.nome)}</h4>${hoje ? '<span class="pill Hoje">Hoje</span>' : pill(e.risco)}</div><div class="hr">${esc(e.horario)}</div>${!hoje && e.folgas ? togFolga() : ""}
+      ${big}${p5}
+      <dl><dt>Horas por semana</dt><dd>${hm(e.h_sem - e.he_sem)}${e.he_sem ? " + " + hm(e.he_sem) : ""}</dd><dt>Folgas por semana</dt><dd>${fmt(e.folgas_sem, 2)}${e.folgas ? (S.folga === "separada" ? " separadas" : " juntas") : ""}</dd><dt>Domingos de folga</dt><dd>${e.domTxt || `${v.dom} a cada ${v.sem} sem.`}</dd><dt>Máx. dias seguidos</dt><dd>${v.seq}</dd><dt>Turmas</dt><dd>${g.length}</dd></dl>
       <div style="overflow-x:auto">${mini}</div><div class="nt">${esc(e.nota)}</div></div>`;
-  }).join("");
+  };
+  $("#cardsEsc").innerHTML = HOJE_ESC.map(e => carta(e, true)).join("") + D.escalas.map(e => carta(e, false)).join("");
 }
 
 /* ---------- painel do departamento ---------- */
