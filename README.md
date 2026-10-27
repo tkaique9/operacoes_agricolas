@@ -57,8 +57,9 @@ atualizados por ele, sem mexer no layout nem nas regras:
   semana que está na apresentação vira a semana anterior (comparação dia a dia) e a nova
   entra com os números do PDF; atividade nova com realizado na semana entra na operação
   dela (ex.: Adubação Socaria - Próprio, 27/10/2026), e linha com dias soltos mas sem
-  realizado da semana na planilha fica fora (ex.: Uniport Próprio - Terceira Molécula, que
-  a planilha não conta no total do Uniport). Histórico dos meses e atividades que a
+  realizado da semana na planilha fica fora, a não ser as de `SOMA_DIAS`, que a planilha
+  não soma mas entram pela soma dos dias, com nome e lugar próprios (Uniport Próprio -
+  Terceira Molécula (Bordadura), logo abaixo do Uniport Próprio, desde 27/10/2026). Histórico dos meses e atividades que a
   impressão não traz ficam como estão; as correções de meta (`META_EQUIP`, `EQUIP`,
   `META_PESSOA`, `SEM_META_DIAS`, `NAO_PLANEJADAS`) valem de novo; o domingo que a
   impressão esconde mas a planilha soma entra pela diferença entre o realizado da semana

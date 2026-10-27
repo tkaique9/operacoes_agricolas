@@ -70,6 +70,11 @@ SEM_META_DIAS = {"Área Monitoramento": [5]}
 # atividades não planejadas: entram com o realizado e as pessoas apontadas, mas sem
 # meta (nem na operação, nem no total). O Roço passou a ser não planejado em 20/10/2026.
 NAO_PLANEJADAS = {"Roço"}
+# linhas que a planilha não soma na semana (sem "Realizado Semana" e fora do total da
+# frente), mas que entram no relatório: o realizado da semana é a soma dos dias. Nome da
+# planilha → (nome no relatório, atividade de baixo da qual a linha aparece). A bordadura
+# (3ª molécula) do Uniport próprio entrou em 27/10/2026.
+SOMA_DIAS = {"Uniport Próprio - Terceira Molécula": ("Uniport Próprio - Terceira Molécula (Bordadura)", "Uniport Próprio")}
 
 
 def marca_nao_planejada(a):
@@ -808,6 +813,12 @@ def semana_do_pdf(dados, pdf):
     for fr in dados["frentes"]:
         for a in fr["atividades"]:
             a["mes"].setdefault(ym, 0)
+    # linhas que a planilha não soma: nome do relatório e realizado da semana pela soma dos dias
+    for r in s["atividades"]:
+        if r["nome"] in SOMA_DIAS:
+            r["nome"] = SOMA_DIAS[r["nome"]][0]
+            if not r.get("realSemana"):
+                r["realSemana"] = r2(sum(v for v in r["dias"].values() if v)) or None
     por_nome = {r["nome"]: r for r in s["atividades"]}
     usados, domingos = set(), []
     for fr in dados["frentes"]:
@@ -837,7 +848,9 @@ def semana_do_pdf(dados, pdf):
         dom = _linha_do_pdf(a, r, s, dias, ref, ym, ym_ant)
         if dom:
             domingos.append(f"{a['nome']} {dom}")
-        fr["atividades"].append(a)
+        abaixo = next((v[1] for v in SOMA_DIAS.values() if v[0] == r["nome"]), None)
+        k = next((i for i, x in enumerate(fr["atividades"]) if x["nome"] == abaixo), None)
+        fr["atividades"].insert(k + 1 if k is not None else len(fr["atividades"]), a)
         usados.add(r["nome"])
         print(f"  atividade nova: {r['nome']} em {fr['nome']}")
     if domingos:
