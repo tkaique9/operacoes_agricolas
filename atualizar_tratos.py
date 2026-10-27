@@ -691,10 +691,34 @@ def cargill_a_parte(tab):
             p["extras"]["cargill"] = dict(cg["v"])
 
 
+# A localizada parou em 27/10/2026 e fica só como histórico da própria (pedido do
+# usuário: "área histórico da localizada somente essa 6.715", a do resumo da planilha).
+# Nos quadros do cocho (Alencar e Fábio do Prado) a coluna da localizada sai zerada; a
+# planilha também não a desconta do saldo a realizar deles nem a soma no resumo.
+def localizada_so_propria(tab):
+    import programas_pdf
+    for p in tab["programas"]:
+        if p["tipo"] != "adub":
+            continue
+        tirou = []
+        for sec in p["secoes"]:
+            if "COCHO" not in programas_pdf.sem_acento(sec["titulo"]):
+                continue
+            tot = [l for l in sec["linhas"] if l["t"] == "tot" and l["v"].get("localizada")]
+            if tot:
+                tirou.append(f"{sec['titulo']} {tot[-1]['v']['localizada']}")
+            for l in sec["linhas"]:
+                if l["v"].get("localizada"):
+                    l["v"]["localizada"] = 0.0
+        if tirou:
+            print("  localizada fora da própria, zerada (só a da própria fica como histórico):", "; ".join(tirou))
+
+
 def tabelas_do_pdf(pdf):
     import programas_pdf
     tab = programas_pdf.ler(pdf)
     cargill_a_parte(tab)
+    localizada_so_propria(tab)
     for p in tab["programas"]:
         n = sum(1 for sec in p["secoes"] for l in sec["linhas"] if l["t"] == "faz")
         print(f"  {p['nome']}: {n} fazenda(s) em {len(p['secoes'])} quadro(s)")
