@@ -1,6 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="na-capa"><head><meta charset="UTF-8">
+<html lang="pt-BR" class="na-capa notranslate" translate="no"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google" content="notranslate">
+<!-- o navegador não traduz a página: a tradução automática trocava os títulos
+     ("Fornecedor" virou uma frase que esticava a coluna e empurrava a tabela para fora
+     da tela). Também por script, porque a cópia publicada no claude.ai não tem <html> -->
+<script>document.documentElement.setAttribute("translate","no"); document.documentElement.classList.add("notranslate");</script>
 <title>Tratos Culturais — Reunião Semanal | UGS</title>
 <!-- Fontes do tema (Archivo, Source Serif 4, IBM Plex Mono): carregadas do Google Fonts sem
      travar a página. Sem internet, entram as fontes do sistema e nada quebra. -->
@@ -439,6 +444,14 @@ table.tb.pg td{height:auto;padding:5px 12px;line-height:1.25}
 table.tb.pg th{padding:6px 12px;line-height:1.2}
 table.tb.pg td.tx{text-align:left;white-space:nowrap}
 table.tb.pg td.prop{white-space:normal;min-width:170px;color:var(--navy)}
+/* tabela que não cabe na largura da tela (paginaProg): menos folga nas células, títulos
+   em duas linhas, propriedade mais estreita e barra do % menor */
+table.tb.pg.compacta td,table.tb.pg.compacta th{padding-left:6px;padding-right:6px}
+table.tb.pg.compacta th{white-space:normal}
+table.tb.pg.compacta td.prop{min-width:110px}
+table.tb.pg.compacta .bc{gap:5px}
+table.tb.pg.compacta .bc .trk{min-width:44px}
+table.tb.pg.compacta .bc em{min-width:36px}
 table.tb.pg td.c{text-align:center}
 table.tb.pg td.atr{color:var(--red);font-weight:700}
 table.tb.pg td.zero{color:#C3C9D6;font-weight:400}
@@ -2361,9 +2374,16 @@ function paginaProg(id){
   if(!p){ rolo.innerHTML=""; return; }
   var topo=rolo.scrollTop;
   rolo.innerHTML=tabelaProg(p,o)+"<div class='pg-fim'><div class='pg-sep'>Indicadores</div><div class='pg-ind'></div></div>";
-  // a altura rola; a largura não: a letra diminui até a tabela caber na largura
-  var tb=rolo.querySelector("table"), f=parseFloat(getComputedStyle(tb).fontSize);
-  while(tb.offsetWidth>rolo.clientWidth && f>11){ f-=0.5; tb.style.fontSize=f+"px"; }
+  // a altura rola; a largura não: a tabela tem de caber na largura da tela. A letra
+  // diminui até 2 px; se ainda não couber, a tabela fica compacta (menos folga nas
+  // células, títulos em duas linhas, barra menor), volta à letra cheia e diminui até 10 px
+  var tb=rolo.querySelector("table"), f0=parseFloat(getComputedStyle(tb).fontSize), f=f0;
+  function larga(){ return tb.offsetWidth>rolo.clientWidth; }
+  while(larga() && f>f0-2){ f-=0.5; tb.style.fontSize=f+"px"; }
+  if(larga()){
+    tb.classList.add("compacta"); tb.style.fontSize=""; f=f0;
+    while(larga() && f>10){ f-=0.5; tb.style.fontSize=f+"px"; }
+  }
   var box=rolo.querySelector(".pg-ind");
   desenhaCartoes(box,o.ind(p));
   rolo.scrollTop=topo;
