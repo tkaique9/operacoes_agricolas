@@ -746,10 +746,43 @@ def saldo_sem_negativo(tab):
             da_equipe[equipe] = da_equipe.get(equipe, 0.0) + acum
 
 
+# Pré-emergência: o que a planilha deixa a realizar na Cargill vai para a área de
+# fornecedor (pedido em 27/10/2026). A área colhida sai junto, porque na planilha a área
+# de fornecedor fica fora da colhida (a realizar = colhida − realizada − reforma;
+# encerradas = colhida + fornecedor). O total geral acompanha.
+def pre_cargill_fornecedor(tab):
+    def passa(v, s):
+        v["fornecedor"] = r2((v.get("fornecedor") or 0) + s)
+        v["colhida"] = r2((v.get("colhida") or 0) - s)
+        v["aRealizar"] = r2((v.get("aRealizar") or 0) - s)
+    for p in tab["programas"]:
+        if p["id"] != "pre":
+            continue
+        for sec in p["secoes"]:
+            fazs, passou = [], 0.0
+            for l in sec["linhas"]:
+                if l["t"] == "faz":
+                    fazs.append(l)
+                    continue
+                if l["t"] == "sub" and "CARGILL" in l["rot"].upper():
+                    for f in fazs:
+                        if f["v"].get("aRealizar"):
+                            passa(f["v"], f["v"]["aRealizar"])
+                    s = l["v"].get("aRealizar") or 0
+                    if s:
+                        passa(l["v"], s)
+                        passou += s
+                        print(f"  pré-emergência: a realizar da Cargill ({s} ha) passou para fornecedor")
+                elif l["t"] == "tot" and passou:
+                    passa(l["v"], passou)
+                fazs = []
+
+
 def tabelas_do_pdf(pdf):
     import programas_pdf
     tab = programas_pdf.ler(pdf)
     cargill_a_parte(tab)
+    pre_cargill_fornecedor(tab)
     localizada_so_propria(tab)
     saldo_sem_negativo(tab)
     for p in tab["programas"]:
