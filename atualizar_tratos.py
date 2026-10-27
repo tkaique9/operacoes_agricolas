@@ -714,11 +714,44 @@ def localizada_so_propria(tab):
             print("  localizada fora da própria, zerada (só a da própria fica como histórico):", "; ".join(tirou))
 
 
+# Saldo a realizar negativo (aplicado mais que a área: 9350 Itaúba, −0,30 ha em
+# 27/10/2026) vale zero (pedido do usuário): a sobra num talhão não abate o que falta
+# nos outros. O subtotal do bloco e os totais que o somam (o da região e o da equipe)
+# sobem o mesmo tanto.
+def saldo_sem_negativo(tab):
+    import programas_pdf
+    for p in tab["programas"]:
+        if p["tipo"] != "adub":
+            continue
+        da_equipe = {}      # equipe -> o que já voltou ao saldo nos quadros anteriores dela
+        for sec in p["secoes"]:
+            equipe = re.sub(r"\s*-\s*REGIAO.*$", "", programas_pdf.sem_acento(sec["titulo"])).split(" - ")[-1]
+            pend = acum = 0.0
+            for l in sec["linhas"]:
+                v = l["v"]
+                x = v.get("aRealizar") or 0.0
+                if l["t"] == "faz" and x < 0:
+                    print(f"  saldo negativo zerado: {l['cod']} {l['prop']} {x}")
+                    pend -= x
+                    v["aRealizar"] = 0.0
+                elif l["t"] == "sub":
+                    x += pend
+                    acum += pend + max(-x, 0.0)
+                    v["aRealizar"] = r2(max(x, 0.0))
+                    pend = 0.0
+                elif l["t"] == "tot":
+                    mais = acum + (da_equipe.get(equipe, 0.0) if equipe in programas_pdf.sem_acento(l["rot"]) else 0.0)
+                    if mais:
+                        v["aRealizar"] = r2(x + mais)
+            da_equipe[equipe] = da_equipe.get(equipe, 0.0) + acum
+
+
 def tabelas_do_pdf(pdf):
     import programas_pdf
     tab = programas_pdf.ler(pdf)
     cargill_a_parte(tab)
     localizada_so_propria(tab)
+    saldo_sem_negativo(tab)
     for p in tab["programas"]:
         n = sum(1 for sec in p["secoes"] for l in sec["linhas"] if l["t"] == "faz")
         print(f"  {p['nome']}: {n} fazenda(s) em {len(p['secoes'])} quadro(s)")
