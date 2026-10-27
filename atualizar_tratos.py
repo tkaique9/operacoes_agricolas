@@ -863,13 +863,33 @@ def semana_do_pdf(dados, pdf):
 
 def pelo_pdf(pdf):
     """Atualiza os números pelo PDF: tabelas dos programas e a semana (a mesma ou a
-    seguinte, que vira a semana). Layout e regras não mudam."""
+    seguinte, que vira a semana). Layout e regras não mudam. PDF com só uma parte (ex.:
+    só as páginas da adubação) atualiza só os programas que traz; sem a página do
+    resumo semanal, a semana fica como está."""
+    import pymupdf
+    import programas_pdf
     dados = le_dados()
-    dados["tabelas"] = tabelas_do_pdf(pdf)
-    dados.setdefault("fonte", {})["tabelas"] = os.path.basename(pdf)
-    if dados["tabelas"]["atualizacao"]:
-        dados["fonte"]["atualizacaoProgramas"] = dados["tabelas"]["atualizacao"]
-    semana_do_pdf(dados, pdf)
+    novas = tabelas_do_pdf(pdf)
+    ids = {p["id"] for p in novas["programas"]}
+    antes = dados.get("tabelas") or {"programas": []}
+    ordem = [p["id"] for p in antes["programas"]] + [i for i in ids if i not in {p["id"] for p in antes["programas"]}]
+    por_id = {p["id"]: p for p in antes["programas"]}
+    por_id.update({p["id"]: p for p in novas["programas"]})
+    dados["tabelas"] = dict(novas, programas=[por_id[i] for i in ordem])
+    fonte = dados.setdefault("fonte", {})
+    if ids >= set(por_id):
+        fonte["tabelas"] = os.path.basename(pdf)
+    else:
+        parte = f"{', '.join(sorted(ids))} de {os.path.basename(pdf)}"
+        fonte["tabelas"] = " · ".join([x for x in fonte.get("tabelas", "").split(" · ") if x and x != parte] + [parte])
+    if novas["atualizacao"]:
+        dados["fonte"]["atualizacaoProgramas"] = novas["atualizacao"]
+    elif antes.get("atualizacao"):
+        dados["tabelas"]["atualizacao"] = antes["atualizacao"]
+    if any("RESUMO SEMANAL" in programas_pdf.sem_acento(pg.get_text()) for pg in pymupdf.open(pdf)):
+        semana_do_pdf(dados, pdf)
+    else:
+        print("semana como está: o PDF não tem a página do resumo semanal")
     grava(dados)
     print("tabelas dos programas de", dados["tabelas"]["atualizacao"], "lidas de", os.path.basename(pdf))
 

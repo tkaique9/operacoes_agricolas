@@ -2,7 +2,7 @@
 
 O PDF semanal (ex.: 19.10.2026.pdf) traz as abas de cada programa como são impressas:
 pré-emergência cana soca, reforço bordadura (3ª molécula), 1ª catação química e
-adubação de soqueira (localizada e com cocho). Cada tabela tem as fazendas, o subtotal
+adubação de soqueira (própria e com cocho). Cada tabela tem as fazendas, o subtotal
 por região (ou por bloco, na adubação) e o total, e é lida assim mesmo, sem refazer
 conta: a apresentação mostra o que a planilha mostra.
 
@@ -87,8 +87,10 @@ class Layout:
         pos = {sem_acento(w[4]): w for w in sorted(cab, key=lambda w: -w[0])}   # primeira ocorrência
         self.x_cod = pos["COD"][0]
         if tipo == "adub":
-            # títulos centralizados: a fronteira entre propriedade e bloco fica no meio deles
-            self.x_bloco = (pos["PROPRIEDADE"][0] + pos["PROPRIEDADE"][2] + pos["BLOCO"][0] + pos["BLOCO"][2]) / 4 + 6
+            # títulos centralizados: a fronteira entre propriedade e bloco fica no meio deles.
+            # O bloco começa logo depois do meio (27/10/2026: meio 244, bloco em 246): com
+            # folga maior o bloco inteiro caía na propriedade
+            self.x_bloco = (pos["PROPRIEDADE"][0] + pos["PROPRIEDADE"][2] + pos["BLOCO"][0] + pos["BLOCO"][2]) / 4 + 2
             self.x_prop = pos["FAZ"][2] + 2
         else:
             self.x_bloco = pos["BLOCO"][0] - 12
@@ -102,11 +104,22 @@ class Layout:
 
     def valores(self, ws):
         v = {}
-        for w in ws:
+        neg = False
+        anc = dict(self.ancoras)
+        for k, w in enumerate(ws):
             if w[0] >= self.x_num and NUM.match(w[4]):
                 c = self.coluna(w)
+                # "- 0,30": o sinal de menos sai separado do número, à esquerda da célula.
+                # O "-" de zero fica junto da borda direita da coluna (até ~12 pt depois do
+                # título dela) e nunca divide a coluna com um número
+                prox = ws[k + 1] if k + 1 < len(ws) else None
+                if w[4] == "-" and prox and prox[4] != "-" and NUM.match(prox[4]) and prox[0] - w[2] < 30 \
+                        and (c in v or (c and w[2] - anc[c] > 15)):
+                    neg = True
+                    continue
                 if c and not c.startswith("_"):
-                    v[c] = num(w[4])
+                    v[c] = -num(w[4]) if neg else num(w[4])
+                neg = False
         return v
 
 
@@ -170,12 +183,14 @@ PROGRAMAS = [  # título da página -> (id, tipo de tabela, nome)
 
 def resumo_final(prog, linhas, i):
     """Quadro "RESUMO FINAL ADUBAÇÃO": a linha de títulos e, logo abaixo, os valores."""
-    nomes = [("aTratar", "TRATAR"), ("reforma", "REFORMA"), ("localizada", "LOCALIZADA"), ("cocho", "COCHO"), ("aRealizar", "REALIZAR")]
+    # desde 27/10/2026 a coluna da localizada se chama "Área Apl Próprio"
+    nomes = [("aTratar", ("TRATAR",)), ("reforma", ("REFORMA",)), ("localizada", ("LOCALIZADA", "PROPRIO")),
+             ("cocho", ("COCHO",)), ("aRealizar", ("REALIZAR",))]
     x0 = min(w[0] for w in linhas[i][1] if "RESUMO" in sem_acento(w[4])) - 60
     for k in range(i + 1, min(i + 6, len(linhas))):
         cab = [w for w in linhas[k][1] if w[0] >= x0]
         if any(sem_acento(w[4]) == "TRATAR" for w in cab):
-            anc = [(c, next(w[2] for w in cab if sem_acento(w[4]) == p)) for c, p in nomes]
+            anc = [(c, next(w[2] for w in cab if sem_acento(w[4]) in p)) for c, p in nomes]
             for kk in range(k + 1, min(k + 4, len(linhas))):
                 vals = [w for w in linhas[kk][1] if w[0] >= x0 and NUM.match(w[4])]
                 if len(vals) >= 4:
@@ -213,7 +228,7 @@ def ler(path):
     doc = pymupdf.open(path)
     progs = {}
     atualizacao = None
-    secao = None          # adubação: seção corrente (localizada, área de queima, cocho por equipe e região)
+    secao = None          # adubação: seção corrente (própria, área de queima, cocho por equipe e região)
     lay_ant = {}          # layout da página anterior do mesmo programa (a tabela continua na seguinte)
     # nomes de bloco da adubação, tirados dos subtotais: servem para separar a propriedade
     # que a impressão grudou no bloco ("RETIRINHO E BOA ESPERANÇABEBEDOURO")
@@ -242,7 +257,8 @@ def ler(path):
                 continue
             # seções da adubação
             if tipo == "adub":
-                ms = re.match(r"^(ADUBACAO LOCALIZADA|AREA DE QUEIMA|ADUBACAO COM COCHO)(.*)$", t)
+                # "ADUBAÇÃO LOCALIZADA" virou "ADUBAÇÃO PRÓPRIO" em 27/10/2026 (a localizada parou)
+                ms = re.match(r"^(ADUBACAO LOCALIZADA|ADUBACAO PROPRI[OA]|AREA DE QUEIMA|ADUBACAO COM COCHO)(.*)$", t)
                 if ms and not any(NUM.match(w[4]) and w[0] > 300 for w in ws):
                     titulo = texto([w for w in ws if not re.fullmatch(r"\d{2}/\d{2}/\d{4}", w[4]) and w[0] < 600])
                     secao = {"titulo": titulo.title().replace(" Com ", " com ").replace(" Do ", " do ").replace(" De ", " de "), "linhas": []}

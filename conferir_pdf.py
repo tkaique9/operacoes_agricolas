@@ -139,11 +139,12 @@ def programas(path):
                     confere("Adubação · cocho Alencar", f"total Alencar = total região 1 + subtotais da região 2 ({k})",
                             v(al, k), (v(r1[-1], k) if r1 else 0) + sum(v(x, k) for x in r2s))
             rs = p["extras"].get("resumo")
-            loc = next((l for r, l in tots.items() if r.endswith("LOCALIZADA")), None)
+            # total da própria: "TOTAL LOCALIZADA" até 27/10/2026, depois "TOTAL APLICAÇÃO PROPRIA"
+            loc = next((l for r, l in tots.items() if P.sem_acento(r).endswith(("LOCALIZADA", "PROPRIA"))), None)
             fb = [l for s_ in p["secoes"] if "Fábio" in s_["titulo"] or "Fabio" in s_["titulo"] for l in s_["linhas"] if l["t"] == "tot"]
             if rs and loc and al and fb:
                 for k in ("aTratar", "reforma", "localizada", "cocho", "aRealizar"):
-                    confere("Adubação · resumo final (geral)", f"geral = localizada + Alencar + Fábio do Prado ({k})", rs.get(k, 0),
+                    confere("Adubação · resumo final (geral)", f"geral = própria + Alencar + Fábio do Prado ({k})", rs.get(k, 0),
                             v(loc, k) + v(al, k) + v(fb[-1], k))
 
 

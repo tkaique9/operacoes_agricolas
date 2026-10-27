@@ -69,13 +69,22 @@ atualizados por ele, sem mexer no layout nem nas regras:
 python atualizar_tratos.py --pdf dados/27.10.2026.pdf
 ```
 
+PDF com só uma parte da impressão (ex.: só as páginas da adubação, como o
+`ADUBAÇÃO.pdf` de 27/10/2026) atualiza só os programas que traz; sem a página do resumo
+semanal, a semana fica como está:
+
+```bash
+python atualizar_tratos.py --pdf dados/adubacao_27.10.2026.pdf
+```
+
 A leitura do PDF fica em `programas_pdf.py`: cada número vai para a coluna cujo título
 termina mais perto dele (os números são alinhados à direita), e as linhas são lidas como
 estão — fazendas, subtotais e totais da planilha, sem refazer conta. O nome da
 propriedade que a impressão gruda no bloco ("…ESPERANÇABEBEDOURO") é separado pelos nomes
 de bloco dos subtotais. Região com erro de fórmula da planilha (`#N/D`, `#REF!`) fica com a
 região da fazenda de cima no mesmo quadro (ex.: a 9849 São João, no meio das áreas
-Cargill, sai como CARGILL). Os valores da 1ª catação por região só existem no gráfico da
+Cargill, sai como CARGILL). O sinal de menos que a impressão separa do número
+("- 0,30") vale como negativo. Os valores da 1ª catação por região só existem no gráfico da
 impressão e são lidos dos rótulos das barras.
 
 ## Páginas
@@ -89,8 +98,8 @@ impressão e são lidos dos rótulos das barras.
 | **Programas da safra** | 4 | Pré-emergência | Uma página com rolagem: a tabela da aba como na impressão (fazendas, subtotal por região e total da safra) e, no fim, os **indicadores** em gráfico (total da safra, por região e ordens encerradas × abertas) |
 | | 5 | Reforço bordadura | Igual: tabela da 3ª molécula e o gráfico do total (aberta, realizada, a realizar) |
 | | 6 | 1ª catação química | Igual: as 71 fazendas numa página com rolagem e, no fim, o total da safra e por região |
-| **Adubação** | 7 | Adubação localizada | Região 1 + Cargill e área de queima, com subtotal por bloco, total e observação; no fim, o resumo da localizada e da área de queima |
-| | 8 | Adubação com cocho | Alencar (regiões 1 e 2) e Fábio do Prado (região 3), com subtotal por bloco e totais; no fim, as partes do total geral — o total da localizada (sem Cargill) e o da área de queima, que vêm da página 7, o total com cocho e o total geral — e a Cargill à parte. Nos indicadores, Alencar, Fábio do Prado, localizada + área de queima (sem Cargill) e o geral, que é a soma dos três. Nas duas páginas da adubação cada tipo tem as suas cores — cocho: azul-marinho (área), dourado (aplicada) e vermelho (a realizar); localizada: azul-acinzentado, bronze e vinho — e a barra empilhada traz o nome e a área de cada parte (dentro dela ou, quando a parte é fina, ao lado); no geral, a área, a aplicada e o a realizar vêm divididos em cocho e localizada |
+| **Adubação** | 7 | Adubação própria | "Adubação Próprio – Região 1" (era a localizada; Cargill, quando houver) e área de queima, com subtotal por bloco, total e observação; no fim, o resumo da própria e da área de queima |
+| | 8 | Adubação com cocho | Alencar (regiões 1 e 2) e Fábio do Prado (região 3), com subtotal por bloco e totais; no fim, as partes do total geral — o total da própria e o da área de queima, que vêm da página 7, o total Alencar + Fábio do Prado e o total geral — e a Cargill à parte, quando houver. Nos indicadores, Alencar, Fábio do Prado, própria + área de queima e o geral, que é a soma dos três |
 
 As tabelas dos programas seguem um padrão só: as colunas vêm em grupos com título
 (**Fazenda** — região, cód., bloco, propriedade, colheita e dias de atraso, nessa ordem em
@@ -159,8 +168,9 @@ identificados. Operação sem esse detalhe na semana não mostra etiqueta nem bo
 | Operações fora | `FRENTES_FORA`, no `atualizar_tratos.py`, tira uma frente inteira da apresentação e dos totais; hoje: Quebra lombo (não é aplicação desta operação) |
 | Dias sem meta | `SEM_META_DIAS`, no `atualizar_tratos.py`, tira a meta de dias da semana de uma atividade, além do domingo; hoje: Área Monitoramento sem meta no sábado (o drone de monitoramento não voa no sábado). A meta da semana conta só os dias com meta (5 × 300 = 1.500 ha) e a do mês também (dias do mês sem sábado e domingo); a meta do dia da operação e do total é a soma das atividades naquele dia |
 | Atividades não planejadas | `NAO_PLANEJADAS`, no `atualizar_tratos.py`: entram com o realizado e as pessoas apontadas, mas sem meta (nem na operação, nem no total) e com a etiqueta "não planejada"; hoje: Roço |
+| Localizada parou | desde 27/10/2026 a adubação própria é com cocho e a localizada fica só como **histórico**: a coluna "Localizada (histórico)" mostra o que já foi aplicado, e nos gráficos ela só aparece dentro da barra da aplicada, numa cor própria (bronze), ao lado do cocho (dourado). Área a tratar (azul-marinho) e a realizar (vermelho) são uma cor só, porque o que falta é todo com cocho. O quadro da planilha mudou de "Adubação Localizada" para "Adubação Próprio" e o total, de "Total localizada" para "Total aplicação própria"; o script e a apresentação leem os dois nomes |
 | Áreas Cargill | ficam à parte (`cargill_a_parte`, no `atualizar_tratos.py`): os totais da localizada saem **sem Cargill** (a planilha traz "Total região 1 + Cargill" e "Total localizada" com a Cargill em todas as colunas, menos no saldo, que ela já soma sem a Cargill), a linha "Áreas Cargill · à parte" vem logo depois e a Cargill tem gráfico próprio |
-| Total geral da adubação | a soma dos totais que as páginas mostram: localizada (sem Cargill) + área de queima + Alencar + Fábio do Prado. O "resumo final" da planilha não é usado: a linha do Alencar nele tem fórmula quebrada (#REF!) e não bate com o total do Alencar |
+| Total geral da adubação | a soma dos totais que as páginas mostram: própria (sem Cargill) + área de queima + Alencar + Fábio do Prado. O "resumo final" da planilha não é usado: a linha do Alencar nele tem fórmula quebrada (#REF!) e não bate com o total do Alencar, e ele deixa de fora o cocho da própria (239,43 ha em 27/10/2026) |
 | Operações separadas | `SEPARA`, no `atualizar_tratos.py`, tira atividades da frente da planilha e faz delas uma operação própria, logo depois; hoje: a aplicação aérea fica **Aplicação com drone** e a Área Monitoramento vira **Monitoramento com drone** |
 | Semana anterior | os mesmos dias da semana anterior, na mesma aba |
 | Mês | do dia 1 até o último dia da semana (com o domingo trabalhado, como o "Realizado do Mês" da planilha); ritmo esperado = dias trabalhados até aqui (segunda a sábado) ÷ dias da meta do mês (meta mês ÷ meta dia) |
