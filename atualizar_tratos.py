@@ -57,9 +57,9 @@ META_PESSOA = {"Cata Mato": 4.0}
 # nº de equipamentos que vale no lugar do da planilha; a meta do dia, da semana e do
 # mês acompanham (equipamentos × meta por equipamento). Quadriciclo: a planilha traz
 # 1, mas operam 2, com meta de 10 ha cada: 20 ha/dia (corrigido em 13/10/2026).
-# Catação de Formiga: 2 equipamentos de 10 ha cada (a planilha traz 1 de 20 ha), mesma
-# meta de 20 ha/dia (corrigido em 13/10/2026).
-EQUIP = {"Quadriciclo": 2, "Catação de Formiga": 2}
+# Catação de Formiga: 3 equipamentos de 10 ha cada, 30 ha/dia (a planilha traz 1 de
+# 20 ha; eram 2 desde 13/10/2026, 3 desde 27/10/2026).
+EQUIP = {"Quadriciclo": 2, "Catação de Formiga": 3}
 # meta de hectares por equipamento/dia que vale no lugar da planilha; aplicada antes
 # de EQUIP, que refaz a meta do dia com ela
 META_EQUIP = {"Catação de Formiga": 10.0}
@@ -67,6 +67,10 @@ META_EQUIP = {"Catação de Formiga": 10.0}
 # (datetime.weekday). O drone de monitoramento não voa no sábado (20/10/2026): a meta
 # do sábado sai e a da semana e a do mês contam só os dias em que ele voa.
 SEM_META_DIAS = {"Área Monitoramento": [5]}
+# datas avulsas sem meta para a atividade (dia em que ela não operou e a meta não vale),
+# a pedido; a meta da semana e a do mês contam sem elas. O drone de monitoramento não
+# voou na sexta 23/10/2026 (pedido em 27/10/2026; nas outras sextas ele voa).
+SEM_META_DATAS = {"Área Monitoramento": ["2026-10-23"]}
 # atividades não planejadas: entram com o realizado e as pessoas apontadas, mas sem
 # meta (nem na operação, nem no total). O Roço passou a ser não planejado em 20/10/2026.
 NAO_PLANEJADAS = {"Roço"}
@@ -90,14 +94,18 @@ def ajusta_dias_sem_meta(a, dias, dia_ref):
     """Meta da semana e do mês só com os dias que têm meta (a planilha conta todos os
     dias menos o domingo). dias: os dias da semana (iso ou data); dia_ref: data."""
     import calendar
-    fora = SEM_META_DIAS.get(a["nome"])
-    if not fora or not a.get("metaDia"):
+    fora = SEM_META_DIAS.get(a["nome"], [])
+    datas = SEM_META_DATAS.get(a["nome"], [])
+    if not (fora or datas) or not a.get("metaDia"):
         return
-    a["diasSemMeta"] = [(w + 1) % 7 for w in fora]       # no navegador: getDay (0 = domingo)
+    if fora:
+        a["diasSemMeta"] = [(w + 1) % 7 for w in fora]   # no navegador: getDay (0 = domingo)
+    if datas:
+        a["datasSemMeta"] = sorted(datas)
     ref = dia_ref.date() if isinstance(dia_ref, datetime.datetime) else dia_ref
     ds = [d.date() if isinstance(d, datetime.datetime) else
           (datetime.date.fromisoformat(d) if isinstance(d, str) else d) for d in dias]
-    vale = lambda d: d.weekday() != 6 and d.weekday() not in fora
+    vale = lambda d: d.weekday() != 6 and d.weekday() not in fora and d.isoformat() not in datas
     a["metaSemana"] = r2(a["metaDia"] * sum(1 for d in ds if d <= ref and vale(d)))
     n_mes = sum(1 for k in range(1, calendar.monthrange(ref.year, ref.month)[1] + 1)
                 if vale(datetime.date(ref.year, ref.month, k)))
