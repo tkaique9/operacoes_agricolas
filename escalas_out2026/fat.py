@@ -107,8 +107,11 @@ def main():
     cab = json.dumps({k: v for k, v in publico.items() if k != "fila"}, ensure_ascii=False)[:-1]
     SAIDA.write_text(cab + ', "fila": [\n' + ",\n".join(json.dumps(f, ensure_ascii=False) for f in publico["fila"]) + "\n]}\n",
                      encoding="utf-8")
+    # ativos do quadro de motoristas e operadores (só contagens, pessoal_frota.py), para a tabela por papel da lista
+    pessoal = AQUI / "pessoal_frota.json"
+    ativos = json.loads(pessoal.read_text(encoding="utf-8")).get("ativos", {}) if pessoal.exists() else {}
     dados = {"fonte": FONTE, "criterio": CRITERIO, "nec": NEC_PADRAO, "safra27": [d.isoformat() for d in SAFRA_27],
-             "gente": gente, "verificar": verificar}
+             "ativos": ativos, "gente": gente, "verificar": verificar}
     js = json.dumps(dados, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     pagina = TEMPLATE.read_text(encoding="utf-8").replace("/*FAT*/null", js)
     ARTIFACT.parent.mkdir(exist_ok=True)

@@ -678,7 +678,6 @@ body.maxi-on .deck { z-index: 150; }
       <p class="nominal tela" hidden><a class="btn pri" href="#" target="_blank" rel="noopener">Lista nominal ↗</a><span>página privada no claude.ai: abre só para quem tem acesso</span></p></div>
       <div class="chips" id="fatChips"></div></div>
     <div class="card fix"><h3>Por papel<span class="h3u">sem atividade na escala escolhida × com direito ao FAT</span></h3><div class="rolo"><table class="tb qd" id="fatPapel"></table></div><p class="nota" id="fatNota" hidden></p></div>
-    <div class="card"><h3>Por atividade<span class="h3u">de onde sai quem vai para o FAT: colheita primeiro</span></h3><div class="rolo"><table class="tb qd" id="fatAtiv"></table></div></div>
   </article>
 
   <article class="slide" id="resumo" data-mod="Resumo" data-title="Resumo para a diretoria" data-desc="Como fica o quadro: a escala e as pessoas de cada departamento, hoje e com a escala">
@@ -1739,7 +1738,6 @@ function resumoFinal() {
    dentro do grupo, menor tempo de casa. Vão os primeiros da fila até a necessidade; os nomes ficam na lista nominal,
    fora do git (o repositório é público) */
 const FAT = D.fat || null;
-const GRUPO_FAT = { 1: "Colheita · param na entressafra", 2: "Demais atividades" };
 // faixa do limite das férias (mês "aaaa-mm"): 1 = até mar/27 (cai durante o FAT), 2 = safra de 2027 (abr a nov),
 // 3 = dez/27 em diante (o FAT empurra), 0 = sem data
 const faixaFerias = m => !m ? 0 : m < "2027-04" ? 1 : m < "2027-12" ? 2 : 3;
@@ -1772,14 +1770,12 @@ function filaFat() {
 function fatOp() {
   if (!$("#fat")) return;
   if (!FAT || !PES) { $("#fatSub").textContent = "Sem a lista do FAT (python fat.py) ou sem os ativos da frota (python pessoal_frota.py)."; return; }
-  const papeis = ["operador", "motorista"], { N, vai, dir, fora, itens } = filaFat(), ativ = new Map();
-  itens.forEach(x => { const k = x.papel + "|" + x.ativ, a = ativ.get(k) || { papel: x.papel, nome: x.ativ, grupo: x.grupo, dir: 0, fora: 0, vai: 0 };
-    a.dir++; if (x.fora) a.fora++; if (x.vai) a.vai++; ativ.set(k, a); });
+  const papeis = ["operador", "motorista"], { N, vai, dir, fora } = filaFat();
   const soma = f => papeis.reduce((x, p) => x + f(p), 0);
   const T = { ativos: soma(p => N[p].ativos), precisa: soma(p => N[p].precisa), sem: soma(p => N[p].sem), dir: soma(p => dir[p]), fora: soma(p => fora[p]), vai: soma(p => vai[p]) };
   $("#fatChips").innerHTML = [[fmt(T.vai), "Vão para o FAT"], [fmt(T.sem), "Sem atividade", "sa"], [fmt(T.sem - T.vai), "Sem ativ. · sem FAT", T.sem - T.vai ? "pos" : "zero"],
     [fmt(T.fora), "Fora · 2ª férias na safra"]].map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
-  document.querySelectorAll(".nominal").forEach(e => { e.hidden = !FAT.lista; if (FAT.lista) e.querySelector("a").href = FAT.lista; });
+  document.querySelectorAll(".nominal").forEach(e => { e.hidden = !FAT.lista; if (FAT.lista) e.querySelector("a").href = FAT.lista + "#nec" + N.operador.sem + "-" + N.motorista.sem; });
   $("#fatSub").textContent = `Sem atividade = ativos do quadro menos o que a frota precisa na escala escolhida (painel da frota). Com direito: ${FAT.fonte}, ${fmt(FAT.n)} efetivos com 12 meses ou mais e não aposentados. Não haverá férias antes do FAT, então quem vence a segunda férias na safra de 2027 (abr a nov) não vai. Vão os primeiros da fila até a necessidade: ${FAT.criterio.charAt(0).toLowerCase() + FAT.criterio.slice(1)}. Os nomes ficam na lista nominal, fora desta página.`;
   const linha = (rot, u, v, cls) => `<tr${cls ? ` class="${cls}"` : ""}><td class="l dep">${rot}${u ? `<u>${u}</u>` : ""}</td>${v.map(x => `<td class="qv"><b>${x}</b></td>`).join("")}</tr>`;
   let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>na escolhida</u></th><th class="escol">Sem atividade<u>necessidade do FAT</u></th><th>Com direito<u>ao FAT</u></th><th>Fora<u>2ª férias na safra</u></th><th class="escol">Vão para o FAT</th><th>Sem atividade<u>e sem FAT</u></th><th>Com direito<u>que ficam</u></th></tr></thead><tbody>`;
@@ -1796,19 +1792,6 @@ function fatOp() {
       (sf ? ` ${fmt(sf)} ${r} de contrato safra saem no fim da safra.` : "");
   }).join(" ");
   $("#fatNota").hidden = !nota; $("#fatNota").textContent = nota;
-  const noQuadro = a => { const x = PES.atividades.find(q => q.papel === a.papel && q.nome === a.nome); return x ? fmt(x.n) : "–"; };
-  const n0 = n => n ? fmt(n) : "–";
-  h = `<thead><tr><th class="l">Atividade</th><th>Ativos<u>no quadro</u></th><th>Com direito<u>ao FAT</u></th><th>Fora<u>2ª férias na safra</u></th><th class="escol">Vão para o FAT</th><th>Com direito<u>que ficam</u></th></tr></thead><tbody>`;
-  [1, 2].forEach(g => {
-    const it = [...ativ.values()].filter(a => a.grupo === g).sort((a, b) => b.vai - a.vai || b.dir - a.dir || a.nome.localeCompare(b.nome));
-    if (!it.length) return;
-    h += `<tr class="frh" style="--fc:${g === 1 ? "#2F6FD0" : "#8E9FC2"}"><td colspan="6">${GRUPO_FAT[g]}</td></tr>`;
-    it.forEach(a => { h += linha(esc(a.nome), a.papel.charAt(0).toUpperCase() + a.papel.slice(1), [noQuadro(a), fmt(a.dir), n0(a.fora), n0(a.vai), fmt(a.dir - a.vai)]); });
-    const sd = it.reduce((x, a) => x + a.dir, 0), sf = it.reduce((x, a) => x + a.fora, 0), sv = it.reduce((x, a) => x + a.vai, 0);
-    h += `<tr class="fr" style="--fc:${g === 1 ? "#2F6FD0" : "#8E9FC2"}"><td class="l">Subtotal · ${GRUPO_FAT[g].split(" · ")[0]}</td><td></td><td class="qv"><b>${fmt(sd)}</b></td><td class="qv"><b>${fmt(sf)}</b></td><td class="qv"><b>${fmt(sv)}</b></td><td class="qv"><b>${fmt(sd - sv)}</b></td></tr>`;
-  });
-  h += `<tr class="tot"><td class="l">Total</td><td>${fmt(T.ativos)}</td><td><b>${fmt(T.dir)}</b></td><td><b>${fmt(T.fora)}</b></td><td><b>${fmt(T.vai)}</b></td><td><b>${fmt(T.dir - T.vai)}</b></td></tr></tbody>`;
-  $("#fatAtiv").innerHTML = h;
 }
 function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); fatOp(); AREAS.forEach(a => { painelArea(a); quadroArea(a); matrizArea(a); }); resumoFinal(); escalas(); if (window.salvaSite) salvaSite.mudou(); }
 function volante(v) { S.vol = v; $("#vol").checked = v; tudo(); }

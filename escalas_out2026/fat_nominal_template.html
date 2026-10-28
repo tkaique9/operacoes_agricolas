@@ -37,17 +37,22 @@ h1 { margin: 0; font: 800 clamp(24px, 3.4vw, 34px)/1.1 var(--f-ui); letter-spaci
 .faixa p { margin: 0; color: var(--band-mut); max-width: 78ch; }
 .priv { display: inline-flex; gap: 6px; align-items: center; font: 600 12px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--navy); background: #E9D48F; border-radius: 3px; padding: 3px 8px; justify-self: start; }
 main.lado { padding-block: 18px 40px; display: grid; gap: 18px; }
-.cartoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
-.cartao { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
-.cartao h2 { margin: 0; font: 700 17px var(--f-ui); display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.cartao h2 small { font: 500 12.5px var(--f-mono); letter-spacing: .04em; color: var(--mut); }
-.nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.num label, .num .k { display: block; font: 500 11.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mut); }
-.num .v, .num input { font: 700 26px/1.15 var(--f-ui); font-variant-numeric: tabular-nums; color: var(--ink); }
-.num input { width: 100%; max-width: 110px; box-sizing: border-box; border: 1px solid var(--line); border-radius: 3px; background: var(--bg); padding: 2px 8px; }
-.num input:focus-visible, .busca input:focus-visible, button:focus-visible, td input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
-.pilula { justify-self: start; font: 600 13px var(--f-ui); border-radius: 999px; padding: 4px 12px; }
-.pilula.ok { color: var(--ok); background: var(--ok-bg); } .pilula.falta { color: var(--warn); background: var(--warn-bg); } .pilula.mais { color: var(--bad); background: var(--bad-bg); }
+/* tabela por papel, a mesma da página FAT do estudo: os números com nomes por trás são botões que filtram a lista */
+.resumo { display: grid; gap: 8px; min-width: 0; }
+.resumo h2 { margin: 0; font: 700 17px var(--f-ui); }
+.resumo h2 small { font: 400 13.5px var(--f-ui); color: var(--mut); margin-left: 8px; }
+table.res th { text-align: center; white-space: normal; vertical-align: bottom; line-height: 1.2; }
+table.res th u { display: block; text-decoration: none; font: 400 11.5px var(--f-mono); opacity: .8; margin-top: 2px; }
+table.res th.l, table.res td.l { text-align: left; }
+table.res td { text-align: center; font: 700 18px var(--f-ui); font-variant-numeric: tabular-nums; padding: 7px 9px; }
+table.res td.l { font: 700 15px var(--f-ui); }
+table.res tr.tot td { background: var(--marc); border-top: 2px solid var(--navy); }
+table.res th.cl { box-shadow: inset 0 -3px 0 var(--gold); }
+button.nb { font: 700 18px var(--f-ui); font-variant-numeric: tabular-nums; color: var(--ink); background: none; border: 0; border-bottom: 2px dotted var(--gold); border-radius: 3px 3px 0 0; padding: 2px 10px; cursor: pointer; }
+button.nb:hover { background: var(--marc); }
+button.nb.on { background: var(--gold); color: var(--surface); border-bottom-color: var(--gold); }
+table.res input { width: 84px; box-sizing: border-box; font: 700 18px var(--f-ui); font-variant-numeric: tabular-nums; text-align: center; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 3px; padding: 3px 6px; }
+.busca input:focus-visible, button:focus-visible, td input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
 .nota { margin: 0; color: var(--mut); font-size: 13.5px; }
 .barra { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .busca { flex: 1 1 260px; min-width: 0; }
@@ -80,6 +85,16 @@ td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); 
 .lei { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 4px; padding: 12px 16px; display: grid; gap: 6px; }
 .lei h2 { margin: 0; font: 700 16px var(--f-ui); }
 .lei p { margin: 0; max-width: 110ch; }
+/* filtros da lista, como o filtro do Excel: cada lista mostra só os valores que sobram com os outros filtros */
+.filtros { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; display: grid; gap: 12px; min-width: 0; }
+.f-linha { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 10px; }
+.f-linha .busca { grid-column: span 2; }
+.f-linha label { display: block; font: 500 11.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mut); margin-bottom: 4px; }
+.f select { width: 100%; box-sizing: border-box; font: 500 14px var(--f-ui); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 3px; padding: 8px; }
+.f select.ativo { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+.f select:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.conta { font: 600 14px var(--f-ui); margin-right: auto; }
+@media (max-width: 560px) { .f-linha .busca { grid-column: auto; } }
 @media (prefers-reduced-motion: no-preference) { tr td { transition: background-color .15s ease; } }
 </style>
 
@@ -91,18 +106,35 @@ td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); 
 </div></div>
 
 <main class="lado" translate="no">
-  <div class="cartoes" id="cartoes"></div>
+  <section class="resumo" aria-label="Por papel">
+    <h2>Por papel<small>sem atividade na escala escolhida × com direito ao FAT · clique num número sublinhado para ver os nomes</small></h2>
+    <div class="rolo"><table class="res" id="resumo"></table></div>
+    <p class="nota" id="notaRes"></p>
+  </section>
   <div class="lei">
     <h2>Sem férias antes do FAT: quem vence a segunda férias na safra não vai</h2>
     <p>Não haverá férias antes do FAT. Quem tem o limite das férias na safra de 2027 (abril a novembro de 2027) não vai para o FAT: voltaria do FAT e teria de tirar as férias na safra. Na lista, essas pessoas aparecem sem caixa para marcar. O FAT suspende o contrato (CLT art. 476-A) e o tempo parado não conta para as próximas férias, que andam para a frente o tanto que durar o FAT. Quem vai com o limite até março de 2027 entra no FAT sem tirar as férias e o limite cai durante o FAT: confirmar com o DP se o prazo fica parado durante o FAT, senão as férias vencem em dobro.</p>
   </div>
   <p class="nota" id="criterio"></p>
-  <div class="barra">
-    <div class="busca"><input type="search" id="busca" placeholder="Buscar nome, matrícula, atividade ou gerência" aria-label="Buscar na lista"></div>
-    <button type="button" id="bSug">Voltar à sugestão</button>
-    <button type="button" class="pri" id="bCopia">Copiar marcados</button>
+  <section class="filtros" aria-label="Filtrar a lista">
+    <div class="f-linha">
+      <div class="busca"><label for="busca">Nome ou matrícula</label><input type="search" id="busca" placeholder="Um ou vários, separados por vírgula" autocomplete="off"></div>
+      <div class="f"><label for="f-papel">Papel</label><select id="f-papel" data-k="papel"></select></div>
+      <div class="f"><label for="f-sit">Situação</label><select id="f-sit" data-k="sit"></select></div>
+      <div class="f"><label for="f-ativ">Atividade</label><select id="f-ativ" data-k="ativ"></select></div>
+      <div class="f"><label for="f-ger">Gerência</label><select id="f-ger" data-k="ger"></select></div>
+      <div class="f"><label for="f-func">Função</label><select id="f-func" data-k="func"></select></div>
+      <div class="f"><label for="f-fer">Férias</label><select id="f-fer" data-k="fer"></select></div>
+    </div>
+    <div class="barra">
+      <span class="conta" id="conta" role="status"></span>
+      <button type="button" id="bLimpa">Limpar filtros</button>
+      <button type="button" id="bCopiaF">Copiar a lista filtrada</button>
+      <button type="button" id="bSug">Voltar à sugestão</button>
+      <button type="button" class="pri" id="bCopia">Copiar marcados</button>
+    </div>
     <span class="aviso" id="aviso" role="status"></span>
-  </div>
+  </section>
   <textarea class="copia" id="copia" hidden readonly aria-label="Lista dos marcados para copiar"></textarea>
   <div id="listas"></div>
 </main>
@@ -120,9 +152,17 @@ const grava = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } ca
 const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const dataBR = iso => iso ? iso.slice(8, 10) + "/" + iso.slice(5, 7) + "/" + iso.slice(0, 4) : "–";
 const $ = id => document.getElementById(id);
+const semAcento = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+// dados de cada linha para os filtros (data-*): papel, situação, atividade, gerência, função, férias e a busca
+const dadosLinha = (x, sit) => `data-mat="${x.mat}" data-b="${esc(semAcento(x.mat + " " + x.nome))}" data-papel="${x.papel}" data-sit="${sit}" ` +
+  `data-ativ="${esc(x.ativ)}" data-ger="${esc(x.ger || "–")}" data-func="${esc(x.funcao)}" data-fer="${esc(x.ferias || "–")}"`;
 
 let marcas = ler(CH_M) || {};                  // trocas sobre a sugestão: matrícula -> vai (true) ou fica (false)
 const nec = Object.assign({}, F.nec, ler(CH_N) || {});
+// a necessidade da escala escolhida vem no endereço quando a lista é aberta pelo botão do estudo (#nec77-124)
+const doLink = /^#nec(\d+)-(\d+)$/.exec(location.hash);
+const NEC_BASE = doLink ? { operador: +doLink[1], motorista: +doLink[2] } : F.nec;
+if (doLink) { Object.assign(nec, NEC_BASE); grava(CH_N, nec); }
 const dos = p => F.gente.filter(x => x.papel === p);
 // sem férias antes do FAT (28/10/2026): quem vence a segunda férias na safra de 2027 (limite de abr a nov/27) não vai
 const fora = x => x.faixa === 2;
@@ -143,20 +183,38 @@ const FERIAS_FICA = { 1: "Fica · férias na entressafra (vence até mar/27)", 2
 const feriasTag = (x, v) => `<span class="fe f${x.faixa}">${(v ? FERIAS_VAI : FERIAS_FICA)[x.faixa]}</span>`;
 $("criterio").textContent = `Sugestão: ${F.criterio}. Marque ou desmarque para trocar; a escolha fica guardada neste navegador.`;
 
-function cartoes() {
-  $("cartoes").innerHTML = PAP.map(p => {
-    // alvo: a necessidade, ou todos os que podem ir quando ela passa deles
-    const g = dos(p), m = g.filter(vai).length, n = Math.max(0, nec[p] | 0), fo = g.filter(fora).length, aptos = g.length - fo, alvo = Math.min(n, aptos);
-    const st = m === alvo ? ["ok", n > aptos ? "Todos os que podem ir vão" : "Fecha a necessidade"]
-      : m < alvo ? ["falta", `Faltam ${alvo - m}`] : ["mais", `${m - alvo} a mais que a necessidade`];
-    const vf = F.verificar.filter(x => x.papel === p).length;
-    const semDir = n > aptos ? `<p class="nota">Só ${aptos} podem ir (${g.length} com direito, ${fo} vencem a 2ª férias na safra): ${n - aptos} ficam sem atividade e sem FAT.${vf ? ` Conferir também os ${vf} da lista "Podem ter direito", no fim da página.` : ""}</p>` : "";
-    return `<div class="cartao"><h2>${ROT[p]}<small>${g.length} com direito</small></h2>
-      <div class="nums"><div class="num"><label for="nec-${p}">Necessidade</label><input id="nec-${p}" type="number" min="0" step="1" inputmode="numeric" value="${n}" data-p="${p}"></div>
-      <div class="num"><span class="k">Marcados</span><span class="v">${m}</span></div>
-      <div class="num"><span class="k">Fora · 2ª férias na safra</span><span class="v">${fo}</span></div></div>
-      <span class="pilula ${st[0]}">${st[1]}</span>${semDir}</div>`;
-  }).join("");
+// tabela por papel, a mesma da página FAT do estudo: ativos do quadro de motoristas e operadores, a necessidade
+// (editável) e o que sai da lista. Os números com nomes por trás são botões que filtram a lista
+const COLS_RES = [["direito", "Com direito", "ao FAT"], ["fora", "Fora", "2ª férias na safra"], ["vai", "Vão para o FAT", ""],
+  ["semfat", "Sem atividade", "e sem FAT"], ["ficam", "Com direito", "que ficam"]];
+function resumo() {
+  const lin = PAP.map(p => {
+    const g = dos(p), n = Math.max(0, nec[p] | 0), at = (F.ativos || {})[p] || 0, m = g.filter(vai).length;
+    return { p, at, pr: Math.max(0, at - n), n, direito: g.length, fora: g.filter(fora).length, vai: m, semfat: Math.max(0, n - m), ficam: g.length - m };
+  });
+  const tot = { at: 0, pr: 0, n: 0, direito: 0, fora: 0, vai: 0, semfat: 0, ficam: 0 };
+  lin.forEach(l => Object.keys(tot).forEach(k => { tot[k] += l[k]; }));
+  const bot = (p, s, v) => `<button type="button" class="nb" data-p="${p}" data-s="${s}" title="Ver os nomes">${v}</button>`;
+  let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>na escolhida</u></th><th class="cl">Sem atividade<u>necessidade do FAT</u></th>` +
+    COLS_RES.map(([s, a, b]) => `<th${s === "vai" ? ' class="cl"' : ""}>${a}${b ? `<u>${b}</u>` : ""}</th>`).join("") + `</tr></thead><tbody>`;
+  lin.forEach(l => {
+    h += `<tr><td class="l">${ROT[l.p]}</td><td>${l.at || "–"}</td><td>${l.at ? l.pr : "–"}</td>` +
+      `<td><input id="nec-${l.p}" type="number" min="0" step="1" inputmode="numeric" value="${l.n}" data-p="${l.p}" aria-label="Necessidade do FAT, ${ROT[l.p].toLowerCase()}"></td>` +
+      COLS_RES.map(([s]) => `<td>${bot(l.p, s, l[s])}</td>`).join("") + `</tr>`;
+  });
+  h += `<tr class="tot"><td class="l">Total</td><td>${tot.at || "–"}</td><td>${tot.at ? tot.pr : "–"}</td><td>${tot.n}</td>` +
+    COLS_RES.map(([s]) => `<td>${bot("", s, tot[s])}</td>`).join("") + `</tr></tbody>`;
+  $("resumo").innerHTML = h;
+  // o que fecha e o que falta em cada papel
+  $("notaRes").textContent = lin.map(l => {
+    const aptos = l.direito - l.fora, vf = F.verificar.filter(x => x.papel === l.p).length;
+    if (l.vai === l.n) return `${ROT[l.p]}: fecha a necessidade.`;
+    if (l.vai > l.n) return `${ROT[l.p]}: ${l.vai - l.n} marcados a mais que a necessidade.`;
+    return `${ROT[l.p]}: ${l.semfat} ficam sem atividade e sem FAT` + (l.vai >= aptos
+      ? ` (todos os que podem ir vão; ${l.fora} com direito ficam fora pelas férias${vf ? `, ${vf} podem ter direito e estão a conferir` : ""}).`
+      : ` (faltam ${Math.min(l.n, aptos) - l.vai} para marcar).`);
+  }).join(" ");
+  marcaBotoes();
 }
 function listas() {
   $("listas").innerHTML = PAP.map(p => {
@@ -167,8 +225,7 @@ function listas() {
     let grupo = 0;
     g.forEach((x, i) => {
       if (x.grupo !== grupo) { grupo = x.grupo; h += `<tr class="grp"><td colspan="13">${GRUPO[grupo]} · ${g.filter(y => y.grupo === grupo).length}</td></tr>`; }
-      const busca = `${x.mat} ${x.nome} ${x.ativ} ${x.ger} ${x.funcao} ${x.ferias}`.toLowerCase();
-      h += `<tr data-mat="${x.mat}" data-b="${esc(busca)}"><td class="c"><input type="checkbox" aria-label="${esc(x.nome)} vai para o FAT" data-mat="${x.mat}"${fora(x) ? ' disabled title="Vence a 2ª férias na safra de 2027: não vai para o FAT"' : ""}></td>
+      h += `<tr ${dadosLinha(x, fora(x) ? "fora" : "fica")}><td class="c"><input type="checkbox" aria-label="${esc(x.nome)} vai para o FAT" data-mat="${x.mat}"${fora(x) ? ' disabled title="Vence a 2ª férias na safra de 2027: não vai para o FAT"' : ""}></td>
         <td class="n mono">${i + 1}</td><td class="mono">${x.mat}</td><td class="nome">${esc(x.nome)}<span class="troca" hidden>trocado</span></td>
         <td>${esc(x.funcao)}</td><td>${esc(x.ativ)}</td><td>${esc(x.ger)}</td><td class="c mono">${dataBR(x.adm)}</td>
         <td class="c">${esc(x.tempo)}</td><td class="n">${x.idade == null ? "–" : x.idade}</td>
@@ -186,7 +243,7 @@ function verificar() {
     <div class="rolo"><table><thead><tr><th>Papel</th><th>Mat.</th><th>Nome</th><th>Função</th><th>Atividade</th><th>O que conferir</th>
     <th class="c">Admissão</th><th class="c">Tempo</th><th class="n">Idade</th><th>Férias</th><th class="c">Limite férias</th></tr></thead><tbody>`;
   F.verificar.forEach(x => {
-    h += `<tr><td>${x.papel === "motorista" ? "Motorista" : "Operador"}</td><td class="mono">${x.mat}</td><td class="nome">${esc(x.nome)}</td><td>${esc(x.funcao)}</td>
+    h += `<tr ${dadosLinha(x, "conferir")}><td>${x.papel === "motorista" ? "Motorista" : "Operador"}</td><td class="mono">${x.mat}</td><td class="nome">${esc(x.nome)}</td><td>${esc(x.funcao)}</td>
       <td>${esc(x.ativ)}</td><td>${/Aposentadoria/.test(x.motivo) ? "Aposentadoria (60+)" : "Fora do levantamento"}</td><td class="c mono">${dataBR(x.adm)}</td>
       <td class="c">${esc(x.tempo)}</td><td class="n">${x.idade == null ? "–" : x.idade}</td><td>${esc(x.ferias)}</td><td class="c mono">${dataBR(x.limite)}</td></tr>`;
   });
@@ -197,46 +254,120 @@ function marcaLinhas() {
   F.gente.forEach(x => {
     const tr = document.querySelector(`tr[data-mat="${x.mat}"]`); if (!tr) return;
     const v = vai(x);
+    tr.dataset.sit = fora(x) ? "fora" : v ? "vai" : "fica";
     tr.classList.toggle("vai", v);
     tr.querySelector("input").checked = v;
     tr.querySelector(".troca").hidden = v === SUG.has(x.mat);
     tr.querySelector(".fe-c").innerHTML = feriasTag(x, v);
   });
 }
+// filtros, como os do Excel: a busca aceita vários nomes ou matrículas separados por vírgula (sem acento também acha);
+// cada lista mostra só os valores que ainda aparecem com os outros filtros, com quantos são
+const FILTROS = ["papel", "sit", "ativ", "ger", "func", "fer"];
+const ROT_SIT = { vai: "Vai para o FAT", fica: "Fica · tem direito", fora: "Não vai · 2ª férias na safra", conferir: "Pode ter direito · conferir",
+  direito: "Com direito ao FAT", ficam: "Com direito que ficam", semfat: "Sem FAT · fora pelas férias ou a conferir" };
+// situações que juntam outras, como nas colunas da tabela por papel
+const SIT_GRUPO = { direito: ["vai", "fica", "fora"], ficam: ["fica", "fora"], semfat: ["fora", "conferir"] };
+const ROT_PAPEL1 = { operador: "Operador", motorista: "Motorista" };
+const SEL = {};
+const rotulo = (k, v) => k === "sit" ? ROT_SIT[v] || v : k === "papel" ? ROT_PAPEL1[v] || v : v;
+const termos = () => semAcento($("busca").value).split(/[,;]/).map(t => t.trim()).filter(Boolean);
+const casa = (k, v) => k === "sit" && SIT_GRUPO[SEL.sit] ? SIT_GRUPO[SEL.sit].indexOf(v) >= 0 : v === SEL[k];
+function passa(tr, ignora, q) {
+  if (q.length && !q.some(t => tr.dataset.b.indexOf(t) >= 0)) return false;
+  return FILTROS.every(k => k === ignora || !SEL[k] || casa(k, tr.dataset[k]));
+}
+// o número da tabela fica aceso quando a lista mostra exatamente ele (só papel e situação, sem outro filtro)
+function marcaBotoes() {
+  const so = !termos().length && FILTROS.every(k => k === "papel" || k === "sit" || !SEL[k]);
+  document.querySelectorAll("button.nb").forEach(b => b.classList.toggle("on", so && SEL.sit === b.dataset.s && (SEL.papel || "") === b.dataset.p));
+}
 function filtra() {
-  const q = $("busca").value.trim().toLowerCase();
-  document.querySelectorAll("tr[data-b]").forEach(tr => { tr.hidden = !!q && tr.dataset.b.indexOf(q) < 0; });
+  const linhas = [...document.querySelectorAll("tr[data-b]")], q = termos();
+  let n = 0;
+  linhas.forEach(tr => { const ok = passa(tr, null, q); tr.hidden = !ok; if (ok) n++; });
+  // título de grupo e quadro sem ninguém na tela somem
+  document.querySelectorAll("tr.grp").forEach(g => {
+    let t = g.nextElementSibling, vis = false;
+    while (t && !t.classList.contains("grp")) { if (!t.hidden) { vis = true; break; } t = t.nextElementSibling; }
+    g.hidden = !vis;
+  });
+  document.querySelectorAll("section.papel").forEach(s => { s.hidden = !s.querySelector("tr[data-b]:not([hidden])"); });
+  $("conta").textContent = n === linhas.length ? `${n} pessoas na lista` : `Mostrando ${n} de ${linhas.length} pessoas`;
+  FILTROS.forEach(k => {
+    const sel = $("f-" + k), cont = new Map();
+    linhas.forEach(tr => { if (passa(tr, k, q)) cont.set(tr.dataset[k], (cont.get(tr.dataset[k]) || 0) + 1); });
+    const grupo = k === "sit" && SIT_GRUPO[SEL.sit];
+    if (SEL[k] && !grupo && !cont.has(SEL[k])) cont.set(SEL[k], 0);
+    const tot = [...cont.values()].reduce((a, b) => a + b, 0);
+    const vals = [...cont.keys()].sort((a, b) => rotulo(k, a).localeCompare(rotulo(k, b), "pt-BR"));
+    const opt = (v, n) => `<option value="${esc(v)}"${v === SEL[k] ? " selected" : ""}>${esc(rotulo(k, v))} (${n})</option>`;
+    sel.innerHTML = `<option value="">Todos (${tot})</option>` + vals.map(v => opt(v, cont.get(v))).join("") +
+      (k === "sit" ? `<optgroup label="Colunas da tabela">${Object.keys(SIT_GRUPO).map(g => opt(g, SIT_GRUPO[g].reduce((a, s) => a + (cont.get(s) || 0), 0))).join("")}</optgroup>` : "");
+    sel.classList.toggle("ativo", !!SEL[k]);
+  });
+  marcaBotoes();
+}
+// pessoas (com direito e a conferir) pela matrícula, para copiar o que está na tela
+const PESSOA = new Map(F.gente.concat(F.verificar).map(x => [String(x.mat), x]));
+function copia(linhas, rotuloOk) {
+  const txt = linhas.join("\n"), n = linhas.length - 1;
+  const mostra = () => { const t = $("copia"); t.hidden = false; t.value = txt; t.focus(); t.select();
+    $("aviso").textContent = `Não deu para copiar sozinho: selecione o texto abaixo (${n} pessoas) e copie.`; };
+  try {
+    navigator.clipboard.writeText(txt).then(() => { $("copia").hidden = true; $("aviso").textContent = `${n} pessoas ${rotuloOk}: cole no Excel.`; }, mostra);
+  } catch (e) { mostra(); }
 }
 
 $("listas").addEventListener("change", e => {
   const c = e.target.closest("input[data-mat]"); if (!c) return;
   const mat = +c.dataset.mat;
   if (c.checked === SUG.has(mat)) delete marcas[mat]; else marcas[mat] = c.checked;
-  grava(CH_M, marcas); marcaLinhas(); cartoes();
+  grava(CH_M, marcas); marcaLinhas(); resumo(); filtra();
 });
-$("cartoes").addEventListener("change", e => {
+$("resumo").addEventListener("change", e => {
   const i = e.target.closest("input[data-p]"); if (!i) return;
   nec[i.dataset.p] = Math.max(0, parseInt(i.value, 10) || 0);
-  grava(CH_N, nec); SUG = sugeridos(); marcaLinhas(); cartoes();
+  grava(CH_N, nec); SUG = sugeridos(); marcaLinhas(); resumo(); filtra();
   const o = $("nec-" + i.dataset.p); if (o) o.focus();
 });
 $("busca").addEventListener("input", filtra);
+// clique num número da tabela: a lista mostra só aquelas pessoas (de novo no mesmo número, volta tudo)
+$("resumo").addEventListener("click", e => {
+  const b = e.target.closest("button.nb"); if (!b) return;
+  const ja = b.classList.contains("on");
+  FILTROS.forEach(k => { SEL[k] = ""; }); $("busca").value = "";
+  if (!ja) { SEL.papel = b.dataset.p; SEL.sit = b.dataset.s; }
+  filtra();
+  $("aviso").textContent = ja ? "Filtro limpo." : b.dataset.s === "semfat"
+    ? "Quem fica sem atividade e sem FAT não tem nome na escala: aparecem os que têm direito e ficam fora pelas férias e os que podem ter direito (a conferir). Quem não tem direito ao FAT (menos de 12 meses, contrato safra ou experiência, aposentado) não está nesta lista."
+    : "";
+  if (!ja) document.querySelector(".filtros").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+});
+document.querySelector(".filtros").addEventListener("change", e => {
+  const s = e.target.closest("select[data-k]"); if (!s) return;
+  SEL[s.dataset.k] = s.value; filtra();
+});
+$("bLimpa").addEventListener("click", () => {
+  FILTROS.forEach(k => { SEL[k] = ""; }); $("busca").value = ""; filtra(); $("aviso").textContent = "Filtros limpos.";
+});
 $("bSug").addEventListener("click", () => {
-  marcas = {}; Object.assign(nec, F.nec); grava(CH_M, marcas); grava(CH_N, nec);
-  SUG = sugeridos(); marcaLinhas(); cartoes(); $("aviso").textContent = "Voltou à sugestão.";
+  marcas = {}; Object.assign(nec, NEC_BASE); grava(CH_M, marcas); grava(CH_N, nec);
+  SUG = sugeridos(); marcaLinhas(); resumo(); filtra(); $("aviso").textContent = "Voltou à sugestão.";
+});
+// o que está na tela depois dos filtros, em colunas separadas por tabulação
+$("bCopiaF").addEventListener("click", () => {
+  const vis = [...document.querySelectorAll("tr[data-b]:not([hidden])")];
+  copia([["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão", "Férias", "Limite férias", "Situação"].join("\t")]
+    .concat(vis.map(tr => { const x = PESSOA.get(tr.dataset.mat);
+      return [ROT[x.papel], x.mat, x.nome, x.funcao, x.ativ, x.ger || "–", dataBR(x.adm), x.ferias, dataBR(x.limite), ROT_SIT[tr.dataset.sit]].join("\t"); })), "copiadas da lista filtrada");
 });
 // os marcados, em colunas separadas por tabulação: colam direto no Excel
 $("bCopia").addEventListener("click", () => {
-  const linhas = [["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão", "Férias", "Limite férias", "Férias e FAT"].join("\t")]
-    .concat(F.gente.filter(vai).map(x => [ROT[x.papel], x.mat, x.nome, x.funcao, x.ativ, x.ger, dataBR(x.adm), x.ferias, dataBR(x.limite), FERIAS_VAI[x.faixa]].join("\t")));
-  const txt = linhas.join("\n"), n = linhas.length - 1;
-  const mostra = () => { const t = $("copia"); t.hidden = false; t.value = txt; t.focus(); t.select();
-    $("aviso").textContent = `Não deu para copiar sozinho: selecione o texto abaixo (${n} pessoas) e copie.`; };
-  try {
-    navigator.clipboard.writeText(txt).then(() => { $("copia").hidden = true; $("aviso").textContent = `${n} pessoas copiadas: cole no Excel.`; }, mostra);
-  } catch (e) { mostra(); }
+  copia([["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão", "Férias", "Limite férias", "Férias e FAT"].join("\t")]
+    .concat(F.gente.filter(vai).map(x => [ROT[x.papel], x.mat, x.nome, x.funcao, x.ativ, x.ger, dataBR(x.adm), x.ferias, dataBR(x.limite), FERIAS_VAI[x.faixa]].join("\t"))), "marcadas copiadas");
 });
 
-cartoes(); listas(); marcaLinhas();
+resumo(); listas(); marcaLinhas(); filtra();
 })();
 </script>

@@ -95,8 +95,10 @@ A página só tem números e o botão **Lista nominal**, que abre a página priv
 o endereço, https://claude.ai/artifact/VYcCeLG9VKAHniU3EFaaLh, fica em `LISTA_PRIVADA`, no `fat.py`). Os nomes ficam na **lista nominal** (`FAT_lista_nominal.html`, gerada pelo `fat.py`; desde 28/10/2026 está no
 repositório, que ficou privado, e o Render não a publica, ver `render-build.sh`; a cópia em `build/` é a página privada
 do claude.ai): a mesma fila, com caixa para marcar quem vai (quem vence a segunda férias na safra fica sem caixa), a
-necessidade de cada papel editável, contador, a situação das férias de cada um, a lista dos que podem ter direito e "Copiar
-marcados" (cola no Excel). Na lista, a necessidade de partida é a da escolhida dos dados (`NEC_PADRAO` no `fat.py`); se a
+necessidade de cada papel editável, contador, a situação das férias de cada um, a lista dos que podem ter direito, "Copiar marcados" (cola no Excel) e **filtros** como os do Excel (desde 28/10/2026):
+nome ou matrícula, um ou vários separados por vírgula, sem precisar de acento; papel, situação (vai, fica, não vai pela
+2ª férias na safra, a conferir), atividade, gerência, função e férias, cada lista só com os valores que sobram dos
+outros filtros; contador e "Copiar a lista filtrada". Na lista, a necessidade de partida é a da escolhida dos dados (`NEC_PADRAO` no `fat.py`); se a
 escolhida mudar, vale o número da página FAT.
 
 ### ADM agrícola
