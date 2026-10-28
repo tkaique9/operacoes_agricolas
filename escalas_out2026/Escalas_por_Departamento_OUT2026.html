@@ -97,6 +97,15 @@ header.top, nav.toc { transition: opacity .5s ease .2s, visibility 0s linear .2s
 .nominal { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 10px 0 0; }
 .nominal a.btn { text-decoration: none; }
 .nominal span { font: italic 400 14px var(--f-serif); color: var(--t2); }
+/* indicadores do FAT: três barras em 100% por papel, no espaço que sobra da página */
+.card.fat-card { flex: 1 0 auto; min-height: 280px; }   /* não encolhe abaixo disso: em tela baixa o slide rola */
+.fat-ind { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.fat-ind .fi { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+.fat-ind h4 { margin: 0 0 2px; font: 700 16px var(--f-display); color: var(--navy); }
+.fat-ind h4 small { font: italic 400 14px var(--f-serif); color: var(--mut); margin-left: 7px; }
+.fat-ind svg { flex: 1 1 auto; min-height: 200px; width: 100%; display: block; }
+@media screen and (max-width: 1180px) { .fat-ind { grid-template-columns: minmax(0, 1fr); } }
+html.imprimindo .fat-ind svg { flex: none; min-height: 0; height: 250px; }
 .btn.pri { background: var(--gold); border-color: var(--gold); }
 
 /* tabelas */
@@ -684,6 +693,11 @@ body.maxi-on .deck { z-index: 150; }
       <p class="nominal tela" hidden><a class="btn pri" href="#" target="_blank" rel="noopener">Lista nominal ↗</a><span>página privada no claude.ai: abre só para quem tem acesso</span></p></div>
       <div class="chips" id="fatChips"></div></div>
     <div class="card fix"><h3>Por papel<span class="h3u">sem atividade na escala escolhida × com direito ao FAT</span></h3><div class="rolo"><table class="tb qd" id="fatPapel"></table></div><p class="nota" id="fatNota" hidden></p></div>
+    <div class="card fat-card"><h3>Indicadores<span class="h3u">em % de cada papel</span></h3><div class="fat-ind">
+      <div class="fi"><h4>Cobertura do FAT<small>vão ÷ sem atividade</small></h4><svg id="fatG1" role="img" aria-label="Cobertura do FAT por papel"></svg></div>
+      <div class="fi"><h4>Quem tem direito<small>vão · fora pelas férias · ficam</small></h4><svg id="fatG2" role="img" aria-label="Quem tem direito ao FAT, por papel"></svg></div>
+      <div class="fi"><h4>Ativos do quadro<small>trabalham · FAT · sem FAT</small></h4><svg id="fatG3" role="img" aria-label="Ativos do quadro por papel"></svg></div>
+    </div></div>
   </article>
 
   <article class="slide" id="resumo" data-mod="Resumo" data-title="Resumo para a diretoria" data-desc="Como fica o quadro: a escala e as pessoas de cada departamento, hoje e com a escala">
@@ -1543,7 +1557,7 @@ function maximiza(sl) {
 });
 
 // os gráficos dos painéis acompanham o tamanho da tela
-addEventListener("resize", () => { clearTimeout(IMP.rz); IMP.rz = setTimeout(() => { if (!NA_FOLHA()) { painel(); painelOp(); AREAS.forEach(painelArea); } }, 200); });
+addEventListener("resize", () => { clearTimeout(IMP.rz); IMP.rz = setTimeout(() => { if (!NA_FOLHA()) { painel(); painelOp(); fatOp(); AREAS.forEach(painelArea); } }, 200); });
 
 /* ---------- campo de partículas ---------- */
 (function () {
@@ -1773,6 +1787,51 @@ function filaFat() {
   });
   return { N, vai, dir, fora, itens };
 }
+// indicadores do FAT: barras em 100% por papel, com o número e o % de cada parte; à direita, o % que importa
+// (cobertura) ou o total da linha
+const COR_FAT = { trab: "#12224A", vai: "#C9A227", fora: "#D68910", fica: "#B8C2D6", semfat: "#C0392B" };
+function barrasFat(svg, linhas, partes, dir) {
+  // desenha no tamanho da caixa (1 unidade = 1 px), para o texto não encolher; sem medida, 620 x 250
+  const cw = svg.clientWidth, ch = svg.clientHeight;
+  const W = cw > 300 ? Math.round(cw) : 620, H = ch > 140 ? Math.round(Math.min(ch, 460)) : 250;
+  const m = { l: 108, r: 70, t: 32, b: 4 }, rh = (H - m.t - m.b) / linhas.length, bh = Math.min(46, rh * .62), L = W - m.l - m.r;
+  const legW = partes.reduce((a, p) => a + 30 + p.rot.length * 7.6, 0) - 14;
+  let g = "", lx = Math.max(4, Math.min(m.l, W - legW - 4));
+  partes.forEach(p => { g += `<rect x="${lx}" y="7" width="11" height="11" rx="2" fill="${p.cor}"/><text x="${lx + 16}" y="17" font-size="12.5" fill="#5A6072" font-family="IBM Plex Mono, monospace">${esc(p.rot.toUpperCase())}</text>`; lx += 30 + p.rot.length * 7.6; });
+  linhas.forEach((l, i) => {
+    const y0 = m.t + rh * i + (rh - bh) / 2, yt = y0 + bh / 2 + 5, tot = partes.reduce((a, p) => a + (l[p.k] || 0), 0);
+    g += `<text x="${m.l - 12}" y="${yt}" text-anchor="end" font-size="15.5" font-weight="${l.tot ? 800 : 700}" fill="#12224A">${esc(l.rot)}</text>`;
+    if (!tot) g += `<rect x="${m.l}" y="${y0}" width="${L}" height="${bh}" rx="3" fill="#EEF0F4"/>`;
+    let acc = 0;
+    partes.forEach(p => {
+      const v = l[p.k] || 0; if (v <= 0) return;
+      const x0 = m.l + L * acc / tot, w = L * v / tot, pct = Math.round(v / tot * 100); acc += v;
+      g += `<rect x="${x0}" y="${y0}" width="${w}" height="${bh}" fill="${p.cor}" stroke="#fff" stroke-width="1.5"/>`;
+      const txt = w > 96 ? `${fmt(v)} · ${pct}%` : w > 40 ? `${pct}%` : "";
+      if (txt) g += `<text x="${x0 + w / 2}" y="${yt}" text-anchor="middle" font-size="14.5" font-weight="700" fill="${p.claro ? "#12224A" : "#fff"}">${txt}</text>`;
+    });
+    const d = dir(l, tot);
+    g += `<text x="${W - m.r + 10}" y="${yt + (d.grande ? 2 : 0)}" font-size="${d.grande ? 21 : 15.5}" font-weight="800" fill="${d.cor || "#12224A"}">${d.txt}</text>`;
+  });
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  svg.innerHTML = g;
+}
+function fatInd(N, vai, dir, fora) {
+  if (!$("#fatG1")) return;
+  const lin = ["operador", "motorista"].map(p => ({ rot: ROT_PAPEL[p], vai: vai[p], semfat: N[p].sem - vai[p], fora: fora[p],
+    fica: dir[p] - vai[p] - fora[p], trab: N[p].precisa }));
+  const tot = { rot: "Total", tot: true };
+  ["vai", "semfat", "fora", "fica", "trab"].forEach(k => { tot[k] = lin.reduce((a, l) => a + l[k], 0); });
+  lin.push(tot);
+  const total = (l, t) => ({ txt: fmt(t) });
+  barrasFat($("#fatG1"), lin, [{ k: "vai", rot: "Vão para o FAT", cor: COR_FAT.vai, claro: true }, { k: "semfat", rot: "Sem FAT", cor: COR_FAT.semfat }],
+    (l, t) => ({ txt: t ? Math.round(l.vai / t * 100) + "%" : "–", grande: true, cor: t && l.vai >= t ? "#2E7D46" : "#A6620A" }));
+  barrasFat($("#fatG2"), lin, [{ k: "vai", rot: "Vão", cor: COR_FAT.vai, claro: true }, { k: "fora", rot: "Fora · 2ª férias na safra", cor: COR_FAT.fora, claro: true },
+    { k: "fica", rot: "Ficam", cor: COR_FAT.fica, claro: true }], total);
+  barrasFat($("#fatG3"), lin, [{ k: "trab", rot: "Trabalham", cor: COR_FAT.trab }, { k: "vai", rot: "FAT", cor: COR_FAT.vai, claro: true },
+    { k: "semfat", rot: "Sem FAT", cor: COR_FAT.semfat }], total);
+}
 function fatOp() {
   if (!$("#fat")) return;
   if (!FAT || !PES) { $("#fatSub").textContent = "Sem a lista do FAT (python fat.py) ou sem os ativos da frota (python pessoal_frota.py)."; return; }
@@ -1798,6 +1857,7 @@ function fatOp() {
       (sf ? ` ${fmt(sf)} ${r} de contrato safra saem no fim da safra.` : "");
   }).join(" ");
   $("#fatNota").hidden = !nota; $("#fatNota").textContent = nota;
+  fatInd(N, vai, dir, fora);
 }
 function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); fatOp(); AREAS.forEach(a => { painelArea(a); quadroArea(a); matrizArea(a); }); resumoFinal(); escalas(); if (window.salvaSite) salvaSite.mudou(); }
 function volante(v) { S.vol = v; $("#vol").checked = v; tudo(); }

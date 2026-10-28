@@ -89,7 +89,9 @@ dos dados ficam fora 107 dos 320 com direito (69 operadores e 38 motoristas). V�
 fora pelas férias podem tirar as férias na entressafra, 15 motoristas podem ter direito e estão a conferir (60 anos ou
 mais com aposentadoria a verificar, ou fora do levantamento) e 12 de contrato safra saem no fim da safra. Quem vai com o
 limite até mar/27 (144) entra no FAT sem tirar as férias e o limite cai durante o FAT: confirmar com o DP se o prazo
-fica parado durante o FAT, senão as férias vencem em dobro. (A página 9, Férias e FAT, saiu a pedido em 28/10/2026.)
+fica parado durante o FAT, senão as férias vencem em dobro. (A página 9, Férias e FAT, saiu a pedido em 28/10/2026.) Embaixo da tabela por papel, três **indicadores** em barras de 100% por papel: cobertura do FAT (vão ÷ sem
+atividade), quem tem direito (vão, fora pela 2ª férias na safra, ficam) e ativos do quadro (trabalham na escala, FAT,
+sem atividade e sem FAT), com o número e o % de cada parte.
 
 A página só tem números e o botão **Lista nominal**, que abre a página privada do claude.ai (só para quem tem acesso;
 o endereço, https://claude.ai/artifact/VYcCeLG9VKAHniU3EFaaLh, fica em `LISTA_PRIVADA`, no `fat.py`). Os nomes ficam na **lista nominal** (`FAT_lista_nominal.html`, gerada pelo `fat.py`; desde 28/10/2026 está no
