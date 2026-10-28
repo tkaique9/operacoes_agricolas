@@ -1,8 +1,8 @@
 """FAT: motoristas e operadores com direito, as férias de cada um e a fila de quem vai.
 
 python fat.py  ->  fat.json                    (sem nomes: a fila com papel, atividade e mês do limite das férias,
-                                                para as páginas FAT do estudo)
-               ->  FAT_lista_nominal.html      (com nome e matrícula: fica na máquina, fora do git)
+                                                para a página FAT do estudo)
+               ->  FAT_lista_nominal.html      (com nome e matrícula: no repositório, que é privado; o Render não publica)
                ->  build/fat_nominal_artifact.html  (a mesma lista no formato da página privada do claude.ai)
 
 Fonte: o painel "CRV_Painel_FAT_Ferias" do RH (dados/fat/painel_fat_ferias.xlsx, aba Todos; fora do git: tem nome,
@@ -18,7 +18,7 @@ Férias e FAT: o FAT suspende o contrato (CLT art. 476-A). O tempo suspenso não
 aquisitivo congela), mas as férias já adquiridas não congelam: têm de começar até o "Limite férias" do painel, e não dá
 para dar férias com o contrato suspenso. Não haverá férias antes do FAT (decisão de 28/10/2026), então quem vence a
 segunda férias na safra de 2027 (limite de abril a novembro de 2027, faixa 2) não vai para o FAT: voltaria e teria de
-tirar as férias na safra. A regra fica nas páginas (fat.json leva o mês do limite) e na lista nominal.
+tirar as férias na safra. A regra fica na página FAT (fat.json leva o mês do limite) e na lista nominal.
 """
 import datetime
 import json
@@ -36,8 +36,8 @@ TEMPLATE = AQUI / "fat_nominal_template.html"
 LOCAL = AQUI / "FAT_lista_nominal.html"
 ARTIFACT = AQUI / "build" / "fat_nominal_artifact.html"
 FONTE = "Painel FAT & Férias do RH (27/10/2026)"
-# a lista nominal publicada como página privada do claude.ai (só abre para quem tem acesso): as páginas FAT do estudo,
-# que são públicas, só levam o endereço
+# a lista nominal publicada como página privada do claude.ai (só abre para quem tem acesso): a página FAT do estudo,
+# que é pública (Render), só leva o endereço
 LISTA_PRIVADA = "https://claude.ai/artifact/VYcCeLG9VKAHniU3EFaaLh"
 # atividades da colheita, que param na entressafra: vão primeiro (pelo departamento da planilha)
 COLHEITA = re.compile(r"TRANSBORDO|COLHEDORA|CANAVIEIRO")

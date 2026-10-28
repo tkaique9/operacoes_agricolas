@@ -19,7 +19,7 @@ Os turnos 24 h saem da 5x1, a 6x1 de dia vira 5x2 e o horário ADM com sábado v
 | `adm.py` → `adm.json` | Lê a planilha **ESCALA ADM** (`dados/adm/escala_adm.xlsx`, fora do git: tem nome e matrícula) e grava só as contagens por departamento e por central 24 h, que entram na aba ADM |
 | `rural.py` → `rural.json` | Lê a planilha **ESCALA RURAL** (`dados/rural/escala_rural.xlsx`, fora do git) e grava só as contagens por departamento (pela coluna Dpto, o agrupamento novo) e do grupo que roda 3 turnos, que entram na aba Rural |
 | `pessoal_frota.py` → `pessoal_frota.json` | Lê a planilha **Quadro motorista operador** (`dados/frota/quadro_motorista_operador.xlsx`, fora do git: tem nome, matrícula e CPF) e grava só quantos motoristas e operadores estão ativos, no total e por atividade |
-| `fat.py` → `fat.json` + `FAT_lista_nominal.html` | Lê o **Painel FAT & Férias** do RH (`dados/fat/painel_fat_ferias.xlsx`, fora do git: tem nome, matrícula e idade) e grava em `fat.json` só a fila de quem tem direito ao FAT, com papel, atividade e mês do limite das férias, e as contagens dos que podem ter direito e dos contratos safra, para as páginas FAT. A lista com nomes (`FAT_lista_nominal.html`, e a cópia em `build/` para a página privada do claude.ai) fica fora do git |
+| `fat.py` → `fat.json` + `FAT_lista_nominal.html` | Lê o **Painel FAT & Férias** do RH (`dados/fat/painel_fat_ferias.xlsx`, fora do git: tem nome, matrícula e idade) e grava em `fat.json` só a fila de quem tem direito ao FAT, com papel, atividade e mês do limite das férias, e as contagens dos que podem ter direito e dos contratos safra, para a página FAT. A lista com nomes (`FAT_lista_nominal.html`, e a cópia em `build/` para a página privada do claude.ai) fica fora do git |
 
 ### Operacional (frota 24 h)
 
@@ -70,7 +70,7 @@ a escala escolhida: 245 operadores e 139 motoristas, 207 sem atividade. Muitos a
 estão na lista da frota (ônibus, pipas, comboio, caminhões e tratores da irrigação, máquinas de herbicida) e aparecem
 como sem atividade; a lista por atividade abre em "Ativos por atividade".
 
-### FAT (páginas 8 e 9)
+### FAT (página 8)
 
 Pedido de 28/10/2026: quem fica **sem atividade** na escala escolhida (os ativos do Quadro motorista operador menos o que
 a frota precisa, como no painel da frota) pode ir para o **FAT**. A fonte é o **Painel FAT & Férias** do RH (27/10/2026):
@@ -89,9 +89,9 @@ dos dados ficam fora 107 dos 320 com direito (69 operadores e 38 motoristas). V�
 fora pelas férias podem tirar as férias na entressafra, 15 motoristas podem ter direito e estão a conferir (60 anos ou
 mais com aposentadoria a verificar, ou fora do levantamento) e 12 de contrato safra saem no fim da safra. Quem vai com o
 limite até mar/27 (144) entra no FAT sem tirar as férias e o limite cai durante o FAT: confirmar com o DP se o prazo
-fica parado durante o FAT, senão as férias vencem em dobro. A página 9 (Férias e FAT) mostra isso por papel e mês a mês.
+fica parado durante o FAT, senão as férias vencem em dobro. (A página 9, Férias e FAT, saiu a pedido em 28/10/2026.)
 
-As páginas só têm números e um botão **Lista nominal**, que abre a página privada do claude.ai (só para quem tem acesso;
+A página só tem números e o botão **Lista nominal**, que abre a página privada do claude.ai (só para quem tem acesso;
 o endereço, https://claude.ai/artifact/VYcCeLG9VKAHniU3EFaaLh, fica em `LISTA_PRIVADA`, no `fat.py`). Os nomes ficam na **lista nominal** (`FAT_lista_nominal.html`, gerada pelo `fat.py`; desde 28/10/2026 está no
 repositório, que ficou privado, e o Render não a publica, ver `render-build.sh`; a cópia em `build/` é a página privada
 do claude.ai): a mesma fila, com caixa para marcar quem vai (quem vence a segunda férias na safra fica sem caixa), a
