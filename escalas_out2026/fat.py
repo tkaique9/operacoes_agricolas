@@ -15,9 +15,10 @@ depois as outras atividades; dentro de cada grupo, menor tempo de casa primeiro.
 pessoal_frota.py: "MOTORISTA ..." é motorista, o resto (OP. MÁQUINAS AGR.) é operador.
 
 Férias e FAT: o FAT suspende o contrato (CLT art. 476-A). O tempo suspenso não conta para as próximas férias (o período
-aquisitivo congela), mas as férias já adquiridas não congelam: têm de ser tiradas até o "Limite férias" do painel, e não
-dá para dar férias com o contrato suspenso. Quem vai para o FAT com o limite antes de dez/2027 tira as férias na
-entressafra, antes de entrar no FAT; senão elas vencem durante o FAT ou caem na safra de 2027.
+aquisitivo congela), mas as férias já adquiridas não congelam: têm de começar até o "Limite férias" do painel, e não dá
+para dar férias com o contrato suspenso. Não haverá férias antes do FAT (decisão de 28/10/2026), então quem vence a
+segunda férias na safra de 2027 (limite de abril a novembro de 2027, faixa 2) não vai para o FAT: voltaria e teria de
+tirar as férias na safra. A regra fica nas páginas (fat.json leva o mês do limite) e na lista nominal.
 """
 import datetime
 import json

@@ -78,20 +78,22 @@ a frota precisa, como no painel da frota) pode ir para o **FAT**. A fonte é o *
 (*validar fat*, 237) deixava de fora os 83 com direito e férias vencidas. Vão os primeiros da fila de cada papel até a
 necessidade; a fila põe a **colheita primeiro** (trator transbordo, colhedora e caminhão canavieiro, que param na
 entressafra), depois as outras atividades, e dentro de cada grupo o **menor tempo de casa** primeiro. Com a escolhida dos
-dados: 83 operadores sem atividade, todos da colheita, e 124 motoristas, dos quais 121 têm direito e vão; os 3 que faltam
-podem sair dos 15 motoristas a conferir (60 anos ou mais com aposentadoria a verificar, ou fora do levantamento do FAT), e
-12 motoristas de contrato safra saem no fim da safra. A página acompanha a escolhida.
+dados: 83 operadores e 124 motoristas sem atividade.
 
-**Férias e FAT** (página 9). O FAT suspende o contrato (CLT art. 476-A): o tempo parado não conta para as próximas
-férias, que andam para a frente o tanto que durar o FAT. As férias já adquiridas não congelam: têm de começar até o
-"Limite férias" do painel, e não dá para dar férias com o contrato suspenso. Por isso quem vai para o FAT com o limite
-antes de dez/2027 tira as férias na entressafra, antes de entrar: com a escolhida dos dados são 184 dos 204 (105 com o
-limite até mar/27 e 79 na safra de 2027); 17 vão direto. A página mostra isso por papel e mês a mês, junto com quem tem
-direito e fica trabalhando (também precisa tirar as férias fora da safra). Confirmar com o DP e o jurídico.
+**Sem férias antes do FAT** (decisão de 28/10/2026). O FAT suspende o contrato (CLT art. 476-A): o tempo parado não
+conta para as próximas férias, mas as férias já adquiridas têm de começar até o "Limite férias" do painel e não dá para
+dar férias com o contrato suspenso. Como não haverá férias antes do FAT, quem vence a **segunda férias na safra de 2027**
+(limite de abril a novembro de 2027) **não vai para o FAT**: voltaria e teria de tirar as férias na safra. Com a escolhida
+dos dados ficam fora 107 dos 320 com direito (69 operadores e 38 motoristas). Vão 83 operadores (todos os que faltam) e
+83 motoristas (todos os que podem ir); **41 motoristas ficam sem atividade e sem FAT**. Para reduzir: os 38 motoristas
+fora pelas férias podem tirar as férias na entressafra, 15 motoristas podem ter direito e estão a conferir (60 anos ou
+mais com aposentadoria a verificar, ou fora do levantamento) e 12 de contrato safra saem no fim da safra. Quem vai com o
+limite até mar/27 (144) entra no FAT sem tirar as férias e o limite cai durante o FAT: confirmar com o DP se o prazo
+fica parado durante o FAT, senão as férias vencem em dobro. A página 9 (Férias e FAT) mostra isso por papel e mês a mês.
 
 As páginas só têm números. Os nomes ficam na **lista nominal** (`FAT_lista_nominal.html`, gerada pelo `fat.py`, fora do
-git; a cópia em `build/` é a página privada do claude.ai): a mesma fila, com caixa para marcar quem vai, a necessidade de
-cada papel editável, contador, o que fazer com as férias de cada um, a lista dos que podem ter direito e "Copiar
+git; a cópia em `build/` é a página privada do claude.ai): a mesma fila, com caixa para marcar quem vai (quem vence a segunda férias na safra fica sem caixa), a
+necessidade de cada papel editável, contador, a situação das férias de cada um, a lista dos que podem ter direito e "Copiar
 marcados" (cola no Excel). Na lista, a necessidade de partida é a da escolhida dos dados (`NEC_PADRAO` no `fat.py`); se a
 escolhida mudar, vale o número da página FAT.
 

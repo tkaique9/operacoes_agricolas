@@ -93,8 +93,8 @@ td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); 
 <main class="lado" translate="no">
   <div class="cartoes" id="cartoes"></div>
   <div class="lei">
-    <h2>O FAT congela as férias?</h2>
-    <p>Só as próximas. O FAT suspende o contrato (CLT art. 476-A): o tempo parado não conta para o período aquisitivo, então as férias que estão sendo adquiridas andam para a frente o tanto que durar o FAT. As férias já adquiridas não congelam: precisam começar até o limite da coluna "Limite férias", e não dá para dar férias com o contrato suspenso. Por isso quem vai para o FAT com o limite antes de dez/2027 tira as férias na entressafra, antes de entrar no FAT: se não tirar, elas vencem durante o FAT (pagamento em dobro) ou caem na safra de 2027. Confirmar com o DP e o jurídico antes de fechar.</p>
+    <h2>Sem férias antes do FAT: quem vence a segunda férias na safra não vai</h2>
+    <p>Não haverá férias antes do FAT. Quem tem o limite das férias na safra de 2027 (abril a novembro de 2027) não vai para o FAT: voltaria do FAT e teria de tirar as férias na safra. Na lista, essas pessoas aparecem sem caixa para marcar. O FAT suspende o contrato (CLT art. 476-A) e o tempo parado não conta para as próximas férias, que andam para a frente o tanto que durar o FAT. Quem vai com o limite até março de 2027 entra no FAT sem tirar as férias e o limite cai durante o FAT: confirmar com o DP se o prazo fica parado durante o FAT, senão as férias vencem em dobro.</p>
   </div>
   <p class="nota" id="criterio"></p>
   <div class="barra">
@@ -124,35 +124,37 @@ const $ = id => document.getElementById(id);
 let marcas = ler(CH_M) || {};                  // trocas sobre a sugestão: matrícula -> vai (true) ou fica (false)
 const nec = Object.assign({}, F.nec, ler(CH_N) || {});
 const dos = p => F.gente.filter(x => x.papel === p);
-// sugestão: os primeiros da fila de cada papel até completar a necessidade
+// sem férias antes do FAT (28/10/2026): quem vence a segunda férias na safra de 2027 (limite de abr a nov/27) não vai
+const fora = x => x.faixa === 2;
+// sugestão: os primeiros da fila de cada papel até completar a necessidade, sem quem vence a 2ª férias na safra
 function sugeridos() {
   const s = new Set();
-  PAP.forEach(p => dos(p).slice(0, Math.max(0, nec[p] | 0)).forEach(x => s.add(x.mat)));
+  PAP.forEach(p => dos(p).filter(x => !fora(x)).slice(0, Math.max(0, nec[p] | 0)).forEach(x => s.add(x.mat)));
   return s;
 }
 let SUG = sugeridos();
-const vai = x => Object.prototype.hasOwnProperty.call(marcas, x.mat) ? marcas[x.mat] : SUG.has(x.mat);
+const vai = x => !fora(x) && (Object.prototype.hasOwnProperty.call(marcas, x.mat) ? marcas[x.mat] : SUG.has(x.mat));
 
 $("sub").textContent = `${F.fonte}: ${F.gente.length} motoristas e operadores com direito ao FAT (efetivos, 12 meses ou mais, não aposentados), com as férias de cada um. A necessidade é quem fica sem atividade na escala escolhida, como na aba FAT do estudo de escalas.`;
 // férias: o que fazer com cada um, pelo limite (faixa 1 = até mar/27, 2 = safra de 2027, 3 = dez/27 em diante)
-const FERIAS_VAI = { 1: "Férias antes do FAT · vence na entressafra", 2: "Férias antes do FAT · senão cai na safra", 3: "Vai direto · o FAT empurra as próximas", 0: "Sem data · conferir" };
-const FERIAS_FICA = { 1: "Férias na entressafra · vence até mar/27", 2: "Férias na entressafra · senão cai na safra", 3: "Sem férias agora", 0: "Sem data · conferir" };
+// sem férias antes do FAT (28/10/2026): quem vence a segunda férias na safra de 2027 (faixa 2) não vai
+const FERIAS_VAI = { 1: "Vai sem férias · limite cai no FAT (DP confirmar)", 3: "Vai · o FAT empurra as próximas", 0: "Sem data · conferir" };
+const FERIAS_FICA = { 1: "Fica · férias na entressafra (vence até mar/27)", 2: "Não vai · 2ª férias vence na safra", 3: "Fica · sem férias agora", 0: "Sem data · conferir" };
 const feriasTag = (x, v) => `<span class="fe f${x.faixa}">${(v ? FERIAS_VAI : FERIAS_FICA)[x.faixa]}</span>`;
 $("criterio").textContent = `Sugestão: ${F.criterio}. Marque ou desmarque para trocar; a escolha fica guardada neste navegador.`;
 
 function cartoes() {
   $("cartoes").innerHTML = PAP.map(p => {
-    // alvo: a necessidade, ou todos os com direito quando ela passa deles
-    const g = dos(p), m = g.filter(vai).length, n = Math.max(0, nec[p] | 0), alvo = Math.min(n, g.length);
-    const st = m === alvo ? ["ok", n > g.length ? "Todos os com direito vão" : "Fecha a necessidade"]
+    // alvo: a necessidade, ou todos os que podem ir quando ela passa deles
+    const g = dos(p), m = g.filter(vai).length, n = Math.max(0, nec[p] | 0), fo = g.filter(fora).length, aptos = g.length - fo, alvo = Math.min(n, aptos);
+    const st = m === alvo ? ["ok", n > aptos ? "Todos os que podem ir vão" : "Fecha a necessidade"]
       : m < alvo ? ["falta", `Faltam ${alvo - m}`] : ["mais", `${m - alvo} a mais que a necessidade`];
     const vf = F.verificar.filter(x => x.papel === p).length;
-    const semDir = n > g.length ? `<p class="nota">Só ${g.length} têm direito: ${n - g.length} ficam sem atividade e sem direito ao FAT.${vf ? ` Para fechar, conferir os ${vf} da lista "Podem ter direito", no fim da página.` : ""}</p>` : "";
-    const antes = g.filter(x => vai(x) && (x.faixa === 1 || x.faixa === 2)).length;
+    const semDir = n > aptos ? `<p class="nota">Só ${aptos} podem ir (${g.length} com direito, ${fo} vencem a 2ª férias na safra): ${n - aptos} ficam sem atividade e sem FAT.${vf ? ` Conferir também os ${vf} da lista "Podem ter direito", no fim da página.` : ""}</p>` : "";
     return `<div class="cartao"><h2>${ROT[p]}<small>${g.length} com direito</small></h2>
       <div class="nums"><div class="num"><label for="nec-${p}">Necessidade</label><input id="nec-${p}" type="number" min="0" step="1" inputmode="numeric" value="${n}" data-p="${p}"></div>
       <div class="num"><span class="k">Marcados</span><span class="v">${m}</span></div>
-      <div class="num"><span class="k">Férias antes do FAT</span><span class="v">${antes}</span></div></div>
+      <div class="num"><span class="k">Fora · 2ª férias na safra</span><span class="v">${fo}</span></div></div>
       <span class="pilula ${st[0]}">${st[1]}</span>${semDir}</div>`;
   }).join("");
 }
@@ -166,7 +168,7 @@ function listas() {
     g.forEach((x, i) => {
       if (x.grupo !== grupo) { grupo = x.grupo; h += `<tr class="grp"><td colspan="13">${GRUPO[grupo]} · ${g.filter(y => y.grupo === grupo).length}</td></tr>`; }
       const busca = `${x.mat} ${x.nome} ${x.ativ} ${x.ger} ${x.funcao} ${x.ferias}`.toLowerCase();
-      h += `<tr data-mat="${x.mat}" data-b="${esc(busca)}"><td class="c"><input type="checkbox" aria-label="${esc(x.nome)} vai para o FAT" data-mat="${x.mat}"></td>
+      h += `<tr data-mat="${x.mat}" data-b="${esc(busca)}"><td class="c"><input type="checkbox" aria-label="${esc(x.nome)} vai para o FAT" data-mat="${x.mat}"${fora(x) ? ' disabled title="Vence a 2ª férias na safra de 2027: não vai para o FAT"' : ""}></td>
         <td class="n mono">${i + 1}</td><td class="mono">${x.mat}</td><td class="nome">${esc(x.nome)}<span class="troca" hidden>trocado</span></td>
         <td>${esc(x.funcao)}</td><td>${esc(x.ativ)}</td><td>${esc(x.ger)}</td><td class="c mono">${dataBR(x.adm)}</td>
         <td class="c">${esc(x.tempo)}</td><td class="n">${x.idade == null ? "–" : x.idade}</td>
