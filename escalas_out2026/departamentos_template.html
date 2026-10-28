@@ -89,6 +89,10 @@ header.top, nav.toc { transition: opacity .5s ease .2s, visibility 0s linear .2s
 .barra .esp { flex: 1; }
 .btn { font: 600 13px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--bgsoft); border: 1px solid var(--line); border-radius: 2px; padding: 6px 11px; cursor: pointer; transition: border-color .2s, background-color .2s; }
 .btn:hover { border-color: var(--gold); background: var(--sel); }
+/* botão da lista nominal do FAT (página privada; os nomes não entram nesta página, que é pública) */
+.nominal { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 10px 0 0; }
+.nominal a.btn { text-decoration: none; }
+.nominal span { font: italic 400 14px var(--f-serif); color: var(--t2); }
 .btn.pri { background: var(--gold); border-color: var(--gold); }
 
 /* tabelas */
@@ -670,7 +674,8 @@ body.maxi-on .deck { z-index: 150; }
 
   <article class="slide" id="fat" data-mod="FAT" data-title="FAT" data-desc="Motoristas e operadores sem atividade na escala escolhida e quem tem direito ao FAT">
     <div class="s-head"><div><div class="s-eyebrow">08 · FAT · Necessidade</div><h2 class="s-title">FAT: quem fica sem atividade e quem tem direito</h2>
-      <p class="s-sub" id="fatSub"></p></div>
+      <p class="s-sub" id="fatSub"></p>
+      <p class="nominal tela" hidden><a class="btn pri" href="#" target="_blank" rel="noopener">Lista nominal ↗</a><span>página privada no claude.ai: abre só para quem tem acesso</span></p></div>
       <div class="chips" id="fatChips"></div></div>
     <div class="card fix"><h3>Por papel<span class="h3u">sem atividade na escala escolhida × com direito ao FAT</span></h3><div class="rolo"><table class="tb qd" id="fatPapel"></table></div><p class="nota" id="fatNota" hidden></p></div>
     <div class="card"><h3>Por atividade<span class="h3u">de onde sai quem vai para o FAT: colheita primeiro</span></h3><div class="rolo"><table class="tb qd" id="fatAtiv"></table></div></div>
@@ -678,7 +683,8 @@ body.maxi-on .deck { z-index: 150; }
 
   <article class="slide" id="fat-ferias" data-mod="FAT" data-title="Férias e FAT" data-desc="Férias de quem tem direito ao FAT: quem vence a segunda férias na safra de 2027 não vai">
     <div class="s-head"><div><div class="s-eyebrow">09 · FAT · Férias</div><h2 class="s-title">Férias e FAT: quem vence na safra não vai</h2>
-      <p class="s-sub">Não haverá férias antes do FAT. Por isso quem vence a segunda férias na safra de 2027 (limite de abril a novembro de 2027) não vai para o FAT: voltaria do FAT e teria de tirar as férias na safra. O FAT suspende o contrato (CLT art. 476-A) e o tempo parado não conta para as próximas férias, que andam para a frente o tanto que durar o FAT. Quem vai com o limite até março de 2027 entra no FAT sem tirar as férias e o limite cai durante o FAT: confirmar com o DP se o prazo fica parado durante o FAT, senão as férias vencem em dobro.</p></div>
+      <p class="s-sub">Não haverá férias antes do FAT. Por isso quem vence a segunda férias na safra de 2027 (limite de abril a novembro de 2027) não vai para o FAT: voltaria do FAT e teria de tirar as férias na safra. O FAT suspende o contrato (CLT art. 476-A) e o tempo parado não conta para as próximas férias, que andam para a frente o tanto que durar o FAT. Quem vai com o limite até março de 2027 entra no FAT sem tirar as férias e o limite cai durante o FAT: confirmar com o DP se o prazo fica parado durante o FAT, senão as férias vencem em dobro.</p>
+      <p class="nominal tela" hidden><a class="btn pri" href="#" target="_blank" rel="noopener">Lista nominal ↗</a><span>página privada no claude.ai: abre só para quem tem acesso</span></p></div>
       <div class="chips" id="ffChips"></div></div>
     <div class="card fix"><h3>Por papel<span class="h3u">quem tem direito ao FAT, pelo limite das férias</span></h3><div class="rolo"><table class="tb qd" id="ffPapel"></table></div></div>
     <div class="card"><h3>Mês a mês<span class="h3u">limite das férias de quem tem direito: quem vai para o FAT e quem fica</span></h3><div class="rolo"><table class="tb qd" id="ffMes"></table></div></div>
@@ -1783,6 +1789,7 @@ function fatOp() {
   const T = { ativos: soma(p => N[p].ativos), precisa: soma(p => N[p].precisa), sem: soma(p => N[p].sem), dir: soma(p => dir[p]), fora: soma(p => fora[p]), vai: soma(p => vai[p]) };
   $("#fatChips").innerHTML = [[fmt(T.vai), "Vão para o FAT"], [fmt(T.sem), "Sem atividade", "sa"], [fmt(T.sem - T.vai), "Sem ativ. · sem FAT", T.sem - T.vai ? "pos" : "zero"],
     [fmt(T.fora), "Fora · 2ª férias na safra"]].map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
+  document.querySelectorAll(".nominal").forEach(e => { e.hidden = !FAT.lista; if (FAT.lista) e.querySelector("a").href = FAT.lista; });
   $("#fatSub").textContent = `Sem atividade = ativos do quadro menos o que a frota precisa na escala escolhida (painel da frota). Com direito: ${FAT.fonte}, ${fmt(FAT.n)} efetivos com 12 meses ou mais e não aposentados. Não haverá férias antes do FAT, então quem vence a segunda férias na safra de 2027 (abr a nov) não vai. Vão os primeiros da fila até a necessidade: ${FAT.criterio.charAt(0).toLowerCase() + FAT.criterio.slice(1)}. Os nomes ficam na lista nominal, fora desta página.`;
   const linha = (rot, u, v, cls) => `<tr${cls ? ` class="${cls}"` : ""}><td class="l dep">${rot}${u ? `<u>${u}</u>` : ""}</td>${v.map(x => `<td class="qv"><b>${x}</b></td>`).join("")}</tr>`;
   let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>na escolhida</u></th><th class="escol">Sem atividade<u>necessidade do FAT</u></th><th>Com direito<u>ao FAT</u></th><th>Fora<u>2ª férias na safra</u></th><th class="escol">Vão para o FAT</th><th>Sem atividade<u>e sem FAT</u></th><th>Com direito<u>que ficam</u></th></tr></thead><tbody>`;

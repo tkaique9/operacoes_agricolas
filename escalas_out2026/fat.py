@@ -36,6 +36,9 @@ TEMPLATE = AQUI / "fat_nominal_template.html"
 LOCAL = AQUI / "FAT_lista_nominal.html"
 ARTIFACT = AQUI / "build" / "fat_nominal_artifact.html"
 FONTE = "Painel FAT & Férias do RH (27/10/2026)"
+# a lista nominal publicada como página privada do claude.ai (só abre para quem tem acesso): as páginas FAT do estudo,
+# que são públicas, só levam o endereço
+LISTA_PRIVADA = "https://claude.ai/artifact/VYcCeLG9VKAHniU3EFaaLh"
 # atividades da colheita, que param na entressafra: vão primeiro (pelo departamento da planilha)
 COLHEITA = re.compile(r"TRANSBORDO|COLHEDORA|CANAVIEIRO")
 CRITERIO = ("Colheita primeiro (trator transbordo, colhedora e caminhão canavieiro, que param na entressafra), depois as "
@@ -98,7 +101,7 @@ def ler():
 def main():
     gente, verificar, safra = ler()
     conta = lambda lista: {pp: sum(1 for p in lista if p["papel"] == pp) for pp in ("operador", "motorista")}
-    publico = {"fonte": FONTE, "criterio": CRITERIO, "n": len(gente),
+    publico = {"fonte": FONTE, "criterio": CRITERIO, "n": len(gente), "lista": LISTA_PRIVADA,
                "verificar": conta(verificar), "safra": safra,
                "fila": [[p["papel"], p["ativ"], p["grupo"], p["limite"][:7] if p["limite"] else None] for p in gente]}
     cab = json.dumps({k: v for k, v in publico.items() if k != "fila"}, ensure_ascii=False)[:-1]
