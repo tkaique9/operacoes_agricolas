@@ -73,7 +73,13 @@ tr.vai td { background: var(--marc) !important; }
 tr.vai td:first-child { box-shadow: inset 4px 0 0 var(--gold); }
 td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); cursor: pointer; }
 .troca { font: 600 11px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--warn); margin-left: 6px; }
-.lim { color: var(--bad); font-weight: 600; }
+/* férias: a cor diz quando o limite cai (entressafra, safra de 2027 ou depois) */
+.fe { display: inline-block; font: 600 12.5px var(--f-ui); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.fe.f1 { color: var(--bad); background: var(--bad-bg); } .fe.f2 { color: var(--warn); background: var(--warn-bg); }
+.fe.f3 { color: var(--ok); background: var(--ok-bg); } .fe.f0 { color: var(--mut); background: var(--bg); }
+.lei { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 4px; padding: 12px 16px; display: grid; gap: 6px; }
+.lei h2 { margin: 0; font: 700 16px var(--f-ui); }
+.lei p { margin: 0; max-width: 110ch; }
 @media (prefers-reduced-motion: no-preference) { tr td { transition: background-color .15s ease; } }
 </style>
 
@@ -86,6 +92,10 @@ td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); 
 
 <main class="lado" translate="no">
   <div class="cartoes" id="cartoes"></div>
+  <div class="lei">
+    <h2>O FAT congela as férias?</h2>
+    <p>Só as próximas. O FAT suspende o contrato (CLT art. 476-A): o tempo parado não conta para o período aquisitivo, então as férias que estão sendo adquiridas andam para a frente o tanto que durar o FAT. As férias já adquiridas não congelam: precisam começar até o limite da coluna "Limite férias", e não dá para dar férias com o contrato suspenso. Por isso quem vai para o FAT com o limite antes de dez/2027 tira as férias na entressafra, antes de entrar no FAT: se não tirar, elas vencem durante o FAT (pagamento em dobro) ou caem na safra de 2027. Confirmar com o DP e o jurídico antes de fechar.</p>
+  </div>
   <p class="nota" id="criterio"></p>
   <div class="barra">
     <div class="busca"><input type="search" id="busca" placeholder="Buscar nome, matrícula, atividade ou gerência" aria-label="Buscar na lista"></div>
@@ -123,7 +133,11 @@ function sugeridos() {
 let SUG = sugeridos();
 const vai = x => Object.prototype.hasOwnProperty.call(marcas, x.mat) ? marcas[x.mat] : SUG.has(x.mat);
 
-$("sub").textContent = `Lista ${F.fonte}: ${F.gente.length} motoristas e operadores com direito ao FAT (efetivos, 12 meses ou mais, não aposentados). A necessidade é quem fica sem atividade na escala escolhida, como na aba FAT do estudo de escalas.`;
+$("sub").textContent = `${F.fonte}: ${F.gente.length} motoristas e operadores com direito ao FAT (efetivos, 12 meses ou mais, não aposentados), com as férias de cada um. A necessidade é quem fica sem atividade na escala escolhida, como na aba FAT do estudo de escalas.`;
+// férias: o que fazer com cada um, pelo limite (faixa 1 = até mar/27, 2 = safra de 2027, 3 = dez/27 em diante)
+const FERIAS_VAI = { 1: "Férias antes do FAT · vence na entressafra", 2: "Férias antes do FAT · senão cai na safra", 3: "Vai direto · o FAT empurra as próximas", 0: "Sem data · conferir" };
+const FERIAS_FICA = { 1: "Férias na entressafra · vence até mar/27", 2: "Férias na entressafra · senão cai na safra", 3: "Sem férias agora", 0: "Sem data · conferir" };
+const feriasTag = (x, v) => `<span class="fe f${x.faixa}">${(v ? FERIAS_VAI : FERIAS_FICA)[x.faixa]}</span>`;
 $("criterio").textContent = `Sugestão: ${F.criterio}. Marque ou desmarque para trocar; a escolha fica guardada neste navegador.`;
 
 function cartoes() {
@@ -132,11 +146,13 @@ function cartoes() {
     const g = dos(p), m = g.filter(vai).length, n = Math.max(0, nec[p] | 0), alvo = Math.min(n, g.length);
     const st = m === alvo ? ["ok", n > g.length ? "Todos os com direito vão" : "Fecha a necessidade"]
       : m < alvo ? ["falta", `Faltam ${alvo - m}`] : ["mais", `${m - alvo} a mais que a necessidade`];
-    const semDir = n > g.length ? `<p class="nota">Só ${g.length} têm direito: ${n - g.length} ficam sem atividade e sem direito ao FAT.</p>` : "";
+    const vf = F.verificar.filter(x => x.papel === p).length;
+    const semDir = n > g.length ? `<p class="nota">Só ${g.length} têm direito: ${n - g.length} ficam sem atividade e sem direito ao FAT.${vf ? ` Para fechar, conferir os ${vf} da lista "Podem ter direito", no fim da página.` : ""}</p>` : "";
+    const antes = g.filter(x => vai(x) && (x.faixa === 1 || x.faixa === 2)).length;
     return `<div class="cartao"><h2>${ROT[p]}<small>${g.length} com direito</small></h2>
       <div class="nums"><div class="num"><label for="nec-${p}">Necessidade</label><input id="nec-${p}" type="number" min="0" step="1" inputmode="numeric" value="${n}" data-p="${p}"></div>
       <div class="num"><span class="k">Marcados</span><span class="v">${m}</span></div>
-      <div class="num"><span class="k">Com direito ficam</span><span class="v">${g.length - m}</span></div></div>
+      <div class="num"><span class="k">Férias antes do FAT</span><span class="v">${antes}</span></div></div>
       <span class="pilula ${st[0]}">${st[1]}</span>${semDir}</div>`;
   }).join("");
 }
@@ -145,20 +161,34 @@ function listas() {
     const g = dos(p);
     let h = `<section class="papel"><h3>${ROT[p]}<small>fila do FAT · ${g.length} com direito</small></h3><div class="rolo"><table><thead><tr>
       <th class="c">Vai</th><th class="n">Fila</th><th>Mat.</th><th>Nome</th><th>Função</th><th>Atividade</th><th>Gerência</th>
-      <th class="c">Admissão</th><th class="c">Tempo</th><th class="n">Idade</th><th class="c">Limite férias</th></tr></thead><tbody>`;
+      <th class="c">Admissão</th><th class="c">Tempo</th><th class="n">Idade</th><th>Férias</th><th class="c">Limite férias</th><th>Férias e FAT</th></tr></thead><tbody>`;
     let grupo = 0;
     g.forEach((x, i) => {
-      if (x.grupo !== grupo) { grupo = x.grupo; h += `<tr class="grp"><td colspan="11">${GRUPO[grupo]} · ${g.filter(y => y.grupo === grupo).length}</td></tr>`; }
-      const busca = `${x.mat} ${x.nome} ${x.ativ} ${x.ger} ${x.funcao}`.toLowerCase();
-      const lim = x.limite && x.limite <= "2027-03-31";
+      if (x.grupo !== grupo) { grupo = x.grupo; h += `<tr class="grp"><td colspan="13">${GRUPO[grupo]} · ${g.filter(y => y.grupo === grupo).length}</td></tr>`; }
+      const busca = `${x.mat} ${x.nome} ${x.ativ} ${x.ger} ${x.funcao} ${x.ferias}`.toLowerCase();
       h += `<tr data-mat="${x.mat}" data-b="${esc(busca)}"><td class="c"><input type="checkbox" aria-label="${esc(x.nome)} vai para o FAT" data-mat="${x.mat}"></td>
         <td class="n mono">${i + 1}</td><td class="mono">${x.mat}</td><td class="nome">${esc(x.nome)}<span class="troca" hidden>trocado</span></td>
         <td>${esc(x.funcao)}</td><td>${esc(x.ativ)}</td><td>${esc(x.ger)}</td><td class="c mono">${dataBR(x.adm)}</td>
         <td class="c">${esc(x.tempo)}</td><td class="n">${x.idade == null ? "–" : x.idade}</td>
-        <td class="c mono${lim ? " lim" : ""}"${lim ? ' title="Férias vencem até mar/2027"' : ""}>${dataBR(x.limite)}</td></tr>`;
+        <td>${esc(x.ferias)}</td><td class="c mono">${dataBR(x.limite)}</td><td class="fe-c"></td></tr>`;
     });
     return h + "</tbody></table></div></section>";
-  }).join("");
+  }).join("") + verificar();
+}
+// podem ter direito: efetivos com 12 meses ou mais em que falta conferir a aposentadoria (60+) ou que não entraram
+// no levantamento do FAT. Não entram na fila até o RH confirmar
+function verificar() {
+  if (!F.verificar.length) return "";
+  let h = `<section class="papel"><h3>Podem ter direito<small>conferir antes · ${F.verificar.length} pessoas</small></h3>
+    <p class="nota">Efetivos com 12 meses ou mais que ainda não entram na fila: falta confirmar se são aposentados (60 anos ou mais) ou não constam no levantamento do FAT. Confirmado o direito, entram para fechar a necessidade.</p>
+    <div class="rolo"><table><thead><tr><th>Papel</th><th>Mat.</th><th>Nome</th><th>Função</th><th>Atividade</th><th>O que conferir</th>
+    <th class="c">Admissão</th><th class="c">Tempo</th><th class="n">Idade</th><th>Férias</th><th class="c">Limite férias</th></tr></thead><tbody>`;
+  F.verificar.forEach(x => {
+    h += `<tr><td>${x.papel === "motorista" ? "Motorista" : "Operador"}</td><td class="mono">${x.mat}</td><td class="nome">${esc(x.nome)}</td><td>${esc(x.funcao)}</td>
+      <td>${esc(x.ativ)}</td><td>${/Aposentadoria/.test(x.motivo) ? "Aposentadoria (60+)" : "Fora do levantamento"}</td><td class="c mono">${dataBR(x.adm)}</td>
+      <td class="c">${esc(x.tempo)}</td><td class="n">${x.idade == null ? "–" : x.idade}</td><td>${esc(x.ferias)}</td><td class="c mono">${dataBR(x.limite)}</td></tr>`;
+  });
+  return h + "</tbody></table></div></section>";
 }
 // marca as caixas e as linhas sem redesenhar a tabela (não perde a rolagem nem a busca)
 function marcaLinhas() {
@@ -168,6 +198,7 @@ function marcaLinhas() {
     tr.classList.toggle("vai", v);
     tr.querySelector("input").checked = v;
     tr.querySelector(".troca").hidden = v === SUG.has(x.mat);
+    tr.querySelector(".fe-c").innerHTML = feriasTag(x, v);
   });
 }
 function filtra() {
@@ -194,8 +225,8 @@ $("bSug").addEventListener("click", () => {
 });
 // os marcados, em colunas separadas por tabulação: colam direto no Excel
 $("bCopia").addEventListener("click", () => {
-  const linhas = [["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão"].join("\t")]
-    .concat(F.gente.filter(vai).map(x => [ROT[x.papel], x.mat, x.nome, x.funcao, x.ativ, x.ger, dataBR(x.adm)].join("\t")));
+  const linhas = [["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão", "Férias", "Limite férias", "Férias e FAT"].join("\t")]
+    .concat(F.gente.filter(vai).map(x => [ROT[x.papel], x.mat, x.nome, x.funcao, x.ativ, x.ger, dataBR(x.adm), x.ferias, dataBR(x.limite), FERIAS_VAI[x.faixa]].join("\t")));
   const txt = linhas.join("\n"), n = linhas.length - 1;
   const mostra = () => { const t = $("copia"); t.hidden = false; t.value = txt; t.focus(); t.select();
     $("aviso").textContent = `Não deu para copiar sozinho: selecione o texto abaixo (${n} pessoas) e copie.`; };

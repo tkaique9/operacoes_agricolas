@@ -19,7 +19,7 @@ Os turnos 24 h saem da 5x1, a 6x1 de dia vira 5x2 e o horário ADM com sábado v
 | `adm.py` → `adm.json` | Lê a planilha **ESCALA ADM** (`dados/adm/escala_adm.xlsx`, fora do git: tem nome e matrícula) e grava só as contagens por departamento e por central 24 h, que entram na aba ADM |
 | `rural.py` → `rural.json` | Lê a planilha **ESCALA RURAL** (`dados/rural/escala_rural.xlsx`, fora do git) e grava só as contagens por departamento (pela coluna Dpto, o agrupamento novo) e do grupo que roda 3 turnos, que entram na aba Rural |
 | `pessoal_frota.py` → `pessoal_frota.json` | Lê a planilha **Quadro motorista operador** (`dados/frota/quadro_motorista_operador.xlsx`, fora do git: tem nome, matrícula e CPF) e grava só quantos motoristas e operadores estão ativos, no total e por atividade |
-| `fat.py` → `fat.json` + `FAT_lista_nominal.html` | Lê a lista **validar fat** (`dados/fat/validar_fat.xlsx`, fora do git: tem nome, matrícula e idade) e grava em `fat.json` só a fila de quem tem direito ao FAT, com papel e atividade, para a aba FAT. A lista com nomes (`FAT_lista_nominal.html`, e a cópia em `build/` para a página privada do claude.ai) fica fora do git |
+| `fat.py` → `fat.json` + `FAT_lista_nominal.html` | Lê o **Painel FAT & Férias** do RH (`dados/fat/painel_fat_ferias.xlsx`, fora do git: tem nome, matrícula e idade) e grava em `fat.json` só a fila de quem tem direito ao FAT, com papel, atividade e mês do limite das férias, e as contagens dos que podem ter direito e dos contratos safra, para as páginas FAT. A lista com nomes (`FAT_lista_nominal.html`, e a cópia em `build/` para a página privada do claude.ai) fica fora do git |
 
 ### Operacional (frota 24 h)
 
@@ -70,20 +70,30 @@ a escala escolhida: 245 operadores e 139 motoristas, 207 sem atividade. Muitos a
 estão na lista da frota (ônibus, pipas, comboio, caminhões e tratores da irrigação, máquinas de herbicida) e aparecem
 como sem atividade; a lista por atividade abre em "Ativos por atividade".
 
-### FAT (aba 8)
+### FAT (páginas 8 e 9)
 
 Pedido de 28/10/2026: quem fica **sem atividade** na escala escolhida (os ativos do Quadro motorista operador menos o que
-a frota precisa, como no painel da frota) pode ir para o **FAT**. A lista *validar fat* traz os 237 com direito (efetivos,
-12 meses ou mais, não aposentados): 151 operadores e 86 motoristas. Vão os primeiros da fila de cada papel até a
+a frota precisa, como no painel da frota) pode ir para o **FAT**. A fonte é o **Painel FAT & Férias** do RH (27/10/2026):
+320 com direito (efetivos, 12 meses ou mais, não aposentados), 199 operadores e 121 motoristas. A primeira lista
+(*validar fat*, 237) deixava de fora os 83 com direito e férias vencidas. Vão os primeiros da fila de cada papel até a
 necessidade; a fila põe a **colheita primeiro** (trator transbordo, colhedora e caminhão canavieiro, que param na
 entressafra), depois as outras atividades, e dentro de cada grupo o **menor tempo de casa** primeiro. Com a escolhida dos
-dados: 83 operadores sem atividade, todos da colheita (dos 90 com direito nela, ficam os 7 mais antigos), e 124
-motoristas, mais que os 86 com direito: vão todos e 38 ficam sem atividade e sem direito. A aba acompanha a escolhida.
+dados: 83 operadores sem atividade, todos da colheita, e 124 motoristas, dos quais 121 têm direito e vão; os 3 que faltam
+podem sair dos 15 motoristas a conferir (60 anos ou mais com aposentadoria a verificar, ou fora do levantamento do FAT), e
+12 motoristas de contrato safra saem no fim da safra. A página acompanha a escolhida.
 
-A aba só tem números. Os nomes ficam na **lista nominal** (`FAT_lista_nominal.html`, gerada pelo `fat.py`, fora do git):
-a mesma fila, com caixa para marcar quem vai, a necessidade de cada papel editável, contador e "Copiar marcados" (cola no
-Excel). Na lista, a necessidade de partida é a da escolhida dos dados (`NEC_PADRAO` no `fat.py`); se a escolhida mudar,
-vale o número da aba FAT.
+**Férias e FAT** (página 9). O FAT suspende o contrato (CLT art. 476-A): o tempo parado não conta para as próximas
+férias, que andam para a frente o tanto que durar o FAT. As férias já adquiridas não congelam: têm de começar até o
+"Limite férias" do painel, e não dá para dar férias com o contrato suspenso. Por isso quem vai para o FAT com o limite
+antes de dez/2027 tira as férias na entressafra, antes de entrar: com a escolhida dos dados são 184 dos 204 (105 com o
+limite até mar/27 e 79 na safra de 2027); 17 vão direto. A página mostra isso por papel e mês a mês, junto com quem tem
+direito e fica trabalhando (também precisa tirar as férias fora da safra). Confirmar com o DP e o jurídico.
+
+As páginas só têm números. Os nomes ficam na **lista nominal** (`FAT_lista_nominal.html`, gerada pelo `fat.py`, fora do
+git; a cópia em `build/` é a página privada do claude.ai): a mesma fila, com caixa para marcar quem vai, a necessidade de
+cada papel editável, contador, o que fazer com as férias de cada um, a lista dos que podem ter direito e "Copiar
+marcados" (cola no Excel). Na lista, a necessidade de partida é a da escolhida dos dados (`NEC_PADRAO` no `fat.py`); se a
+escolhida mudar, vale o número da página FAT.
 
 ### ADM agrícola
 
