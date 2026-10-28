@@ -92,8 +92,9 @@ limite até mar/27 (144) entra no FAT sem tirar as férias e o limite cai durant
 fica parado durante o FAT, senão as férias vencem em dobro. A página 9 (Férias e FAT) mostra isso por papel e mês a mês.
 
 As páginas só têm números e um botão **Lista nominal**, que abre a página privada do claude.ai (só para quem tem acesso;
-o endereço, https://claude.ai/artifact/VYcCeLG9VKAHniU3EFaaLh, fica em `LISTA_PRIVADA`, no `fat.py`). Os nomes ficam na **lista nominal** (`FAT_lista_nominal.html`, gerada pelo `fat.py`, fora do
-git; a cópia em `build/` é a página privada do claude.ai): a mesma fila, com caixa para marcar quem vai (quem vence a segunda férias na safra fica sem caixa), a
+o endereço, https://claude.ai/artifact/VYcCeLG9VKAHniU3EFaaLh, fica em `LISTA_PRIVADA`, no `fat.py`). Os nomes ficam na **lista nominal** (`FAT_lista_nominal.html`, gerada pelo `fat.py`; desde 28/10/2026 está no
+repositório, que ficou privado, e o Render não a publica, ver `render-build.sh`; a cópia em `build/` é a página privada
+do claude.ai): a mesma fila, com caixa para marcar quem vai (quem vence a segunda férias na safra fica sem caixa), a
 necessidade de cada papel editável, contador, a situação das férias de cada um, a lista dos que podem ter direito e "Copiar
 marcados" (cola no Excel). Na lista, a necessidade de partida é a da escolhida dos dados (`NEC_PADRAO` no `fat.py`); se a
 escolhida mudar, vale o número da página FAT.

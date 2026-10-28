@@ -3,5 +3,5 @@ analise.json
 oficina.json
 Simulacao_Escalas_EC141_OUT2026.xlsx
 build/
-# lista nominal do FAT (nome e matrícula): fica na máquina
-FAT_lista_nominal.html
+# FAT_lista_nominal.html (nome e matrícula) entra no git desde 28/10/2026: o repositório ficou privado e o Render
+# não publica esse arquivo (render-build.sh). Se o repositório voltar a ser público, tirar o arquivo e o histórico

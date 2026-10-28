@@ -7,6 +7,8 @@ rm -rf public
 mkdir -p public/arquivo_rsc0819 public/escalas_out2026
 cp index.html public/
 cp arquivo_rsc0819/index.html public/arquivo_rsc0819/
+# só estas páginas: o Render é aberto ao público. A lista nominal do FAT (escalas_out2026/FAT_lista_nominal.html, com
+# nome e matrícula) fica só no repositório privado e não pode vir para public/
 cp escalas_out2026/Escalas_por_Departamento_OUT2026.html \
    escalas_out2026/Relatorio_Escalas_EC141_OUT2026.html \
    escalas_out2026/Relatorio_Escalas_EC141_OUT2026.pdf \
