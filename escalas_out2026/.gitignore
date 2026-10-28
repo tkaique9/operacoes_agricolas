@@ -3,3 +3,5 @@ analise.json
 oficina.json
 Simulacao_Escalas_EC141_OUT2026.xlsx
 build/
+# lista nominal do FAT (nome e matrícula): fica na máquina
+FAT_lista_nominal.html

@@ -1,0 +1,209 @@
+<title>Lista nominal do FAT</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="google" content="notranslate">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* lista de trabalho da gerência: faixa azul-marinho da CRV no alto, um cartão por papel
+   (necessidade × marcados) e a fila em tabela, colheita primeiro */
+:root {
+  --bg: #F4F6FA; --surface: #FFFFFF; --ink: #1C2433; --mut: #5A6072; --line: #D6DAE2; --zebra: #F8F9FC;
+  --navy: #12224A; --band-ink: #F4F6FA; --band-mut: #AEBBD8;
+  --gold: #A88516; --marc: #FDF2D3; --marc-line: #E9D48F;
+  --ok: #2E7D46; --ok-bg: #E2F1E6; --warn: #A6620A; --warn-bg: #FBEEDA; --bad: #C0392B; --bad-bg: #FAE1DD;
+  --f-ui: "Archivo", "Segoe UI", -apple-system, Helvetica, Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0A1330; --surface: #111C3D; --ink: #E8ECF5; --mut: #AEBBD8; --line: rgba(174,187,216,.22); --zebra: #14214A;
+  --navy: #1E3566; --band-ink: #F4F6FA; --band-mut: #AEBBD8;
+  --gold: #D9B43C; --marc: rgba(201,162,39,.16); --marc-line: rgba(201,162,39,.45);
+  --ok: #8FD3A6; --ok-bg: rgba(46,125,70,.22); --warn: #F5A35C; --warn-bg: rgba(166,98,10,.22); --bad: #F0897A; --bad-bg: rgba(192,57,43,.22);
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0A1330; --surface: #111C3D; --ink: #E8ECF5; --mut: #AEBBD8; --line: rgba(174,187,216,.22); --zebra: #14214A;
+  --navy: #1E3566; --band-ink: #F4F6FA; --band-mut: #AEBBD8;
+  --gold: #D9B43C; --marc: rgba(201,162,39,.16); --marc-line: rgba(201,162,39,.45);
+  --ok: #8FD3A6; --ok-bg: rgba(46,125,70,.22); --warn: #F5A35C; --warn-bg: rgba(166,98,10,.22); --bad: #F0897A; --bad-bg: rgba(192,57,43,.22);
+  color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 400 15px/1.45 var(--f-ui); }
+.faixa { background: var(--navy); color: var(--band-ink); }
+.lado { max-width: 1320px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.faixa .lado { padding-block: 22px 20px; display: grid; gap: 6px; }
+.olho { font: 500 12px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--band-mut); }
+h1 { margin: 0; font: 800 clamp(24px, 3.4vw, 34px)/1.1 var(--f-ui); letter-spacing: -.02em; text-wrap: balance; }
+.faixa p { margin: 0; color: var(--band-mut); max-width: 78ch; }
+.priv { display: inline-flex; gap: 6px; align-items: center; font: 600 12px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--navy); background: #E9D48F; border-radius: 3px; padding: 3px 8px; justify-self: start; }
+main.lado { padding-block: 18px 40px; display: grid; gap: 18px; }
+.cartoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.cartao { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
+.cartao h2 { margin: 0; font: 700 17px var(--f-ui); display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.cartao h2 small { font: 500 12.5px var(--f-mono); letter-spacing: .04em; color: var(--mut); }
+.nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.num label, .num .k { display: block; font: 500 11.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mut); }
+.num .v, .num input { font: 700 26px/1.15 var(--f-ui); font-variant-numeric: tabular-nums; color: var(--ink); }
+.num input { width: 100%; max-width: 110px; box-sizing: border-box; border: 1px solid var(--line); border-radius: 3px; background: var(--bg); padding: 2px 8px; }
+.num input:focus-visible, .busca input:focus-visible, button:focus-visible, td input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.pilula { justify-self: start; font: 600 13px var(--f-ui); border-radius: 999px; padding: 4px 12px; }
+.pilula.ok { color: var(--ok); background: var(--ok-bg); } .pilula.falta { color: var(--warn); background: var(--warn-bg); } .pilula.mais { color: var(--bad); background: var(--bad-bg); }
+.nota { margin: 0; color: var(--mut); font-size: 13.5px; }
+.barra { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.busca { flex: 1 1 260px; min-width: 0; }
+.busca input { width: 100%; box-sizing: border-box; font: 500 15px var(--f-ui); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 9px 12px; }
+button { font: 600 14px var(--f-ui); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 9px 14px; cursor: pointer; }
+button.pri { background: var(--navy); color: var(--band-ink); border-color: var(--navy); }
+button:hover { border-color: var(--gold); }
+.aviso { font: 500 13px var(--f-ui); color: var(--ok); }
+textarea.copia { width: 100%; box-sizing: border-box; min-height: 120px; font: 400 12.5px var(--f-mono); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 8px; }
+section.papel { display: grid; gap: 8px; min-width: 0; }
+section.papel h3 { margin: 0; font: 700 19px var(--f-ui); }
+section.papel h3 small { font: 500 13px var(--f-mono); color: var(--mut); margin-left: 8px; }
+.rolo { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+th { background: var(--navy); color: var(--band-ink); font: 600 12.5px var(--f-ui); text-align: left; padding: 8px 9px; white-space: nowrap; }
+td { padding: 6px 9px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td.nome { white-space: normal; min-width: 200px; font-weight: 600; }
+td.c, th.c { text-align: center; } td.n, th.n { text-align: right; }
+td.mono { font: 500 13px var(--f-mono); }
+tbody tr:nth-child(even) td { background: var(--zebra); }
+tr.grp td { background: var(--bg) !important; font: 600 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mut); padding-top: 12px; }
+tr.vai td { background: var(--marc) !important; }
+tr.vai td:first-child { box-shadow: inset 4px 0 0 var(--gold); }
+td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); cursor: pointer; }
+.troca { font: 600 11px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--warn); margin-left: 6px; }
+.lim { color: var(--bad); font-weight: 600; }
+@media (prefers-reduced-motion: no-preference) { tr td { transition: background-color .15s ease; } }
+</style>
+
+<div class="faixa" translate="no"><div class="lado">
+  <div class="olho">CRV Industrial · Escalas EC 141/2026 · FAT</div>
+  <h1>Quem vai para o FAT</h1>
+  <p id="sub"></p>
+  <span class="priv">Página privada · tem nome e matrícula</span>
+</div></div>
+
+<main class="lado" translate="no">
+  <div class="cartoes" id="cartoes"></div>
+  <p class="nota" id="criterio"></p>
+  <div class="barra">
+    <div class="busca"><input type="search" id="busca" placeholder="Buscar nome, matrícula, atividade ou gerência" aria-label="Buscar na lista"></div>
+    <button type="button" id="bSug">Voltar à sugestão</button>
+    <button type="button" class="pri" id="bCopia">Copiar marcados</button>
+    <span class="aviso" id="aviso" role="status"></span>
+  </div>
+  <textarea class="copia" id="copia" hidden readonly aria-label="Lista dos marcados para copiar"></textarea>
+  <div id="listas"></div>
+</main>
+
+<script>
+(function () {
+"use strict";
+document.documentElement.setAttribute("translate", "no"); document.documentElement.classList.add("notranslate");
+const F = /*FAT*/null;
+const PAP = ["operador", "motorista"], ROT = { operador: "Operadores", motorista: "Motoristas" };
+const GRUPO = { 1: "Colheita · param na entressafra", 2: "Demais atividades" };
+const CH_M = "fat.marcas", CH_N = "fat.nec";
+const ler = k => { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch (e) { return null; } };
+const grava = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dataBR = iso => iso ? iso.slice(8, 10) + "/" + iso.slice(5, 7) + "/" + iso.slice(0, 4) : "–";
+const $ = id => document.getElementById(id);
+
+let marcas = ler(CH_M) || {};                  // trocas sobre a sugestão: matrícula -> vai (true) ou fica (false)
+const nec = Object.assign({}, F.nec, ler(CH_N) || {});
+const dos = p => F.gente.filter(x => x.papel === p);
+// sugestão: os primeiros da fila de cada papel até completar a necessidade
+function sugeridos() {
+  const s = new Set();
+  PAP.forEach(p => dos(p).slice(0, Math.max(0, nec[p] | 0)).forEach(x => s.add(x.mat)));
+  return s;
+}
+let SUG = sugeridos();
+const vai = x => Object.prototype.hasOwnProperty.call(marcas, x.mat) ? marcas[x.mat] : SUG.has(x.mat);
+
+$("sub").textContent = `Lista ${F.fonte}: ${F.gente.length} motoristas e operadores com direito ao FAT (efetivos, 12 meses ou mais, não aposentados). A necessidade é quem fica sem atividade na escala escolhida, como na aba FAT do estudo de escalas.`;
+$("criterio").textContent = `Sugestão: ${F.criterio}. Marque ou desmarque para trocar; a escolha fica guardada neste navegador.`;
+
+function cartoes() {
+  $("cartoes").innerHTML = PAP.map(p => {
+    // alvo: a necessidade, ou todos os com direito quando ela passa deles
+    const g = dos(p), m = g.filter(vai).length, n = Math.max(0, nec[p] | 0), alvo = Math.min(n, g.length);
+    const st = m === alvo ? ["ok", n > g.length ? "Todos os com direito vão" : "Fecha a necessidade"]
+      : m < alvo ? ["falta", `Faltam ${alvo - m}`] : ["mais", `${m - alvo} a mais que a necessidade`];
+    const semDir = n > g.length ? `<p class="nota">Só ${g.length} têm direito: ${n - g.length} ficam sem atividade e sem direito ao FAT.</p>` : "";
+    return `<div class="cartao"><h2>${ROT[p]}<small>${g.length} com direito</small></h2>
+      <div class="nums"><div class="num"><label for="nec-${p}">Necessidade</label><input id="nec-${p}" type="number" min="0" step="1" inputmode="numeric" value="${n}" data-p="${p}"></div>
+      <div class="num"><span class="k">Marcados</span><span class="v">${m}</span></div>
+      <div class="num"><span class="k">Com direito ficam</span><span class="v">${g.length - m}</span></div></div>
+      <span class="pilula ${st[0]}">${st[1]}</span>${semDir}</div>`;
+  }).join("");
+}
+function listas() {
+  $("listas").innerHTML = PAP.map(p => {
+    const g = dos(p);
+    let h = `<section class="papel"><h3>${ROT[p]}<small>fila do FAT · ${g.length} com direito</small></h3><div class="rolo"><table><thead><tr>
+      <th class="c">Vai</th><th class="n">Fila</th><th>Mat.</th><th>Nome</th><th>Função</th><th>Atividade</th><th>Gerência</th>
+      <th class="c">Admissão</th><th class="c">Tempo</th><th class="n">Idade</th><th class="c">Limite férias</th></tr></thead><tbody>`;
+    let grupo = 0;
+    g.forEach((x, i) => {
+      if (x.grupo !== grupo) { grupo = x.grupo; h += `<tr class="grp"><td colspan="11">${GRUPO[grupo]} · ${g.filter(y => y.grupo === grupo).length}</td></tr>`; }
+      const busca = `${x.mat} ${x.nome} ${x.ativ} ${x.ger} ${x.funcao}`.toLowerCase();
+      const lim = x.limite && x.limite <= "2027-03-31";
+      h += `<tr data-mat="${x.mat}" data-b="${esc(busca)}"><td class="c"><input type="checkbox" aria-label="${esc(x.nome)} vai para o FAT" data-mat="${x.mat}"></td>
+        <td class="n mono">${i + 1}</td><td class="mono">${x.mat}</td><td class="nome">${esc(x.nome)}<span class="troca" hidden>trocado</span></td>
+        <td>${esc(x.funcao)}</td><td>${esc(x.ativ)}</td><td>${esc(x.ger)}</td><td class="c mono">${dataBR(x.adm)}</td>
+        <td class="c">${esc(x.tempo)}</td><td class="n">${x.idade == null ? "–" : x.idade}</td>
+        <td class="c mono${lim ? " lim" : ""}"${lim ? ' title="Férias vencem até mar/2027"' : ""}>${dataBR(x.limite)}</td></tr>`;
+    });
+    return h + "</tbody></table></div></section>";
+  }).join("");
+}
+// marca as caixas e as linhas sem redesenhar a tabela (não perde a rolagem nem a busca)
+function marcaLinhas() {
+  F.gente.forEach(x => {
+    const tr = document.querySelector(`tr[data-mat="${x.mat}"]`); if (!tr) return;
+    const v = vai(x);
+    tr.classList.toggle("vai", v);
+    tr.querySelector("input").checked = v;
+    tr.querySelector(".troca").hidden = v === SUG.has(x.mat);
+  });
+}
+function filtra() {
+  const q = $("busca").value.trim().toLowerCase();
+  document.querySelectorAll("tr[data-b]").forEach(tr => { tr.hidden = !!q && tr.dataset.b.indexOf(q) < 0; });
+}
+
+$("listas").addEventListener("change", e => {
+  const c = e.target.closest("input[data-mat]"); if (!c) return;
+  const mat = +c.dataset.mat;
+  if (c.checked === SUG.has(mat)) delete marcas[mat]; else marcas[mat] = c.checked;
+  grava(CH_M, marcas); marcaLinhas(); cartoes();
+});
+$("cartoes").addEventListener("change", e => {
+  const i = e.target.closest("input[data-p]"); if (!i) return;
+  nec[i.dataset.p] = Math.max(0, parseInt(i.value, 10) || 0);
+  grava(CH_N, nec); SUG = sugeridos(); marcaLinhas(); cartoes();
+  const o = $("nec-" + i.dataset.p); if (o) o.focus();
+});
+$("busca").addEventListener("input", filtra);
+$("bSug").addEventListener("click", () => {
+  marcas = {}; Object.assign(nec, F.nec); grava(CH_M, marcas); grava(CH_N, nec);
+  SUG = sugeridos(); marcaLinhas(); cartoes(); $("aviso").textContent = "Voltou à sugestão.";
+});
+// os marcados, em colunas separadas por tabulação: colam direto no Excel
+$("bCopia").addEventListener("click", () => {
+  const linhas = [["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão"].join("\t")]
+    .concat(F.gente.filter(vai).map(x => [ROT[x.papel], x.mat, x.nome, x.funcao, x.ativ, x.ger, dataBR(x.adm)].join("\t")));
+  const txt = linhas.join("\n"), n = linhas.length - 1;
+  const mostra = () => { const t = $("copia"); t.hidden = false; t.value = txt; t.focus(); t.select();
+    $("aviso").textContent = `Não deu para copiar sozinho: selecione o texto abaixo (${n} pessoas) e copie.`; };
+  try {
+    navigator.clipboard.writeText(txt).then(() => { $("copia").hidden = true; $("aviso").textContent = `${n} pessoas copiadas: cole no Excel.`; }, mostra);
+  } catch (e) { mostra(); }
+});
+
+cartoes(); listas(); marcaLinhas();
+})();
+</script>
