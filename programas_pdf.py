@@ -297,7 +297,9 @@ def ler(path):
                 alvo.append(r)
             elif t.startswith("TOTAL"):
                 alvo.append(linha_total(lay, ws, "tot"))
-            elif any(re.fullmatch(r"9\d{3}", w[4]) for w in ws[:3]) and any(NUM.match(w[4]) for w in ws):
+            # fazenda: a linha começa pela região (número ou erro de fórmula #N/D); a observação de rodapé
+            # que cita fazendas ("Região 2: 9341 Vitória (104,58) ... foram colhidas e devolvidas") não entra
+            elif re.fullmatch(r"\d+|#\S*", ws[0][4]) and any(re.fullmatch(r"9\d{3}", w[4]) for w in ws[:3])                     and any(NUM.match(w[4]) for w in ws):
                 alvo.append(linha_fazenda(lay, ws, blocos))
     # região com erro de fórmula da planilha (#N/D, #REF!...): vale a da fazenda de cima
     # no mesmo quadro (ex.: a 9849 São João, no meio das áreas Cargill)
