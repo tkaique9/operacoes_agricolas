@@ -2,7 +2,7 @@
 
 python fat.py  ->  fat.json                    (sem nomes: a fila com papel, atividade e mês do limite das férias,
                                                 para a página FAT do estudo)
-               ->  FAT_lista_nominal.html      (com nome e matrícula: no repositório, que é privado; o Render não publica)
+               ->  FAT_lista_nominal.html      (com nome e matrícula: fica só na máquina, no .gitignore)
                ->  build/fat_nominal_artifact.html  (a mesma lista no formato da página privada do claude.ai)
 
 Fonte: o painel "CRV_Painel_FAT_Ferias" do RH (dados/fat/painel_fat_ferias.xlsx, aba Todos; fora do git: tem nome,
