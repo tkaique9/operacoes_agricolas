@@ -330,6 +330,26 @@ DIREITA = [("equip", 423), ("metaUnid", 461), ("metaDia", 492), ("realDia", 524)
 NAO_ATIVIDADE = ("PESSOAS DIA", "RENDIMENTO", "OBSERVACAO", "ATIVIDADE", "PAGINA")
 
 
+def colunas_do_cabecalho(ws):
+    """Borda direita de cada coluna do quadro de meta pelo cabeçalho do bloco ("N° Equipamentos/Pessoas |
+    Equipamentos/Pessoa | Meta Dia | Realizado Dia | Δ% | Meta Semana | ..."), na ordem de DIREITA. Sem achar
+    todas, devolve None (vale DIREITA)."""
+    pal = [(sem_acento(w[4]), w[2]) for w in ws]
+    achou = {}
+    eq = [x for p, x in pal if p.startswith("EQUIPAMENTOS/PESSO")]
+    dia = [x for p, x in pal if p == "DIA"]
+    sem = [x for p, x in pal if p == "SEMANA"]
+    mes = [x for p, x in pal if p == "MES"]
+    var = [x for p, x in pal if p.endswith("%")]
+    ant = [x for p, x in pal if p == "ANTERIOR"]
+    if len(eq) < 2 or len(dia) < 2 or len(sem) < 2 or len(mes) < 2 or len(var) < 4 or not ant:
+        return None
+    achou = {"equip": eq[0], "metaUnid": eq[1], "metaDia": dia[0], "realDia": dia[1], "_vDia": var[0],
+             "metaSemana": sem[0], "realSemana": sem[1], "_vSem": var[1], "metaMes": mes[0], "realMes": mes[1],
+             "_vMes": var[2], "mesAnt": ant[0], "_vAnt": var[3]}
+    return [(k, achou[k]) for k, _x in DIREITA]
+
+
 def ler_semana(path):
     import datetime
     import pymupdf
@@ -345,8 +365,14 @@ def ler_semana(path):
     datas = []          # (centro x, data iso) das colunas de dia do bloco corrente
     frente = None
     ativs, atual = [], None
+    direita = DIREITA
     for _y, ws in linhas:
         t = sem_acento(texto(ws))
+        # a impressão muda de lugar de uma semana para outra (03/11/2026: o quadro de meta andou ~20 pt para a
+        # direita): a borda de cada coluna sai do cabeçalho do bloco, quando ele está na linha
+        if "EQUIPAMENTOS/PESSOAS" in t:
+            direita = colunas_do_cabecalho(ws) or DIREITA
+            continue
         dd = [w for w in ws if re.fullmatch(r"\d{2}/\d{2}", w[4]) and 150 < w[0] < 380]
         if len(dd) >= 5:
             datas = [((w[0] + w[2]) / 2, f"{ano}-{w[4][3:5]}-{w[4][:2]}") for w in dd]
@@ -368,7 +394,7 @@ def ler_semana(path):
                     dias[d] = num(w[4])
             elif cx >= 380:
                 ref = w[2] if w[4] != "-" else cx
-                k, x = min(DIREITA, key=lambda a: abs(a[1] - ref))
+                k, x = min(direita, key=lambda a: abs(a[1] - ref))
                 if abs(x - ref) <= 14 and not k.startswith("_") and w[4] != "-":
                     quadro[k] = num(w[4])
         tn = sem_acento(nome)

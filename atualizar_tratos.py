@@ -15,7 +15,7 @@ Grava window.TRATOS entre os marcadores DADOS-INICIO e DADOS-FIM do index.html;
 todo o resto (totais, percentuais, gráficos) é calculado no navegador.
 Precisa de: pip install openpyxl pyxlsb
 """
-import datetime, glob, json, os, re, sys
+import calendar, datetime, glob, json, os, re, sys
 import openpyxl
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -78,7 +78,9 @@ NAO_PLANEJADAS = {"Roço"}
 # frente), mas que entram no relatório: o realizado da semana é a soma dos dias. Nome da
 # planilha → (nome no relatório, atividade de baixo da qual a linha aparece). A bordadura
 # (3ª molécula) do Uniport próprio entrou em 27/10/2026.
-SOMA_DIAS = {"Uniport Próprio - Terceira Molécula": ("Uniport Próprio - Terceira Molécula (Bordadura)", "Uniport Próprio")}
+# O Uniport Pingente Inseticida entrou do mesmo jeito em 03/11/2026 (426,26 ha na semana de 26 a 31/10).
+SOMA_DIAS = {"Uniport Próprio - Terceira Molécula": ("Uniport Próprio - Terceira Molécula (Bordadura)", "Uniport Próprio"),
+             "Uniport Pingente Inseticida": ("Uniport Pingente Inseticida", "Uniport Pingente-Terceiro")}
 
 
 def marca_nao_planejada(a):
@@ -807,10 +809,13 @@ def grava(dados):
     open(HTML, "w", encoding="utf-8", newline="\n").write(novo)
 
 
-def _linha_do_pdf(a, r, s, dias, dia_ref, ym, ym_ant):
+def _linha_do_pdf(a, r, s, dias, dia_ref, ym, ym_ant, virou=False):
     """Números de uma atividade pela linha dela na página 1 do PDF: realizado por dia,
     pessoas, quadro de meta e realizado do mês. As correções de meta (META_EQUIP, EQUIP,
     META_PESSOA, SEM_META_DIAS, NAO_PLANEJADAS) valem de novo sobre os números da planilha.
+    virou: a planilha já está no mês seguinte ao do DIA REF (atualizada em 03/11 com a semana
+    até 31/10): o "mês" dela é o novo, o "mês anterior" é o do DIA REF e a meta do mês dela é a
+    do mês novo; a do mês do DIA REF sai da meta do dia × dias de segunda a sábado.
     Devolve o que foi para o dia não impresso (domingo), ou 0."""
     novo = [r["dias"].get(d) for d in dias]
     # a impressão esconde o domingo trabalhado, mas a planilha soma: o que faltar
@@ -838,6 +843,10 @@ def _linha_do_pdf(a, r, s, dias, dia_ref, ym, ym_ant):
             a[k] *= fator
     for k in ("equip", "metaUnid", "metaDia", "metaSemana", "metaMes"):
         a[k] = r2(a[k])
+    if virou:
+        y, m = int(ym[:4]), int(ym[5:])
+        uteis = sum(1 for k in range(1, calendar.monthrange(y, m)[1] + 1) if datetime.date(y, m, k).weekday() != 6)
+        a["metaMes"] = r2(a["metaDia"] * uteis)
     ajusta_dias_sem_meta(a, dias, dia_ref)
     if a["pessoas"]:
         a["pessoasPlan"] = r2(r.get("pessoasPlan")) or a["equip"]
@@ -849,9 +858,12 @@ def _linha_do_pdf(a, r, s, dias, dia_ref, ym, ym_ant):
     else:
         a["pessoasPlan"] = a["metaPessoa"] = None
     marca_nao_planejada(a)
-    a["mes"][ym] = r2(r.get("realMes") or 0.0)
-    if r.get("mesAnt") is not None:
-        a["mes"][ym_ant] = r2(r["mesAnt"])
+    if virou:
+        a["mes"][ym] = r2(r.get("mesAnt") or 0.0)
+    else:
+        a["mes"][ym] = r2(r.get("realMes") or 0.0)
+        if r.get("mesAnt") is not None:
+            a["mes"][ym_ant] = r2(r["mesAnt"])
     return domingo
 
 
@@ -906,6 +918,9 @@ def semana_do_pdf(dados, pdf):
     ym = s["diaRef"][:7]
     y, m = int(ym[:4]), int(ym[5:])
     ym_ant = f"{y if m > 1 else y - 1}-{(m - 1 or 12):02d}"
+    virou = bool(s["atualizacao"]) and s["atualizacao"][:7] > ym
+    if virou:
+        print(f"  a planilha já está em {s['atualizacao'][:7]}: o mês anterior dela é o realizado de {ym}")
     if ym not in sem["meses"]:
         sem["meses"].append(ym)
     for fr in dados["frentes"]:
@@ -925,7 +940,7 @@ def semana_do_pdf(dados, pdf):
             if not r:
                 continue
             usados.add(a["nome"])
-            dom = _linha_do_pdf(a, r, s, dias, ref, ym, ym_ant)
+            dom = _linha_do_pdf(a, r, s, dias, ref, ym, ym_ant, virou)
             if dom:
                 domingos.append(f"{a['nome']} {dom}")
     # atividade que a apresentação ainda não tem: entra se a planilha conta o realizado
@@ -943,7 +958,7 @@ def semana_do_pdf(dados, pdf):
         a = {"nome": r["nome"], "linha": None, "equip": None, "metaUnid": None, "metaDia": 0.0, "metaSemana": 0.0,
              "metaMes": 0.0, "dias": [None] * len(dias), "ant": [None] * len(dias), "pessoas": None,
              "pessoasPlan": None, "metaPessoa": None, "mes": {mm: 0 for mm in sem["meses"]}}
-        dom = _linha_do_pdf(a, r, s, dias, ref, ym, ym_ant)
+        dom = _linha_do_pdf(a, r, s, dias, ref, ym, ym_ant, virou)
         if dom:
             domingos.append(f"{a['nome']} {dom}")
         abaixo = next((v[1] for v in SOMA_DIAS.values() if v[0] == r["nome"]), None)
