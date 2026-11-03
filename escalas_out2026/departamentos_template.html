@@ -634,7 +634,7 @@ body.maxi-on .deck { z-index: 150; }
         <button type="button" class="btn" id="bHoje">Voltar ao inicial</button>
       </div>
       <div class="rolo"><table class="tb mx" id="tab"></table></div>
-      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><b style="color:var(--red)">4x2 de 12 h</b>: risco alto (CLT urbano, noite com hora reduzida)</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
+      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><b style="color:var(--red)">4x2 de 12 h</b>: risco alto (CLT urbano, noite com hora reduzida) · <b style="color:var(--red)">2x1 de 12 h</b>: fora da lei (51h20 por semana), só para comparar</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
     </div>
   </article>
 
@@ -677,7 +677,7 @@ body.maxi-on .deck { z-index: 150; }
         <button type="button" class="btn" id="bHojeOp">Voltar ao inicial</button>
       </div>
       <div class="rolo"><table class="tb mx" id="tabOm"></table></div>
-      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><b style="color:var(--red)">4x2 de 12 h</b>: risco alto (CLT urbano, noite com hora reduzida)</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
+      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><b style="color:var(--red)">4x2 de 12 h</b>: risco alto (CLT urbano, noite com hora reduzida) · <b style="color:var(--red)">2x1 de 12 h</b>: fora da lei (51h20 por semana), só para comparar</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
     </div>
   </article>
 
@@ -756,7 +756,7 @@ const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const ESC = Object.fromEntries(D.escalas.map(e => [e.id, e]));
 const IDS = D.escalas.map(e => e.id);
 const TURNOS = ["Manhã", "Tarde", "Noite"];
-const ORD = { "Baixo": 0, "Médio": 1, "Alto": 2, "Não serve": 9 };
+const ORD = { "Baixo": 0, "Médio": 1, "Alto": 2, "Fora da lei": 3, "Não serve": 9 };
 const S = { vol: false, adm: false, inc12: false, uma: false, folga: "separada", P: {}, esc: {}, nt: {}, fr: {} };
 // grade em uso: na 5x2 a folga pode ser separada ou junta (a conta de gente é a mesma)
 const gr = e => e.folgas ? e.folgas[S.folga] : e;
@@ -887,11 +887,11 @@ function totaisOp(escolha) {
   const N = Math.ceil(need - 1e-9), H = Math.ceil(hoje - 1e-9);
   return { contr: Math.max(0, N - H), sobra: Math.max(0, H - N), need: N, hoje: H, risco };
 }
-const COR = { "5x2": "#12224A", "4x2": "#5D78B4", "12x36": "#C9A227", "3x3": "#8A6D14", "4x2_12": "#C0392B" };
+const COR = { "5x2": "#12224A", "4x2": "#5D78B4", "12x36": "#C9A227", "3x3": "#8A6D14", "4x2_12": "#C0392B", "2x1_12": "#6B1F3A" };
 const DIA = D.dia.filter(x => !x.parte).reduce((a, x) => a + x.n, 0);
 const HOJE = D.deps.reduce((a, d) => a + d.n, 0) + D.dia.filter(x => !x.parte).reduce((a, x) => a + x.n, 0);
 const classe = c => c <= 0 ? "ok" : c <= 2 ? "med" : "bad";
-const pill = r => `<span class="pill ${r === "Não serve" || r === "Alto" ? "ns" : r}">${r}</span>`;
+const pill = r => `<span class="pill ${r === "Não serve" || r === "Alto" || r === "Fora da lei" ? "ns" : r}">${r}</span>`;
 const th = cols => "<thead><tr>" + cols.map(([t, a]) => `<th class="${a || ""}">${t}</th>`).join("") + "</tr></thead>";
 const mostra = r => r.c > 0 ? sinal(r.c) : r.sobra ? "−" + r.sobra : "0";
 const mostraX = (d, r) => d.tipo === "eq" ? (Math.abs(r.c) < 0.05 ? "0" : sinal1(r.c)) : mostra(r);
@@ -994,7 +994,7 @@ function grafQ(svg, base, itensEsc, escolhida) {
 }
 function grafPainel(svg) {
   const atual = totais(d => S.esc[d.dep]), gs = grupos();
-  const itens = IDS.map(id => { const t = totais(() => id); return { id, v: t.quadro, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.quadro - HOJE, al: ESC[id].risco === "Alto" }; });
+  const itens = IDS.map(id => { const t = totais(() => id); return { id, v: t.quadro, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.quadro - HOJE, al: ["Alto", "Fora da lei"].includes(ESC[id].risco) }; });
   grafQ(svg, { v: HOJE, sub: "5x1 / 6x1" }, itens, { v: atual.quadro, sub: "POR DEPARTAMENTO", seg: [{ v: DIA, cor: "#DCE1EA" }, ...gs.map(g => ({ v: g.fica, cor: COR[g.id] }))],
     leg: [...[...gs].reverse().map(gr => [COR[gr.id], `${ESC[gr.id].curto} · ${gr.deps.length}`]), ["#DCE1EA", `sem turno · ${D.dia.filter(z => !z.parte).length}`]] });
 }
@@ -1055,7 +1055,7 @@ function painelOp() {
   chipsOp("#opChips");
   resumoOp();
   const a = totaisOp(d => S.esc[d.dep]), gs = gruposOp(), nq = OP.reduce((x, d) => x + d.qtd, 0);
-  const itens = IDS.map(id => { const t = totaisOp(() => id); return { id, v: t.need, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.need - a.hoje, al: ESC[id].risco === "Alto" }; });
+  const itens = IDS.map(id => { const t = totaisOp(() => id); return { id, v: t.need, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: t.need - a.hoje, al: ["Alto", "Fora da lei"].includes(ESC[id].risco) }; });
   grafQ($("#gOp"), { v: a.hoje, sub: "5X1" }, itens, { v: a.need, sub: "POR EQUIPAMENTO", seg: gs.map(g => ({ v: g.need, cor: COR[g.id] })), leg: [...gs].reverse().map(gr => [COR[gr.id], `${ESC[gr.id].curto} · ${gr.deps.length} tipos`]) });
   let h = "";
   gs.forEach(gr => {
@@ -1157,7 +1157,7 @@ function slidesArea(a) {
         <button type="button" class="btn" id="${a.k}Hoje">Voltar ao inicial</button>
       </div>
       <div class="rolo"><table class="tb mx" id="${a.k}Matriz"></table></div>
-      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><b style="color:var(--red)">4x2 de 12 h</b>: risco alto (CLT urbano, noite com hora reduzida)</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
+      <div class="leg"><span><i style="background:var(--ok)"></i>fecha sem contratar</span><span><i style="background:var(--med)"></i>contratar 1 ou 2</span><span><i style="background:var(--bad)"></i>contratar 3 ou mais</span><span><b style="color:var(--red)">4x2 de 12 h</b>: risco alto (CLT urbano, noite com hora reduzida) · <b style="color:var(--red)">2x1 de 12 h</b>: fora da lei (51h20 por semana), só para comparar</span><span><b style="color:var(--gold)">★</b> sugerida · contorno azul: escolhida</span></div>
     </div>
   </article>`;
 }
@@ -1197,7 +1197,7 @@ const qtdGrupos = a => `${a.itens.length} ${a.itens.length === 1 ? a.grupo : a.g
 function painelArea(a) {
   chipsArea(a, "PChips");
   const t = totaisArea(a, d => S.esc[d.dep]), gs = gruposArea(a), hojes = [...new Set(a.itens.map(d => d.hoje))].join(" e ");
-  const itens = IDS.map(id => { const x = totaisArea(a, () => id); return { id, v: x.quadro, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: x.quadro - a.dados.n, al: ESC[id].risco === "Alto" }; });
+  const itens = IDS.map(id => { const x = totaisArea(a, () => id); return { id, v: x.quadro, lab: ESC[id].curto, sub: ESC[id].risco.toUpperCase(), cor: COR[id], d: x.quadro - a.dados.n, al: ["Alto", "Fora da lei"].includes(ESC[id].risco) }; });
   grafQ($a(a, "Graf"), { v: a.dados.n, sub: a.dados.hoje_txt || "hoje" }, itens, { v: t.quadro, sub: `POR ${a.grupo.toUpperCase()}`, seg: [{ v: a.dia, cor: "#DCE1EA" }, ...gs.map(g => ({ v: g.fica, cor: COR[g.id] }))],
     leg: [...[...gs].reverse().map(g => [COR[g.id], `${ESC[g.id].curto} · ${g.deps.length}`]), ["#DCE1EA", `5x2 de dia · ${a.dia}`]] });
   let h = `<tr class="g"><td colspan="3"><i style="background:#C9A227"></i>${esc(a.Grupos)}<small>${qtdGrupos(a)} · ${a.n24} pessoas · hoje em ${hojes}</small></td></tr>`;
@@ -1348,7 +1348,7 @@ function escalas() {
     const big = e.semEq ? `<div class="big um"><div><b class="dt">15/12/2026</b><span>deixa de valer com a EC 141</span></div></div>`
       : hoje ? `<div class="big dois"><div><b>${f1(PPP(e))}</b><span>pessoas por<br>equipamento 24 h</span></div><div><b class="dt">15/12/2026</b><span>deixa de valer<br>com a EC 141</span></div></div>`
       : `<div class="big tres"><div><b>${f1(PPP(e))}</b><span>pessoas por<br>equipamento 24 h</span></div><div><b class="${totais(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totais(() => e.id).contr)}</b><span>oficina<br>em todos</span></div><div><b class="${totaisOp(() => e.id).contr > 0 ? "pos" : ""}">${sinal(totaisOp(() => e.id).contr - totaisOp(() => e.id).sobra)}</b><span>frota<br>líquido</span></div></div>`;
-    return `<div class="esc${hoje ? " hoje" : e.risco === "Alto" ? " nserve" : ""}"><div><h4>${esc(e.nome)}</h4>${hoje ? '<span class="pill Hoje">Hoje</span>' : pill(e.risco)}</div><div class="hr">${esc(e.horario)}</div>${!hoje && e.folgas ? togFolga() : ""}
+    return `<div class="esc${hoje ? " hoje" : e.risco === "Alto" || e.risco === "Fora da lei" ? " nserve" : ""}"><div><h4>${esc(e.nome)}</h4>${hoje ? '<span class="pill Hoje">Hoje</span>' : pill(e.risco)}</div><div class="hr">${esc(e.horario)}</div>${!hoje && e.folgas ? togFolga() : ""}
       ${big}${p5}
       <dl><dt>Horas por semana</dt><dd>${hm(e.h_sem - e.he_sem)}${e.he_sem ? " + " + hm(e.he_sem) : ""}</dd><dt>Folgas por semana</dt><dd>${fmt(e.folgas_sem, 2)}${e.folgas ? (S.folga === "separada" ? " separadas" : " juntas") : ""}</dd><dt>Domingos de folga</dt><dd>${e.domTxt || `${v.dom} a cada ${v.sem} sem.`}</dd><dt>Máx. dias seguidos</dt><dd>${v.seq}</dd><dt>Turmas</dt><dd>${g.length}</dd></dl>
       <div style="overflow-x:auto">${mini}</div><div class="nt">${esc(e.nota)}</div></div>`;
@@ -1703,7 +1703,7 @@ $("#impEsc").addEventListener("click", abreSel);
 /* ---------- liga tudo ---------- */
 /* ---------- resumo para a diretoria: como fica o quadro ----------
    uma coluna por área (oficina, frota, ADM, rural) com a escala e as pessoas de cada departamento, hoje e com a escala */
-const ESC_CURTO = { "5x2": "5x2 rot.", "4x2": "4x2 8 h", "12x36": "12x36", "3x3": "3x3", "4x2_12": "4x2 12 h" };
+const ESC_CURTO = { "5x2": "5x2 rot.", "4x2": "4x2 8 h", "12x36": "12x36", "3x3": "3x3", "4x2_12": "4x2 12 h", "2x1_12": "2x1 12 h" };
 const pctTxt = (v, base) => base && Math.abs(v) > 0.05 ? `${v > 0 ? "+" : "−"}${fmt(Math.abs(v) / base * 100, 1)}%` : "";
 const etq = id => id === "dia" ? `<span class="et" style="background:#8A93A6">5x2 dia</span>` : id === "adm" ? `<span class="et" style="background:#8A93A6">ADM 5x2</span>`
   : `<span class="et" style="background:${COR[id]}${id === "12x36" ? ";color:#12224A" : ""}">${ESC_CURTO[id] || ESC[id].curto}</span>`;

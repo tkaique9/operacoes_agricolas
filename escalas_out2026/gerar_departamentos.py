@@ -27,11 +27,15 @@ NOTA_OF = {
     "4x2_12": "Risco alto: oficina e frota são CLT urbano e, com a hora noturna reduzida, a noite de 12 h passa de 10 h "
               "contadas (8 h + 2 h extras é o teto). Só vale com norma coletiva que troque a hora reduzida por adicional maior, "
               "com a prorrogação de 2 h e a licença em atividade insalubre.",
+    "2x1_12": "Fora da lei: 2 plantões de 12 h e 1 folga dão 51h20 por semana (37h20 + 14h extras) e 3 h extras por plantão, "
+              "acima do teto de 2 h por dia (CLT art. 59) e das 42 h da EC 141. Fica só para comparar: 3 pessoas por posto "
+              "24 h, como a 4x2 de 12 h; nunca entra na sugerida.",
 }
 ROTULOS_GRADE = {
     "5x2": [f"Turma {x}" for x in "ABCDEFG"], "4x2": [f"Turma {x}" for x in "ABC"],
     "12x36": ["A · dia", "B · dia", "C · noite", "D · noite"], "3x3": ["A · dia", "B · dia", "C · noite", "D · noite"],
     "4x2_12": ["A · dia", "B · dia", "C · dia", "D · noite", "E · noite", "F · noite"],
+    "2x1_12": ["A · dia", "B · dia", "C · dia", "D · noite", "E · noite", "F · noite"],
 }
 NOMES = {  # nomes como a diretoria lê (a planilha vem sem acento)
     "102.001.001": "Gerência da Oficina", "102.001.011": "Planejamento e Controle de Manutenção",
@@ -104,8 +108,8 @@ def dados():
     cen = {c["id"]: c for c in A["cenarios"]}
     escalas = []
     for cid in oficina.SUGS:
-        c = cen[cid]
-        g = A["modelo_" + cid]["grade"]
+        c = cen.get(cid) or analise.CEN_DEP[cid]   # a 2x1 de 12 h não está no analise.json
+        g = A["modelo_" + cid]["grade"] if "modelo_" + cid in A else analise.MODELOS_DEP[cid]()
         e = {"id": cid, "nome": c["nome"], "curto": c["curto"], "turnos": c["turnos"], "trab": c["trab"],
              "ciclo": c["ciclo"], "h_sem": c["h_sem"], "he_sem": c["he_sem"], "folgas_sem": c["folgas_sem"],
              "horario": c["horario"], "risco": oficina.RISCO_OF[cid], "nota": NOTA_OF[cid], "rotulos": ROTULOS_GRADE[cid]}

@@ -159,7 +159,14 @@ CENARIOS = [
      "horario": "Igual à 4x2 de 12 h, com 1 rendicionista para cada 5 frotas cobrindo os intervalos",
      "obs": "Máquina roda 24 h; rendicionista também em 4x2 de 12 h"},
 ]
-for c in CENARIOS:
+# escalas que só entram na página por departamento (o relatório geral fica com as de cima)
+CENARIOS_DEP = [
+    {"id": "2x1_12", "nome": "2x1 · 2 turnos de 12 h", "curto": "2x1 de 12 h", "turnos": 2, "trab": 2, "ciclo": 3,
+     "h_trab": 11.0, "he_dia": 3.0, "turmas": 3, "parada": 2.0, "risco": "Fora da lei",
+     "horario": "07:00–19:00 e 19:00–07:00, 1 h de intervalo (11 h de trabalho)",
+     "obs": "2 plantões de 12 h e 1 folga: 51h20 por semana, 3 h extras por plantão"},
+]
+for c in CENARIOS + CENARIOS_DEP:
     c.setdefault("he_dia", 0.0)
     c.setdefault("rend", 0.0)
     c["fator"] = c["ciclo"] / c["trab"]
@@ -171,6 +178,7 @@ for c in CENARIOS:
     c["folgas_sem"] = 7 * (c["ciclo"] - c["trab"]) / c["ciclo"]
 BASE = CENARIOS[0]["pessoas_posto"]
 CEN = {c["id"]: c for c in CENARIOS}
+CEN_DEP = {c["id"]: c for c in CENARIOS + CENARIOS_DEP}
 
 
 def necessidade(c, p24, parc):
@@ -234,6 +242,14 @@ def modelo_12x36():
 def modelo_3x3():
     """A e B de dia, C e D de noite: 3 plantões e 3 folgas."""
     return [["T" if (d + 3 * (t % 2)) % 6 < 3 else "F" for d in range(42)] for t in range(4)]
+
+
+def modelo_2x1_12():
+    """A, B e C de dia; D, E e F de noite: 2 plantões e 1 folga, 2 de 3 turmas por dia."""
+    return [["T" if (d + t % 3) % 3 < 2 else "F" for d in range(21)] for t in range(6)]
+
+
+MODELOS_DEP = {"2x1_12": modelo_2x1_12}
 
 
 def modelo_4x2_12():

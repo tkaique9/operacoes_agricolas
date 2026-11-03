@@ -131,6 +131,14 @@ irrigação localizada, 3 do apoio regiões, 1 da adubação pátio e 1 do páti
 3 linhas "CONTRATAR" da escala não entram (a conta é só com quem já está no quadro). Esses números ficam nos quadros do
 painel Rural (o detalhe aparece ao passar o mouse).
 
+### 2x1 de 12 h (só para comparar)
+
+A página por departamento tem também a **2x1 de 12 h** (`analise.CENARIOS_DEP` e `analise.modelo_2x1_12`; o relatório
+geral fica com as outras): 2 plantões de 12 h e 1 folga, 2 turnos, 3 pessoas por posto 24 h, como a 4x2 de 12 h. Dá
+51h20 por semana (37h20 + 14h extras) e 3 h extras por plantão, acima do teto de 2 h por dia (CLT art. 59) e das 42 h
+da EC 141, então entra com risco **Fora da lei**: aparece em todas as tabelas, gráficos e no painel do departamento, mas
+nunca na sugerida.
+
 ### 5x2 com folga desencontrada
 
 A apresentação mostra a 5x2 com **folga separada** (`analise.modelo_5x2_desenc`): as 2 folgas da semana ficam 3 ou 4
