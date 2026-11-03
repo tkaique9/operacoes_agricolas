@@ -81,6 +81,8 @@ NAO_PLANEJADAS = {"Roço"}
 # O Uniport Pingente Inseticida entrou do mesmo jeito em 03/11/2026 (426,26 ha na semana de 26 a 31/10).
 SOMA_DIAS = {"Uniport Próprio - Terceira Molécula": ("Uniport Próprio - Terceira Molécula (Bordadura)", "Uniport Próprio"),
              "Uniport Pingente Inseticida": ("Uniport Pingente Inseticida", "Uniport Pingente-Terceiro")}
+# hectares realizados que a planilha não traz, lançados a pedido: (atividade, dia) -> ha a mais no dia e no mês
+LANCAMENTOS = {("Drone Inseticida", "2026-10-30"): 1316.31}   # pedido em 03/11/2026
 
 
 def marca_nao_planejada(a):
@@ -966,6 +968,16 @@ def semana_do_pdf(dados, pdf):
         fr["atividades"].insert(k + 1 if k is not None else len(fr["atividades"]), a)
         usados.add(r["nome"])
         print(f"  atividade nova: {r['nome']} em {fr['nome']}")
+    # lançamentos a pedido: somam no dia (se for da semana) e no realizado do mês
+    for fr in dados["frentes"]:
+        for a in fr["atividades"]:
+            for (nome, dia), ha in LANCAMENTOS.items():
+                if a["nome"] != nome or dia not in dias:
+                    continue
+                k = dias.index(dia)
+                a["dias"][k] = r2((a["dias"][k] or 0) + ha)
+                a["mes"][dia[:7]] = r2((a["mes"].get(dia[:7]) or 0) + ha)
+                print(f"  lançado: {nome} {dia} +{ha} ha")
     if domingos:
         print("  domingo (dia não impresso) pela diferença entre a semana da planilha e os dias impressos:", "; ".join(domingos))
     dados["fonte"]["semana"] = os.path.basename(pdf)
