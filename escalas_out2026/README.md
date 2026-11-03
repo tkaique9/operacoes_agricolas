@@ -94,7 +94,7 @@ atividade), quem tem direito (vão, fora pela 2ª férias na safra, ficam) e ati
 sem atividade e sem FAT), com o número e o % de cada parte.
 
 A página só tem números e o botão **Lista nominal**, que abre a página privada do claude.ai (só para quem tem acesso;
-o endereço, https://claude.ai/artifact/574VE37gdLKWT4u9NJwypi, fica em `LISTA_PRIVADA`, no `fat.py`). Os nomes ficam na **lista nominal** (`FAT_lista_nominal.html`, gerada pelo `fat.py`; fica só na
+o endereço, https://operacoes-agricolas.onrender.com/escalas_out2026/FAT_lista_nominal.html, fica em `LISTA_PRIVADA`, no `fat.py`). Os nomes ficam na **lista nominal** (`FAT_lista_nominal.html`, gerada pelo `fat.py`; fica só na
 máquina, no `.gitignore`, e o Render não a publica, ver `render-build.sh`; a cópia em `build/` é a página privada
 do claude.ai): a mesma fila, com caixa para marcar quem vai (quem vence a segunda férias na safra fica sem caixa), a
 necessidade de cada papel editável, contador, a situação das férias de cada um, a lista dos que podem ter direito, "Copiar marcados" (cola no Excel) e **filtros** como os do Excel (desde 28/10/2026):

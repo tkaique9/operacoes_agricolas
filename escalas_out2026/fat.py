@@ -36,9 +36,9 @@ TEMPLATE = AQUI / "fat_nominal_template.html"
 LOCAL = AQUI / "FAT_lista_nominal.html"
 ARTIFACT = AQUI / "build" / "fat_nominal_artifact.html"
 FONTE = "Painel FAT & Férias do RH (27/10/2026)"
-# a lista nominal publicada como página privada do claude.ai (só abre para quem tem acesso): a página FAT do estudo,
-# que é pública (Render), só leva o endereço
-LISTA_PRIVADA = "https://claude.ai/artifact/574VE37gdLKWT4u9NJwypi"
+# a lista nominal publicada no Render, ao lado da página FAT do estudo (aberta: quem tem o link vê os nomes); a página FAT
+# só leva o endereço
+LISTA_PRIVADA = "https://operacoes-agricolas.onrender.com/escalas_out2026/FAT_lista_nominal.html"
 # atividades da colheita, que param na entressafra: vão primeiro (pelo departamento da planilha)
 COLHEITA = re.compile(r"TRANSBORDO|COLHEDORA|CANAVIEIRO")
 CRITERIO = ("Colheita primeiro (trator transbordo, colhedora e caminhão canavieiro, que param na entressafra), depois as "

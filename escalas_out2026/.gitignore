@@ -3,5 +3,3 @@ analise.json
 oficina.json
 Simulacao_Escalas_EC141_OUT2026.xlsx
 build/
-# lista nominal do FAT (nome e matrícula): fica só na máquina, gerada pelo fat.py (o repositório voltou a ser público)
-FAT_lista_nominal.html

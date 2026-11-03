@@ -1,4 +1,4 @@
-{"fonte": "Painel FAT & Férias do RH (27/10/2026)", "criterio": "Colheita primeiro (trator transbordo, colhedora e caminhão canavieiro, que param na entressafra), depois as outras atividades; dentro de cada grupo, menor tempo de casa primeiro", "n": 320, "lista": "https://claude.ai/artifact/574VE37gdLKWT4u9NJwypi", "verificar": {"operador": 8, "motorista": 15}, "safra": {"operador": 9, "motorista": 12}, "fila": [
+{"fonte": "Painel FAT & Férias do RH (27/10/2026)", "criterio": "Colheita primeiro (trator transbordo, colhedora e caminhão canavieiro, que param na entressafra), depois as outras atividades; dentro de cada grupo, menor tempo de casa primeiro", "n": 320, "lista": "https://operacoes-agricolas.onrender.com/escalas_out2026/FAT_lista_nominal.html", "verificar": {"operador": 8, "motorista": 15}, "safra": {"operador": 9, "motorista": 12}, "fila": [
 ["operador", "Colhedora (cana picada)", 1, "2027-08"],
 ["motorista", "Caminhão canavieiro", 1, "2027-07"],
 ["operador", "Trator transbordo", 1, "2027-07"],
