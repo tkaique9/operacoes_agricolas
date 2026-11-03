@@ -782,10 +782,42 @@ def pre_cargill_fornecedor(tab):
                 fazs = []
 
 
+# fazendas tiradas de um programa a pedido (programa -> códigos): a linha sai e os números dela saem também
+# do subtotal do bloco e dos totais do quadro. Pré-emergência, 03/11/2026: 9328 Bugre, 9376 Dos Baús Olhos d'Água e
+# 9443 Pântano e Mariano (15 a 33 dias de atraso)
+RETIRAR = {"pre": {"9328", "9376", "9443"}}
+
+
+def retira_fazendas(tab):
+    for p in tab["programas"]:
+        cods = RETIRAR.get(p["id"])
+        if not cods:
+            continue
+        for sec in p["secoes"]:
+            fora, novas = [], []
+            for l in sec["linhas"]:
+                if l["t"] == "faz" and l["cod"] in cods:
+                    fora.append(l)
+                    print(f"  {p['id']}: tirada a fazenda {l['cod']} {l['prop']}")
+                    continue
+                if l["t"] in ("sub", "tot") and fora:
+                    tira = fora if l["t"] == "tot" else [f for f in fora if not f.get("_no_sub")]
+                    for f in tira:
+                        for k, x in f["v"].items():
+                            if x:
+                                l["v"][k] = round((l["v"].get(k) or 0) - x, 2)
+                    if l["t"] == "sub":
+                        for f in fora:
+                            f["_no_sub"] = True
+                novas.append(l)
+            sec["linhas"] = novas
+
+
 def tabelas_do_pdf(pdf):
     import programas_pdf
     tab = programas_pdf.ler(pdf)
     cargill_a_parte(tab)
+    retira_fazendas(tab)
     pre_cargill_fornecedor(tab)
     localizada_so_propria(tab)
     saldo_sem_negativo(tab)
