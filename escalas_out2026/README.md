@@ -103,6 +103,15 @@ nome ou matrícula, um ou vários separados por vírgula, sem precisar de acento
 outros filtros; contador e "Copiar a lista filtrada". Na lista, a necessidade de partida é a da escolhida dos dados (`NEC_PADRAO` no `fat.py`); se a
 escolhida mudar, vale o número da página FAT.
 
+**Duas turmas** (decisão de 05/11/2026), pelas férias de cada um: **turma 1**, quem vence a segunda férias na safra de
+2027 (limite de abril a novembro de 2027), tira férias de 15/12/2026 a 13/01/2027 e entra no FAT de 14/01 a 15/04/2027;
+**turma 2**, os outros, vão direto ao FAT de 15/12/2026 a 15/03/2027 (`TURMAS` no `fat.py`). Ninguém com direito fica
+mais de fora pelas férias. O limite de cada um sai, nessa ordem, dos períodos de férias do Operacional CTT
+(`dados/fat/ferias_periodos.xlsx`, aba Períodos: 235 dos 320), do histórico de férias por setor
+(`dados/fat/historico_ferias.xlsx`: admissão e dias já gozados, 75; confere com os períodos em 89%) e do painel do RH (10).
+Na turma 2, quem tem o limite antes de 15/12, durante o FAT ou logo depois aparece com alerta (vence em dobro sem tirar as
+férias antes; DP confirmar).
+
 ### ADM agrícola
 
 Aba **ADM** (páginas 8 a 10: painel, quadro e matriz), no mesmo modelo da Operacional, a partir da planilha ESCALA

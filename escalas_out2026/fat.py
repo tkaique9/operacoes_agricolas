@@ -20,6 +20,7 @@ para dar férias com o contrato suspenso. Não haverá férias antes do FAT (dec
 segunda férias na safra de 2027 (limite de abril a novembro de 2027, faixa 2) não vai para o FAT: voltaria e teria de
 tirar as férias na safra. A regra fica na página FAT (fat.json leva o mês do limite) e na lista nominal.
 """
+import collections
 import datetime
 import json
 import re
@@ -48,6 +49,15 @@ CRITERIO = ("Colheita primeiro (trator transbordo, colhedora e caminhão canavie
 NEC_PADRAO = {"operador": 83, "motorista": 124}
 # janela das férias: a entressafra vai até março; a safra de 2027, de abril a novembro
 SAFRA_27 = (datetime.date(2027, 4, 1), datetime.date(2027, 12, 1))
+# férias de cada um (05/11/2026), na ordem: períodos aquisitivos do Operacional CTT (exatos), histórico de férias por
+# setor (admissão e dias já gozados) e, sem nenhum dos dois, o limite do painel do RH
+PERIODOS = AQUI / "dados" / "fat" / "ferias_periodos.xlsx"
+HISTORICO = AQUI / "dados" / "fat" / "historico_ferias.xlsx"
+HOJE = datetime.date(2026, 11, 5)
+# duas turmas (decisão de 05/11/2026): quem vence a segunda férias na safra de 2027 tira as férias antes e entra depois
+# no FAT; os outros vão direto. O fim da turma 1 veio escrito "15/0/2027": vale 15/04/2027 (três meses, como a turma 2)
+TURMAS = {1: {"ferias": ("2026-12-15", "2027-01-13"), "fat": ("2027-01-14", "2027-04-15")},
+          2: {"ferias": None, "fat": ("2026-12-15", "2027-03-15")}}
 
 
 def data_iso(v):
@@ -63,8 +73,72 @@ def faixa_ferias(lim):
     return 1 if d < SAFRA_27[0] else 2 if d < SAFRA_27[1] else 3
 
 
+def _anos(d, n):
+    try:
+        return d.replace(year=d.year + n)
+    except ValueError:
+        return d.replace(year=d.year + n, day=28)
+
+
+def ferias_de_cada_um():
+    """Matrícula -> limite (iso) do primeiro período de férias adquirido e ainda não tirado, com a fonte, o saldo e a
+    programação que já existir. Sem período pendente (só em aquisição), o limite fica vazio."""
+    fer = {}
+    if PERIODOS.exists():
+        wb = openpyxl.load_workbook(PERIODOS, read_only=True, data_only=True)
+        linhas = list(wb["Períodos"].iter_rows(values_only=True))
+        por = {}
+        for r in linhas[1:]:
+            if r[0]:
+                por.setdefault(int(r[0]), []).append(dict(zip(linhas[0], r)))
+        prog = {}
+        linhas_p = list(wb["Programações"].iter_rows(values_only=True))
+        for r in linhas_p[1:]:
+            if r[0]:
+                x = dict(zip(linhas_p[0], r))
+                prog[int(r[0])] = f"{x['Início das férias']:%d/%m/%Y} a {x['Fim das férias']:%d/%m/%Y} · {x['Situação']}"
+        for m, ps in por.items():
+            pend = [x for x in ps if (x["Saldo"] or 0) > 0 and x["Situação"] not in ("Em aquisição", "Nulo", "Férias gozadas")]
+            x = min(pend, key=lambda x: x["Data limite"]) if pend else None
+            fer[m] = {"limite": x["Data limite"].date().isoformat() if x else None, "fonte": "períodos",
+                      "saldo": x["Saldo"] if x else None, "prog": prog.get(m) or (str(x["Programação"]) if x and x.get("Programação") else None)}
+    if HISTORICO.exists():
+        h = list(openpyxl.load_workbook(HISTORICO, read_only=True, data_only=True).worksheets[0].iter_rows(values_only=True))
+        cab = next(i for i, r in enumerate(h) if r and r[0] == "Setor")
+        for r in h[cab + 1:]:
+            if not (r[2] and str(r[2]).isdigit()) or int(r[2]) in fer:
+                continue
+            x = dict(zip(h[cab], r))
+            adm = datetime.datetime.strptime(x["Admissão"], "%d/%m/%Y").date()
+            k = int((x["Total de dias"] or 0) // 30)                 # períodos já tirados
+            fim = _anos(adm, k + 1) - datetime.timedelta(days=1)       # fim do primeiro período ainda não tirado
+            lim = None if fim >= HOJE else _anos(fim + datetime.timedelta(days=1), 1) - datetime.timedelta(days=31)
+            fer[int(r[2])] = {"limite": lim.isoformat() if lim else None, "fonte": "histórico", "saldo": None, "prog": None}
+    return fer
+
+
+def turma_de(lim):
+    """1: a segunda férias vence na safra de 2027 (limite de abril a novembro): férias e depois FAT; 2: os outros."""
+    return 1 if lim and SAFRA_27[0] <= datetime.date.fromisoformat(lim) < SAFRA_27[1] else 2
+
+
+def alerta_de(lim, turma):
+    """Limite que cai fora do que a turma resolve: antes de começar, durante ou logo depois do FAT da turma 2."""
+    if not lim or turma == 1:
+        return None
+    d = datetime.date.fromisoformat(lim)
+    if d < datetime.date(2026, 12, 15):
+        return "vence antes de 15/12: tirar as férias já"
+    if d <= datetime.date(2027, 3, 15):
+        return "vence durante o FAT (15/12 a 15/03)"
+    if d < SAFRA_27[0]:
+        return "vence logo depois do FAT, antes da safra"
+    return None
+
+
 def ler():
     wb = openpyxl.load_workbook(ARQ, read_only=True, data_only=True)
+    fer = ferias_de_cada_um()
 
     def aba(nome):
         linhas = list(wb[nome].iter_rows(values_only=True))
@@ -81,7 +155,14 @@ def ler():
              "ger": str(r["Gerência"] or "").strip().strip("–-").strip() or "–",
              "adm": data_iso(r["Admissão"]), "tempo": str(r["Tempo"] or ""), "idade": r["Idade"],
              "ferias": str(r["Férias"] or ""), "limite": data_iso(r["Limite férias"]), "motivo": str(r["Motivo"] or "")}
+        f = fer.get(p["mat"])
+        if f:
+            p.update(limite=f["limite"], fonte_ferias=f["fonte"], saldo=f["saldo"], prog=f["prog"])
+        else:
+            p.update(fonte_ferias="painel", saldo=None, prog=None)
         p["faixa"] = faixa_ferias(p["limite"])
+        p["turma"] = turma_de(p["limite"])
+        p["alerta"] = alerta_de(p["limite"], p["turma"])
         if r["FAT"] == "Tem direito":
             gente.append(p)
         # podem ter direito: efetivos com 12 meses ou mais em que falta conferir a aposentadoria (60+) ou que não
@@ -103,7 +184,8 @@ def main():
     conta = lambda lista: {pp: sum(1 for p in lista if p["papel"] == pp) for pp in ("operador", "motorista")}
     publico = {"fonte": FONTE, "criterio": CRITERIO, "n": len(gente), "lista": LISTA_PRIVADA,
                "verificar": conta(verificar), "safra": safra,
-               "fila": [[p["papel"], p["ativ"], p["grupo"], p["limite"][:7] if p["limite"] else None] for p in gente]}
+               "turmas": TURMAS,
+               "fila": [[p["papel"], p["ativ"], p["grupo"], p["limite"][:7] if p["limite"] else None, p["turma"]] for p in gente]}
     cab = json.dumps({k: v for k, v in publico.items() if k != "fila"}, ensure_ascii=False)[:-1]
     SAIDA.write_text(cab + ', "fila": [\n' + ",\n".join(json.dumps(f, ensure_ascii=False) for f in publico["fila"]) + "\n]}\n",
                      encoding="utf-8")
@@ -111,7 +193,7 @@ def main():
     pessoal = AQUI / "pessoal_frota.json"
     ativos = json.loads(pessoal.read_text(encoding="utf-8")).get("ativos", {}) if pessoal.exists() else {}
     dados = {"fonte": FONTE, "criterio": CRITERIO, "nec": NEC_PADRAO, "safra27": [d.isoformat() for d in SAFRA_27],
-             "ativos": ativos, "gente": gente, "verificar": verificar}
+             "turmas": TURMAS, "ativos": ativos, "gente": gente, "verificar": verificar}
     js = json.dumps(dados, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     pagina = TEMPLATE.read_text(encoding="utf-8").replace("/*FAT*/null", js)
     ARTIFACT.parent.mkdir(exist_ok=True)
@@ -119,6 +201,9 @@ def main():
     LOCAL.write_text("<!doctype html>\n<html lang=\"pt-BR\" translate=\"no\" class=\"notranslate\"><head>"
                      "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, "
                      "viewport-fit=cover\">\n</head><body>\n" + pagina + "\n</body></html>\n", encoding="utf-8")
+    t = {k: conta([p for p in gente if p["turma"] == k]) for k in (1, 2)}
+    print(f"turma 1 (férias e FAT): {t[1]}; turma 2 (FAT direto): {t[2]}; alertas: "
+          f"{collections.Counter(p['alerta'] for p in gente if p['alerta'])}; fontes: {collections.Counter(p['fonte_ferias'] for p in gente)}")
     print(f"{len(gente)} com direito: {conta(gente)}; colheita {sum(1 for p in gente if p['grupo'] == 1)}; "
           f"a verificar {conta(verificar)}; contrato safra no quadro {safra}")
     return publico
