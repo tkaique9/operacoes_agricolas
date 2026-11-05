@@ -201,8 +201,8 @@ const doLink = /^#nec(\d+)-(\d+)$/.exec(location.hash);
 const NEC_BASE = doLink ? { operador: +doLink[1], motorista: +doLink[2] } : F.nec;
 if (doLink) { Object.assign(nec, NEC_BASE); grava(CH_N, nec); }
 const dos = p => F.gente.filter(x => x.papel === p);
-// duas turmas (05/11/2026), pelas férias de cada um: turma 1 vai direto; turma 2, quem vence a segunda férias na safra
-// de 2027, tira as férias e depois entra no FAT. Todos podem ir
+// duas turmas (05/11/2026), pelas férias de cada um: turma 1 vai direto; turma 2, quem tem férias vencendo até
+// 15/12/2027, tira as férias e depois entra no FAT. Todos podem ir
 const turma = x => x.turma || 1;
 // sugestão: os primeiros da fila de cada papel até completar a necessidade
 function sugeridos() {
@@ -227,9 +227,9 @@ const feriasTag = (x, v) => {
     (x.prog ? `<br><small>programado: ${esc(x.prog)}</small>` : "");
 };
 $("criterio").textContent = `Sugestão: ${F.criterio}. Marque ou desmarque para trocar; a escolha fica guardada neste navegador.`;
-$("leiTxt").textContent = (TU[1] ? `Turma 1, vai direto: FAT de ${per(...TU[1].fat)}. ` : "") +
-  (TU[2] ? `Turma 2, quem vence a segunda férias na safra de 2027 (limite de abril a novembro de 2027): férias de ${per(...TU[2].ferias)} e FAT de ${per(...TU[2].fat)}. ` : "") +
-  "O limite de cada um vem dos períodos de férias do Operacional CTT; sem eles, do histórico de férias por setor (admissão e dias já gozados) e, por fim, do painel do RH. Quem da turma 1 tem o limite antes ou durante o FAT aparece em vermelho: sem tirar as férias antes, elas vencem em dobro (DP confirmar).";
+$("leiTxt").textContent = (TU[1] ? `Turma 1, quem não tem férias vencendo até 15/12/2027, vai direto: FAT de ${per(...TU[1].fat)}. ` : "") +
+  (TU[2] ? `Turma 2, quem tem férias vencendo até 15/12/2027 (não daria para tirar na safra): férias de ${per(...TU[2].ferias)} e FAT de ${per(...TU[2].fat)}. ` : "") +
+  "O limite de cada um vem dos períodos de férias do Operacional CTT; sem eles, do histórico de férias por setor (admissão e dias já gozados) e, por fim, do painel do RH. Em vermelho, quem da turma 2 precisa de atenção: férias que vencem antes de 15/12, período ainda em aquisição em 15/12 ou um segundo período vencendo até 15/12/2027.";
 
 // tabela por papel, a mesma da página FAT do estudo: ativos do quadro de motoristas e operadores, a necessidade
 // (editável) e o que sai da lista. Os números com nomes por trás são botões que filtram a lista

@@ -54,8 +54,8 @@ SAFRA_27 = (datetime.date(2027, 4, 1), datetime.date(2027, 12, 1))
 PERIODOS = AQUI / "dados" / "fat" / "ferias_periodos.xlsx"
 HISTORICO = AQUI / "dados" / "fat" / "historico_ferias.xlsx"
 HOJE = datetime.date(2026, 11, 5)
-# duas turmas (decisão de 05/11/2026): turma 1 vai direto para o FAT; turma 2, quem vence a segunda férias na safra de
-# 2027, tira as férias antes e entra depois no FAT. As duas turmas terminam o FAT em 15/03/2027 (confirmado pelo usuário em 05/11)
+# duas turmas (decisão de 05/11/2026): turma 1 vai direto para o FAT; turma 2, quem tem férias vencendo até 15/12/2027,
+# tira as férias antes e entra depois no FAT. As duas turmas terminam o FAT em 15/03/2027 (confirmado pelo usuário em 05/11)
 TURMAS = {1: {"ferias": None, "fat": ("2026-12-15", "2027-03-15")},
           2: {"ferias": ("2026-12-15", "2027-01-13"), "fat": ("2027-01-14", "2027-03-15")}}
 
@@ -98,10 +98,13 @@ def ferias_de_cada_um():
                 x = dict(zip(linhas_p[0], r))
                 prog[int(r[0])] = f"{x['Início das férias']:%d/%m/%Y} a {x['Fim das férias']:%d/%m/%Y} · {x['Situação']}"
         for m, ps in por.items():
-            pend = [x for x in ps if (x["Saldo"] or 0) > 0 and x["Situação"] not in ("Em aquisição", "Nulo", "Férias gozadas")]
-            x = min(pend, key=lambda x: x["Data limite"]) if pend else None
+            # todos os períodos ainda não tirados, os adquiridos e o que está em aquisição, pelo limite
+            abertos = sorted((x for x in ps if (x["Saldo"] or 0) > 0 and x["Situação"] not in ("Nulo", "Férias gozadas")
+                              and x["Data limite"]), key=lambda x: x["Data limite"])
+            x = abertos[0] if abertos else None
             fer[m] = {"limite": x["Data limite"].date().isoformat() if x else None, "fonte": "períodos",
-                      "saldo": x["Saldo"] if x else None, "prog": prog.get(m) or (str(x["Programação"]) if x and x.get("Programação") else None)}
+                      "saldo": x["Saldo"] if x else None, "prog": prog.get(m) or (str(x["Programação"]) if x and x.get("Programação") else None),
+                      "lims": [(y["Data limite"].date().isoformat(), y["Período até"].date().isoformat()) for y in abertos]}
     if HISTORICO.exists():
         h = list(openpyxl.load_workbook(HISTORICO, read_only=True, data_only=True).worksheets[0].iter_rows(values_only=True))
         cab = next(i for i, r in enumerate(h) if r and r[0] == "Setor")
@@ -111,28 +114,38 @@ def ferias_de_cada_um():
             x = dict(zip(h[cab], r))
             adm = datetime.datetime.strptime(x["Admissão"], "%d/%m/%Y").date()
             k = int((x["Total de dias"] or 0) // 30)                 # períodos já tirados
-            fim = _anos(adm, k + 1) - datetime.timedelta(days=1)       # fim do primeiro período ainda não tirado
-            lim = None if fim >= HOJE else _anos(fim + datetime.timedelta(days=1), 1) - datetime.timedelta(days=31)
-            fer[int(r[2])] = {"limite": lim.isoformat() if lim else None, "fonte": "histórico", "saldo": None, "prog": None}
+            # períodos ainda não tirados, do primeiro até o que está em aquisição: fim do período e limite (11 meses depois)
+            lims = []
+            for j in range(k, k + 4):
+                fim = _anos(adm, j + 1) - datetime.timedelta(days=1)
+                lims.append(((_anos(fim + datetime.timedelta(days=1), 1) - datetime.timedelta(days=31)).isoformat(), fim.isoformat()))
+                if fim >= HOJE:
+                    break
+            fer[int(r[2])] = {"limite": lims[0][0], "fonte": "histórico", "saldo": None, "prog": None, "lims": lims}
     return fer
 
 
+# turma 1 (direto) só com nenhuma férias vencendo até 15/12/2027 (decisão de 05/11/2026): quem vai direto não tem como
+# tirar férias até o fim da safra de 2027
+CORTE_T1 = datetime.date(2027, 12, 15)
+INICIO_FERIAS = datetime.date(2026, 12, 15)
+
+
 def turma_de(lim):
-    """2: a segunda férias vence na safra de 2027 (limite de abril a novembro): férias e depois FAT; 1: os outros, direto."""
-    return 2 if lim and SAFRA_27[0] <= datetime.date.fromisoformat(lim) < SAFRA_27[1] else 1
+    """1: o primeiro limite de férias em aberto é depois de 15/12/2027 (ou não há): FAT direto; 2: férias e depois FAT."""
+    return 1 if not lim or datetime.date.fromisoformat(lim) > CORTE_T1 else 2
 
 
-def alerta_de(lim, turma):
-    """Limite que cai fora do que a turma resolve: antes de começar, durante ou logo depois do FAT da turma 1."""
-    if not lim or turma == 2:
+def alerta_de(lims, turma):
+    """O que as férias de 15/12 a 13/01 da turma 2 não resolvem sozinhas."""
+    if turma == 1 or not lims:
         return None
-    d = datetime.date.fromisoformat(lim)
-    if d < datetime.date(2026, 12, 15):
+    if datetime.date.fromisoformat(lims[0][0]) < INICIO_FERIAS:
         return "vence antes de 15/12: tirar as férias já"
-    if d <= datetime.date(2027, 3, 15):
-        return "vence durante o FAT (15/12 a 15/03)"
-    if d < SAFRA_27[0]:
-        return "vence logo depois do FAT, antes da safra"
+    if datetime.date.fromisoformat(lims[0][1]) >= INICIO_FERIAS:
+        return "período ainda em aquisição em 15/12: férias antecipadas (DP confirmar)"
+    if len(lims) > 1 and datetime.date.fromisoformat(lims[1][0]) <= CORTE_T1:
+        return f"outro período vence em {lims[1][0][8:10]}/{lims[1][0][5:7]}/{lims[1][0][:4]}: tirar as duas férias antes"
     return None
 
 
@@ -158,11 +171,13 @@ def ler():
         f = fer.get(p["mat"])
         if f:
             p.update(limite=f["limite"], fonte_ferias=f["fonte"], saldo=f["saldo"], prog=f["prog"])
+            lims = f["lims"]
         else:
             p.update(fonte_ferias="painel", saldo=None, prog=None)
+            lims = [(p["limite"], "2000-01-01")] if p["limite"] else []
         p["faixa"] = faixa_ferias(p["limite"])
         p["turma"] = turma_de(p["limite"])
-        p["alerta"] = alerta_de(p["limite"], p["turma"])
+        p["alerta"] = alerta_de(lims, p["turma"])
         if r["FAT"] == "Tem direito":
             gente.append(p)
         # podem ter direito: efetivos com 12 meses ou mais em que falta conferir a aposentadoria (60+) ou que não
@@ -185,7 +200,7 @@ def main():
     publico = {"fonte": FONTE, "criterio": CRITERIO, "n": len(gente), "lista": LISTA_PRIVADA,
                "verificar": conta(verificar), "safra": safra,
                "turmas": TURMAS,
-               "fila": [[p["papel"], p["ativ"], p["grupo"], p["limite"][:7] if p["limite"] else None, p["turma"]] for p in gente]}
+               "fila": [[p["papel"], p["ativ"], p["grupo"], p["limite"][:7] if p["limite"] else None, p["turma"], 1 if p["alerta"] else 0] for p in gente]}
     cab = json.dumps({k: v for k, v in publico.items() if k != "fila"}, ensure_ascii=False)[:-1]
     SAIDA.write_text(cab + ', "fila": [\n' + ",\n".join(json.dumps(f, ensure_ascii=False) for f in publico["fila"]) + "\n]}\n",
                      encoding="utf-8")
