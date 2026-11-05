@@ -55,8 +55,8 @@ PERIODOS = AQUI / "dados" / "fat" / "ferias_periodos.xlsx"
 HISTORICO = AQUI / "dados" / "fat" / "historico_ferias.xlsx"
 HOJE = datetime.date(2026, 11, 5)
 # duas turmas (decisão de 05/11/2026): quem vence a segunda férias na safra de 2027 tira as férias antes e entra depois
-# no FAT; os outros vão direto. O fim da turma 1 veio escrito "15/0/2027": vale 15/04/2027 (três meses, como a turma 2)
-TURMAS = {1: {"ferias": ("2026-12-15", "2027-01-13"), "fat": ("2027-01-14", "2027-04-15")},
+# no FAT; os outros vão direto. As duas turmas terminam o FAT em 15/03/2027 (confirmado pelo usuário em 05/11)
+TURMAS = {1: {"ferias": ("2026-12-15", "2027-01-13"), "fat": ("2027-01-14", "2027-03-15")},
           2: {"ferias": None, "fat": ("2026-12-15", "2027-03-15")}}
 
 
