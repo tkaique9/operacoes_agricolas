@@ -34,7 +34,8 @@
   color-scheme: dark }
 body { background: var(--bg); color: var(--ink); font: 400 15px/1.45 var(--f-ui); }
 .faixa { background: var(--navy); color: var(--band-ink); }
-.lado { max-width: 1320px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+/* a página usa a largura toda da tela: as tabelas crescem com ela e o texto quebra em vez de rolar */
+.lado { margin: 0 auto; padding-left: max(16px, 1.6vw, env(safe-area-inset-left, 0px)); padding-right: max(16px, 1.6vw, env(safe-area-inset-right, 0px)); }
 .faixa .lado { padding-block: 22px 20px; display: grid; gap: 6px; }
 .olho { font: 500 12px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--band-mut); }
 h1 { margin: 0; font: 800 clamp(24px, 3.4vw, 34px)/1.1 var(--f-ui); letter-spacing: -.02em; text-wrap: balance; }
@@ -73,7 +74,13 @@ section.papel h3 small { font: 500 13px var(--f-mono); color: var(--mut); margin
 table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
 th { background: var(--navy); color: var(--band-ink); font: 600 12.5px var(--f-ui); text-align: left; padding: 8px 9px; white-space: nowrap; }
 td { padding: 6px 9px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-td.nome { white-space: normal; min-width: 200px; font-weight: 600; }
+td.nome { white-space: normal; min-width: 150px; font-weight: 600; }
+/* na fila, função, atividade, gerência e a turma quebram linha: a tabela cabe na largura da tela */
+section.papel td.t { white-space: normal; min-width: 90px; }
+section.papel td.fe-c { white-space: normal; min-width: 190px; }
+section.papel td.fe-c .fe { white-space: normal; }
+section.papel th { white-space: normal; vertical-align: bottom; }
+section.papel td { padding: 6px 8px; }
 td.c, th.c { text-align: center; } td.n, th.n { text-align: right; }
 td.mono { font: 500 13px var(--f-mono); }
 tbody tr:nth-child(even) td { background: var(--zebra); }
@@ -91,7 +98,7 @@ td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); 
 .lei p { margin: 0; max-width: 110ch; }
 /* filtros da lista, como o filtro do Excel: cada lista mostra só os valores que sobram com os outros filtros */
 .filtros { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; display: grid; gap: 12px; min-width: 0; }
-.f-linha { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 10px; }
+.f-linha { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
 .f-linha .busca { grid-column: span 2; }
 .f-linha label { display: block; font: 500 11.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mut); margin-bottom: 4px; }
 .f select { width: 100%; box-sizing: border-box; font: 500 14px var(--f-ui); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 3px; padding: 8px; }
@@ -124,6 +131,7 @@ td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); 
     <div class="f-linha">
       <div class="busca"><label for="busca">Nome ou matrícula</label><input type="search" id="busca" placeholder="Um ou vários, separados por vírgula" autocomplete="off"></div>
       <div class="f"><label for="f-papel">Papel</label><select id="f-papel" data-k="papel"></select></div>
+      <div class="f"><label for="f-turma">Turma</label><select id="f-turma" data-k="turma"></select></div>
       <div class="f"><label for="f-sit">Situação</label><select id="f-sit" data-k="sit"></select></div>
       <div class="f"><label for="f-ativ">Atividade</label><select id="f-ativ" data-k="ativ"></select></div>
       <div class="f"><label for="f-ger">Gerência</label><select id="f-ger" data-k="ger"></select></div>
@@ -159,7 +167,7 @@ const $ = id => document.getElementById(id);
 const semAcento = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 // dados de cada linha para os filtros (data-*): papel, situação, atividade, gerência, função, férias e a busca
 const dadosLinha = (x, sit) => `data-mat="${x.mat}" data-b="${esc(semAcento(x.mat + " " + x.nome))}" data-papel="${x.papel}" data-sit="${sit}" ` +
-  `data-ativ="${esc(x.ativ)}" data-ger="${esc(x.ger || "–")}" data-func="${esc(x.funcao)}" data-fer="${esc(x.ferias || "–")}"`;
+  `data-turma="${x.turma || "–"}" data-ativ="${esc(x.ativ)}" data-ger="${esc(x.ger || "–")}" data-func="${esc(x.funcao)}" data-fer="${esc(x.ferias || "–")}"`;
 
 let marcas = ler(CH_M) || {};                  // trocas sobre a sugestão: matrícula -> vai (true) ou fica (false)
 const nec = Object.assign({}, F.nec, ler(CH_N) || {});
@@ -243,7 +251,7 @@ function listas() {
       if (x.grupo !== grupo) { grupo = x.grupo; h += `<tr class="grp"><td colspan="13">${GRUPO[grupo]} · ${g.filter(y => y.grupo === grupo).length}</td></tr>`; }
       h += `<tr ${dadosLinha(x, sitDe(x))}><td class="c"><input type="checkbox" aria-label="${esc(x.nome)} vai para o FAT" data-mat="${x.mat}"></td>
         <td class="n mono">${i + 1}</td><td class="mono">${x.mat}</td><td class="nome">${esc(x.nome)}<span class="troca" hidden>trocado</span></td>
-        <td>${esc(x.funcao)}</td><td>${esc(x.ativ)}</td><td>${esc(x.ger)}</td><td class="c mono">${dataBR(x.adm)}</td>
+        <td class="t">${esc(x.funcao)}</td><td class="t">${esc(x.ativ)}</td><td class="t">${esc(x.ger)}</td><td class="c mono">${dataBR(x.adm)}</td>
         <td class="c">${esc(x.tempo)}</td><td class="n">${x.idade == null ? "–" : x.idade}</td>
         <td>${esc(x.ferias)}</td><td class="c mono" title="fonte: ${esc(x.fonte_ferias || "painel")}">${dataBR(x.limite)}</td><td class="fe-c"></td></tr>`;
     });
@@ -279,14 +287,17 @@ function marcaLinhas() {
 }
 // filtros, como os do Excel: a busca aceita vários nomes ou matrículas separados por vírgula (sem acento também acha);
 // cada lista mostra só os valores que ainda aparecem com os outros filtros, com quantos são
-const FILTROS = ["papel", "sit", "ativ", "ger", "func", "fer"];
+// a turma vem das férias de cada um (turma 1 tira as férias e depois vai; turma 2 vai direto), marcado ou não
+const FILTROS = ["papel", "turma", "sit", "ativ", "ger", "func", "fer"];
+const ROT_TURMA = () => ({ 1: "Turma 1 · férias + FAT" + (TU[1] ? " " + TU[1].fat[0].slice(8, 10) + "/" + TU[1].fat[0].slice(5, 7) : ""),
+  2: "Turma 2 · FAT" + (TU[2] ? " " + TU[2].fat[0].slice(8, 10) + "/" + TU[2].fat[0].slice(5, 7) : "") + " direto", "–": "Sem turma · a conferir" });
 const ROT_SIT = { t1: "Turma 1 · férias e FAT", t2: "Turma 2 · FAT direto", fica: "Fica · tem direito", conferir: "Pode ter direito · conferir",
   vai: "Vão para o FAT", direito: "Com direito ao FAT", ficam: "Com direito que ficam", semfat: "Sem FAT · a conferir" };
 // situações que juntam outras, como nas colunas da tabela por papel
 const SIT_GRUPO = { vai: ["t1", "t2"], direito: ["t1", "t2", "fica"], ficam: ["fica"], semfat: ["conferir"] };
 const ROT_PAPEL1 = { operador: "Operador", motorista: "Motorista" };
 const SEL = {};
-const rotulo = (k, v) => k === "sit" ? ROT_SIT[v] || v : k === "papel" ? ROT_PAPEL1[v] || v : v;
+const rotulo = (k, v) => k === "sit" ? ROT_SIT[v] || v : k === "papel" ? ROT_PAPEL1[v] || v : k === "turma" ? ROT_TURMA()[v] || v : v;
 const termos = () => semAcento($("busca").value).split(/[,;]/).map(t => t.trim()).filter(Boolean);
 const casa = (k, v) => k === "sit" && SIT_GRUPO[SEL.sit] ? SIT_GRUPO[SEL.sit].indexOf(v) >= 0 : v === SEL[k];
 function passa(tr, ignora, q) {
@@ -374,9 +385,9 @@ $("bSug").addEventListener("click", () => {
 // o que está na tela depois dos filtros, em colunas separadas por tabulação
 $("bCopiaF").addEventListener("click", () => {
   const vis = [...document.querySelectorAll("tr[data-b]:not([hidden])")];
-  copia([["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão", "Férias", "Limite férias", "Situação"].join("\t")]
+  copia([["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão", "Férias", "Limite férias", "Turma", "Situação"].join("\t")]
     .concat(vis.map(tr => { const x = PESSOA.get(tr.dataset.mat);
-      return [ROT[x.papel], x.mat, x.nome, x.funcao, x.ativ, x.ger || "–", dataBR(x.adm), x.ferias, dataBR(x.limite), ROT_SIT[tr.dataset.sit]].join("\t"); })), "copiadas da lista filtrada");
+      return [ROT[x.papel], x.mat, x.nome, x.funcao, x.ativ, x.ger || "–", dataBR(x.adm), x.ferias, dataBR(x.limite), rotulo("turma", tr.dataset.turma), ROT_SIT[tr.dataset.sit]].join("\t"); })), "copiadas da lista filtrada");
 });
 // os marcados, em colunas separadas por tabulação: colam direto no Excel
 $("bCopia").addEventListener("click", () => {
