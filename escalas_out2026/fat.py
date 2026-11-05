@@ -42,11 +42,14 @@ FONTE = "Painel FAT & Férias do RH (27/10/2026)"
 LISTA_PRIVADA = "https://operacoes-agricolas.onrender.com/escalas_out2026/FAT_lista_nominal.html"
 # atividades da colheita, que param na entressafra: vão primeiro (pelo departamento da planilha)
 COLHEITA = re.compile(r"TRANSBORDO|COLHEDORA|CANAVIEIRO")
-CRITERIO = ("Colheita primeiro (trator transbordo, colhedora e caminhão canavieiro, que param na entressafra), depois as "
+CRITERIO = ("Os escolhidos pelo Transporte primeiro; para completar a necessidade, colheita primeiro (trator transbordo, colhedora e caminhão canavieiro, que param na entressafra), depois as "
             "outras atividades; dentro de cada grupo, menor tempo de casa primeiro")
 # necessidade de partida na lista nominal: o que fica sem atividade na escala escolhida que está nos dados da página
 # (painel da frota, 28/10/2026). Na lista dá para mudar; o número certo é o da aba FAT da página
-NEC_PADRAO = {"operador": 83, "motorista": 124}
+NEC_PADRAO = {"operador": 139, "motorista": 148}
+# os escolhidos para o FAT pelo Transporte (relatório "Escala · base de colaboradores", FAT / Operação = FAT; 05/11/2026):
+# vão primeiro, e a sugestão da fila só completa a diferença até a necessidade
+ESCOLHIDOS = AQUI / "dados" / "fat" / "fat_escolhidos.pdf"
 # janela das férias: a entressafra vai até março; a safra de 2027, de abril a novembro
 SAFRA_27 = (datetime.date(2027, 4, 1), datetime.date(2027, 12, 1))
 # férias de cada um (05/11/2026), na ordem: períodos aquisitivos do Operacional CTT (exatos), histórico de férias por
@@ -149,6 +152,34 @@ def alerta_de(lims, turma):
     return None
 
 
+def escolhidos():
+    """Matrícula -> papel dos escolhidos para o FAT no relatório do Transporte."""
+    if not ESCOLHIDOS.exists():
+        return {}
+    import pdfplumber
+    esc = {}
+    with pdfplumber.open(ESCOLHIDOS) as pdf:
+        for pg in pdf.pages:
+            for l in (pg.extract_text() or "").splitlines():
+                m = re.match(r"^(\d{4,6}) .+? (MOTORISTA|OP\. DE MAQUINAS)", l)
+                if m:
+                    esc[int(m.group(1))] = "motorista" if m.group(2) == "MOTORISTA" else "operador"
+    return esc
+
+
+ATIVOS = AQUI / "dados" / "frota" / "ativos_transporte.pdf"
+
+
+def ativos_transporte():
+    """Matrículas dos motoristas e operadores ativos no relatório do Transporte (vazio sem o PDF)."""
+    if not ATIVOS.exists():
+        return set()
+    import pdfplumber
+    with pdfplumber.open(ATIVOS) as pdf:
+        return {int(m.group(1)) for pg in pdf.pages for l in (pg.extract_text() or "").splitlines()
+                for m in [re.match(r"^(\d{4,6}) ", l)] if m}
+
+
 def ler():
     wb = openpyxl.load_workbook(ARQ, read_only=True, data_only=True)
     fer = ferias_de_cada_um()
@@ -187,8 +218,40 @@ def ler():
         # contrato de safra acaba com a safra: sai do quadro na entressafra sem precisar de FAT
         if r["Contrato"] == "SAFRA" and p["mat"] not in fora_quadro:
             safra[p["papel"]] = safra.get(p["papel"], 0) + 1
-    # fila: colheita primeiro; dentro do grupo, menor tempo de casa (admissão mais nova) primeiro
-    chave = lambda p: (p["grupo"], -(datetime.date.fromisoformat(p["adm"]).toordinal() if p["adm"] else 0), -p["mat"])
+    # escolhidos do Transporte que não estão no painel do RH: entram com os dados dos períodos e do histórico de férias
+    esc = escolhidos()
+    ja = {p["mat"] for p in gente + verificar}
+    for m, papel in esc.items():
+        if m in ja:
+            continue
+        f = fer.get(m) or {}
+        h = next((r for r in openpyxl.load_workbook(HISTORICO, read_only=True, data_only=True).worksheets[0].iter_rows(values_only=True)
+                  if r and str(r[2]) == str(m)), None) if HISTORICO.exists() else None
+        adm = datetime.datetime.strptime(h[4], "%d/%m/%Y").date() if h else None
+        p = {"mat": m, "nome": str(h[1]).strip() if h else str(m), "funcao": str(h[3]).strip() if h else "–", "papel": papel,
+             "ativ": atividade(str(h[0])) if h else "–", "grupo": 2, "ger": "–", "adm": adm.isoformat() if adm else None,
+             "tempo": "", "idade": None, "ferias": "", "limite": f.get("limite"), "motivo": "Escolhido pelo Transporte, fora do painel do RH",
+             "fonte_ferias": f.get("fonte", "–"), "saldo": f.get("saldo"), "prog": f.get("prog")}
+        p["faixa"] = faixa_ferias(p["limite"])
+        p["turma"] = turma_de(p["limite"])
+        p["alerta"] = alerta_de(f.get("lims") or [], p["turma"])
+        gente.append(p)
+    for p in gente + verificar:
+        p["escolhido"] = p["mat"] in esc
+        if p["escolhido"] and p["papel"] != esc[p["mat"]]:   # a função do Transporte é a mais nova (mesma base dos ativos)
+            p["papel"] = esc[p["mat"]]
+    # o Transporte deu direito aos que estavam a conferir (aposentadoria ou fora do levantamento): vão com os escolhidos
+    gente += [p for p in verificar if p["escolhido"]]
+    verificar = [p for p in verificar if not p["escolhido"]]
+    # quem saiu do quadro (não está nos ativos do relatório do Transporte) sai do FAT
+    ativos = ativos_transporte()
+    if ativos:
+        saiu = [p["mat"] for p in gente + verificar if p["mat"] not in ativos]
+        gente = [p for p in gente if p["mat"] in ativos]
+        verificar = [p for p in verificar if p["mat"] in ativos]
+        print(f"fora dos ativos do Transporte (saíram do FAT): {len(saiu)}")
+    # fila: os escolhidos do Transporte primeiro; depois colheita; dentro do grupo, menor tempo de casa (admissão mais nova)
+    chave = lambda p: (not p["escolhido"], p["grupo"], -(datetime.date.fromisoformat(p["adm"]).toordinal() if p["adm"] else 0), -p["mat"])
     gente.sort(key=chave)
     verificar.sort(key=lambda p: (p["papel"], p["motivo"], chave(p)))
     return gente, verificar, safra
@@ -198,9 +261,9 @@ def main():
     gente, verificar, safra = ler()
     conta = lambda lista: {pp: sum(1 for p in lista if p["papel"] == pp) for pp in ("operador", "motorista")}
     publico = {"fonte": FONTE, "criterio": CRITERIO, "n": len(gente), "lista": LISTA_PRIVADA,
-               "verificar": conta(verificar), "safra": safra,
+               "verificar": conta(verificar), "safra": safra, "escolhidos": conta([p for p in gente if p["escolhido"]]),
                "turmas": TURMAS,
-               "fila": [[p["papel"], p["ativ"], p["grupo"], p["limite"][:7] if p["limite"] else None, p["turma"], 1 if p["alerta"] else 0] for p in gente]}
+               "fila": [[p["papel"], p["ativ"], p["grupo"], p["limite"][:7] if p["limite"] else None, p["turma"], 1 if p["alerta"] else 0, 1 if p["escolhido"] else 0] for p in gente]}
     cab = json.dumps({k: v for k, v in publico.items() if k != "fila"}, ensure_ascii=False)[:-1]
     SAIDA.write_text(cab + ', "fila": [\n' + ",\n".join(json.dumps(f, ensure_ascii=False) for f in publico["fila"]) + "\n]}\n",
                      encoding="utf-8")
@@ -219,6 +282,8 @@ def main():
     t = {k: conta([p for p in gente if p["turma"] == k]) for k in (1, 2)}
     print(f"turma 1 (FAT direto): {t[1]}; turma 2 (férias e FAT): {t[2]}; alertas: "
           f"{collections.Counter(p['alerta'] for p in gente if p['alerta'])}; fontes: {collections.Counter(p['fonte_ferias'] for p in gente)}")
+    print(f"escolhidos do Transporte: {conta([p for p in gente if p['escolhido']])}; no painel a conferir: "
+          f"{conta([p for p in verificar if p['escolhido']])}; fora do painel: {[p['mat'] for p in gente if p['motivo'].startswith('Escolhido')]}")
     print(f"{len(gente)} com direito: {conta(gente)}; colheita {sum(1 for p in gente if p['grupo'] == 1)}; "
           f"a verificar {conta(verificar)}; contrato safra no quadro {safra}")
     return publico

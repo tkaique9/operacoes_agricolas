@@ -11,7 +11,7 @@
 :root {
   --bg: #F4F6FA; --surface: #FFFFFF; --ink: #1C2433; --mut: #5A6072; --line: #D6DAE2; --zebra: #F8F9FC;
   --navy: #12224A; --band-ink: #F4F6FA; --band-mut: #AEBBD8;
-  --gold: #A88516; --marc: #FDF2D3; --marc-line: #E9D48F;
+  --gold: #A88516; --marc: #FDF2D3; --marc-line: #E9D48F; --azul: #2563A8; --azul-bg: #E3EEFA;
   --ok: #2E7D46; --ok-bg: #E2F1E6; --warn: #A6620A; --warn-bg: #FBEEDA; --bad: #C0392B; --bad-bg: #FAE1DD;
   --f-ui: "Archivo", "Segoe UI", -apple-system, Helvetica, Arial, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
@@ -19,13 +19,13 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #0A1330; --surface: #111C3D; --ink: #E8ECF5; --mut: #AEBBD8; --line: rgba(174,187,216,.22); --zebra: #14214A;
   --navy: #1E3566; --band-ink: #F4F6FA; --band-mut: #AEBBD8;
-  --gold: #D9B43C; --marc: rgba(201,162,39,.16); --marc-line: rgba(201,162,39,.45);
+  --gold: #D9B43C; --marc: rgba(201,162,39,.16); --marc-line: rgba(201,162,39,.45); --azul: #8DB8F0; --azul-bg: rgba(37,99,168,.28);
   --ok: #8FD3A6; --ok-bg: rgba(46,125,70,.22); --warn: #F5A35C; --warn-bg: rgba(166,98,10,.22); --bad: #F0897A; --bad-bg: rgba(192,57,43,.22);
   color-scheme: dark } }
 :root[data-theme="dark"] {
   --bg: #0A1330; --surface: #111C3D; --ink: #E8ECF5; --mut: #AEBBD8; --line: rgba(174,187,216,.22); --zebra: #14214A;
   --navy: #1E3566; --band-ink: #F4F6FA; --band-mut: #AEBBD8;
-  --gold: #D9B43C; --marc: rgba(201,162,39,.16); --marc-line: rgba(201,162,39,.45);
+  --gold: #D9B43C; --marc: rgba(201,162,39,.16); --marc-line: rgba(201,162,39,.45); --azul: #8DB8F0; --azul-bg: rgba(37,99,168,.28);
   --ok: #8FD3A6; --ok-bg: rgba(46,125,70,.22); --warn: #F5A35C; --warn-bg: rgba(166,98,10,.22); --bad: #F0897A; --bad-bg: rgba(192,57,43,.22);
   color-scheme: dark }
 body { background: var(--bg); color: var(--ink); font: 400 15px/1.45 var(--f-ui); }
@@ -83,6 +83,12 @@ tbody tr:nth-child(even) td { background: var(--zebra); }
 tr.grp td { background: var(--bg) !important; font: 600 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mut); padding-top: 12px; }
 tr.vai td { background: var(--marc) !important; }
 tr.vai td:first-child { box-shadow: inset 4px 0 0 var(--gold); }
+/* sugeridos para completar a necessidade (não estão na lista do Transporte): azul */
+tr.vai.sug td { background: var(--azul-bg) !important; }
+tr.vai.sug td:first-child { box-shadow: inset 4px 0 0 var(--azul); }
+.orig { display: inline-block; font: 600 10.5px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; border-radius: 3px; padding: 1px 5px; margin-left: 6px; vertical-align: 1px; }
+.orig.esc { color: var(--band-ink); background: var(--navy); } .orig.sug { color: #fff; background: var(--azul); }
+table.res th.az { box-shadow: inset 0 -3px 0 var(--azul); }
 td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); cursor: pointer; }
 .troca { font: 600 11px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--warn); margin-left: 6px; }
 /* férias: a cor diz quando o limite cai (entressafra, safra de 2027 ou depois) */
@@ -106,6 +112,7 @@ td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); 
 /* impressão e PDF: folha deitada, só a lista que está na tela (com os filtros), sem os controles */
 .so-imp { display: none; }
 @media print {
+  tr.vai.sug td { background: #E3EEFA !important; }
   @page { size: A4 landscape; margin: 10mm; }
   :root { --bg: #fff; --surface: #fff; --ink: #000; --mut: #333; --line: #bbb; --zebra: #f3f4f7; --marc: #fdf2d3; }
   body { font-size: 10px; background: #fff; }
@@ -153,6 +160,7 @@ td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); 
     <div class="f-linha">
       <div class="busca"><label for="busca">Nome ou matrícula</label><input type="search" id="busca" placeholder="Um ou vários, separados por vírgula" autocomplete="off"></div>
       <div class="f"><label for="f-papel">Papel</label><select id="f-papel" data-k="papel"></select></div>
+      <div class="f"><label for="f-orig">Escolha</label><select id="f-orig" data-k="orig"></select></div>
       <div class="f"><label for="f-turma">Turma</label><select id="f-turma" data-k="turma"></select></div>
       <div class="f"><label for="f-sit">Situação</label><select id="f-sit" data-k="sit"></select></div>
       <div class="f"><label for="f-ativ">Atividade</label><select id="f-ativ" data-k="ativ"></select></div>
@@ -182,8 +190,9 @@ td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); 
 document.documentElement.setAttribute("translate", "no"); document.documentElement.classList.add("notranslate");
 const F = /*FAT*/null;
 const PAP = ["operador", "motorista"], ROT = { operador: "Operadores", motorista: "Motoristas" };
-const GRUPO = { 1: "Colheita · param na entressafra", 2: "Demais atividades" };
-const CH_M = "fat.marcas", CH_N = "fat.nec";
+const GRUPO = { e: "Escolhidos pelo Transporte", 1: "Colheita · param na entressafra", 2: "Demais atividades" };
+const grupoDe = x => x.escolhido ? "e" : x.grupo;   // os escolhidos vêm primeiro na fila, num grupo só deles
+const CH_M = "fat.marcas.esc", CH_N = "fat.nec.esc";   // 05/11/2026: marcas novas, com os escolhidos do Transporte
 const ler = k => { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch (e) { return null; } };
 const grava = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
 const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -192,7 +201,7 @@ const $ = id => document.getElementById(id);
 const semAcento = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 // dados de cada linha para os filtros (data-*): papel, situação, atividade, gerência, função, férias e a busca
 const dadosLinha = (x, sit) => `data-mat="${x.mat}" data-b="${esc(semAcento(x.mat + " " + x.nome))}" data-papel="${x.papel}" data-sit="${sit}" ` +
-  `data-turma="${x.turma || "–"}" data-ativ="${esc(x.ativ)}" data-ger="${esc(x.ger || "–")}" data-func="${esc(x.funcao)}" data-fer="${esc(x.ferias || "–")}"`;
+  `data-orig="nao" data-turma="${x.turma || "–"}" data-ativ="${esc(x.ativ)}" data-ger="${esc(x.ger || "–")}" data-func="${esc(x.funcao)}" data-fer="${esc(x.ferias || "–")}"`;
 
 let marcas = ler(CH_M) || {};                  // trocas sobre a sugestão: matrícula -> vai (true) ou fica (false)
 const nec = Object.assign({}, F.nec, ler(CH_N) || {});
@@ -204,15 +213,21 @@ const dos = p => F.gente.filter(x => x.papel === p);
 // duas turmas (05/11/2026), pelas férias de cada um: turma 1 vai direto; turma 2, quem tem férias vencendo até
 // 15/12/2027, tira as férias e depois entra no FAT. Todos podem ir
 const turma = x => x.turma || 1;
-// sugestão: os primeiros da fila de cada papel até completar a necessidade
+// sugestão: os escolhidos pelo Transporte e, para completar a necessidade, os primeiros da fila de cada papel
 function sugeridos() {
   const s = new Set();
-  PAP.forEach(p => dos(p).slice(0, Math.max(0, nec[p] | 0)).forEach(x => s.add(x.mat)));
+  PAP.forEach(p => {
+    const g = dos(p), e = g.filter(x => x.escolhido);
+    e.forEach(x => s.add(x.mat));
+    g.filter(x => !x.escolhido).slice(0, Math.max(0, (nec[p] | 0) - e.length)).forEach(x => s.add(x.mat));
+  });
   return s;
 }
 let SUG = sugeridos();
 const vai = x => Object.prototype.hasOwnProperty.call(marcas, x.mat) ? marcas[x.mat] : SUG.has(x.mat);
 const sitDe = x => vai(x) ? "t" + turma(x) : "fica";
+// escolhido pelo Transporte, sugerido para completar (azul) ou não vai
+const origDe = x => !vai(x) ? "nao" : x.escolhido ? "esc" : "sug";
 
 $("sub").textContent = `${F.fonte}: ${F.gente.length} motoristas e operadores com direito ao FAT (efetivos, 12 meses ou mais, não aposentados), com as férias de cada um. A necessidade é quem fica sem atividade na escala escolhida, como na aba FAT do estudo de escalas.`;
 // turma e férias de cada um: datas da turma, o alerta do limite (vence antes ou durante o FAT) e a programação que já existe
@@ -226,26 +241,28 @@ const feriasTag = (x, v) => {
   return `<span class="fe ${cls}">${esc(t)}</span>` + (x.alerta ? `<br><small class="lim">${esc(x.alerta)}</small>` : "") +
     (x.prog ? `<br><small>programado: ${esc(x.prog)}</small>` : "");
 };
-$("criterio").textContent = `Sugestão: ${F.criterio}. Marque ou desmarque para trocar; a escolha fica guardada neste navegador.`;
+$("criterio").textContent = `Sugestão: ${F.criterio}. Em azul, os sugeridos para completar a diferença. Marque ou desmarque para trocar; a escolha fica guardada neste navegador.`;
 $("leiTxt").textContent = (TU[1] ? `Turma 1, quem não tem férias vencendo até 15/12/2027, vai direto: FAT de ${per(...TU[1].fat)}. ` : "") +
   (TU[2] ? `Turma 2, quem tem férias vencendo até 15/12/2027 (não daria para tirar na safra): férias de ${per(...TU[2].ferias)} e FAT de ${per(...TU[2].fat)}. ` : "") +
   "O limite de cada um vem dos períodos de férias do Operacional CTT; sem eles, do histórico de férias por setor (admissão e dias já gozados) e, por fim, do painel do RH. Em vermelho, quem da turma 2 precisa de atenção: férias que vencem antes de 15/12, período ainda em aquisição em 15/12 ou um segundo período vencendo até 15/12/2027.";
 
 // tabela por papel, a mesma da página FAT do estudo: ativos do quadro de motoristas e operadores, a necessidade
 // (editável) e o que sai da lista. Os números com nomes por trás são botões que filtram a lista
-const COLS_RES = [["direito", "Com direito", "ao FAT"], ["vai", "Vão para o FAT", ""], ["t1", "Turma 1", "FAT 15/12"],
+const COLS_RES = [["direito", "Com direito", "ao FAT"], ["vai", "Vão para o FAT", ""], ["esc", "Escolhidos", "pelo Transporte"],
+  ["sug", "Sugeridos", "para completar"], ["t1", "Turma 1", "FAT 15/12"],
   ["t2", "Turma 2", "férias + FAT 14/01"], ["semfat", "Sem atividade", "e sem FAT"], ["ficam", "Com direito", "que ficam"]];
 function resumo() {
   const lin = PAP.map(p => {
     const g = dos(p), n = Math.max(0, nec[p] | 0), at = (F.ativos || {})[p] || 0, m = g.filter(vai).length;
-    return { p, at, pr: Math.max(0, at - n), n, direito: g.length, vai: m, t1: g.filter(x => vai(x) && turma(x) === 1).length,
+    return { p, at, pr: Math.max(0, at - n), n, direito: g.length, vai: m, esc: g.filter(x => vai(x) && x.escolhido).length,
+      sug: g.filter(x => vai(x) && !x.escolhido).length, t1: g.filter(x => vai(x) && turma(x) === 1).length,
       t2: g.filter(x => vai(x) && turma(x) === 2).length, semfat: Math.max(0, n - m), ficam: g.length - m };
   });
-  const tot = { at: 0, pr: 0, n: 0, direito: 0, vai: 0, t1: 0, t2: 0, semfat: 0, ficam: 0 };
+  const tot = { at: 0, pr: 0, n: 0, direito: 0, vai: 0, esc: 0, sug: 0, t1: 0, t2: 0, semfat: 0, ficam: 0 };
   lin.forEach(l => Object.keys(tot).forEach(k => { tot[k] += l[k]; }));
   const bot = (p, s, v) => `<button type="button" class="nb" data-p="${p}" data-s="${s}" title="Ver os nomes">${v}</button>`;
   let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>na escolhida</u></th><th class="cl">Sem atividade<u>necessidade do FAT</u></th>` +
-    COLS_RES.map(([s, a, b]) => `<th${s === "vai" ? ' class="cl"' : ""}>${a}${b ? `<u>${b}</u>` : ""}</th>`).join("") + `</tr></thead><tbody>`;
+    COLS_RES.map(([s, a, b]) => `<th${s === "vai" ? ' class="cl"' : s === "sug" ? ' class="az"' : ""}>${a}${b ? `<u>${b}</u>` : ""}</th>`).join("") + `</tr></thead><tbody>`;
   lin.forEach(l => {
     h += `<tr><td class="l">${ROT[l.p]}</td><td>${l.at || "–"}</td><td>${l.at ? l.pr : "–"}</td>` +
       `<td><input id="nec-${l.p}" type="number" min="0" step="1" inputmode="numeric" value="${l.n}" data-p="${l.p}" aria-label="Necessidade do FAT, ${ROT[l.p].toLowerCase()}"></td>` +
@@ -273,9 +290,9 @@ function listas() {
       <th class="c">Admissão</th><th class="c">Tempo</th><th class="n">Idade</th><th>Férias</th><th class="c">Limite férias</th><th>Turma e férias</th></tr></thead><tbody>`;
     let grupo = 0;
     g.forEach((x, i) => {
-      if (x.grupo !== grupo) { grupo = x.grupo; h += `<tr class="grp"><td colspan="13">${GRUPO[grupo]} · ${g.filter(y => y.grupo === grupo).length}</td></tr>`; }
+      if (grupoDe(x) !== grupo) { grupo = grupoDe(x); h += `<tr class="grp"><td colspan="13">${GRUPO[grupo]} · ${g.filter(y => grupoDe(y) === grupo).length}</td></tr>`; }
       h += `<tr ${dadosLinha(x, sitDe(x))}><td class="c"><input type="checkbox" aria-label="${esc(x.nome)} vai para o FAT" data-mat="${x.mat}"></td>
-        <td class="n mono">${i + 1}</td><td class="mono">${x.mat}</td><td class="nome">${esc(x.nome)}<span class="troca" hidden>trocado</span></td>
+        <td class="n mono">${i + 1}</td><td class="mono">${x.mat}</td><td class="nome">${esc(x.nome)}<span class="orig" hidden></span><span class="troca" hidden>trocado</span></td>
         <td class="t">${esc(x.funcao)}</td><td class="t">${esc(x.ativ)}</td><td class="t">${esc(x.ger)}</td><td class="c mono">${dataBR(x.adm)}</td>
         <td class="c">${esc(x.tempo)}</td><td class="n">${x.idade == null ? "–" : x.idade}</td>
         <td>${esc(x.ferias)}</td><td class="c mono" title="fonte: ${esc(x.fonte_ferias || "painel")}">${dataBR(x.limite)}</td><td class="fe-c"></td></tr>`;
@@ -304,7 +321,10 @@ function marcaLinhas() {
     const tr = document.querySelector(`tr[data-mat="${x.mat}"]`); if (!tr) return;
     const v = vai(x);
     tr.dataset.sit = sitDe(x);
-    tr.classList.toggle("vai", v);
+    const o = origDe(x), t = tr.querySelector(".orig");
+    tr.dataset.orig = o;
+    tr.classList.toggle("vai", v); tr.classList.toggle("sug", o === "sug");
+    t.hidden = o === "nao"; t.className = "orig " + o; t.textContent = o === "esc" ? "escolhido" : "sugerido";
     tr.querySelector("input").checked = v;
     tr.querySelector(".troca").hidden = v === SUG.has(x.mat);
     tr.querySelector(".fe-c").innerHTML = feriasTag(x, v);
@@ -313,7 +333,7 @@ function marcaLinhas() {
 // filtros, como os do Excel: a busca aceita vários nomes ou matrículas separados por vírgula (sem acento também acha);
 // cada lista mostra só os valores que ainda aparecem com os outros filtros, com quantos são
 // a turma vem das férias de cada um (turma 1 vai direto; turma 2 tira as férias e depois vai), marcado ou não
-const FILTROS = ["papel", "turma", "sit", "ativ", "ger", "func", "fer"];
+const FILTROS = ["papel", "orig", "turma", "sit", "ativ", "ger", "func", "fer"];
 const ROT_TURMA = () => ({ 1: "Turma 1 · FAT" + (TU[1] ? " " + TU[1].fat[0].slice(8, 10) + "/" + TU[1].fat[0].slice(5, 7) : "") + " direto",
   2: "Turma 2 · férias + FAT" + (TU[2] ? " " + TU[2].fat[0].slice(8, 10) + "/" + TU[2].fat[0].slice(5, 7) : ""), "–": "Sem turma · a conferir" });
 const ROT_SIT = { t1: "Turma 1 · FAT direto", t2: "Turma 2 · férias e FAT", fica: "Fica · tem direito", conferir: "Pode ter direito · conferir",
@@ -322,7 +342,8 @@ const ROT_SIT = { t1: "Turma 1 · FAT direto", t2: "Turma 2 · férias e FAT", f
 const SIT_GRUPO = { vai: ["t1", "t2"], direito: ["t1", "t2", "fica"], ficam: ["fica"], semfat: ["conferir"] };
 const ROT_PAPEL1 = { operador: "Operador", motorista: "Motorista" };
 const SEL = {};
-const rotulo = (k, v) => k === "sit" ? ROT_SIT[v] || v : k === "papel" ? ROT_PAPEL1[v] || v : k === "turma" ? ROT_TURMA()[v] || v : v;
+const ROT_ORIG = { esc: "Escolhido pelo Transporte", sug: "Sugerido para completar", nao: "Não vai" };
+const rotulo = (k, v) => k === "orig" ? ROT_ORIG[v] || v : k === "sit" ? ROT_SIT[v] || v : k === "papel" ? ROT_PAPEL1[v] || v : k === "turma" ? ROT_TURMA()[v] || v : v;
 const termos = () => semAcento($("busca").value).split(/[,;]/).map(t => t.trim()).filter(Boolean);
 const casa = (k, v) => k === "sit" && SIT_GRUPO[SEL.sit] ? SIT_GRUPO[SEL.sit].indexOf(v) >= 0 : v === SEL[k];
 function passa(tr, ignora, q) {
@@ -330,9 +351,13 @@ function passa(tr, ignora, q) {
   return FILTROS.every(k => k === ignora || !SEL[k] || casa(k, tr.dataset[k]));
 }
 // o número da tabela fica aceso quando a lista mostra exatamente ele (só papel e situação, sem outro filtro)
+const ORIG_BOT = { esc: 1, sug: 1 };
 function marcaBotoes() {
   const so = !termos().length && FILTROS.every(k => k === "papel" || k === "sit" || !SEL[k]);
-  document.querySelectorAll("button.nb").forEach(b => b.classList.toggle("on", so && SEL.sit === b.dataset.s && (SEL.papel || "") === b.dataset.p));
+  const so2 = !termos().length && FILTROS.every(k => k === "papel" || k === "orig" || !SEL[k]);
+  document.querySelectorAll("button.nb").forEach(b => b.classList.toggle("on", ORIG_BOT[b.dataset.s]
+    ? so2 && SEL.orig === b.dataset.s && (SEL.papel || "") === b.dataset.p
+    : so && !SEL.orig && SEL.sit === b.dataset.s && (SEL.papel || "") === b.dataset.p));
 }
 function filtra() {
   const linhas = [...document.querySelectorAll("tr[data-b]")], q = termos();
@@ -389,7 +414,7 @@ $("resumo").addEventListener("click", e => {
   const b = e.target.closest("button.nb"); if (!b) return;
   const ja = b.classList.contains("on");
   FILTROS.forEach(k => { SEL[k] = ""; }); $("busca").value = "";
-  if (!ja) { SEL.papel = b.dataset.p; SEL.sit = b.dataset.s; }
+  if (!ja) { SEL.papel = b.dataset.p; SEL[ORIG_BOT[b.dataset.s] ? "orig" : "sit"] = b.dataset.s; }
   filtra();
   $("aviso").textContent = ja ? "Filtro limpo." : b.dataset.s === "semfat"
     ? "Quem fica sem atividade e sem FAT não tem nome na escala: aparecem os que podem ter direito (a conferir). Quem não tem direito ao FAT (menos de 12 meses, contrato safra ou experiência, aposentado) não está nesta lista."
@@ -416,16 +441,16 @@ $("bCopiaF").addEventListener("click", () => {
 });
 // exportar para Excel: a lista que está na tela (com os filtros), uma linha por pessoa, com turma, situação e férias.
 // A biblioteca da planilha só carrega no clique; sem ela (sem internet), sai um CSV que o Excel abre igual
-const ROT_FILTRO = { papel: "Papel", turma: "Turma", sit: "Situação", ativ: "Atividade", ger: "Gerência", func: "Função", fer: "Férias" };
+const ROT_FILTRO = { papel: "Papel", orig: "Escolha", turma: "Turma", sit: "Situação", ativ: "Atividade", ger: "Gerência", func: "Função", fer: "Férias" };
 const filtrosTexto = () => FILTROS.filter(k => SEL[k]).map(k => `${ROT_FILTRO[k]}: ${rotulo(k, SEL[k])}`)
   .concat(termos().length ? [`Busca: ${$("busca").value.trim()}`] : []).join(" · ") || "Sem filtro";
 function filtradas() {
   const cab = ["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão", "Tempo", "Idade", "Férias", "Limite férias",
-    "Fonte do limite", "Turma", "Situação", "Período da turma", "Alerta", "Programado"];
+    "Fonte do limite", "Escolha", "Turma", "Situação", "Período da turma", "Alerta", "Programado"];
   const vis = [...document.querySelectorAll("tr[data-b]:not([hidden])")];
   return [cab].concat(vis.map(tr => { const x = PESSOA.get(tr.dataset.mat), v = tr.dataset.sit === "t1" || tr.dataset.sit === "t2";
     return [ROT_PAPEL1[x.papel], +x.mat, x.nome, x.funcao, x.ativ, x.ger || "–", dataBR(x.adm), x.tempo || "", x.idade == null ? "" : x.idade,
-      x.ferias || "", dataBR(x.limite), x.fonte_ferias || "painel", rotulo("turma", tr.dataset.turma), ROT_SIT[tr.dataset.sit] || "",
+      x.ferias || "", dataBR(x.limite), x.fonte_ferias || "painel", ROT_ORIG[tr.dataset.orig] || "", rotulo("turma", tr.dataset.turma), ROT_SIT[tr.dataset.sit] || "",
       v ? textoTurma(x) : "", x.alerta || "", x.prog || ""]; }));
 }
 const nomeArq = ext => "FAT_lista_" + new Date().toISOString().slice(0, 10) + "." + ext;
@@ -462,8 +487,8 @@ $("bImp").addEventListener("click", () => {
 });
 // os marcados, em colunas separadas por tabulação: colam direto no Excel
 $("bCopia").addEventListener("click", () => {
-  copia([["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão", "Limite férias", "Turma", "Alerta", "Programado"].join("\t")]
-    .concat(F.gente.filter(vai).map(x => [ROT[x.papel], x.mat, x.nome, x.funcao, x.ativ, x.ger, dataBR(x.adm), dataBR(x.limite), textoTurma(x), x.alerta || "", x.prog || ""].join("\t"))), "marcadas copiadas");
+  copia([["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão", "Limite férias", "Escolha", "Turma", "Alerta", "Programado"].join("\t")]
+    .concat(F.gente.filter(vai).map(x => [ROT[x.papel], x.mat, x.nome, x.funcao, x.ativ, x.ger, dataBR(x.adm), dataBR(x.limite), ROT_ORIG[origDe(x)], textoTurma(x), x.alerta || "", x.prog || ""].join("\t"))), "marcadas copiadas");
 });
 
 resumo(); listas(); marcaLinhas(); filtra();
