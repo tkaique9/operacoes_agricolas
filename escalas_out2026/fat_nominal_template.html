@@ -103,6 +103,32 @@ td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); 
 .conta { font: 600 14px var(--f-ui); margin-right: auto; }
 @media (max-width: 560px) { .f-linha .busca { grid-column: auto; } }
 @media (prefers-reduced-motion: no-preference) { tr td { transition: background-color .15s ease; } }
+/* impressão e PDF: folha deitada, só a lista que está na tela (com os filtros), sem os controles */
+.so-imp { display: none; }
+@media print {
+  @page { size: A4 landscape; margin: 10mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #000; --mut: #333; --line: #bbb; --zebra: #f3f4f7; --marc: #fdf2d3; }
+  body { font-size: 10px; background: #fff; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .lado { padding: 0 !important; }
+  .faixa .lado { padding-block: 6px !important; }
+  .faixa p, .priv, .lei, #criterio, .filtros, .copia, .resumo .nota, .resumo h2 small, .troca { display: none !important; }
+  .so-imp { display: block; margin: 0; font: 600 11px var(--f-ui); }
+  main.lado { gap: 8px; padding-block: 6px 0; }
+  h1 { font-size: 18px; }
+  .rolo { overflow: visible; border: 0; }
+  table { font-size: 9.5px; }
+  th, td { padding: 3px 4px !important; }
+  table.res td, button.nb, table.res input { font-size: 11px; }
+  table.res input { border: 0; width: auto; padding: 0; }
+  button.nb { border: 0; padding: 0; }
+  section.papel td.fe-c { min-width: 0; }
+  .fe { font-size: 9px; padding: 1px 5px; }
+  td input[type=checkbox] { width: 11px; height: 11px; }
+  tr { break-inside: avoid; }
+  thead { display: table-header-group; }
+  section.papel h3 { font-size: 13px; break-after: avoid; }
+}
 </style>
 
 <div class="faixa" translate="no"><div class="lado">
@@ -138,11 +164,14 @@ td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); 
       <span class="conta" id="conta" role="status"></span>
       <button type="button" id="bLimpa">Limpar filtros</button>
       <button type="button" id="bCopiaF">Copiar a lista filtrada</button>
+      <button type="button" id="bXls">Exportar para Excel</button>
+      <button type="button" id="bImp">Imprimir ou PDF</button>
       <button type="button" id="bSug">Voltar à sugestão</button>
       <button type="button" class="pri" id="bCopia">Copiar marcados</button>
     </div>
     <span class="aviso" id="aviso" role="status"></span>
   </section>
+  <p class="so-imp" id="impFiltro"></p>
   <textarea class="copia" id="copia" hidden readonly aria-label="Lista dos marcados para copiar"></textarea>
   <div id="listas"></div>
 </main>
@@ -172,9 +201,9 @@ const doLink = /^#nec(\d+)-(\d+)$/.exec(location.hash);
 const NEC_BASE = doLink ? { operador: +doLink[1], motorista: +doLink[2] } : F.nec;
 if (doLink) { Object.assign(nec, NEC_BASE); grava(CH_N, nec); }
 const dos = p => F.gente.filter(x => x.papel === p);
-// duas turmas (05/11/2026), pelas férias de cada um: turma 1, quem vence a segunda férias na safra de 2027, tira as
-// férias e depois entra no FAT; turma 2 vai direto. Todos podem ir
-const turma = x => x.turma || 2;
+// duas turmas (05/11/2026), pelas férias de cada um: turma 1 vai direto; turma 2, quem vence a segunda férias na safra
+// de 2027, tira as férias e depois entra no FAT. Todos podem ir
+const turma = x => x.turma || 1;
 // sugestão: os primeiros da fila de cada papel até completar a necessidade
 function sugeridos() {
   const s = new Set();
@@ -189,23 +218,23 @@ $("sub").textContent = `${F.fonte}: ${F.gente.length} motoristas e operadores co
 // turma e férias de cada um: datas da turma, o alerta do limite (vence antes ou durante o FAT) e a programação que já existe
 const TU = F.turmas || {};
 const per = (a, b) => a.slice(8, 10) + "/" + a.slice(5, 7) + " a " + b.slice(8, 10) + "/" + b.slice(5, 7) + "/" + b.slice(2, 4);
-const textoTurma = x => turma(x) === 1 && TU[1] ? `Turma 1 · férias ${per(...TU[1].ferias)} · FAT ${per(...TU[1].fat)}`
-  : TU[2] ? `Turma 2 · FAT ${per(...TU[2].fat)}` : "Turma 2";
+const textoTurma = x => turma(x) === 2 && TU[2] ? `Turma 2 · férias ${per(...TU[2].ferias)} · FAT ${per(...TU[2].fat)}`
+  : TU[1] ? `Turma 1 · FAT ${per(...TU[1].fat)}` : "Turma 1";
 const feriasTag = (x, v) => {
   const t = v ? textoTurma(x) : "Fica · tem direito";
-  const cls = x.alerta ? "f1" : !v ? "f0" : turma(x) === 1 ? "f2" : "f3";
+  const cls = x.alerta ? "f1" : !v ? "f0" : turma(x) === 2 ? "f2" : "f3";
   return `<span class="fe ${cls}">${esc(t)}</span>` + (x.alerta ? `<br><small class="lim">${esc(x.alerta)}</small>` : "") +
     (x.prog ? `<br><small>programado: ${esc(x.prog)}</small>` : "");
 };
 $("criterio").textContent = `Sugestão: ${F.criterio}. Marque ou desmarque para trocar; a escolha fica guardada neste navegador.`;
-$("leiTxt").textContent = (TU[1] ? `Turma 1, quem vence a segunda férias na safra de 2027 (limite de abril a novembro de 2027): férias de ${per(...TU[1].ferias)} e FAT de ${per(...TU[1].fat)}. ` : "") +
-  (TU[2] ? `Turma 2, os outros: FAT de ${per(...TU[2].fat)}. ` : "") +
-  "O limite de cada um vem dos períodos de férias do Operacional CTT; sem eles, do histórico de férias por setor (admissão e dias já gozados) e, por fim, do painel do RH. Quem da turma 2 tem o limite antes ou durante o FAT aparece em vermelho: sem tirar as férias antes, elas vencem em dobro (DP confirmar).";
+$("leiTxt").textContent = (TU[1] ? `Turma 1, vai direto: FAT de ${per(...TU[1].fat)}. ` : "") +
+  (TU[2] ? `Turma 2, quem vence a segunda férias na safra de 2027 (limite de abril a novembro de 2027): férias de ${per(...TU[2].ferias)} e FAT de ${per(...TU[2].fat)}. ` : "") +
+  "O limite de cada um vem dos períodos de férias do Operacional CTT; sem eles, do histórico de férias por setor (admissão e dias já gozados) e, por fim, do painel do RH. Quem da turma 1 tem o limite antes ou durante o FAT aparece em vermelho: sem tirar as férias antes, elas vencem em dobro (DP confirmar).";
 
 // tabela por papel, a mesma da página FAT do estudo: ativos do quadro de motoristas e operadores, a necessidade
 // (editável) e o que sai da lista. Os números com nomes por trás são botões que filtram a lista
-const COLS_RES = [["direito", "Com direito", "ao FAT"], ["vai", "Vão para o FAT", ""], ["t1", "Turma 1", "férias + FAT 14/01"],
-  ["t2", "Turma 2", "FAT 15/12"], ["semfat", "Sem atividade", "e sem FAT"], ["ficam", "Com direito", "que ficam"]];
+const COLS_RES = [["direito", "Com direito", "ao FAT"], ["vai", "Vão para o FAT", ""], ["t1", "Turma 1", "FAT 15/12"],
+  ["t2", "Turma 2", "férias + FAT 14/01"], ["semfat", "Sem atividade", "e sem FAT"], ["ficam", "Com direito", "que ficam"]];
 function resumo() {
   const lin = PAP.map(p => {
     const g = dos(p), n = Math.max(0, nec[p] | 0), at = (F.ativos || {})[p] || 0, m = g.filter(vai).length;
@@ -283,11 +312,11 @@ function marcaLinhas() {
 }
 // filtros, como os do Excel: a busca aceita vários nomes ou matrículas separados por vírgula (sem acento também acha);
 // cada lista mostra só os valores que ainda aparecem com os outros filtros, com quantos são
-// a turma vem das férias de cada um (turma 1 tira as férias e depois vai; turma 2 vai direto), marcado ou não
+// a turma vem das férias de cada um (turma 1 vai direto; turma 2 tira as férias e depois vai), marcado ou não
 const FILTROS = ["papel", "turma", "sit", "ativ", "ger", "func", "fer"];
-const ROT_TURMA = () => ({ 1: "Turma 1 · férias + FAT" + (TU[1] ? " " + TU[1].fat[0].slice(8, 10) + "/" + TU[1].fat[0].slice(5, 7) : ""),
-  2: "Turma 2 · FAT" + (TU[2] ? " " + TU[2].fat[0].slice(8, 10) + "/" + TU[2].fat[0].slice(5, 7) : "") + " direto", "–": "Sem turma · a conferir" });
-const ROT_SIT = { t1: "Turma 1 · férias e FAT", t2: "Turma 2 · FAT direto", fica: "Fica · tem direito", conferir: "Pode ter direito · conferir",
+const ROT_TURMA = () => ({ 1: "Turma 1 · FAT" + (TU[1] ? " " + TU[1].fat[0].slice(8, 10) + "/" + TU[1].fat[0].slice(5, 7) : "") + " direto",
+  2: "Turma 2 · férias + FAT" + (TU[2] ? " " + TU[2].fat[0].slice(8, 10) + "/" + TU[2].fat[0].slice(5, 7) : ""), "–": "Sem turma · a conferir" });
+const ROT_SIT = { t1: "Turma 1 · FAT direto", t2: "Turma 2 · férias e FAT", fica: "Fica · tem direito", conferir: "Pode ter direito · conferir",
   vai: "Vão para o FAT", direito: "Com direito ao FAT", ficam: "Com direito que ficam", semfat: "Sem FAT · a conferir" };
 // situações que juntam outras, como nas colunas da tabela por papel
 const SIT_GRUPO = { vai: ["t1", "t2"], direito: ["t1", "t2", "fica"], ficam: ["fica"], semfat: ["conferir"] };
@@ -384,6 +413,52 @@ $("bCopiaF").addEventListener("click", () => {
   copia([["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão", "Férias", "Limite férias", "Turma", "Situação"].join("\t")]
     .concat(vis.map(tr => { const x = PESSOA.get(tr.dataset.mat);
       return [ROT[x.papel], x.mat, x.nome, x.funcao, x.ativ, x.ger || "–", dataBR(x.adm), x.ferias, dataBR(x.limite), rotulo("turma", tr.dataset.turma), ROT_SIT[tr.dataset.sit]].join("\t"); })), "copiadas da lista filtrada");
+});
+// exportar para Excel: a lista que está na tela (com os filtros), uma linha por pessoa, com turma, situação e férias.
+// A biblioteca da planilha só carrega no clique; sem ela (sem internet), sai um CSV que o Excel abre igual
+const ROT_FILTRO = { papel: "Papel", turma: "Turma", sit: "Situação", ativ: "Atividade", ger: "Gerência", func: "Função", fer: "Férias" };
+const filtrosTexto = () => FILTROS.filter(k => SEL[k]).map(k => `${ROT_FILTRO[k]}: ${rotulo(k, SEL[k])}`)
+  .concat(termos().length ? [`Busca: ${$("busca").value.trim()}`] : []).join(" · ") || "Sem filtro";
+function filtradas() {
+  const cab = ["Papel", "Mat.", "Nome", "Função", "Atividade", "Gerência", "Admissão", "Tempo", "Idade", "Férias", "Limite férias",
+    "Fonte do limite", "Turma", "Situação", "Período da turma", "Alerta", "Programado"];
+  const vis = [...document.querySelectorAll("tr[data-b]:not([hidden])")];
+  return [cab].concat(vis.map(tr => { const x = PESSOA.get(tr.dataset.mat), v = tr.dataset.sit === "t1" || tr.dataset.sit === "t2";
+    return [ROT_PAPEL1[x.papel], +x.mat, x.nome, x.funcao, x.ativ, x.ger || "–", dataBR(x.adm), x.tempo || "", x.idade == null ? "" : x.idade,
+      x.ferias || "", dataBR(x.limite), x.fonte_ferias || "painel", rotulo("turma", tr.dataset.turma), ROT_SIT[tr.dataset.sit] || "",
+      v ? textoTurma(x) : "", x.alerta || "", x.prog || ""]; }));
+}
+const nomeArq = ext => "FAT_lista_" + new Date().toISOString().slice(0, 10) + "." + ext;
+function baixa(blob, nome) {
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nome;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+function csv(linhas) {
+  const cel = v => { const t = String(v); return /[;"\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; };
+  baixa(new Blob(["﻿" + linhas.map(l => l.map(cel).join(";")).join("\r\n")], { type: "text/csv;charset=utf-8" }), nomeArq("csv"));
+}
+let carregaXlsx = null;
+$("bXls").addEventListener("click", () => {
+  const linhas = filtradas(), n = linhas.length - 1;
+  carregaXlsx = carregaXlsx || new Promise((ok, erro) => {
+    if (window.XLSX) return ok();
+    const s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+    s.onload = ok; s.onerror = erro; document.head.appendChild(s);
+  });
+  carregaXlsx.then(() => {
+    const ws = XLSX.utils.aoa_to_sheet([["Lista nominal do FAT · " + filtrosTexto()], []].concat(linhas));
+    ws["!cols"] = linhas[0].map((c, i) => ({ wch: Math.min(48, Math.max(c.length, ...linhas.slice(1).map(l => String(l[i]).length)) + 2) }));
+    ws["!autofilter"] = { ref: XLSX.utils.encode_range({ s: { r: 2, c: 0 }, e: { r: 2 + n, c: linhas[0].length - 1 } }) };
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "FAT");
+    XLSX.writeFile(wb, nomeArq("xlsx"));
+    $("aviso").textContent = `${n} pessoas exportadas para o Excel.`;
+  }, () => { carregaXlsx = null; csv(linhas); $("aviso").textContent = `${n} pessoas exportadas em CSV (abre no Excel).`; });
+});
+// imprimir ou salvar em PDF: sai o que está na tela, com os filtros escritos no alto da folha
+$("bImp").addEventListener("click", () => {
+  const n = document.querySelectorAll("tr[data-b]:not([hidden])").length;
+  $("impFiltro").textContent = `${filtrosTexto()} · ${n} pessoas · impresso em ${new Date().toLocaleDateString("pt-BR")}`;
+  print();
 });
 // os marcados, em colunas separadas por tabulação: colam direto no Excel
 $("bCopia").addEventListener("click", () => {

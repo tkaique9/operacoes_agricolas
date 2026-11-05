@@ -54,10 +54,10 @@ SAFRA_27 = (datetime.date(2027, 4, 1), datetime.date(2027, 12, 1))
 PERIODOS = AQUI / "dados" / "fat" / "ferias_periodos.xlsx"
 HISTORICO = AQUI / "dados" / "fat" / "historico_ferias.xlsx"
 HOJE = datetime.date(2026, 11, 5)
-# duas turmas (decisão de 05/11/2026): quem vence a segunda férias na safra de 2027 tira as férias antes e entra depois
-# no FAT; os outros vão direto. As duas turmas terminam o FAT em 15/03/2027 (confirmado pelo usuário em 05/11)
-TURMAS = {1: {"ferias": ("2026-12-15", "2027-01-13"), "fat": ("2027-01-14", "2027-03-15")},
-          2: {"ferias": None, "fat": ("2026-12-15", "2027-03-15")}}
+# duas turmas (decisão de 05/11/2026): turma 1 vai direto para o FAT; turma 2, quem vence a segunda férias na safra de
+# 2027, tira as férias antes e entra depois no FAT. As duas turmas terminam o FAT em 15/03/2027 (confirmado pelo usuário em 05/11)
+TURMAS = {1: {"ferias": None, "fat": ("2026-12-15", "2027-03-15")},
+          2: {"ferias": ("2026-12-15", "2027-01-13"), "fat": ("2027-01-14", "2027-03-15")}}
 
 
 def data_iso(v):
@@ -118,13 +118,13 @@ def ferias_de_cada_um():
 
 
 def turma_de(lim):
-    """1: a segunda férias vence na safra de 2027 (limite de abril a novembro): férias e depois FAT; 2: os outros."""
-    return 1 if lim and SAFRA_27[0] <= datetime.date.fromisoformat(lim) < SAFRA_27[1] else 2
+    """2: a segunda férias vence na safra de 2027 (limite de abril a novembro): férias e depois FAT; 1: os outros, direto."""
+    return 2 if lim and SAFRA_27[0] <= datetime.date.fromisoformat(lim) < SAFRA_27[1] else 1
 
 
 def alerta_de(lim, turma):
-    """Limite que cai fora do que a turma resolve: antes de começar, durante ou logo depois do FAT da turma 2."""
-    if not lim or turma == 1:
+    """Limite que cai fora do que a turma resolve: antes de começar, durante ou logo depois do FAT da turma 1."""
+    if not lim or turma == 2:
         return None
     d = datetime.date.fromisoformat(lim)
     if d < datetime.date(2026, 12, 15):
@@ -202,7 +202,7 @@ def main():
                      "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, "
                      "viewport-fit=cover\">\n</head><body>\n" + pagina + "\n</body></html>\n", encoding="utf-8")
     t = {k: conta([p for p in gente if p["turma"] == k]) for k in (1, 2)}
-    print(f"turma 1 (férias e FAT): {t[1]}; turma 2 (FAT direto): {t[2]}; alertas: "
+    print(f"turma 1 (FAT direto): {t[1]}; turma 2 (férias e FAT): {t[2]}; alertas: "
           f"{collections.Counter(p['alerta'] for p in gente if p['alerta'])}; fontes: {collections.Counter(p['fonte_ferias'] for p in gente)}")
     print(f"{len(gente)} com direito: {conta(gente)}; colheita {sum(1 for p in gente if p['grupo'] == 1)}; "
           f"a verificar {conta(verificar)}; contrato safra no quadro {safra}")
