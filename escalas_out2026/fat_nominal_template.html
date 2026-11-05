@@ -88,7 +88,7 @@ tr.vai.sug td { background: var(--azul-bg) !important; }
 tr.vai.sug td:first-child { box-shadow: inset 4px 0 0 var(--azul); }
 .orig { display: inline-block; font: 600 10.5px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; border-radius: 3px; padding: 1px 5px; margin-left: 6px; vertical-align: 1px; }
 .orig.esc { color: var(--band-ink); background: var(--navy); } .orig.sug { color: #fff; background: var(--azul); }
-table.res th.az { box-shadow: inset 0 -3px 0 var(--azul); }
+table.res td small.sg { display: block; font: 600 11px var(--f-mono); color: var(--azul); margin-top: 1px; }
 td input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); cursor: pointer; }
 .troca { font: 600 11px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--warn); margin-left: 6px; }
 /* férias: a cor diz quando o limite cai (entressafra, safra de 2027 ou depois) */
@@ -248,28 +248,30 @@ $("leiTxt").textContent = (TU[1] ? `Turma 1, quem não tem férias vencendo até
 
 // tabela por papel, a mesma da página FAT do estudo: ativos do quadro de motoristas e operadores, a necessidade
 // (editável) e o que sai da lista. Os números com nomes por trás são botões que filtram a lista
-const COLS_RES = [["direito", "Com direito", "ao FAT"], ["vai", "Vão para o FAT", ""], ["esc", "Escolhidos", "pelo Transporte"],
-  ["sug", "Sugeridos", "para completar"], ["t1", "Turma 1", "FAT 15/12"],
+const COLS_RES = [["direito", "Com direito", "ao FAT"], ["vai", "Vão para o FAT", ""], ["esc", "Escolhidos", "pelo Transporte"], ["t1", "Turma 1", "FAT 15/12"],
   ["t2", "Turma 2", "férias + FAT 14/01"], ["semfat", "Sem atividade", "e sem FAT"], ["ficam", "Com direito", "que ficam"]];
 function resumo() {
   const lin = PAP.map(p => {
     const g = dos(p), n = Math.max(0, nec[p] | 0), at = (F.ativos || {})[p] || 0, m = g.filter(vai).length;
     return { p, at, pr: Math.max(0, at - n), n, direito: g.length, vai: m, esc: g.filter(x => vai(x) && x.escolhido).length,
-      sug: g.filter(x => vai(x) && !x.escolhido).length, t1: g.filter(x => vai(x) && turma(x) === 1).length,
+      sug: g.filter(x => vai(x) && !x.escolhido).length, s1: g.filter(x => vai(x) && !x.escolhido && turma(x) === 1).length,
+      s2: g.filter(x => vai(x) && !x.escolhido && turma(x) === 2).length, t1: g.filter(x => vai(x) && turma(x) === 1).length,
       t2: g.filter(x => vai(x) && turma(x) === 2).length, semfat: Math.max(0, n - m), ficam: g.length - m };
   });
-  const tot = { at: 0, pr: 0, n: 0, direito: 0, vai: 0, esc: 0, sug: 0, t1: 0, t2: 0, semfat: 0, ficam: 0 };
+  const tot = { at: 0, pr: 0, n: 0, direito: 0, vai: 0, esc: 0, sug: 0, s1: 0, s2: 0, t1: 0, t2: 0, semfat: 0, ficam: 0 };
   lin.forEach(l => Object.keys(tot).forEach(k => { tot[k] += l[k]; }));
-  const bot = (p, s, v) => `<button type="button" class="nb" data-p="${p}" data-s="${s}" title="Ver os nomes">${v}</button>`;
+  const bot0 = (p, s, v) => `<button type="button" class="nb" data-p="${p}" data-s="${s}" title="Ver os nomes">${v}</button>`;
+  const SUB = { t1: "s1", t2: "s2" };
+  const bot = (p, s, v, l) => bot0(p, s, v) + (SUB[s] && l[SUB[s]] ? `<small class="sg">${l[SUB[s]]} sugerido${l[SUB[s]] > 1 ? "s" : ""}</small>` : "");
   let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>na escolhida</u></th><th class="cl">Sem atividade<u>necessidade do FAT</u></th>` +
     COLS_RES.map(([s, a, b]) => `<th${s === "vai" ? ' class="cl"' : s === "sug" ? ' class="az"' : ""}>${a}${b ? `<u>${b}</u>` : ""}</th>`).join("") + `</tr></thead><tbody>`;
   lin.forEach(l => {
     h += `<tr><td class="l">${ROT[l.p]}</td><td>${l.at || "–"}</td><td>${l.at ? l.pr : "–"}</td>` +
       `<td><input id="nec-${l.p}" type="number" min="0" step="1" inputmode="numeric" value="${l.n}" data-p="${l.p}" aria-label="Necessidade do FAT, ${ROT[l.p].toLowerCase()}"></td>` +
-      COLS_RES.map(([s]) => `<td>${bot(l.p, s, l[s])}</td>`).join("") + `</tr>`;
+      COLS_RES.map(([s]) => `<td>${bot(l.p, s, l[s], l)}</td>`).join("") + `</tr>`;
   });
   h += `<tr class="tot"><td class="l">Total</td><td>${tot.at || "–"}</td><td>${tot.at ? tot.pr : "–"}</td><td>${tot.n}</td>` +
-    COLS_RES.map(([s]) => `<td>${bot("", s, tot[s])}</td>`).join("") + `</tr></tbody>`;
+    COLS_RES.map(([s]) => `<td>${bot("", s, tot[s], tot)}</td>`).join("") + `</tr></tbody>`;
   $("resumo").innerHTML = h;
   // o que fecha e o que falta em cada papel
   $("notaRes").textContent = lin.map(l => {

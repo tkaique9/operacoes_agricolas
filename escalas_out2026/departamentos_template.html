@@ -226,6 +226,7 @@ table.qd td.dep u { display: inline; margin-left: 8px; }
 table.qd td.hoje { font: 700 18px var(--f-display); color: var(--navy); background: #F7F8FB; }
 table.qd td.cmp { font: 500 13.5px var(--f-mono); color: var(--mut); text-align: left; white-space: nowrap; vertical-align: middle; line-height: 1.2; }
 table.qd td.qv { white-space: nowrap; }
+table.qd td.qv small.sg { display: block; font: 600 11px var(--f-mono); color: #2563A8; line-height: 1.15; }
 table.qd td.qv b { font: 700 18px var(--f-display); letter-spacing: -.02em; color: var(--ink); }
 table.qd td.qv .dl { display: inline-block; min-width: 30px; margin-left: 7px; font: 600 13px var(--f-mono); padding: 1px 5px; border-radius: 2px; text-align: center; }
 table.qd td.qv .dl.up { background: var(--bad); color: var(--red); }
@@ -1766,18 +1767,18 @@ function necFat(escolha) {
 // tira as férias antes e entra depois no FAT
 const dataBR = iso => iso.slice(8, 10) + "/" + iso.slice(5, 7) + "/" + iso.slice(0, 4);
 function filaFat() {
-  const N = necFat(d => S.esc[d.dep]), vai = {}, dir = {}, t1 = {}, t2 = {}, alerta = {}, esc = {}, itens = [];
+  const N = necFat(d => S.esc[d.dep]), vai = {}, dir = {}, t1 = {}, t2 = {}, alerta = {}, esc = {}, s1 = {}, s2 = {}, itens = [];
   ["operador", "motorista"].forEach(p => {
     const fila = FAT.fila.filter(f => f[0] === p);
     esc[p] = fila.filter(f => f[6]).length;
-    dir[p] = fila.length; vai[p] = Math.max(esc[p], Math.min(N[p].sem, fila.length)); t1[p] = t2[p] = alerta[p] = 0;
+    dir[p] = fila.length; vai[p] = Math.max(esc[p], Math.min(N[p].sem, fila.length)); t1[p] = t2[p] = alerta[p] = s1[p] = s2[p] = 0;
     fila.forEach((f, i) => {
       const ok = i < vai[p], turma = f[4] || 1;
-      if (ok) { if (turma === 2) { t2[p]++; if (f[5]) alerta[p]++; } else t1[p]++; }
+      if (ok) { if (turma === 2) { t2[p]++; if (f[5]) alerta[p]++; if (!f[6]) s2[p]++; } else { t1[p]++; if (!f[6]) s1[p]++; } }
       itens.push({ papel: p, ativ: f[1], grupo: f[2], mes: f[3], turma, vai: ok });
     });
   });
-  return { N, vai, dir, t1, t2, alerta, esc, itens };
+  return { N, vai, dir, t1, t2, alerta, esc, s1, s2, itens };
 }
 // indicadores do FAT: barras em 100% por papel, com o número e o % de cada parte; à direita, o % que importa
 // (cobertura) ou o total da linha
@@ -1827,19 +1828,22 @@ function fatInd(N, vai, dir, t1, t2) {
 function fatOp() {
   if (!$("#fat")) return;
   if (!FAT || !PES) { $("#fatSub").textContent = "Sem a lista do FAT (python fat.py) ou sem os ativos da frota (python pessoal_frota.py)."; return; }
-  const papeis = ["operador", "motorista"], { N, vai, dir, t1, t2, alerta, esc } = filaFat(), TU = FAT.turmas || {};
+  const papeis = ["operador", "motorista"], { N, vai, dir, t1, t2, alerta, esc, s1, s2 } = filaFat(), TU = FAT.turmas || {};
   const soma = f => papeis.reduce((x, p) => x + f(p), 0);
   const T = { ativos: soma(p => N[p].ativos), precisa: soma(p => N[p].precisa), sem: soma(p => N[p].sem), dir: soma(p => dir[p]), vai: soma(p => vai[p]),
-    t1: soma(p => t1[p]), t2: soma(p => t2[p]), alerta: soma(p => alerta[p]), esc: soma(p => esc[p]) };
-  $("#fatChips").innerHTML = [[fmt(T.vai), "Vão para o FAT"], [fmt(T.sem), "Sem atividade", "sa"], [fmt(Math.max(0, T.sem - T.vai)), "Sem ativ. · sem FAT", Math.max(0, T.sem - T.vai) ? "pos" : "zero"],
+    t1: soma(p => t1[p]), t2: soma(p => t2[p]), alerta: soma(p => alerta[p]), esc: soma(p => esc[p]), s1: soma(p => s1[p]), s2: soma(p => s2[p]),
+    semfat: soma(p => Math.max(0, N[p].sem - vai[p])) };
+  // sugeridos para completar a necessidade já ficam na turma de cada um: a célula da turma diz quantos são
+  const comSug = (n, s) => fmt(n) + (s ? `</b><small class="sg">${fmt(s)} sugerido${s > 1 ? "s" : ""}</small><b hidden>` : "");
+  $("#fatChips").innerHTML = [[fmt(T.vai), "Vão para o FAT"], [fmt(T.sem), "Sem atividade", "sa"], [fmt(T.semfat), "Sem ativ. · sem FAT", T.semfat ? "pos" : "zero"],
     [fmt(T.t1) + " · " + fmt(T.t2), "Turma 1 · turma 2"]].map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
   document.querySelectorAll(".nominal").forEach(e => { e.hidden = !FAT.lista; if (FAT.lista) e.querySelector("a").href = FAT.lista + "#nec" + N.operador.sem + "-" + N.motorista.sem; });
   const per = t => t && t.fat ? `FAT de ${dataBR(t.fat[0])} a ${dataBR(t.fat[1])}` : "";
   $("#fatSub").textContent = `Sem atividade = ativos do quadro menos o que a frota precisa na escala escolhida (painel da frota). Com direito: ${FAT.fonte}, ${fmt(FAT.n)} efetivos com 12 meses ou mais e não aposentados. Turma 1, quem não tem férias vencendo até 15/12/2027, vai direto: ${per(TU[1])}. Turma 2, quem tem férias vencendo até 15/12/2027: férias de ${TU[2] ? dataBR(TU[2].ferias[0]) + " a " + dataBR(TU[2].ferias[1]) : "–"} e ${per(TU[2])}. Vão os primeiros da fila até a necessidade: ${FAT.criterio.charAt(0).toLowerCase() + FAT.criterio.slice(1)}.`;
   const linha = (rot, u, v, cls) => `<tr${cls ? ` class="${cls}"` : ""}><td class="l dep">${rot}${u ? `<u>${u}</u>` : ""}</td>${v.map(x => `<td class="qv"><b>${x}</b></td>`).join("")}</tr>`;
-  let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>na escolhida</u></th><th class="escol">Sem atividade<u>necessidade do FAT</u></th><th>Com direito<u>ao FAT</u></th><th class="escol">Vão para o FAT</th><th>Escolhidos<u>pelo Transporte</u></th><th>Sugeridos<u>para completar</u></th><th>Turma 1<u>FAT 15/12</u></th><th>Turma 2<u>férias + FAT 14/01</u></th><th>Sem atividade<u>e sem FAT</u></th><th>Com direito<u>que ficam</u></th></tr></thead><tbody>`;
-  papeis.forEach(p => { h += linha(ROT_PAPEL[p], "", [fmt(N[p].ativos), fmt(N[p].precisa), fmt(N[p].sem), fmt(dir[p]), fmt(vai[p]), fmt(esc[p]), fmt(vai[p] - esc[p]), fmt(t1[p]), fmt(t2[p]), fmt(Math.max(0, N[p].sem - vai[p])), fmt(dir[p] - vai[p])]); });
-  h += linha("Total", "", [fmt(T.ativos), fmt(T.precisa), fmt(T.sem), fmt(T.dir), fmt(T.vai), fmt(T.esc), fmt(T.vai - T.esc), fmt(T.t1), fmt(T.t2), fmt(Math.max(0, T.sem - T.vai)), fmt(T.dir - T.vai)], "tot") + "</tbody>";
+  let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>na escolhida</u></th><th class="escol">Sem atividade<u>necessidade do FAT</u></th><th>Com direito<u>ao FAT</u></th><th class="escol">Vão para o FAT</th><th>Escolhidos<u>pelo Transporte</u></th><th>Turma 1<u>FAT 15/12</u></th><th>Turma 2<u>férias + FAT 14/01</u></th><th>Sem atividade<u>e sem FAT</u></th><th>Com direito<u>que ficam</u></th></tr></thead><tbody>`;
+  papeis.forEach(p => { h += linha(ROT_PAPEL[p], "", [fmt(N[p].ativos), fmt(N[p].precisa), fmt(N[p].sem), fmt(dir[p]), fmt(vai[p]), fmt(esc[p]), comSug(t1[p], s1[p]), comSug(t2[p], s2[p]), fmt(Math.max(0, N[p].sem - vai[p])), fmt(dir[p] - vai[p])]); });
+  h += linha("Total", "", [fmt(T.ativos), fmt(T.precisa), fmt(T.sem), fmt(T.dir), fmt(T.vai), fmt(T.esc), comSug(T.t1, T.s1), comSug(T.t2, T.s2), fmt(T.semfat), fmt(T.dir - T.vai)], "tot") + "</tbody>";
   $("#fatPapel").innerHTML = h;
   // quem ainda sobra sem FAT (os que podem ter direito, a conferir, e os de contrato safra) e o que as férias da turma 2 não resolvem
   const nota = papeis.filter(p => N[p].sem > vai[p]).map(p => {
