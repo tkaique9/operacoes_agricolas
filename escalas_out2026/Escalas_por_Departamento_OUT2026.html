@@ -237,6 +237,8 @@ button.abre-at { font: inherit; font-weight: 700; color: inherit; background: no
 button.abre-at:hover { color: #A88516; }
 table.qd tr.sub-eq td { background: #F8F9FC; font-size: 14px; padding-top: 5px; padding-bottom: 5px; }
 table.qd tr.sub-eq td.l { padding-left: 34px; color: #5A6072; }
+table.qd tr.sub-tipo td { background: #EEF1F7; font-size: 14px; font-weight: 700; padding-top: 6px; padding-bottom: 6px; border-bottom: 1px solid #C9CFDB; }
+table.qd tr.sub-tipo td.l { padding-left: 22px; color: #12224A; }
 button.eqb { font: inherit; font-weight: 700; color: inherit; background: none; border: 0; border-bottom: 2px dotted #C9A227; padding: 0 6px; cursor: pointer; }
 button.eqb:hover { background: #FDF2D3; }
 dialog.fat-dlg { width: min(980px, calc(100vw - 32px)); max-height: 86vh; border: 0; border-radius: 6px; padding: 18px 20px; box-shadow: 0 18px 50px rgba(10,19,48,.45); }
@@ -1864,10 +1866,10 @@ function abreEq(ativ) {
   const need = d => (conta(d, S.esc[d.dep]) || conta(d, "5x2")).need, cel = v => `<td class="qv"><b>${v}</b></td>`;
   let h = `<thead><tr><th class="l">Classe</th><th>Escala</th><th>Equipamentos</th><th>Operadores</th><th>Motoristas</th></tr></thead><tbody>`, T = { eq: 0, op: 0, mo: 0 };
   ats.forEach(a => {
-    const eqs = OP.filter(d => d.ativ === a && d.qtd), cls = [...new Set(eqs.map(d => d.classe))];
+    const eqs = OP.filter(d => d.ativ === a && d.qtd), cls = [...new Set(eqs.map(tipoEq))];
     if (ats.length > 1) h += `<tr class="grp-at"><td class="l" colspan="5">${esc(a)}</td></tr>`;
     cls.forEach(c => {
-      const ds = eqs.filter(d => d.classe === c), ids = [...new Set(ds.map(d => conta(d, S.esc[d.dep]) ? S.esc[d.dep] : "5x2"))];
+      const ds = eqs.filter(d => tipoEq(d) === c), ids = [...new Set(ds.map(d => conta(d, S.esc[d.dep]) ? S.esc[d.dep] : "5x2"))];
       const eq = ds.reduce((x, d) => x + (d.eqs ?? d.qtd), 0), op = Math.round(ds.filter(d => papelEq(d) === "operador").reduce((x, d) => x + need(d), 0)),
         mo = Math.round(ds.filter(d => papelEq(d) === "motorista").reduce((x, d) => x + need(d), 0));
       T.eq += eq; T.op += op; T.mo += mo;
@@ -1884,7 +1886,16 @@ document.addEventListener("click", e => {
   const dlg = $("#fatEqDlg"); if (!dlg) return;
   if (e.target.id === "fatEqFecha" || e.target === dlg) dlg.close ? dlg.close() : dlg.removeAttribute("open");
 });
-const ATIV_ABERTAS = new Set();   // atividades abertas na tabela da escala do Transporte
+const ATIV_ABERTAS = new Set();
+// tipo do equipamento: a classe da frota (sem F1/F2, "muda" e posto avulso)
+const tipoEq = d => {
+  const n = (d.classe || d.nome).replace(" (avulso)", "");
+  if (/^Ônibus/.test(n)) return "Ônibus";
+  if (/ tratos$/.test(n)) return papelEq(d) === "motorista" ? "Motoristas de tratos" : "Operadores de tratos";
+  if (/^(Pá carregadeira|Motoniveladora|Escavadeira|Rolo compactador|Trator eletroímã)/.test(n)) return "Máquinas da linha amarela";
+  if (/^Caminhão (caçamba|molhando)/.test(n)) return "Caminhões da linha amarela";
+  return n;
+};   // atividades abertas na tabela da escala do Transporte
 function escalaFat() {
   const card = $("#fatEscCard"); if (!card) return;
   card.hidden = !FAT.escala; if (!FAT.escala) return;
@@ -1901,10 +1912,21 @@ function escalaFat() {
   linhas.forEach(l => { const ab = ATIV_ABERTAS.has(l.ativ);
     h += `<tr><td class="l dep"><button type="button" class="abre-at" data-a="${esc(l.ativ)}" aria-expanded="${ab}">${ab ? "▾" : "▸"} ${esc(l.ativ)}</button></td><td class="qv esc-at">${esc(escTxt(l.ids))}</td><td class="qv"><button type="button" class="eqb" data-a="${esc(l.ativ)}" title="Ver por classe">${fmt(l.eq)}</button></td>${cel(fmt(l.operador))}${cel(fmt(l.motorista))}${cel(fmt(l.operador + l.motorista))}</tr>`;
     // aberta: os equipamentos da atividade, um por linha, como no quadro por equipamento
-    if (ab) OP.filter(d => d.ativ === l.ativ && d.qtd).forEach(d => {
-      const id = conta(d, S.esc[d.dep]) ? S.esc[d.dep] : "5x2", n = Math.round(conta(d, id).need), op = papelEq(d) === "operador";
-      h += `<tr class="sub-eq"><td class="l">${esc(d.nome)}</td><td class="qv esc-at">${esc(ESC[id].curto)}</td><td class="qv">${fmt(d.eqs ?? d.qtd)}</td><td class="qv">${op ? fmt(n) : "–"}</td><td class="qv">${op ? "–" : fmt(n)}</td><td class="qv">${fmt(n)}</td></tr>`;
-    }); });
+    // aberta: por tipo de equipamento (plantadora, trator apoio, colhedora...), as linhas do tipo e o subtotal
+    if (ab) {
+      const eqs = OP.filter(d => d.ativ === l.ativ && d.qtd), tipos = [...new Set(eqs.map(tipoEq))];
+      const val = d => { const id = conta(d, S.esc[d.dep]) ? S.esc[d.dep] : "5x2", n = Math.round(conta(d, id).need), op = papelEq(d) === "operador";
+        return { id, eq: d.eqs ?? d.qtd, op: op ? n : 0, mo: op ? 0 : n }; };
+      const lin = (rot, cls, id, v) => `<tr class="${cls}"><td class="l">${rot}</td><td class="qv esc-at">${esc(id)}</td><td class="qv">${fmt(v.eq)}</td><td class="qv">${v.op ? fmt(v.op) : "–"}</td><td class="qv">${v.mo ? fmt(v.mo) : "–"}</td><td class="qv">${fmt(v.op + v.mo)}</td></tr>`;
+      tipos.forEach(t => {
+        const ds = eqs.filter(d => tipoEq(d) === t), vs = ds.map(val), ids = [...new Set(vs.map(v => ESC[v.id].curto))].join(" · ");
+        const soma = vs.reduce((a, v) => ({ eq: a.eq + v.eq, op: a.op + v.op, mo: a.mo + v.mo }), { eq: 0, op: 0, mo: 0 });
+        if (ds.length === 1) { h += lin(esc(t), "sub-tipo", ids, soma); return; }
+        ds.forEach((d, i) => { h += lin(esc(d.nome.replace(" (avulso)", " · posto avulso")), "sub-eq", ESC[vs[i].id].curto, vs[i]); });
+        h += lin(`Subtotal · ${esc(t)}`, "sub-tipo", ids, soma);
+      });
+    }
+  });
   h += `<tr class="tot"><td class="l">Total</td><td class="qv esc-at">${esc(escTxt([...new Set(linhas.flatMap(l => l.ids))]))}</td><td class="qv"><button type="button" class="eqb" data-a="" title="Ver por classe">${fmt(s("eq"))}</button></td>${cel(fmt(s("operador")))}${cel(fmt(s("motorista")))}${cel(fmt(s("operador") + s("motorista")))}</tr></tbody>`;
   $("#fatEscala").innerHTML = h;
   $("#fatEscala").onclick = e => {
