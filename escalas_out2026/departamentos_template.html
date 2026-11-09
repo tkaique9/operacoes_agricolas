@@ -1873,7 +1873,7 @@ function fatOp() {
     sub(fmt(T.sobra), T.saf ? `${fmt(T.saf)} safristas saem` : "", "sf")], "tot") + "</tbody>";
   $("#fatPapel").innerHTML = h;
   const nota = `${fmt(T.ativos)} ativos − ${fmt(T.escal)} escalados = ${fmt(T.sem)} sem escala; ${fmt(T.vai)} vão para o FAT e sobram ${fmt(T.sobra)} sem escala e sem FAT.` +
-    (LV ? ` A escala tem ${fmt(soma(p => VAG[p] || 0))} vagas de operador na oficina ainda "a escalar": entram nelas os ${fmt(cobre("operador"))} operadores livres${falta("operador") ? ` e faltam ${fmt(falta("operador"))}` : ""}.` : "") +
+    (LV && soma(p => VAG[p] || 0) ? ` A escala tem ${fmt(soma(p => VAG[p] || 0))} vagas de operador na oficina ainda "a escalar": entram nelas os ${fmt(cobre("operador"))} operadores livres${falta("operador") ? ` e faltam ${fmt(falta("operador"))}` : ""}.` : "") +
     (T.saf ? ` Dos ${fmt(T.sobra)} que sobram, ${fmt(T.saf)} são de contrato safra e saem no fim da safra: ficam ${fmt(T.sobra - T.saf)}.` : "") +
     (T.alerta ? ` Atenção: ${fmt(T.alerta)} dos que vão para o FAT ficam sem atividade entre o fim das férias e 13/01 (férias a partir de 01/12, saldo menor que 30 dias ou sem férias a tirar): ver com o DP (lista nominal).` : "");
   $("#fatNota").hidden = false; $("#fatNota").textContent = nota;
@@ -1899,7 +1899,7 @@ function fatAbre(c) {
   h += lin("Saem no fim da safra", "contrato safra", safS);
   h += lin("Ficam depois da safra", "", p => sobra(p) - safS(p), "tot") + `</tbody></table></div>`;
   const os = Math.min(qt("operador", "safra"), cobre("operador"));
-  h += `<p class="nota">Dos ${fmt(cobre("operador"))} operadores que entram na oficina, ${fmt(os)} são de contrato safra: no fim da safra eles saem e a oficina volta a ter vagas. Os nomes estão na lista nominal (clique no número de quem sobra).</p>`;
+  h += `<p class="nota">${cobre("operador") ? `Dos ${fmt(cobre("operador"))} operadores que entram na oficina, ${fmt(os)} são de contrato safra: no fim da safra eles saem e a oficina volta a ter vagas. ` : ""}Os nomes estão na lista nominal (clique no número de quem sobra).</p>`;
   el.innerHTML = h.replace(/<b>−?-(\d)/g, "<b>−$1"); el.open = aberto;
 }
 function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); fatOp(); AREAS.forEach(a => { painelArea(a); quadroArea(a); matrizArea(a); }); resumoFinal(); escalas(); if (window.salvaSite) salvaSite.mudou(); }

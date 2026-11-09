@@ -237,6 +237,37 @@ def livres_por_contrato(vao):
     return res
 
 
+def ajusta_vagas(escala, livres):
+    """As vagas "a escalar" (oficina) ficam só com quem há para elas (pedido de 09/11/2026: 8 entram na oficina, para a
+    necessidade ser igual aos escalados): tira o que falta das posições da escala, da atividade e do equipamento da frota."""
+    for papel, vag in list(escala["a_escalar"].items()):
+        falta = max(0, vag - sum((livres.get(papel) or {}).values()))
+        if not falta:
+            continue
+        escala["a_escalar"][papel] = vag - falta
+        escala["precisa"][papel] -= falta
+        escala["sem_gente"] = {**escala.get("sem_gente", {}), papel: falta}
+        for a in escala["atividades"]:
+            if a["ativ"] == "Oficina":
+                a[papel] -= falta
+        fe = json.loads(FROTA_ESCALA.read_text(encoding="utf-8"))
+        for f in fe["frota"]:
+            if f["nome"] == "Operador oficina" and f["papel"] == papel:
+                f["qtd"] -= falta
+        FROTA_ESCALA.write_text(json.dumps(fe, ensure_ascii=False, indent=1), encoding="utf-8")
+        print(f"vagas a escalar de {papel}: {vag} -> {vag - falta} (só os livres que há)")
+    # quem entra nessas vagas conta como escalado normal: sai dos livres (contagem e nomes)
+    for papel, vag in escala["a_escalar"].items():
+        entram = [x for x in LIVRES_PESSOAS if x["papel"] == papel][:vag]
+        for x in entram:
+            LIVRES_PESSOAS.remove(x)
+            ESCALADOS.add(x["mat"])
+            livres[papel][x["motivo"]] -= 1
+        livres[papel] = {k: v for k, v in livres[papel].items() if v}
+        escala.setdefault("na_oficina", {})[papel] = len(entram)
+        escala["a_escalar"][papel] = vag - len(entram)
+
+
 def escala_transporte():
     """Necessidade pela escala de folga da operação de dezembro (Transporte): posições de cada escala (pessoas escaladas
     mais as "a escalar"; "não escalar" não conta), por atividade e papel."""
@@ -468,6 +499,7 @@ def main():
     if livres:
         escala["livres"] = livres
         print("livres (sem escala e sem FAT) por contrato:", livres)
+        ajusta_vagas(escala, livres)
     publico = {"fonte": FONTE, "criterio": CRITERIO, "n": len(gente), "lista": LISTA_PRIVADA,
                "verificar": conta(verificar), "safra": safra, "escolhidos": conta([p for p in gente if p["escolhido"]]),
                "turmas": TURMAS, "escala": escala,
