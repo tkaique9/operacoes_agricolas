@@ -241,22 +241,22 @@ $("leiTxt").textContent = `Os 258 da programação do Transporte tiram as féria
 
 // tabela por papel, a mesma da página FAT do estudo: ativos do quadro de motoristas e operadores, a necessidade
 // (editável) e o que sai da lista. Os números com nomes por trás são botões que filtram a lista
-const COLS_RES = [["direito", "Com direito", "ao FAT"], ["vai", "Vão para o FAT", ""], ["esc", "Escolhidos", "pelo Transporte"], ["t1", "Com férias", "antes do FAT"],
-  ["t2", "Sem férias", "a tirar"], ["semfat", "Sem atividade", "e sem FAT"], ["ficam", "Com direito", "que ficam"]];
+const COLS_RES = [["direito", "Com direito", "ao FAT"], ["vai", "Vão para o FAT", ""], ["esc", "Escolhidos", "pelo Transporte"],
+  ["semfat", "Sem atividade", "e sem FAT"]];
 function resumo() {
   const lin = PAP.map(p => {
     const g = dos(p), n = Math.max(0, nec[p] | 0), at = (F.ativos || {})[p] || 0, m = g.filter(vai).length;
     return { p, at, pr: Math.max(0, at - n), n, direito: g.length, vai: m, esc: g.filter(x => vai(x) && x.escolhido).length,
       sug: g.filter(x => vai(x) && !x.escolhido).length, s1: g.filter(x => vai(x) && !x.escolhido && turma(x) === 1).length,
       s2: g.filter(x => vai(x) && !x.escolhido && turma(x) === 2).length, t1: g.filter(x => vai(x) && turma(x) === 1).length,
-      t2: g.filter(x => vai(x) && turma(x) === 2).length, semfat: Math.max(0, n - m), ficam: g.length - m };
+      t2: g.filter(x => vai(x) && turma(x) === 2).length, semfat: n - m, ficam: g.length - m };
   });
   const tot = { at: 0, pr: 0, n: 0, direito: 0, vai: 0, esc: 0, sug: 0, s1: 0, s2: 0, t1: 0, t2: 0, semfat: 0, ficam: 0 };
   lin.forEach(l => Object.keys(tot).forEach(k => { tot[k] += l[k]; }));
   const bot0 = (p, s, v) => `<button type="button" class="nb" data-p="${p}" data-s="${s}" title="Ver os nomes">${v}</button>`;
   const SUB = { t1: "s1", t2: "s2" };
   const bot = (p, s, v, l) => bot0(p, s, v) + (SUB[s] && l[SUB[s]] ? `<small class="sg">${l[SUB[s]]} além da programação</small>` : "");
-  let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>escala do Transporte</u></th><th class="cl">Sem atividade<u>necessidade do FAT</u></th>` +
+  let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>escala do Transporte</u></th><th class="cl">Sem atividade<u>ativos − precisa</u></th>` +
     COLS_RES.map(([s, a, b]) => `<th${s === "vai" ? ' class="cl"' : s === "sug" ? ' class="az"' : ""}>${a}${b ? `<u>${b}</u>` : ""}</th>`).join("") + `</tr></thead><tbody>`;
   lin.forEach(l => {
     h += `<tr><td class="l">${ROT[l.p]}</td><td>${l.at || "–"}</td><td>${l.at ? l.pr : "–"}</td>` +

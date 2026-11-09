@@ -6,7 +6,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Preparo e plantio",
    "papel": "operador"
   },
   {
@@ -15,7 +15,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Preparo e plantio",
    "papel": "operador"
   },
   {
@@ -24,7 +24,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Colheita (CCT)",
    "papel": "operador"
   },
   {
@@ -33,7 +33,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Colheita (CCT)",
    "papel": "operador"
   },
   {
@@ -42,7 +42,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Colheita (CCT)",
    "papel": "motorista"
   },
   {
@@ -51,7 +51,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Preparo e plantio",
    "papel": "operador"
   },
   {
@@ -60,7 +60,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Preparo e plantio",
    "papel": "operador"
   },
   {
@@ -69,7 +69,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Colheita (CCT)",
    "papel": "operador"
   },
   {
@@ -78,7 +78,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Colheita (CCT)",
    "papel": "operador"
   },
   {
@@ -87,7 +87,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Colheita (CCT)",
    "papel": "motorista"
   },
   {
@@ -96,7 +96,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Apoio",
    "papel": "motorista"
   },
   {
@@ -105,7 +105,7 @@
    "reg": "1",
    "folg": false,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Apoio",
    "papel": "motorista"
   },
   {
@@ -114,7 +114,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Apoio",
    "papel": "operador"
   },
   {
@@ -123,7 +123,7 @@
    "reg": "1",
    "folg": false,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Apoio",
    "papel": "operador"
   },
   {
@@ -132,7 +132,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Plantio",
+   "frente": "Apoio",
    "papel": "motorista"
   },
   {
@@ -150,7 +150,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Preparo de solo",
+   "frente": "Preparo e plantio",
    "papel": "operador"
   },
   {
@@ -168,7 +168,7 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
-   "frente": "Tratos",
+   "frente": "Atividades de tratos",
    "papel": "motorista"
   },
   {
@@ -177,7 +177,7 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
-   "frente": "Tratos",
+   "frente": "Atividades de tratos",
    "papel": "motorista"
   },
   {
@@ -186,7 +186,7 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
-   "frente": "Tratos",
+   "frente": "Atividades de tratos",
    "papel": "operador"
   },
   {
@@ -195,7 +195,7 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
-   "frente": "Tratos",
+   "frente": "Atividades de tratos",
    "papel": "operador"
   },
   {
@@ -204,7 +204,7 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
-   "frente": "Tratos",
+   "frente": "Atividades de tratos",
    "papel": "operador"
   },
   {
@@ -231,7 +231,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Linha amarela",
+   "frente": "Estradas e terraplanagem",
    "papel": "operador"
   },
   {
@@ -240,7 +240,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Linha amarela",
+   "frente": "Estradas e terraplanagem",
    "papel": "operador"
   },
   {
@@ -249,7 +249,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Linha amarela",
+   "frente": "Estradas e terraplanagem",
    "papel": "operador"
   },
   {
@@ -258,7 +258,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Linha amarela",
+   "frente": "Estradas e terraplanagem",
    "papel": "motorista"
   },
   {
@@ -267,7 +267,7 @@
    "reg": "1",
    "folg": false,
    "esc": "4x2_12",
-   "frente": "Linha amarela",
+   "frente": "Estradas e terraplanagem",
    "papel": "operador"
   },
   {
@@ -276,7 +276,7 @@
    "reg": "1",
    "folg": false,
    "esc": "4x2_12",
-   "frente": "Linha amarela",
+   "frente": "Apoio",
    "papel": "operador"
   },
   {
@@ -285,7 +285,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Linha amarela",
+   "frente": "Estradas e terraplanagem",
    "papel": "motorista"
   },
   {
@@ -294,7 +294,7 @@
    "reg": "3",
    "folg": true,
    "esc": "4x2_12",
-   "frente": "Linha amarela",
+   "frente": "Apoio",
    "papel": "motorista"
   },
   {
@@ -344,13 +344,14 @@
   }
  ],
  "frentes": {
-  "Plantio": "#E06A3A",
-  "Linha amarela": "#E0A21A",
-  "Irrigação": "#2F6FD0",
-  "Tratos": "#8E5BB5",
-  "Preparo de solo": "#B0472A",
-  "Ônibus": "#1FA37A",
-  "Oficina": "#5A6072",
+  "Colheita (CCT)": "#2F6FD0",
+  "Preparo e plantio": "#E06A3A",
+  "Apoio": "#1FA37A",
+  "Estradas e terraplanagem": "#E0A21A",
+  "Atividades de tratos": "#8E5BB5",
+  "Irrigação": "#2A9DB0",
+  "Ônibus": "#6B7A99",
+  "Oficina": "#7A5C3E",
   "Administrativo": "#12224A",
   "Comboio": "#A6620A"
  }

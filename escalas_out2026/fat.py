@@ -199,6 +199,40 @@ def alerta_prog(f):
     return None
 
 
+ESCALADOS = set()   # matrículas escaladas na escala do Transporte (só para as contas; não vão para o fat.json)
+
+
+def livres_por_contrato(vao):
+    """Quem não está na escala do Transporte nem no FAT, por papel e motivo, pelo relatório de ativos do Transporte:
+    contrato safra (sai no fim da safra), experiência, efetivo sem direito (menos de 12 meses), direito a conferir
+    (possível aposentado) e os que o cadastro marca em FAT ou operação sem estarem na programação ou na escala.
+    "safra_total" = todos os de contrato safra do papel, escalados ou não."""
+    if not (ATIVOS.exists() and ESCALADOS):
+        return None
+    import pdfplumber
+    out = {"operador": collections.Counter(), "motorista": collections.Counter()}
+    safra = collections.Counter()
+    with pdfplumber.open(ATIVOS) as pdf:
+        for pg in pdf.pages:
+            for t in pg.extract_tables():
+                for r in t:
+                    if not (r and r[0] and r[0].strip().isdigit() and len(r) >= 11):
+                        continue
+                    r = [(c or "").replace("\n", " ").strip() for c in r]
+                    mat, papel = int(r[0]), "motorista" if r[2].startswith("MOTORISTA") else "operador"
+                    if r[6] == "SAFRA":
+                        safra[papel] += 1
+                    if mat in ESCALADOS or mat in vao:
+                        continue
+                    motivo = ("fat_fora" if r[7] == "FAT" else "op_fora" if r[7].startswith("OPERA") else
+                              "conferir" if r[9].startswith("A conferir") else "safra" if r[6] == "SAFRA" else
+                              "experiencia" if r[6].startswith("EXPERI") else "efetivo")
+                    out[papel][motivo] += 1
+    res = {p: dict(c) for p, c in out.items()}
+    res["safra_total"] = dict(safra)
+    return res
+
+
 def escala_transporte():
     """Necessidade pela escala de folga da operação de dezembro (Transporte): posições de cada escala (pessoas escaladas
     mais as "a escalar"; "não escalar" não conta), por atividade e papel."""
@@ -217,6 +251,8 @@ def escala_transporte():
                     esc.append(cur)
                 elif cur and (re.match(r"^\d{4,6}[A-Z]", l) or l.startswith("A ESCALAR")):
                     cur["pos"] += 1
+                    if l[0].isdigit():
+                        ESCALADOS.add(int(re.match(r"^\d{4,6}", l).group()))
                 e = re.search(r"Gerado em (\d{2}/\d{2}/\d{4})", l)
                 emit = e.group(1) if e else emit
     # as escalas de linha amarela, ônibus e plantio entram na atividade do resumo do relatório (9 atividades)
@@ -237,9 +273,29 @@ def escala_transporte():
 # e o folguista); a sobra que não fecha 3 entra como posto avulso de 1 turno sem folguista (1 pessoa); 5x2 = ADM, 1 por
 # posto. A escala de cada um já vem escolhida: 4x2 de 12 h ou 5x2
 FROTA_ESCALA = AQUI / "frota_escala.json"
-CORES_ATIV = {"PLANTIO": "#E06A3A", "LINHA AMARELA": "#E0A21A", "IRRIGAÇÃO": "#2F6FD0", "TRATOS": "#8E5BB5",
-              "PREPARO DE SOLO": "#B0472A", "ÔNIBUS": "#1FA37A", "OFICINA": "#5A6072", "ADMINISTRATIVO": "#12224A",
-              "COMBOIO": "#A6620A"}
+# frentes do quadro por equipamento: as de antes (detalhamento da frota de 22/10) e, para o que a escala tem a mais, as
+# atividades macro do Transporte (pedido de 09/11/2026)
+FRENTES_QUADRO = {"Colheita (CCT)": "#2F6FD0", "Preparo e plantio": "#E06A3A", "Apoio": "#1FA37A",
+                  "Estradas e terraplanagem": "#E0A21A", "Atividades de tratos": "#8E5BB5", "Irrigação": "#2A9DB0",
+                  "Ônibus": "#6B7A99", "Oficina": "#7A5C3E", "Administrativo": "#12224A", "Comboio": "#A6620A"}
+
+
+def frente_quadro(nome, ativ):
+    """Frente de cada escala no quadro: pelo equipamento, nas frentes de antes; o resto pela atividade do Transporte."""
+    n = nome.lower()
+    if n.startswith("ônibus"):
+        return "Ônibus"
+    if re.search(r"colhedora|transbordo|canavieiro", n):
+        return "Colheita (CCT)"
+    if re.search(r"plantadora|trator apoio f|preparo de solo", n):
+        return "Preparo e plantio"
+    if re.search(r"pátio|prancha|bombeiro|eletroímã", n):
+        return "Apoio"
+    if ativ == "LINHA AMARELA":
+        return "Estradas e terraplanagem"
+    if ativ == "TRATOS":
+        return "Atividades de tratos"
+    return {"IRRIGAÇÃO": "Irrigação", "OFICINA": "Oficina", "ADMINISTRATIVO": "Administrativo", "COMBOIO": "Comboio"}.get(ativ, ativ.capitalize())
 # nome de cada escala pelo código do relatório; sem nome aqui, sai do próprio código
 NOMES_ESCALA = {
     "OP-PLANTADORA-PLANTIO_F1": "Plantadora F1", "OP-TRATOR APOIO-PLANTIO_F1": "Trator apoio F1",
@@ -265,7 +321,7 @@ def frota_da_escala(esc, grupo):
     for e in esc:
         cod = e["cod"]
         nome = NOMES_ESCALA.get(cod) or cod.split("-", 1)[-1].replace("_", " ").capitalize()
-        base = {"frente": grupo(e["ativ"]).capitalize(), "papel": e["papel"]}
+        base = {"frente": frente_quadro(nome, grupo(e["ativ"])), "papel": e["papel"]}
         if e["regime"] == "5x2":
             frota.append({"nome": nome, "qtd": e["pos"], "reg": "adm", "folg": False, "esc": "5x2", **base})
             continue
@@ -273,7 +329,8 @@ def frota_da_escala(esc, grupo):
             frota.append({"nome": nome, "qtd": e["pos"] // 3, "reg": "3", "folg": True, "esc": "4x2_12", **base})
         if e["pos"] % 3:
             frota.append({"nome": nome + " (avulso)", "qtd": e["pos"] % 3, "reg": "1", "folg": False, "esc": "4x2_12", **base})
-    frentes = {g.capitalize(): c for g, c in CORES_ATIV.items()}
+    usadas = {f["frente"] for f in frota}
+    frentes = {fr: c for fr, c in FRENTES_QUADRO.items() if fr in usadas}
     FROTA_ESCALA.write_text(json.dumps({"frota": frota, "frentes": frentes}, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
@@ -401,6 +458,10 @@ def main():
     gente, verificar, safra = ler()
     conta = lambda lista: {pp: sum(1 for p in lista if p["papel"] == pp) for pp in ("operador", "motorista")}
     escala = escala_transporte()
+    livres = livres_por_contrato({p["mat"] for p in gente if p["escolhido"]})
+    if livres:
+        escala["livres"] = livres
+        print("livres (sem escala e sem FAT) por contrato:", livres)
     publico = {"fonte": FONTE, "criterio": CRITERIO, "n": len(gente), "lista": LISTA_PRIVADA,
                "verificar": conta(verificar), "safra": safra, "escolhidos": conta([p for p in gente if p["escolhido"]]),
                "turmas": TURMAS, "escala": escala,
