@@ -200,6 +200,8 @@ def alerta_prog(f):
 
 
 ESCALADOS = set()   # matrículas escaladas na escala do Transporte (só para as contas; não vão para o fat.json)
+A_ESCALAR = collections.Counter()   # vagas "a escalar" da escala, por papel (oficina)
+LIVRES_PESSOAS = []   # quem não está na escala nem no FAT, com nome: só para a lista nominal
 
 
 def livres_por_contrato(vao):
@@ -228,6 +230,8 @@ def livres_por_contrato(vao):
                               "conferir" if r[9].startswith("A conferir") else "safra" if r[6] == "SAFRA" else
                               "experiencia" if r[6].startswith("EXPERI") else "efetivo")
                     out[papel][motivo] += 1
+                    LIVRES_PESSOAS.append({"mat": mat, "nome": r[1], "funcao": r[2], "papel": papel, "ger": r[5] or "–",
+                                           "contrato": r[6].capitalize(), "motivo": motivo, "cadastro": r[7], "direito": r[9]})
     res = {p: dict(c) for p, c in out.items()}
     res["safra_total"] = dict(safra)
     return res
@@ -253,6 +257,8 @@ def escala_transporte():
                     cur["pos"] += 1
                     if l[0].isdigit():
                         ESCALADOS.add(int(re.match(r"^\d{4,6}", l).group()))
+                    else:
+                        A_ESCALAR[cur["papel"]] += 1
                 e = re.search(r"Gerado em (\d{2}/\d{2}/\d{4})", l)
                 emit = e.group(1) if e else emit
     # as escalas de linha amarela, ônibus e plantio entram na atividade do resumo do relatório (9 atividades)
@@ -265,7 +271,7 @@ def escala_transporte():
     lista = sorted(ativ.values(), key=lambda a: -(a["operador"] + a["motorista"]))
     frota_da_escala(esc, grupo)
     return {"fonte": f"Escala de folga da operação, dezembro de 2026 (Transporte, {emit})", "atividades": lista,
-            "precisa": {p: sum(a[p] for a in lista) for p in ("operador", "motorista")}}
+            "precisa": {p: sum(a[p] for a in lista) for p in ("operador", "motorista")}, "a_escalar": dict(A_ESCALAR)}
 
 
 # frota do estudo de escalas (página Operacional) tirada da escala do Transporte, para a necessidade das duas páginas
@@ -474,7 +480,8 @@ def main():
     ativos = json.loads(pessoal.read_text(encoding="utf-8")).get("ativos", {}) if pessoal.exists() else {}
     nec = {p: max(0, ativos[p] - escala["precisa"][p]) for p in ativos} if escala and ativos else NEC_PADRAO
     dados = {"fonte": FONTE, "criterio": CRITERIO, "nec": nec, "safra27": [d.isoformat() for d in SAFRA_27],
-             "turmas": TURMAS, "ativos": ativos, "escala": escala, "gente": gente, "verificar": verificar}
+             "turmas": TURMAS, "ativos": ativos, "escala": escala, "gente": gente, "verificar": verificar,
+             "livres": LIVRES_PESSOAS}
     js = json.dumps(dados, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     pagina = TEMPLATE.read_text(encoding="utf-8").replace("/*FAT*/null", js)
     ARTIFACT.parent.mkdir(exist_ok=True)

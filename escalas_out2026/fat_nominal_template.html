@@ -192,7 +192,7 @@ const F = /*FAT*/null;
 const PAP = ["operador", "motorista"], ROT = { operador: "Operadores", motorista: "Motoristas" };
 const GRUPO = { e: "Escolhidos pelo Transporte", 1: "Colheita · param na entressafra", 2: "Demais atividades" };
 const grupoDe = x => x.escolhido ? "e" : x.grupo;   // os escolhidos vêm primeiro na fila, num grupo só deles
-const CH_M = "fat.marcas.prog", CH_N = "fat.nec.prog";   // 05/11/2026: marcas novas, com os escolhidos do Transporte
+const CH_M = "fat.marcas.prog", CH_N = "fat.nec.pessoas";   // 05/11/2026: marcas novas, com os escolhidos do Transporte
 const ler = k => { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch (e) { return null; } };
 const grava = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
 const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -204,10 +204,19 @@ const dadosLinha = (x, sit) => `data-mat="${x.mat}" data-b="${esc(semAcento(x.ma
   `data-orig="nao" data-turma="${x.turma || "–"}" data-ativ="${esc(x.ativ)}" data-ger="${esc(x.ger || "–")}" data-func="${esc(x.funcao)}" data-fer="${esc(x.ferias || "–")}"`;
 
 let marcas = ler(CH_M) || {};                  // trocas sobre a sugestão: matrícula -> vai (true) ou fica (false)
-const nec = Object.assign({}, F.nec, ler(CH_N) || {});
+// quem não está na escala nem no FAT (relatório de ativos do Transporte, fat.py): cobrem as vagas "a escalar" da escala
+// (oficina) e contam como escalados; os outros sobram sem escala e sem FAT
+const LIVRES = F.livres || [], VAG = (F.escala && F.escala.a_escalar) || {};
+const nLivres = p => LIVRES.filter(x => x.papel === p).length, cobre = p => Math.min(VAG[p] || 0, nLivres(p));
+const falta = p => Math.max(0, (VAG[p] || 0) - nLivres(p));
+// sem escala de partida = ativos − (posições da escala − vagas que ninguém cobre), como na aba FAT
+const NEC_ESC = F.escala ? Object.fromEntries(PAP.map(p => [p, Math.max(0, ((F.ativos || {})[p] || 0) - (F.escala.precisa[p] - falta(p)))])) : F.nec;
+LIVRES.forEach(x => { x.ativ = x.ativ || "–"; x.ferias = x.ferias || "–"; });
+{ const vist = {}; LIVRES.forEach(x => { vist[x.papel] = (vist[x.papel] || 0) + 1; x.sit = vist[x.papel] <= cobre(x.papel) ? "oficina" : "livre"; }); }
+const nec = Object.assign({}, NEC_ESC, ler(CH_N) || {});
 // a necessidade da escala escolhida vem no endereço quando a lista é aberta pelo botão do estudo (#nec77-124)
 const doLink = /^#nec(\d+)-(\d+)$/.exec(location.hash);
-const NEC_BASE = doLink ? { operador: +doLink[1], motorista: +doLink[2] } : F.nec;
+const NEC_BASE = doLink ? { operador: +doLink[1], motorista: +doLink[2] } : NEC_ESC;
 if (doLink) { Object.assign(nec, NEC_BASE); grava(CH_N, nec); }
 const dos = p => F.gente.filter(x => x.papel === p);
 // uma turma só (09/11/2026): todos entram no FAT de 14/01 a 15/03/2027, depois das férias. "turma" diz se a pessoa tira
@@ -242,21 +251,21 @@ $("leiTxt").textContent = `Os 258 da programação do Transporte tiram as féria
 // tabela por papel, a mesma da página FAT do estudo: ativos do quadro de motoristas e operadores, a necessidade
 // (editável) e o que sai da lista. Os números com nomes por trás são botões que filtram a lista
 const COLS_RES = [["direito", "Com direito", "ao FAT"], ["vai", "Vão para o FAT", ""], ["esc", "Escolhidos", "pelo Transporte"],
-  ["semfat", "Sem atividade", "e sem FAT"]];
+  ["semfat", "Sobram", "sem escala e sem FAT"]];
 function resumo() {
   const lin = PAP.map(p => {
     const g = dos(p), n = Math.max(0, nec[p] | 0), at = (F.ativos || {})[p] || 0, m = g.filter(vai).length;
     return { p, at, pr: Math.max(0, at - n), n, direito: g.length, vai: m, esc: g.filter(x => vai(x) && x.escolhido).length,
       sug: g.filter(x => vai(x) && !x.escolhido).length, s1: g.filter(x => vai(x) && !x.escolhido && turma(x) === 1).length,
       s2: g.filter(x => vai(x) && !x.escolhido && turma(x) === 2).length, t1: g.filter(x => vai(x) && turma(x) === 1).length,
-      t2: g.filter(x => vai(x) && turma(x) === 2).length, semfat: n - m, ficam: g.length - m };
+      t2: g.filter(x => vai(x) && turma(x) === 2).length, semfat: Math.max(0, n - m), ficam: g.length - m };
   });
   const tot = { at: 0, pr: 0, n: 0, direito: 0, vai: 0, esc: 0, sug: 0, s1: 0, s2: 0, t1: 0, t2: 0, semfat: 0, ficam: 0 };
   lin.forEach(l => Object.keys(tot).forEach(k => { tot[k] += l[k]; }));
   const bot0 = (p, s, v) => `<button type="button" class="nb" data-p="${p}" data-s="${s}" title="Ver os nomes">${v}</button>`;
   const SUB = { t1: "s1", t2: "s2" };
   const bot = (p, s, v, l) => bot0(p, s, v) + (SUB[s] && l[SUB[s]] ? `<small class="sg">${l[SUB[s]]} além da programação</small>` : "");
-  let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>escala do Transporte</u></th><th class="cl">Sem atividade<u>ativos − precisa</u></th>` +
+  let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Escalados<u>com a oficina</u></th><th class="cl">Sem escala<u>ativos − escalados</u></th>` +
     COLS_RES.map(([s, a, b]) => `<th${s === "vai" ? ' class="cl"' : s === "sug" ? ' class="az"' : ""}>${a}${b ? `<u>${b}</u>` : ""}</th>`).join("") + `</tr></thead><tbody>`;
   lin.forEach(l => {
     h += `<tr><td class="l">${ROT[l.p]}</td><td>${l.at || "–"}</td><td>${l.at ? l.pr : "–"}</td>` +
@@ -267,13 +276,12 @@ function resumo() {
     COLS_RES.map(([s]) => `<td>${bot("", s, tot[s], tot)}</td>`).join("") + `</tr></tbody>`;
   $("resumo").innerHTML = h;
   // o que fecha e o que falta em cada papel
+  const saf = p => Math.min(LIVRES.filter(x => x.papel === p && x.sit === "livre" && x.contrato === "Safra").length, lin.find(l => l.p === p).semfat);
   $("notaRes").textContent = lin.map(l => {
-    const aptos = l.direito, vf = F.verificar.filter(x => x.papel === l.p).length;
-    if (l.vai === l.n) return `${ROT[l.p]}: fecha a necessidade.`;
-    if (l.vai > l.n) return `${ROT[l.p]}: ${l.vai - l.n} marcados a mais que a necessidade.`;
-    return `${ROT[l.p]}: ${l.semfat} ficam sem atividade e sem FAT` + (l.vai >= aptos
-      ? ` (todos os com direito vão${vf ? `; ${vf} podem ter direito e estão a conferir` : ""}).`
-      : ` (faltam ${Math.min(l.n, aptos) - l.vai} para marcar).`);
+    const r = ROT[l.p].toLowerCase(), sf = saf(l.p);
+    if (l.vai > l.n) return `${ROT[l.p]}: ${l.vai - l.n} marcados a mais que os sem escala.`;
+    return `${ROT[l.p]}: sobram ${l.semfat} sem escala e sem FAT` + (sf ? `, ${sf} de contrato safra (saem no fim da safra; ficam ${l.semfat - sf})` : "") + "." +
+      (cobre(l.p) ? ` ${cobre(l.p)} ${r} livres entram nas vagas da oficina${falta(l.p) ? ` (faltam ${falta(l.p)})` : ""}.` : "");
   }).join(" ");
   marcaBotoes();
 }
@@ -293,7 +301,22 @@ function listas() {
         <td>${esc(x.ferias)}</td><td class="c mono" title="fonte: ${esc(x.fonte_ferias || "painel")}">${dataBR(x.limite)}</td><td class="fe-c"></td></tr>`;
     });
     return h + "</tbody></table></div></section>";
-  }).join("") + verificar();
+  }).join("") + semEscala() + verificar();
+}
+// quem não está na escala do Transporte nem no FAT, com o motivo: os operadores entram nas vagas da oficina; os outros
+// sobram sem escala e sem FAT
+const MOTIVO_LV = { safra: "Contrato safra · sai no fim da safra", experiencia: "Em experiência · sem direito", efetivo: "Efetivo com menos de 12 meses",
+  conferir: "Direito a conferir (possível aposentado)", fat_fora: "Marcado FAT no cadastro, fora da programação", op_fora: "Marcado em operação no cadastro, fora da escala" };
+function semEscala() {
+  if (!LIVRES.length) return "";
+  let h = `<section class="papel"><h3>Fora da escala e do FAT<small>${LIVRES.length} pessoas · relatório de ativos do Transporte</small></h3>
+    <p class="nota">Quem não está na escala de dezembro nem nos ${F.gente.filter(x => x.escolhido).length} do FAT. Os operadores entram nas vagas "a escalar" da oficina; os outros sobram sem escala e sem FAT.</p>
+    <div class="rolo"><table><thead><tr><th>Papel</th><th>Mat.</th><th>Nome</th><th>Função</th><th>Gerência</th><th>Contrato</th><th>Motivo</th><th>Situação</th></tr></thead><tbody>`;
+  LIVRES.forEach(x => {
+    h += `<tr ${dadosLinha(x, x.sit)}><td>${x.papel === "motorista" ? "Motorista" : "Operador"}</td><td class="mono">${x.mat}</td><td class="nome">${esc(x.nome)}</td><td class="t">${esc(x.funcao)}</td>
+      <td class="t">${esc(x.ger)}</td><td>${esc(x.contrato)}</td><td class="t">${esc(MOTIVO_LV[x.motivo] || x.motivo)}</td><td class="t">${esc(ROT_SIT[x.sit])}</td></tr>`;
+  });
+  return h + "</tbody></table></div></section>";
 }
 // podem ter direito: efetivos com 12 meses ou mais em que falta conferir a aposentadoria (60+) ou que não entraram
 // no levantamento do FAT. Não entram na fila até o RH confirmar
@@ -331,9 +354,10 @@ function marcaLinhas() {
 const FILTROS = ["papel", "orig", "turma", "sit", "ativ", "ger", "func", "fer"];
 const ROT_TURMA = () => ({ 1: "Com férias antes do FAT", 2: "Sem férias a tirar", "–": "Sem dado · a conferir" });
 const ROT_SIT = { t1: "Vai · férias e FAT", t2: "Vai · sem férias a tirar", fica: "Fica · tem direito", conferir: "Pode ter direito · conferir",
-  vai: "Vão para o FAT", direito: "Com direito ao FAT", ficam: "Com direito que ficam", semfat: "Sem FAT · a conferir" };
+  vai: "Vão para o FAT", direito: "Com direito ao FAT", ficam: "Com direito que ficam", semfat: "Sobram sem escala e sem FAT",
+  livre: "Sobra · sem escala e sem FAT", oficina: "Entra na vaga da oficina" };
 // situações que juntam outras, como nas colunas da tabela por papel
-const SIT_GRUPO = { vai: ["t1", "t2"], direito: ["t1", "t2", "fica"], ficam: ["fica"], semfat: ["conferir"] };
+const SIT_GRUPO = { vai: ["t1", "t2"], direito: ["t1", "t2", "fica"], ficam: ["fica"], semfat: ["livre"] };
 const ROT_PAPEL1 = { operador: "Operador", motorista: "Motorista" };
 const SEL = {};
 const ROT_ORIG = { esc: "Na programação do Transporte", sug: "Marcado além da programação", nao: "Não vai" };
@@ -380,7 +404,7 @@ function filtra() {
   marcaBotoes();
 }
 // pessoas (com direito e a conferir) pela matrícula, para copiar o que está na tela
-const PESSOA = new Map(F.gente.concat(F.verificar).map(x => [String(x.mat), x]));
+const PESSOA = new Map(F.gente.concat(F.verificar, LIVRES).map(x => [String(x.mat), x]));
 function copia(linhas, rotuloOk) {
   const txt = linhas.join("\n"), n = linhas.length - 1;
   const mostra = () => { const t = $("copia"); t.hidden = false; t.value = txt; t.focus(); t.select();
@@ -411,7 +435,7 @@ $("resumo").addEventListener("click", e => {
   if (!ja) { SEL.papel = b.dataset.p; SEL[ORIG_BOT[b.dataset.s] ? "orig" : "sit"] = b.dataset.s; }
   filtra();
   $("aviso").textContent = ja ? "Filtro limpo." : b.dataset.s === "semfat"
-    ? "Quem fica sem atividade e sem FAT não tem nome na escala: aparecem os que podem ter direito (a conferir). Quem não tem direito ao FAT (menos de 12 meses, contrato safra ou experiência, aposentado) não está nesta lista."
+    ? "Quem sobra sem escala e sem FAT: não está na escala de dezembro nem no FAT (relatório de ativos do Transporte), com o motivo de cada um."
     : "";
   if (!ja) document.querySelector(".filtros").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
 });

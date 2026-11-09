@@ -1848,32 +1848,36 @@ function fatOp() {
   if (!FAT || !PES) { $("#fatSub").textContent = "Sem a lista do FAT (python fat.py) ou sem os ativos da frota (python pessoal_frota.py)."; return; }
   const papeis = ["operador", "motorista"], { N, vai, dir, alerta, esc } = filaFat(), TU = FAT.turmas || {};
   const soma = f => papeis.reduce((x, p) => x + f(p), 0);
-  // sem atividade e sem FAT com sinal: sem atividade menos quem vai (negativo = vão mais que a sobra do papel); o total
-  // é a conta da escala inteira (291 − 258)
-  const sf = p => N[p].sem - vai[p];
-  const T = { ativos: soma(p => N[p].ativos), precisa: soma(p => N[p].precisa), sem: soma(p => N[p].sem), dir: soma(p => dir[p]), vai: soma(p => vai[p]),
-    alerta: soma(p => alerta[p]), esc: soma(p => esc[p]) };
-  T.semfat = T.sem - T.vai;
-  const fmtS = x => x < 0 ? "−" + fmt(-x) : fmt(x);
-  // motivos de quem não está na escala nem no FAT, pelo relatório de ativos do Transporte (fat.py)
-  const LV = (FAT.escala && FAT.escala.livres) || null, saf = p => LV ? (LV[p] || {}).safra || 0 : 0;
-  const sub = (n, txt, cls) => fmtS(n) + (txt ? `</b><small class="${cls}">${txt}</small><b hidden>` : "");
-  const celSF = p => sub(sf(p), sf(p) < 0 ? `${fmt(-sf(p))} a mais no FAT` : saf(p) ? `${fmt(saf(p))} safrista${saf(p) > 1 ? "s" : ""}` : "", sf(p) < 0 ? "sg" : "sf");
-  $("#fatChips").innerHTML = [[fmt(T.vai), "Vão para o FAT"], [fmt(T.sem), "Sem atividade", "sa"], [fmtS(T.semfat), "Sem ativ. · sem FAT", T.semfat > 0 ? "pos" : "zero"],
-    [fmt(saf("operador") + saf("motorista")), "Safristas sem atividade"]].map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
-  document.querySelectorAll(".nominal").forEach(e => { e.hidden = !FAT.lista; if (FAT.lista) e.querySelector("a").href = FAT.lista + "#nec" + N.operador.sem + "-" + N.motorista.sem; });
+  // só pessoas: quem não está na escala nem no FAT (relatório de ativos do Transporte, fat.py) cobre as vagas "a escalar"
+  // da escala (oficina) e conta como escalado; as vagas que ninguém cobre ficam de fora da conta ("faltam")
+  const E = FAT.escala || {}, LV = E.livres || null, VAG = E.a_escalar || {};
+  const qt = (p, k) => LV ? ((LV[p] || {})[k] || 0) : 0, livres = p => MOTIVOS_FAT.reduce((x, [k]) => x + qt(p, k), 0);
+  const cobre = p => LV ? Math.min(VAG[p] || 0, livres(p)) : 0, falta = p => LV ? Math.max(0, (VAG[p] || 0) - livres(p)) : 0;
+  const escal = p => N[p].precisa - falta(p), semEsc = p => N[p].ativos - escal(p), sobra = p => Math.max(0, semEsc(p) - vai[p]);
+  const safS = p => Math.min(qt(p, "safra"), sobra(p));
+  const T = { ativos: soma(p => N[p].ativos), precisa: soma(p => N[p].precisa), escal: soma(escal), sem: soma(semEsc), dir: soma(p => dir[p]),
+    vai: soma(p => vai[p]), esc: soma(p => esc[p]), sobra: soma(sobra), saf: soma(safS), falta: soma(falta), alerta: soma(p => alerta[p]) };
+  const sub = (v, txt, cls) => v + (txt ? `</b><small class="${cls}">${txt}</small><b hidden>` : "");
+  $("#fatChips").innerHTML = [[fmt(T.vai), "Vão para o FAT"], [fmt(T.sobra), "Sem escala · sem FAT", T.sobra ? "pos" : "zero"],
+    [fmt(T.saf), "Safristas · saem"], [fmt(T.sobra - T.saf), "Depois da safra"]].map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
+  document.querySelectorAll(".nominal").forEach(e => { e.hidden = !FAT.lista; if (FAT.lista) e.querySelector("a").href = FAT.lista + "#nec" + semEsc("operador") + "-" + semEsc("motorista"); });
   const per = t => t && t.fat ? `FAT de ${dataBR(t.fat[0])} a ${dataBR(t.fat[1])}` : "";
-  $("#fatSub").textContent = `Sem atividade = ativos do quadro menos o que a frota precisa na escala escolhida${FAT.escala ? `; a frota e a escala de cada equipamento vêm da ${FAT.escala.fonte.charAt(0).toLowerCase() + FAT.escala.fonte.slice(1)}` : ""}. Vão para o FAT os ${fmt(T.esc)} da programação do Transporte, numa turma só: tiram as férias a partir de 15/12/2026 (01/12 se o limite vence antes) e entram juntos no ${per(TU[1])}.`;
-  const linha = (rot, u, v, cls) => `<tr${cls ? ` class="${cls}"` : ""}><td class="l dep">${rot}${u ? `<u>${u}</u>` : ""}</td>${v.map(x => `<td class="qv"><b>${x}</b></td>`).join("")}</tr>`;
-  let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>na escolhida</u></th><th class="escol">Sem atividade<u>ativos − precisa</u></th><th>Com direito<u>ao FAT</u></th><th class="escol">Vão para o FAT</th><th>Escolhidos<u>pelo Transporte</u></th><th class="escol">Sem atividade<u>e sem FAT</u></th></tr></thead><tbody>`;
-  papeis.forEach(p => { h += linha(ROT_PAPEL[p], "", [fmt(N[p].ativos), fmt(N[p].precisa), fmt(N[p].sem), fmt(dir[p]), fmt(vai[p]), fmt(esc[p]), celSF(p)]); });
-  h += linha("Total", "", [fmt(T.ativos), fmt(T.precisa), fmt(T.sem), fmt(T.dir), fmt(T.vai), fmt(T.esc), sub(T.semfat, saf("operador") + saf("motorista") ? `${fmt(saf("operador") + saf("motorista"))} safristas` : "", "sf")], "tot") + "</tbody>";
+  $("#fatSub").textContent = `Precisa = posições da escala escolhida${E.fonte ? ` (a frota vem da ${E.fonte.charAt(0).toLowerCase() + E.fonte.slice(1)})` : ""}. Vão para o FAT os ${fmt(T.esc)} da programação do Transporte, numa turma só: tiram as férias a partir de 15/12/2026 (01/12 se o limite vence antes) e entram juntos no ${per(TU[1])}.`;
+  const linha = (rot, v, cls) => `<tr${cls ? ` class="${cls}"` : ""}><td class="l dep">${rot}</td>${v.map(x => `<td class="qv"><b>${x}</b></td>`).join("")}</tr>`;
+  let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>escala escolhida</u></th><th>Escalados<u>com a oficina</u></th><th class="escol">Sem escala<u>ativos − escalados</u></th><th>Com direito<u>ao FAT</u></th><th class="escol">Vão para o FAT</th><th class="escol">Sobram<u>sem escala e sem FAT</u></th></tr></thead><tbody>`;
+  papeis.forEach(p => {
+    h += linha(ROT_PAPEL[p], [fmt(N[p].ativos), fmt(N[p].precisa), sub(fmt(escal(p)), falta(p) ? `faltam ${fmt(falta(p))} na oficina` : cobre(p) ? `${fmt(cobre(p))} livres na oficina` : "", "sg"),
+      fmt(semEsc(p)), fmt(dir[p]), fmt(vai[p]), sub(fmt(sobra(p)), safS(p) ? `${fmt(safS(p))} safrista${safS(p) > 1 ? "s" : ""} saem` : "", "sf")]);
+  });
+  h += linha("Total", [fmt(T.ativos), fmt(T.precisa), sub(fmt(T.escal), T.falta ? `faltam ${fmt(T.falta)}` : "", "sg"), fmt(T.sem), fmt(T.dir), fmt(T.vai),
+    sub(fmt(T.sobra), T.saf ? `${fmt(T.saf)} safristas saem` : "", "sf")], "tot") + "</tbody>";
   $("#fatPapel").innerHTML = h;
-  const nota = `${fmt(T.ativos)} ativos − ${fmt(T.precisa)} da escala = ${fmt(T.sem)} sem atividade; ${fmt(T.vai)} vão para o FAT e sobram ${fmtS(T.semfat)}.` +
-    (LV ? ` Saem no fim da safra todos os de contrato safra: ${fmt((LV.safra_total || {}).operador || 0)} operadores e ${fmt((LV.safra_total || {}).motorista || 0)} motoristas; ${fmt(saf("motorista") + saf("operador"))} deles estão entre os sem atividade, e depois que saírem sobram ${fmtS(T.semfat - saf("motorista") - saf("operador"))}.` : "") +
-    (T.alerta ? ` Atenção: ${fmt(T.alerta)} dos que vão ficam sem atividade entre o fim das férias e 13/01 (férias a partir de 01/12, saldo menor que 30 dias ou sem férias a tirar): ver com o DP (lista nominal).` : "");
+  const nota = `${fmt(T.ativos)} ativos − ${fmt(T.escal)} escalados = ${fmt(T.sem)} sem escala; ${fmt(T.vai)} vão para o FAT e sobram ${fmt(T.sobra)} sem escala e sem FAT.` +
+    (LV ? ` A escala tem ${fmt(soma(p => VAG[p] || 0))} vagas de operador na oficina ainda "a escalar": entram nelas os ${fmt(cobre("operador"))} operadores livres${falta("operador") ? ` e faltam ${fmt(falta("operador"))}` : ""}.` : "") +
+    (T.saf ? ` Dos ${fmt(T.sobra)} que sobram, ${fmt(T.saf)} são de contrato safra e saem no fim da safra: ficam ${fmt(T.sobra - T.saf)}.` : "") +
+    (T.alerta ? ` Atenção: ${fmt(T.alerta)} dos que vão para o FAT ficam sem atividade entre o fim das férias e 13/01 (férias a partir de 01/12, saldo menor que 30 dias ou sem férias a tirar): ver com o DP (lista nominal).` : "");
   $("#fatNota").hidden = false; $("#fatNota").textContent = nota;
-  fatAbre(N, vai, LV, fmtS);
+  fatAbre({ qt, livres, cobre, sobra, safS, papeis });
   escalaFat();
   fatInd(N, vai, dir);
 }
@@ -1881,18 +1885,22 @@ function fatOp() {
 const MOTIVOS_FAT = [["safra", "Contrato safra", "sai no fim da safra"], ["experiencia", "Em experiência", "sem direito ao FAT"],
   ["efetivo", "Efetivo com menos de 12 meses", "sem direito ao FAT"], ["conferir", "Direito a conferir", "possível aposentado"],
   ["fat_fora", "Marcado FAT no cadastro", "fora da programação dos 258"], ["op_fora", "Marcado em operação no cadastro", "fora da escala de dezembro"]];
-function fatAbre(N, vai, LV, fmtS) {
+function fatAbre(c) {
   const el = $("#fatAbre"); if (!el) return;
-  el.hidden = !LV; if (!LV) return;
-  const ps = ["operador", "motorista"], q = (p, k) => (LV[p] || {})[k] || 0, tl = p => MOTIVOS_FAT.reduce((x, [k]) => x + q(p, k), 0);
+  el.hidden = !(FAT.escala && FAT.escala.livres); if (el.hidden) return;
+  const { qt, livres, cobre, sobra, safS, papeis } = c, tot = f => papeis.reduce((x, p) => x + f(p), 0);
+  const lin = (rot, u, f, cls) => `<tr${cls ? ` class="${cls}"` : ""}><td class="l dep">${rot}${u ? `<u>${u}</u>` : ""}</td>${papeis.map(p => `<td class="qv"><b>${fmt(f(p))}</b></td>`).join("")}<td class="qv"><b>${fmt(tot(f))}</b></td></tr>`;
   const aberto = el.open;
-  let h = `<summary>Por que sobram ${fmtS(ps.reduce((x, p) => x + N[p].sem - vai[p], 0))}: quem não está na escala nem no FAT (abrir)</summary><div class="rolo"><table class="tb qd"><thead><tr><th class="l">Motivo</th><th>Operadores</th><th>Motoristas</th><th class="escol">Total</th></tr></thead><tbody>`;
-  MOTIVOS_FAT.forEach(([k, a, b]) => { const o = q("operador", k), m = q("motorista", k); if (o + m) h += `<tr><td class="l dep">${a}<u>${b}</u></td><td class="qv"><b>${fmt(o)}</b></td><td class="qv"><b>${fmt(m)}</b></td><td class="qv"><b>${fmt(o + m)}</b></td></tr>`; });
-  h += `<tr class="tot"><td class="l">Fora da escala e do FAT</td><td class="qv"><b>${fmt(tl("operador"))}</b></td><td class="qv"><b>${fmt(tl("motorista"))}</b></td><td class="qv"><b>${fmt(tl("operador") + tl("motorista"))}</b></td></tr></tbody></table></div>`;
-  const of = q("operador", "fat_fora") + q("operador", "op_fora"), mf = q("motorista", "fat_fora") + q("motorista", "op_fora");
-  h += `<p class="nota">Motoristas: ${fmt(tl("motorista"))} fora da escala e do FAT${mf ? `, dos quais ${fmt(mf)} o cadastro do Transporte marca em FAT ou em operação sem estarem na programação ou na escala` : ""}; sem atividade e sem FAT, ${fmtS(N.motorista.sem - vai.motorista)}. ` +
-    `Operadores: ${fmt(tl("operador"))} fora da escala e do FAT${of ? ` (${fmt(of)} marcados em FAT ou operação no cadastro)` : ""}; como vão ${fmt(vai.operador)} para o FAT e sobram ${fmt(N.operador.sem)} da escala, ficam ${fmtS(N.operador.sem - vai.operador)}: são as posições da escala ainda "a escalar" (oficina) que esses livres cobrem em parte.</p>`;
-  el.innerHTML = h; el.open = aberto;
+  let h = `<summary>Quem são os ${fmt(tot(sobra))} que sobram e quantos saem (abrir)</summary><div class="rolo"><table class="tb qd"><thead><tr><th class="l">Fora da escala e do FAT</th><th>Operadores</th><th>Motoristas</th><th class="escol">Total</th></tr></thead><tbody>`;
+  MOTIVOS_FAT.forEach(([k, a, b]) => { if (tot(p => qt(p, k))) h += lin(a, b, p => qt(p, k)); });
+  h += lin("Fora da escala e do FAT", "", livres, "sub");
+  if (tot(cobre)) h += lin("Entram nas vagas da oficina", "contam como escalados", p => cobre(p) ? -cobre(p) : 0);
+  h += lin("Sobram sem escala e sem FAT", "", sobra, "tot");
+  h += lin("Saem no fim da safra", "contrato safra", safS);
+  h += lin("Ficam depois da safra", "", p => sobra(p) - safS(p), "tot") + `</tbody></table></div>`;
+  const os = Math.min(qt("operador", "safra"), cobre("operador"));
+  h += `<p class="nota">Dos ${fmt(cobre("operador"))} operadores que entram na oficina, ${fmt(os)} são de contrato safra: no fim da safra eles saem e a oficina volta a ter vagas. Os nomes estão na lista nominal (clique no número de quem sobra).</p>`;
+  el.innerHTML = h.replace(/<b>−?-(\d)/g, "<b>−$1"); el.open = aberto;
 }
 function tudo() { OP.forEach(atualizaOp); capa(); painel(); quadro(); matriz(); grafico(); painelOp(); quadroOp(); matrizOp(); fatOp(); AREAS.forEach(a => { painelArea(a); quadroArea(a); matrizArea(a); }); resumoFinal(); escalas(); if (window.salvaSite) salvaSite.mudou(); }
 function volante(v) { S.vol = v; $("#vol").checked = v; tudo(); }
