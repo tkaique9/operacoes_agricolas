@@ -226,6 +226,20 @@ table.qd td.dep u { display: inline; margin-left: 8px; }
 table.qd td.hoje { font: 700 18px var(--f-display); color: var(--navy); background: #F7F8FB; }
 table.qd td.cmp { font: 500 13.5px var(--f-mono); color: var(--mut); text-align: left; white-space: nowrap; vertical-align: middle; line-height: 1.2; }
 table.qd td.qv { white-space: nowrap; }
+.fat-datas { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 6px; }
+.fat-datas span { font: 600 12.5px var(--f-mono); letter-spacing: .04em; color: #E9D48F; border: 1px solid rgba(233,212,143,.55); border-radius: 4px; padding: 5px 10px; background: rgba(233,212,143,.08); }
+.fat-datas b { color: #fff; margin-left: 6px; }
+button.abre-at { font: inherit; font-weight: 700; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+button.abre-at:hover { color: #A88516; }
+table.qd tr.sub-eq td { background: #F8F9FC; font-size: 14px; padding-top: 5px; padding-bottom: 5px; }
+table.qd tr.sub-eq td.l { padding-left: 34px; color: #5A6072; }
+button.eqb { font: inherit; font-weight: 700; color: inherit; background: none; border: 0; border-bottom: 2px dotted #C9A227; padding: 0 6px; cursor: pointer; }
+button.eqb:hover { background: #FDF2D3; }
+dialog.fat-dlg { width: min(980px, calc(100vw - 32px)); max-height: 86vh; border: 0; border-radius: 6px; padding: 18px 20px; box-shadow: 0 18px 50px rgba(10,19,48,.45); }
+dialog.fat-dlg::backdrop { background: rgba(10,19,48,.55); }
+.fat-dlg-topo { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+.fat-dlg-topo h3 { margin: 0; }
+table.qd tr.grp-at td { background: #F4F6FA; font: 600 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: #5A6072; }
 table.qd td.esc-at { font: 600 13px var(--f-mono); white-space: nowrap; }
 table.qd td.dep .nova { display: inline-block; margin-left: 8px; font: 600 10.5px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: #fff; background: #2563A8; border-radius: 3px; padding: 1px 6px; vertical-align: 2px; }
 .fat-abre { margin-top: 10px; } .fat-abre summary { cursor: pointer; font: 600 13px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--navy, #12224A); }
@@ -690,10 +704,12 @@ body.maxi-on .deck { z-index: 150; }
   <article class="slide" id="fat" data-mod="FAT" data-title="FAT" data-desc="Motoristas e operadores sem atividade na escala escolhida e quem tem direito ao FAT">
     <div class="s-head"><div><div class="s-eyebrow">08 · FAT · Necessidade</div><h2 class="s-title">FAT: quem fica sem atividade e quem tem direito</h2>
       <p class="s-sub" id="fatSub"></p>
+      <div class="fat-datas" id="fatDatas"></div>
       <p class="nominal tela" hidden><a class="btn pri" href="#" target="_blank" rel="noopener">Lista nominal ↗</a><span>página com nomes no site (abre numa aba nova)</span></p></div>
       <div class="chips" id="fatChips"></div></div>
     <div class="card fix"><h3>Por papel<span class="h3u">sem atividade na escala × com direito ao FAT</span></h3><div class="rolo"><table class="tb qd" id="fatPapel"></table></div><p class="nota" id="fatNota" hidden></p><details class="fat-abre" id="fatAbre" hidden></details></div>
     <div class="card fix" id="fatEscCard" hidden><h3>Escala do Transporte<span class="h3u">posições por atividade · dezembro de 2026</span></h3><div class="rolo"><table class="tb qd" id="fatEscala"></table></div><p class="nota" id="fatEscNota"></p></div>
+    <dialog class="fat-dlg" id="fatEqDlg" aria-labelledby="fatEqTit"><div class="fat-dlg-topo"><h3 id="fatEqTit"></h3><button type="button" class="btn" id="fatEqFecha">Fechar ✕</button></div><div class="rolo"><table class="tb qd" id="fatEqTab"></table></div><p class="nota" id="fatEqNota"></p></dialog>
     <div class="card fat-card"><h3>Indicadores<span class="h3u">em % de cada papel</span></h3><div class="fat-ind">
       <div class="fi"><h4>Cobertura do FAT<small>vão ÷ sem atividade</small></h4><svg id="fatG1" role="img" aria-label="Cobertura do FAT por papel"></svg></div>
       <div class="fi"><h4>Quem tem direito<small>vão para o FAT · ficam na operação</small></h4><svg id="fatG2" role="img" aria-label="Quem tem direito ao FAT, por papel"></svg></div>
@@ -783,7 +799,7 @@ const H5X1 = { id: "5x1", curto: "5x1 hoje", ciclo: 6, trab: 5, turnos: 3 };
 const FRENTE = D.frentes;
 // o mesmo nome em duas frentes (bombeiro) leva a frente na chave; o primeiro fica só com o nome
 const OP = D.frota.map((f, i) => ({ dep: "eq:" + (D.frota.findIndex(g => g.nome === f.nome) === i ? f.nome : f.frente + " · " + f.nome), tipo: "eq",
-  nome: f.nome, frente: f.frente, ativ: f.ativ, papel: f.papel, esc0: f.esc, qtd: f.qtd, qtd0: f.qtd, k: 1, reg: f.reg || "3", folg: f.folg !== false, reg0: f.reg || "3", folg0: f.folg !== false, regra: "24h",
+  nome: f.nome, frente: f.frente, ativ: f.ativ, classe: f.classe || f.nome, eqs: f.eqs, papel: f.papel, esc0: f.esc, qtd: f.qtd, qtd0: f.qtd, k: 1, reg: f.reg || "3", folg: f.folg !== false, reg0: f.reg || "3", folg0: f.folg !== false, regra: "24h",
   regra_txt: "roda 24 h · hoje em 5x1", adm: 0, adm_hoje: 0, lideres: 0, afastados: 0, sem_origem: 0, n: 0, equipe: 0 }));
 const PPP = e => e.turnos * e.ciclo / e.trab;
 /* operadores hoje (5x1) por equipamento, no turno e com o folguista anotados: 3 turnos com folguista = 3,6; sem
@@ -1834,6 +1850,35 @@ function fatInd(N, vai, dir) {
 }
 // escala do Transporte por atividade, pela frota do estudo (cada escala do Transporte é um equipamento da frota): a
 // escala escolhida de cada atividade, os equipamentos e as posições (seguem a escolha da página Operacional)
+// janela dos equipamentos de uma atividade (ou de todas), por classe: equipamentos com gente na escala do Transporte e
+// as posições de operador e motorista na escala escolhida
+function abreEq(ativ) {
+  const dlg = $("#fatEqDlg"); if (!dlg || !FAT.escala) return;
+  const ats = ativ ? [ativ] : FAT.escala.atividades.map(a => a.ativ);
+  const need = d => (conta(d, S.esc[d.dep]) || conta(d, "5x2")).need, cel = v => `<td class="qv"><b>${v}</b></td>`;
+  let h = `<thead><tr><th class="l">Classe</th><th>Escala</th><th>Equipamentos</th><th>Operadores</th><th>Motoristas</th></tr></thead><tbody>`, T = { eq: 0, op: 0, mo: 0 };
+  ats.forEach(a => {
+    const eqs = OP.filter(d => d.ativ === a && d.qtd), cls = [...new Set(eqs.map(d => d.classe))];
+    if (ats.length > 1) h += `<tr class="grp-at"><td class="l" colspan="5">${esc(a)}</td></tr>`;
+    cls.forEach(c => {
+      const ds = eqs.filter(d => d.classe === c), ids = [...new Set(ds.map(d => conta(d, S.esc[d.dep]) ? S.esc[d.dep] : "5x2"))];
+      const eq = ds.reduce((x, d) => x + (d.eqs ?? d.qtd), 0), op = Math.round(ds.filter(d => papelEq(d) === "operador").reduce((x, d) => x + need(d), 0)),
+        mo = Math.round(ds.filter(d => papelEq(d) === "motorista").reduce((x, d) => x + need(d), 0));
+      T.eq += eq; T.op += op; T.mo += mo;
+      h += `<tr><td class="l dep">${esc(c)}</td><td class="qv esc-at">${esc(ids.map(id => ESC[id].curto).join(" · "))}</td>${cel(fmt(eq))}${cel(fmt(op))}${cel(fmt(mo))}</tr>`;
+    });
+  });
+  h += `<tr class="tot"><td class="l">Total</td><td></td>${cel(fmt(T.eq))}${cel(fmt(T.op))}${cel(fmt(T.mo))}</tr></tbody>`;
+  $("#fatEqTit").textContent = ativ ? `${ativ}: equipamentos por classe` : "Equipamentos por classe, em todas as atividades";
+  $("#fatEqTab").innerHTML = h;
+  $("#fatEqNota").textContent = "Equipamentos = os que têm operador ou motorista na escala do Transporte (códigos como P01, TB02, CM03). Operadores e motoristas = posições na escala escolhida (página Operacional).";
+  if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+}
+document.addEventListener("click", e => {
+  const dlg = $("#fatEqDlg"); if (!dlg) return;
+  if (e.target.id === "fatEqFecha" || e.target === dlg) dlg.close ? dlg.close() : dlg.removeAttribute("open");
+});
+const ATIV_ABERTAS = new Set();   // atividades abertas na tabela da escala do Transporte
 function escalaFat() {
   const card = $("#fatEscCard"); if (!card) return;
   card.hidden = !FAT.escala; if (!FAT.escala) return;
@@ -1842,15 +1887,26 @@ function escalaFat() {
     const eqs = OP.filter(d => d.ativ === a.ativ && d.qtd);
     const ids = [...new Set(eqs.map(d => conta(d, S.esc[d.dep]) ? S.esc[d.dep] : "5x2"))];
     const pos = p => Math.round(eqs.filter(d => papelEq(d) === p).reduce((x, d) => x + (conta(d, S.esc[d.dep]) || conta(d, "5x2")).need, 0));
-    return { ativ: a.ativ, ids, eq: eqs.reduce((x, d) => x + d.qtd, 0), operador: pos("operador"), motorista: pos("motorista") };
+    return { ativ: a.ativ, ids, eq: eqs.reduce((x, d) => x + (d.eqs ?? d.qtd), 0), operador: pos("operador"), motorista: pos("motorista") };
   });
   const s = k => linhas.reduce((x, l) => x + l[k], 0), escTxt = ids => ids.map(id => ESC[id].curto).join(" · ");
   const cel = v => `<td class="qv"><b>${v}</b></td>`;
   let h = `<thead><tr><th class="l">Atividade</th><th>Escala escolhida</th><th>Equipamentos</th><th>Operadores</th><th>Motoristas</th><th class="escol">Posições</th></tr></thead><tbody>`;
-  linhas.forEach(l => { h += `<tr><td class="l dep">${esc(l.ativ)}</td><td class="qv esc-at">${esc(escTxt(l.ids))}</td>${cel(fmt(l.eq))}${cel(fmt(l.operador))}${cel(fmt(l.motorista))}${cel(fmt(l.operador + l.motorista))}</tr>`; });
-  h += `<tr class="tot"><td class="l">Total</td><td class="qv esc-at">${esc(escTxt([...new Set(linhas.flatMap(l => l.ids))]))}</td>${cel(fmt(s("eq")))}${cel(fmt(s("operador")))}${cel(fmt(s("motorista")))}${cel(fmt(s("operador") + s("motorista")))}</tr></tbody>`;
+  linhas.forEach(l => { const ab = ATIV_ABERTAS.has(l.ativ);
+    h += `<tr><td class="l dep"><button type="button" class="abre-at" data-a="${esc(l.ativ)}" aria-expanded="${ab}">${ab ? "▾" : "▸"} ${esc(l.ativ)}</button></td><td class="qv esc-at">${esc(escTxt(l.ids))}</td><td class="qv"><button type="button" class="eqb" data-a="${esc(l.ativ)}" title="Ver por classe">${fmt(l.eq)}</button></td>${cel(fmt(l.operador))}${cel(fmt(l.motorista))}${cel(fmt(l.operador + l.motorista))}</tr>`;
+    // aberta: os equipamentos da atividade, um por linha, como no quadro por equipamento
+    if (ab) OP.filter(d => d.ativ === l.ativ && d.qtd).forEach(d => {
+      const id = conta(d, S.esc[d.dep]) ? S.esc[d.dep] : "5x2", n = Math.round(conta(d, id).need), op = papelEq(d) === "operador";
+      h += `<tr class="sub-eq"><td class="l">${esc(d.nome)}</td><td class="qv esc-at">${esc(ESC[id].curto)}</td><td class="qv">${fmt(d.eqs ?? d.qtd)}</td><td class="qv">${op ? fmt(n) : "–"}</td><td class="qv">${op ? "–" : fmt(n)}</td><td class="qv">${fmt(n)}</td></tr>`;
+    }); });
+  h += `<tr class="tot"><td class="l">Total</td><td class="qv esc-at">${esc(escTxt([...new Set(linhas.flatMap(l => l.ids))]))}</td><td class="qv"><button type="button" class="eqb" data-a="" title="Ver por classe">${fmt(s("eq"))}</button></td>${cel(fmt(s("operador")))}${cel(fmt(s("motorista")))}${cel(fmt(s("operador") + s("motorista")))}</tr></tbody>`;
   $("#fatEscala").innerHTML = h;
-  $("#fatEscNota").textContent = `${E.fonte}. Cada escala do Transporte é um equipamento da frota do estudo (página Operacional): a escala escolhida e as posições seguem o que estiver escolhido lá. Posições = escalados de cada escala; a oficina fica com as ${fmt((E.na_oficina || {}).operador || 0)} vagas que há operadores para preencher.`;
+  $("#fatEscala").onclick = e => {
+    const b = e.target.closest("button.eqb"); if (b) return abreEq(b.dataset.a);
+    const a = e.target.closest("button.abre-at"); if (!a) return;
+    ATIV_ABERTAS.has(a.dataset.a) ? ATIV_ABERTAS.delete(a.dataset.a) : ATIV_ABERTAS.add(a.dataset.a); escalaFat();
+  };
+  $("#fatEscNota").textContent = `${E.fonte}. Cada escala do Transporte é um equipamento da frota do estudo (página Operacional): a escala escolhida e as posições seguem o que estiver escolhido lá. Equipamentos = os que têm gente na escala do Transporte (clique no número para ver por classe; clique na atividade para abrir os equipamentos). Posições = escalados de cada escala; a oficina fica com as ${fmt((E.na_oficina || {}).operador || 0)} vagas que há operadores para preencher.`;
 }
 function fatOp() {
   if (!$("#fat")) return;
@@ -1871,7 +1927,10 @@ function fatOp() {
     [fmt(T.saf), "Safristas · saem"], [fmt(T.sobra - T.saf), "Depois da safra"]].map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
   document.querySelectorAll(".nominal").forEach(e => { e.hidden = !FAT.lista; if (FAT.lista) e.querySelector("a").href = FAT.lista + "#nec" + semEsc("operador") + "-" + semEsc("motorista"); });
   const per = t => t && t.fat ? `FAT de ${dataBR(t.fat[0])} a ${dataBR(t.fat[1])}` : "";
-  $("#fatSub").textContent = `Precisa = posições da escala escolhida${E.fonte ? ` (a frota vem da ${E.fonte.charAt(0).toLowerCase() + E.fonte.slice(1)})` : ""}. Vão para o FAT os ${fmt(T.esc)} da programação do Transporte, numa turma só: tiram as férias a partir de 15/12/2026 (01/12 se o limite vence antes) e entram juntos no ${per(TU[1])}.`;
+  const fer = TU[1] && TU[1].ferias ? `${dataBR(TU[1].ferias[0])} a ${dataBR(TU[1].ferias[1])}` : "";
+  $("#fatDatas").innerHTML = [FAT.fim_safra ? ["Fim da safra 2026", dataBR(FAT.fim_safra)] : null, fer ? ["Férias coletivas · operacional", fer] : null,
+    TU[1] ? ["FAT", `${dataBR(TU[1].fat[0])} a ${dataBR(TU[1].fat[1])}`] : null].filter(Boolean).map(([k, v]) => `<span>${k}<b>${v}</b></span>`).join("");
+  $("#fatSub").textContent = `Precisa = posições da escala escolhida${E.fonte ? ` (a frota vem da ${E.fonte.charAt(0).toLowerCase() + E.fonte.slice(1)})` : ""}. Vão para o FAT os ${fmt(T.esc)} da programação do Transporte, numa turma só: férias coletivas do operacional${fer ? ` de ${fer}` : ""} e todos entram juntos no ${per(TU[1])}.`;
   const linha = (rot, v, cls) => `<tr${cls ? ` class="${cls}"` : ""}><td class="l dep">${rot}</td>${v.map(x => `<td class="qv"><b>${x}</b></td>`).join("")}</tr>`;
   let h = `<thead><tr><th class="l">Papel</th><th>Ativos<u>no quadro</u></th><th>Precisa<u>escala escolhida</u></th><th>Escalados<u>com a oficina</u></th><th class="escol">Sem escala<u>ativos − escalados</u></th><th>Com direito<u>ao FAT</u></th><th class="escol">Vão para o FAT</th><th class="escol">Sobram<u>sem escala e sem FAT</u></th></tr></thead><tbody>`;
   papeis.forEach(p => {
@@ -1884,7 +1943,7 @@ function fatOp() {
   const nota = `${fmt(T.ativos)} ativos − ${fmt(T.escal)} escalados = ${fmt(T.sem)} sem escala; ${fmt(T.vai)} vão para o FAT e sobram ${fmt(T.sobra)} sem escala e sem FAT.` +
     (LV && soma(p => VAG[p] || 0) ? ` A escala tem ${fmt(soma(p => VAG[p] || 0))} vagas de operador na oficina ainda "a escalar": entram nelas os ${fmt(cobre("operador"))} operadores livres${falta("operador") ? ` e faltam ${fmt(falta("operador"))}` : ""}.` : "") +
     (T.saf ? ` Dos ${fmt(T.sobra)} que sobram, ${fmt(T.saf)} são de contrato safra e saem no fim da safra: ficam ${fmt(T.sobra - T.saf)}.` : "") +
-    (T.alerta ? ` Atenção: ${fmt(T.alerta)} dos que vão para o FAT ficam sem atividade entre o fim das férias e 13/01 (férias a partir de 01/12, saldo menor que 30 dias ou sem férias a tirar): ver com o DP (lista nominal).` : "");
+    (T.alerta ? ` Atenção: ${fmt(T.alerta)} dos que vão para o FAT ficam sem atividade entre o fim das férias da programação e o início do FAT (férias a partir de 01/12, saldo menor que 30 dias ou sem férias a tirar): ver com o DP (lista nominal).` : "");
   $("#fatNota").hidden = false; $("#fatNota").textContent = nota;
   fatAbre({ qt, livres, cobre, sobra, safS, papeis });
   escalaFat();

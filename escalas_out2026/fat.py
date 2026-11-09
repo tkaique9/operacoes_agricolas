@@ -63,9 +63,13 @@ HISTORICO = AQUI / "dados" / "fat" / "historico_ferias.xlsx"
 HOJE = datetime.date(2026, 11, 5)
 # uma turma só (decisão de 09/11/2026): todos entram no FAT depois das férias, de 14/01 a 15/03/2027. "turma" passa a dizer
 # só se a pessoa tira férias antes (1: a partir de 15/12, ou 01/12 se o limite vence antes) ou não tem férias a tirar (2)
-TURMAS = {1: {"ferias": ("2026-12-15", "2027-01-13"), "fat": ("2027-01-14", "2027-03-15")},
-          2: {"ferias": None, "fat": ("2027-01-14", "2027-03-15")}}
-INICIO_FAT = datetime.date(2027, 1, 14)
+# datas do usuário (09/11/2026): fim da safra 2026 em 15/12, férias coletivas do operacional de 16/12/2026 a 14/01/2027
+# (30 dias) e FAT de 15/01 a 15/03/2027
+FIM_SAFRA = "2026-12-15"
+TURMAS = {1: {"ferias": ("2026-12-16", "2027-01-14"), "fat": ("2027-01-15", "2027-03-15")},
+          2: {"ferias": None, "fat": ("2027-01-15", "2027-03-15")}}
+INICIO_FAT = datetime.date(2027, 1, 15)
+VESPERA_FAT = (INICIO_FAT - datetime.timedelta(days=1)).strftime("%d/%m")
 
 
 def data_iso(v):
@@ -189,13 +193,17 @@ def programacao():
 
 
 def alerta_prog(f):
-    """O que fica fora do FAT único (14/01 a 15/03): quem termina as férias antes de 13/01 ou não tem férias a tirar."""
-    if not f["ini"]:
-        return "sem férias a tirar: sem atividade de 15/12 a 13/01 (DP)"
+    """O que as férias coletivas do operacional (16/12 a 15/01) não resolvem sozinhas, pela programação do Transporte:
+    limite antes das coletivas (sai antes), sem período de férias (proporcionais) ou saldo menor que os dias das coletivas."""
     br = lambda iso: f"{iso[8:10]}/{iso[5:7]}"
-    if datetime.date.fromisoformat(f["fim"]) < INICIO_FAT - datetime.timedelta(days=1):
-        motivo = f"limite {br(f['limite'])}: férias a partir de {br(f['ini'])}" if f["ini"] < "2026-12-15" else f"saldo de {f['saldo']} dias"
-        return f"{motivo}; sem atividade de {br((datetime.date.fromisoformat(f['fim']) + datetime.timedelta(days=1)).isoformat())} a 13/01"
+    ini, fim = TURMAS[1]["ferias"]
+    dias = (datetime.date.fromisoformat(fim) - datetime.date.fromisoformat(ini)).days + 1
+    if not f["ini"]:
+        return "sem período de férias: coletivas proporcionais (DP)"
+    if f["limite"] and f["limite"] < ini:
+        return f"limite {br(f['limite'])}: férias antes das coletivas, a partir de {br(f['ini'])}"
+    if f["saldo"] is not None and f["saldo"] < min(dias, 30):   # férias são de no máximo 30 dias
+        return f"saldo de {f['saldo']} dias para {min(dias, 30)} dias de férias coletivas (DP)"
     return None
 
 
@@ -282,7 +290,7 @@ def escala_transporte():
                 m = re.match(r"ESCALA DE FOLGA . (.+?) . DEZEMBRO", l)
                 if m and j + 1 < len(ls) and re.match(r"^(MOT|OP)-", ls[j + 1]):
                     cur = {"ativ": m.group(1), "papel": "motorista" if ls[j + 1].startswith("MOT") else "operador", "pos": 0,
-                           "cod": re.match(r"^(.+?)\s*-\s*\(\d+X\d+\)", ls[j + 1]).group(1).strip(), "regime": "5x2" if "5x2" in ls[j + 1] else "4x2"}
+                           "cod": re.match(r"^(.+?)\s*-\s*\(\d+X\d+\)", ls[j + 1]).group(1).strip(), "regime": "5x2" if "5x2" in ls[j + 1] else "4x2", "eqs": []}
                     esc.append(cur)
                 elif cur and (re.match(r"^\d{4,6}[A-Z]", l) or l.startswith("A ESCALAR")):
                     cur["pos"] += 1
@@ -290,6 +298,10 @@ def escala_transporte():
                         ESCALADOS.add(int(re.match(r"^\d{4,6}", l).group()))
                     else:
                         A_ESCALAR[cur["papel"]] += 1
+                # equipamentos com gente: os códigos de cada grupo ("GRUPO 1 · PLANTADORA · P01, P02 · 6 pessoa(s)")
+                g = re.match(r"^(?:GRUPO \d+ . )?(.+) . (.+?) . \d+ pessoa", l)
+                if cur and g:
+                    cur["eqs"] += [c.strip() for c in re.sub(r"\(.*?\)", "", g.group(2)).split(",") if c.strip()]
                 e = re.search(r"Gerado em (\d{2}/\d{2}/\d{4})", l)
                 emit = e.group(1) if e else emit
     # as escalas de linha amarela, ônibus e plantio entram na atividade do resumo do relatório (9 atividades)
@@ -358,14 +370,20 @@ def frota_da_escala(esc, grupo):
     for e in esc:
         cod = e["cod"]
         nome = NOMES_ESCALA.get(cod) or cod.split("-", 1)[-1].replace("_", " ").capitalize()
-        base = {"frente": frente_quadro(nome, grupo(e["ativ"])), "ativ": grupo(e["ativ"]).capitalize(), "papel": e["papel"]}
+        # classe do equipamento (sem frente F1/F2 e sem "muda") e quantos equipamentos têm gente na escala
+        classe = re.sub(r"\s+(muda\s+)?F\d$", "", nome).replace(" muda", "")
+        base = {"frente": frente_quadro(nome, grupo(e["ativ"])), "ativ": grupo(e["ativ"]).capitalize(), "papel": e["papel"],
+                "classe": classe}
+        n0 = len(frota)
         if e["regime"] == "5x2":
-            frota.append({"nome": nome, "qtd": e["pos"], "reg": "adm", "folg": False, "esc": "5x2", **base})
+            frota.append({"nome": nome, "qtd": e["pos"], "reg": "adm", "folg": False, "esc": "5x2", "eqs": len(e["eqs"]), **base})
             continue
         if e["pos"] // 3:
             frota.append({"nome": nome, "qtd": e["pos"] // 3, "reg": "3", "folg": True, "esc": "4x2_12", **base})
         if e["pos"] % 3:
             frota.append({"nome": nome + " (avulso)", "qtd": e["pos"] % 3, "reg": "1", "folg": False, "esc": "4x2_12", **base})
+        for k, f in enumerate(frota[n0:]):
+            f["eqs"] = len(e["eqs"]) if k == 0 else 0
     usadas = {f["frente"] for f in frota}
     frentes = {fr: c for fr, c in FRENTES_QUADRO.items() if fr in usadas}
     FROTA_ESCALA.write_text(json.dumps({"frota": frota, "frentes": frentes}, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -502,7 +520,7 @@ def main():
         ajusta_vagas(escala, livres)
     publico = {"fonte": FONTE, "criterio": CRITERIO, "n": len(gente), "lista": LISTA_PRIVADA,
                "verificar": conta(verificar), "safra": safra, "escolhidos": conta([p for p in gente if p["escolhido"]]),
-               "turmas": TURMAS, "escala": escala,
+               "turmas": TURMAS, "fim_safra": FIM_SAFRA, "escala": escala,
                "fila": [[p["papel"], p["ativ"], p["grupo"], p["limite"][:7] if p["limite"] else None, p["turma"], 1 if p["alerta"] else 0, 1 if p["escolhido"] else 0] for p in gente]}
     cab = json.dumps({k: v for k, v in publico.items() if k != "fila"}, ensure_ascii=False)[:-1]
     SAIDA.write_text(cab + ', "fila": [\n' + ",\n".join(json.dumps(f, ensure_ascii=False) for f in publico["fila"]) + "\n]}\n",

@@ -8,7 +8,9 @@
    "esc": "4x2_12",
    "frente": "Preparo e plantio",
    "ativ": "Plantio",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Plantadora",
+   "eqs": 5
   },
   {
    "nome": "Trator apoio F1",
@@ -18,7 +20,9 @@
    "esc": "4x2_12",
    "frente": "Preparo e plantio",
    "ativ": "Plantio",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Trator apoio",
+   "eqs": 1
   },
   {
    "nome": "Colhedora muda F1",
@@ -28,7 +32,9 @@
    "esc": "4x2_12",
    "frente": "Colheita (CCT)",
    "ativ": "Plantio",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Colhedora",
+   "eqs": 3
   },
   {
    "nome": "Trator transbordo muda F1",
@@ -38,7 +44,9 @@
    "esc": "4x2_12",
    "frente": "Colheita (CCT)",
    "ativ": "Plantio",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Trator transbordo",
+   "eqs": 5
   },
   {
    "nome": "Caminhão canavieiro muda F1",
@@ -48,7 +56,9 @@
    "esc": "4x2_12",
    "frente": "Colheita (CCT)",
    "ativ": "Plantio",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Caminhão canavieiro",
+   "eqs": 5
   },
   {
    "nome": "Plantadora F2",
@@ -58,7 +68,9 @@
    "esc": "4x2_12",
    "frente": "Preparo e plantio",
    "ativ": "Plantio",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Plantadora",
+   "eqs": 5
   },
   {
    "nome": "Trator apoio F2",
@@ -68,7 +80,9 @@
    "esc": "4x2_12",
    "frente": "Preparo e plantio",
    "ativ": "Plantio",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Trator apoio",
+   "eqs": 1
   },
   {
    "nome": "Colhedora muda F2",
@@ -78,7 +92,9 @@
    "esc": "4x2_12",
    "frente": "Colheita (CCT)",
    "ativ": "Plantio",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Colhedora",
+   "eqs": 1
   },
   {
    "nome": "Trator transbordo muda F2",
@@ -88,7 +104,9 @@
    "esc": "4x2_12",
    "frente": "Colheita (CCT)",
    "ativ": "Plantio",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Trator transbordo",
+   "eqs": 5
   },
   {
    "nome": "Caminhão canavieiro muda F2",
@@ -98,7 +116,9 @@
    "esc": "4x2_12",
    "frente": "Colheita (CCT)",
    "ativ": "Plantio",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Caminhão canavieiro",
+   "eqs": 5
   },
   {
    "nome": "Motorista de pátio",
@@ -108,7 +128,9 @@
    "esc": "4x2_12",
    "frente": "Apoio",
    "ativ": "Plantio",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Motorista de pátio",
+   "eqs": 1
   },
   {
    "nome": "Motorista de pátio (avulso)",
@@ -118,7 +140,9 @@
    "esc": "4x2_12",
    "frente": "Apoio",
    "ativ": "Plantio",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Motorista de pátio",
+   "eqs": 0
   },
   {
    "nome": "Operador apoio pátio",
@@ -128,7 +152,9 @@
    "esc": "4x2_12",
    "frente": "Apoio",
    "ativ": "Plantio",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Operador apoio pátio",
+   "eqs": 1
   },
   {
    "nome": "Operador apoio pátio (avulso)",
@@ -138,7 +164,9 @@
    "esc": "4x2_12",
    "frente": "Apoio",
    "ativ": "Plantio",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Operador apoio pátio",
+   "eqs": 0
   },
   {
    "nome": "Prancha, IMAVE e pipa",
@@ -148,7 +176,9 @@
    "esc": "4x2_12",
    "frente": "Apoio",
    "ativ": "Plantio",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Prancha, IMAVE e pipa",
+   "eqs": 5
   },
   {
    "nome": "Operador oficina",
@@ -156,9 +186,11 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
+   "eqs": 5,
    "frente": "Oficina",
    "ativ": "Oficina",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Operador oficina"
   },
   {
    "nome": "Trator preparo de solo",
@@ -168,7 +200,9 @@
    "esc": "4x2_12",
    "frente": "Preparo e plantio",
    "ativ": "Preparo de solo",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Trator preparo de solo",
+   "eqs": 6
   },
   {
    "nome": "Operador irrigação",
@@ -178,7 +212,9 @@
    "esc": "4x2_12",
    "frente": "Irrigação",
    "ativ": "Irrigação",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Operador irrigação",
+   "eqs": 13
   },
   {
    "nome": "Motorista I tratos",
@@ -186,9 +222,11 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
+   "eqs": 1,
    "frente": "Atividades de tratos",
    "ativ": "Tratos",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Motorista I tratos"
   },
   {
    "nome": "Motorista II tratos",
@@ -196,9 +234,11 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
+   "eqs": 3,
    "frente": "Atividades de tratos",
    "ativ": "Tratos",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Motorista II tratos"
   },
   {
    "nome": "Operador I tratos",
@@ -206,9 +246,11 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
+   "eqs": 5,
    "frente": "Atividades de tratos",
    "ativ": "Tratos",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Operador I tratos"
   },
   {
    "nome": "Operador II tratos",
@@ -216,9 +258,11 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
+   "eqs": 2,
    "frente": "Atividades de tratos",
    "ativ": "Tratos",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Operador II tratos"
   },
   {
    "nome": "Operador III tratos",
@@ -226,9 +270,11 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
+   "eqs": 1,
    "frente": "Atividades de tratos",
    "ativ": "Tratos",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Operador III tratos"
   },
   {
    "nome": "Motorista administrativo",
@@ -236,9 +282,11 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
+   "eqs": 3,
    "frente": "Administrativo",
    "ativ": "Administrativo",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Motorista administrativo"
   },
   {
    "nome": "Comboio",
@@ -246,9 +294,11 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
+   "eqs": 2,
    "frente": "Comboio",
    "ativ": "Comboio",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Comboio"
   },
   {
    "nome": "Pá carregadeira",
@@ -258,7 +308,9 @@
    "esc": "4x2_12",
    "frente": "Estradas e terraplanagem",
    "ativ": "Linha amarela",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Pá carregadeira",
+   "eqs": 1
   },
   {
    "nome": "Motoniveladora",
@@ -268,7 +320,9 @@
    "esc": "4x2_12",
    "frente": "Estradas e terraplanagem",
    "ativ": "Linha amarela",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Motoniveladora",
+   "eqs": 1
   },
   {
    "nome": "Escavadeira",
@@ -278,7 +332,9 @@
    "esc": "4x2_12",
    "frente": "Estradas e terraplanagem",
    "ativ": "Linha amarela",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Escavadeira",
+   "eqs": 1
   },
   {
    "nome": "Caminhão caçamba",
@@ -288,7 +344,9 @@
    "esc": "4x2_12",
    "frente": "Estradas e terraplanagem",
    "ativ": "Linha amarela",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Caminhão caçamba",
+   "eqs": 3
   },
   {
    "nome": "Rolo compactador (avulso)",
@@ -298,7 +356,9 @@
    "esc": "4x2_12",
    "frente": "Estradas e terraplanagem",
    "ativ": "Linha amarela",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Rolo compactador",
+   "eqs": 1
   },
   {
    "nome": "Trator eletroímã (avulso)",
@@ -308,7 +368,9 @@
    "esc": "4x2_12",
    "frente": "Apoio",
    "ativ": "Linha amarela",
-   "papel": "operador"
+   "papel": "operador",
+   "classe": "Trator eletroímã",
+   "eqs": 1
   },
   {
    "nome": "Caminhão molhando trajeto",
@@ -318,7 +380,9 @@
    "esc": "4x2_12",
    "frente": "Estradas e terraplanagem",
    "ativ": "Linha amarela",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Caminhão molhando trajeto",
+   "eqs": 1
   },
   {
    "nome": "Bombeiro",
@@ -328,7 +392,9 @@
    "esc": "4x2_12",
    "frente": "Apoio",
    "ativ": "Linha amarela",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Bombeiro",
+   "eqs": 7
   },
   {
    "nome": "Ônibus indústria",
@@ -338,7 +404,9 @@
    "esc": "4x2_12",
    "frente": "Ônibus",
    "ativ": "Ônibus",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Ônibus indústria",
+   "eqs": 1
   },
   {
    "nome": "Ônibus preparo de solo",
@@ -348,7 +416,9 @@
    "esc": "4x2_12",
    "frente": "Ônibus",
    "ativ": "Ônibus",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Ônibus preparo de solo",
+   "eqs": 1
   },
   {
    "nome": "Ônibus irrigação (avulso)",
@@ -358,7 +428,9 @@
    "esc": "4x2_12",
    "frente": "Ônibus",
    "ativ": "Ônibus",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Ônibus irrigação",
+   "eqs": 1
   },
   {
    "nome": "Ônibus plantio",
@@ -368,7 +440,9 @@
    "esc": "4x2_12",
    "frente": "Ônibus",
    "ativ": "Ônibus",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Ônibus plantio",
+   "eqs": 1
   },
   {
    "nome": "Ônibus tratos",
@@ -376,9 +450,11 @@
    "reg": "adm",
    "folg": false,
    "esc": "5x2",
+   "eqs": 2,
    "frente": "Ônibus",
    "ativ": "Ônibus",
-   "papel": "motorista"
+   "papel": "motorista",
+   "classe": "Ônibus tratos"
   }
  ],
  "frentes": {

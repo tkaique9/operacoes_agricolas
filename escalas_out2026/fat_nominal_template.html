@@ -237,7 +237,10 @@ $("sub").textContent = `${F.fonte}: ${F.gente.length} motoristas e operadores co
 const TU = F.turmas || {};
 const per = (a, b) => a.slice(8, 10) + "/" + a.slice(5, 7) + " a " + b.slice(8, 10) + "/" + b.slice(5, 7) + "/" + b.slice(2, 4);
 const FAT_TXT = TU[1] ? `FAT ${per(...TU[1].fat)}` : "FAT";
-const textoTurma = x => x.fer_ini ? `Férias ${per(x.fer_ini, x.fer_fim)} · ${FAT_TXT}` : `Sem férias a tirar · ${FAT_TXT}`;
+// férias coletivas do operacional para todos; quem tem o limite antes delas sai antes (data própria da programação)
+const COLET = TU[1] && TU[1].ferias;
+const textoTurma = x => !x.fer_ini ? `Coletivas proporcionais · ${FAT_TXT}` : x.fer_ini < "2026-12-15" ? `Férias ${per(x.fer_ini, x.fer_fim)} · ${FAT_TXT}`
+  : `Férias coletivas ${COLET ? per(...COLET) : ""} · ${FAT_TXT}`;
 const feriasTag = (x, v) => {
   const t = v ? textoTurma(x) : "Fica · tem direito";
   const cls = x.alerta ? "f1" : !v ? "f0" : "f3";
@@ -245,8 +248,8 @@ const feriasTag = (x, v) => {
     (x.prog ? `<br><small>programado: ${esc(x.prog)}</small>` : "");
 };
 $("criterio").textContent = `Sugestão: ${F.criterio}. Em azul, quem for marcado além da programação. Marque ou desmarque para trocar; a escolha fica guardada neste navegador.`;
-$("leiTxt").textContent = `Os 258 da programação do Transporte tiram as férias primeiro, a partir de 15/12/2026 (01/12 para quem tem o limite antes de 15/12), e entram juntos no ${FAT_TXT}. ` +
-  "Em vermelho, quem fica sem atividade entre o fim das férias e 13/01: férias de 01/12, saldo menor que 30 dias ou sem férias a tirar (DP).";
+$("leiTxt").textContent = `Fim da safra 2026: 15/12/2026. Férias coletivas do operacional${TU[1] && TU[1].ferias ? ` de ${per(...TU[1].ferias)}` : ""}; os ${F.gente.filter(x => x.escolhido).length} da programação do Transporte entram juntos no ${FAT_TXT}. ` +
+  "Em vermelho, quem precisa do DP: limite das férias antes das coletivas (sai em 01/12), saldo menor que 30 dias ou sem período de férias (coletivas proporcionais).";
 
 // tabela por papel, a mesma da página FAT do estudo: ativos do quadro de motoristas e operadores, a necessidade
 // (editável) e o que sai da lista. Os números com nomes por trás são botões que filtram a lista
