@@ -320,7 +320,7 @@ def escala_transporte():
 # frota do estudo de escalas (página Operacional) tirada da escala do Transporte, para a necessidade das duas páginas
 # bater (09/11/2026): cada escala vira um equipamento. 4x2 de 12 h com folguista = 3 pessoas por equipamento (dia, noite
 # e o folguista); a sobra que não fecha 3 entra como posto avulso de 1 turno sem folguista (1 pessoa); 5x2 = ADM, 1 por
-# posto. A escala de cada um já vem escolhida: 4x2 de 12 h ou 5x2
+# posto. A escala de cada um já vem escolhida: 2x1 de 12 h (pedido de 09/11/2026; mesma conta da 4x2 de 12 h) ou 5x2
 FROTA_ESCALA = AQUI / "frota_escala.json"
 # frentes do quadro por equipamento: as de antes (detalhamento da frota de 22/10) e, para o que a escala tem a mais, as
 # atividades macro do Transporte (pedido de 09/11/2026)
@@ -379,9 +379,9 @@ def frota_da_escala(esc, grupo):
             frota.append({"nome": nome, "qtd": e["pos"], "reg": "adm", "folg": False, "esc": "5x2", "eqs": len(e["eqs"]), **base})
             continue
         if e["pos"] // 3:
-            frota.append({"nome": nome, "qtd": e["pos"] // 3, "reg": "3", "folg": True, "esc": "4x2_12", **base})
+            frota.append({"nome": nome, "qtd": e["pos"] // 3, "reg": "3", "folg": True, "esc": "2x1_12", **base})
         if e["pos"] % 3:
-            frota.append({"nome": nome + " (avulso)", "qtd": e["pos"] % 3, "reg": "1", "folg": False, "esc": "4x2_12", **base})
+            frota.append({"nome": nome + " (avulso)", "qtd": e["pos"] % 3, "reg": "1", "folg": False, "esc": "2x1_12", **base})
         for k, f in enumerate(frota[n0:]):
             f["eqs"] = len(e["eqs"]) if k == 0 else 0
     usadas = {f["frente"] for f in frota}
