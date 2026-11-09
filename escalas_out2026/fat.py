@@ -42,14 +42,18 @@ FONTE = "Painel FAT & Férias do RH (27/10/2026)"
 LISTA_PRIVADA = "https://operacoes-agricolas.onrender.com/escalas_out2026/FAT_lista_nominal.html"
 # atividades da colheita, que param na entressafra: vão primeiro (pelo departamento da planilha)
 COLHEITA = re.compile(r"TRANSBORDO|COLHEDORA|CANAVIEIRO")
-CRITERIO = ("Os escolhidos pelo Transporte primeiro; para completar a necessidade, colheita primeiro (trator transbordo, colhedora e caminhão canavieiro, que param na entressafra), depois as "
-            "outras atividades; dentro de cada grupo, menor tempo de casa primeiro")
-# necessidade de partida na lista nominal: o que fica sem atividade na escala escolhida que está nos dados da página
-# (painel da frota, 28/10/2026). Na lista dá para mudar; o número certo é o da aba FAT da página
-NEC_PADRAO = {"operador": 139, "motorista": 148}
-# os escolhidos para o FAT pelo Transporte (relatório "Escala · base de colaboradores", FAT / Operação = FAT; 05/11/2026):
-# vão primeiro, e a sugestão da fila só completa a diferença até a necessidade
+CRITERIO = ("Vão os 258 do grupo 1 da programação do Transporte (06/11/2026); os outros com direito ficam na fila, colheita "
+            "primeiro (trator transbordo, colhedora e caminhão canavieiro), depois as outras atividades; dentro de cada grupo, "
+            "menor tempo de casa primeiro")
+# necessidade de partida na lista nominal: ativos menos a necessidade da escala do Transporte (escala_transporte())
+NEC_PADRAO = {"operador": 152, "motorista": 139}
+# os escolhidos para o FAT pelo Transporte (relatório "Escala · base de colaboradores", FAT / Operação = FAT; 05/11/2026),
+# usados só sem a programação abaixo
 ESCOLHIDOS = AQUI / "dados" / "fat" / "fat_escolhidos.pdf"
+# programação de FAT e férias de dezembro (Transporte, 06/11/2026): o grupo 1 são os que vão para o FAT (258), com as férias
+# de cada um; e a escala de folga da operação de dezembro, com as posições de cada escala (a necessidade)
+PROGRAMACAO = AQUI / "dados" / "fat" / "programacao_fat.pdf"
+ESCALA = AQUI / "dados" / "frota" / "escala_operacao.pdf"
 # janela das férias: a entressafra vai até março; a safra de 2027, de abril a novembro
 SAFRA_27 = (datetime.date(2027, 4, 1), datetime.date(2027, 12, 1))
 # férias de cada um (05/11/2026), na ordem: períodos aquisitivos do Operacional CTT (exatos), histórico de férias por
@@ -57,10 +61,11 @@ SAFRA_27 = (datetime.date(2027, 4, 1), datetime.date(2027, 12, 1))
 PERIODOS = AQUI / "dados" / "fat" / "ferias_periodos.xlsx"
 HISTORICO = AQUI / "dados" / "fat" / "historico_ferias.xlsx"
 HOJE = datetime.date(2026, 11, 5)
-# duas turmas (decisão de 05/11/2026): turma 1 vai direto para o FAT; turma 2, quem tem férias vencendo até 15/12/2027,
-# tira as férias antes e entra depois no FAT. As duas turmas terminam o FAT em 15/03/2027 (confirmado pelo usuário em 05/11)
-TURMAS = {1: {"ferias": None, "fat": ("2026-12-15", "2027-03-15")},
-          2: {"ferias": ("2026-12-15", "2027-01-13"), "fat": ("2027-01-14", "2027-03-15")}}
+# uma turma só (decisão de 09/11/2026): todos entram no FAT depois das férias, de 14/01 a 15/03/2027. "turma" passa a dizer
+# só se a pessoa tira férias antes (1: a partir de 15/12, ou 01/12 se o limite vence antes) ou não tem férias a tirar (2)
+TURMAS = {1: {"ferias": ("2026-12-15", "2027-01-13"), "fat": ("2027-01-14", "2027-03-15")},
+          2: {"ferias": None, "fat": ("2027-01-14", "2027-03-15")}}
+INICIO_FAT = datetime.date(2027, 1, 14)
 
 
 def data_iso(v):
@@ -152,8 +157,85 @@ def alerta_de(lims, turma):
     return None
 
 
+def _iso(br):
+    return f"{br[6:10]}-{br[3:5]}-{br[0:2]}" if br else None
+
+
+def programacao():
+    """Matrícula -> férias do grupo 1 (vão para o FAT) da programação do Transporte: papel, saldo, limite e início e fim
+    das férias (vazios para quem não tem férias a tirar)."""
+    if not PROGRAMACAO.exists():
+        return {}
+    import pdfplumber
+    dt = r"\d{2}/\d{2}/\d{4}"
+    linha = re.compile(rf"^(\d+) (\d{{4,6}}) (.+?) (\d+|) ?({dt}|) ?({dt}|\S) ({dt}|\S) ({dt}) ({dt}) ?(.*)$")
+    prog, grupo = {}, None
+    with pdfplumber.open(PROGRAMACAO) as pdf:
+        for pg in pdf.pages:
+            txt = pg.extract_text() or ""
+            m = re.search(r"^Grupo (\d)", txt, re.M)
+            if m:
+                grupo = int(m.group(1))
+            if grupo != 1:
+                continue
+            for l in txt.splitlines():
+                m = linha.match(l)
+                if m:
+                    _, mat, meio, saldo, lim, fi, ff, _, _, _ = m.groups()
+                    prog[int(mat)] = {"papel": "motorista" if " Motorista " in f" {meio} " else "operador",
+                                      "saldo": int(saldo) if saldo else None, "limite": _iso(lim),
+                                      "ini": _iso(fi) if "/" in fi else None, "fim": _iso(ff) if "/" in ff else None}
+    return prog
+
+
+def alerta_prog(f):
+    """O que fica fora do FAT único (14/01 a 15/03): quem termina as férias antes de 13/01 ou não tem férias a tirar."""
+    if not f["ini"]:
+        return "sem férias a tirar: sem atividade de 15/12 a 13/01 (DP)"
+    br = lambda iso: f"{iso[8:10]}/{iso[5:7]}"
+    if datetime.date.fromisoformat(f["fim"]) < INICIO_FAT - datetime.timedelta(days=1):
+        motivo = f"limite {br(f['limite'])}: férias a partir de {br(f['ini'])}" if f["ini"] < "2026-12-15" else f"saldo de {f['saldo']} dias"
+        return f"{motivo}; sem atividade de {br((datetime.date.fromisoformat(f['fim']) + datetime.timedelta(days=1)).isoformat())} a 13/01"
+    return None
+
+
+def escala_transporte():
+    """Necessidade pela escala de folga da operação de dezembro (Transporte): posições de cada escala (pessoas escaladas
+    mais as "a escalar"; "não escalar" não conta), por atividade e papel."""
+    if not ESCALA.exists():
+        return None
+    import pdfplumber
+    esc, cur, emit = [], None, None
+    with pdfplumber.open(ESCALA) as pdf:
+        for pg in pdf.pages[1:]:
+            ls = (pg.extract_text() or "").splitlines()
+            for j, l in enumerate(ls):
+                m = re.match(r"ESCALA DE FOLGA . (.+?) . DEZEMBRO", l)
+                if m and j + 1 < len(ls) and re.match(r"^(MOT|OP)-", ls[j + 1]):
+                    cur = {"ativ": m.group(1), "papel": "motorista" if ls[j + 1].startswith("MOT") else "operador", "pos": 0}
+                    esc.append(cur)
+                elif cur and (re.match(r"^\d{4,6}[A-Z]", l) or l.startswith("A ESCALAR")):
+                    cur["pos"] += 1
+                e = re.search(r"Gerado em (\d{2}/\d{2}/\d{4})", l)
+                emit = e.group(1) if e else emit
+    # as escalas de linha amarela, ônibus e plantio entram na atividade do resumo do relatório (9 atividades)
+    grupo = lambda a: next((g for g in ("LINHA AMARELA", "ÔNIBUS", "PLANTIO") if a.startswith(g)), a)
+    ativ = {}
+    for e in esc:
+        a = ativ.setdefault(grupo(e["ativ"]), {"ativ": grupo(e["ativ"]).capitalize(), "escalas": 0, "operador": 0, "motorista": 0})
+        a["escalas"] += 1
+        a[e["papel"]] += e["pos"]
+    lista = sorted(ativ.values(), key=lambda a: -(a["operador"] + a["motorista"]))
+    return {"fonte": f"Escala de folga da operação, dezembro de 2026 (Transporte, {emit})", "atividades": lista,
+            "precisa": {p: sum(a[p] for a in lista) for p in ("operador", "motorista")}}
+
+
 def escolhidos():
-    """Matrícula -> papel dos escolhidos para o FAT no relatório do Transporte."""
+    """Matrícula -> papel dos que vão para o FAT: o grupo 1 da programação do Transporte ou, sem ela, os escolhidos do
+    relatório "Escala · base de colaboradores"."""
+    prog = programacao()
+    if prog:
+        return {m: f["papel"] for m, f in prog.items()}
     if not ESCOLHIDOS.exists():
         return {}
     import pdfplumber
@@ -250,6 +332,17 @@ def ler():
         gente = [p for p in gente if p["mat"] in ativos]
         verificar = [p for p in verificar if p["mat"] in ativos]
         print(f"fora dos ativos do Transporte (saíram do FAT): {len(saiu)}")
+    # uma turma só: as férias de cada um vêm da programação do Transporte (quem vai para o FAT); quem fica, pelo limite
+    prog = programacao()
+    for p in gente + verificar:
+        f = prog.get(p["mat"])
+        p["fer_ini"] = p["fer_fim"] = None
+        if f:
+            p.update(limite=f["limite"] or p["limite"], fonte_ferias="programação do Transporte", saldo=f["saldo"],
+                     fer_ini=f["ini"], fer_fim=f["fim"], turma=1 if f["ini"] else 2, alerta=alerta_prog(f))
+        else:
+            p.update(turma=1 if p["limite"] else 2, alerta=None)
+        p["faixa"] = faixa_ferias(p["limite"])
     # fila: os escolhidos do Transporte primeiro; depois colheita; dentro do grupo, menor tempo de casa (admissão mais nova)
     chave = lambda p: (not p["escolhido"], p["grupo"], -(datetime.date.fromisoformat(p["adm"]).toordinal() if p["adm"] else 0), -p["mat"])
     gente.sort(key=chave)
@@ -260,9 +353,10 @@ def ler():
 def main():
     gente, verificar, safra = ler()
     conta = lambda lista: {pp: sum(1 for p in lista if p["papel"] == pp) for pp in ("operador", "motorista")}
+    escala = escala_transporte()
     publico = {"fonte": FONTE, "criterio": CRITERIO, "n": len(gente), "lista": LISTA_PRIVADA,
                "verificar": conta(verificar), "safra": safra, "escolhidos": conta([p for p in gente if p["escolhido"]]),
-               "turmas": TURMAS,
+               "turmas": TURMAS, "escala": escala,
                "fila": [[p["papel"], p["ativ"], p["grupo"], p["limite"][:7] if p["limite"] else None, p["turma"], 1 if p["alerta"] else 0, 1 if p["escolhido"] else 0] for p in gente]}
     cab = json.dumps({k: v for k, v in publico.items() if k != "fila"}, ensure_ascii=False)[:-1]
     SAIDA.write_text(cab + ', "fila": [\n' + ",\n".join(json.dumps(f, ensure_ascii=False) for f in publico["fila"]) + "\n]}\n",
@@ -270,8 +364,9 @@ def main():
     # ativos do quadro de motoristas e operadores (só contagens, pessoal_frota.py), para a tabela por papel da lista
     pessoal = AQUI / "pessoal_frota.json"
     ativos = json.loads(pessoal.read_text(encoding="utf-8")).get("ativos", {}) if pessoal.exists() else {}
-    dados = {"fonte": FONTE, "criterio": CRITERIO, "nec": NEC_PADRAO, "safra27": [d.isoformat() for d in SAFRA_27],
-             "turmas": TURMAS, "ativos": ativos, "gente": gente, "verificar": verificar}
+    nec = {p: max(0, ativos[p] - escala["precisa"][p]) for p in ativos} if escala and ativos else NEC_PADRAO
+    dados = {"fonte": FONTE, "criterio": CRITERIO, "nec": nec, "safra27": [d.isoformat() for d in SAFRA_27],
+             "turmas": TURMAS, "ativos": ativos, "escala": escala, "gente": gente, "verificar": verificar}
     js = json.dumps(dados, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     pagina = TEMPLATE.read_text(encoding="utf-8").replace("/*FAT*/null", js)
     ARTIFACT.parent.mkdir(exist_ok=True)
@@ -280,7 +375,8 @@ def main():
                      "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, "
                      "viewport-fit=cover\">\n</head><body>\n" + pagina + "\n</body></html>\n", encoding="utf-8")
     t = {k: conta([p for p in gente if p["turma"] == k]) for k in (1, 2)}
-    print(f"turma 1 (FAT direto): {t[1]}; turma 2 (férias e FAT): {t[2]}; alertas: "
+    print(f"escala: {escala and escala['precisa']}; vão {conta([p for p in gente if p['escolhido']])}")
+    print(f"com férias antes: {t[1]}; sem férias a tirar: {t[2]}; alertas: "
           f"{collections.Counter(p['alerta'] for p in gente if p['alerta'])}; fontes: {collections.Counter(p['fonte_ferias'] for p in gente)}")
     print(f"escolhidos do Transporte: {conta([p for p in gente if p['escolhido']])}; no painel a conferir: "
           f"{conta([p for p in verificar if p['escolhido']])}; fora do painel: {[p['mat'] for p in gente if p['motivo'].startswith('Escolhido')]}")
