@@ -61,9 +61,9 @@ def ler():
 
 
 CEN = analise.CEN_DEP
-SUGS = ["5x2", "4x2", "12x36", "3x3", "4x2_12", "2x1_12"]
+SUGS = ["5x2", "4x2", "12x36", "2x1_12", "4x2_12", "3x3"]   # ordem da página (09/11/2026: 2x1 sobe, 3x3 desce)
 # na oficina todos são CLT urbano: a noite de 12 h com 10 h de trabalho passa de 10 h contadas (hora reduzida)
-RISCO_OF = {"5x2": "Baixo", "4x2": "Baixo", "12x36": "Médio", "3x3": "Médio", "4x2_12": "Alto", "2x1_12": "Fora da lei"}
+RISCO_OF = {"5x2": "Baixo", "4x2": "Baixo", "12x36": "Médio", "3x3": "Médio", "4x2_12": "Alto", "2x1_12": "Alto"}
 ORDEM_RISCO = {"Baixo": 0, "Médio": 1, "Alto": 2, "Fora da lei": 3, "Não serve": 9}
 
 
