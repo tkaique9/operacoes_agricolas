@@ -226,6 +226,7 @@ table.qd td.dep u { display: inline; margin-left: 8px; }
 table.qd td.hoje { font: 700 18px var(--f-display); color: var(--navy); background: #F7F8FB; }
 table.qd td.cmp { font: 500 13.5px var(--f-mono); color: var(--mut); text-align: left; white-space: nowrap; vertical-align: middle; line-height: 1.2; }
 table.qd td.qv { white-space: nowrap; }
+table.qd td.esc-at { font: 600 13px var(--f-mono); white-space: nowrap; }
 table.qd td.dep .nova { display: inline-block; margin-left: 8px; font: 600 10.5px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: #fff; background: #2563A8; border-radius: 3px; padding: 1px 6px; vertical-align: 2px; }
 .fat-abre { margin-top: 10px; } .fat-abre summary { cursor: pointer; font: 600 13px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--navy, #12224A); }
 .fat-abre table { margin-top: 8px; } .fat-abre .nota { margin-top: 8px; }
@@ -782,7 +783,7 @@ const H5X1 = { id: "5x1", curto: "5x1 hoje", ciclo: 6, trab: 5, turnos: 3 };
 const FRENTE = D.frentes;
 // o mesmo nome em duas frentes (bombeiro) leva a frente na chave; o primeiro fica só com o nome
 const OP = D.frota.map((f, i) => ({ dep: "eq:" + (D.frota.findIndex(g => g.nome === f.nome) === i ? f.nome : f.frente + " · " + f.nome), tipo: "eq",
-  nome: f.nome, frente: f.frente, papel: f.papel, esc0: f.esc, qtd: f.qtd, qtd0: f.qtd, k: 1, reg: f.reg || "3", folg: f.folg !== false, reg0: f.reg || "3", folg0: f.folg !== false, regra: "24h",
+  nome: f.nome, frente: f.frente, ativ: f.ativ, papel: f.papel, esc0: f.esc, qtd: f.qtd, qtd0: f.qtd, k: 1, reg: f.reg || "3", folg: f.folg !== false, reg0: f.reg || "3", folg0: f.folg !== false, regra: "24h",
   regra_txt: "roda 24 h · hoje em 5x1", adm: 0, adm_hoje: 0, lideres: 0, afastados: 0, sem_origem: 0, n: 0, equipe: 0 }));
 const PPP = e => e.turnos * e.ciclo / e.trab;
 /* operadores hoje (5x1) por equipamento, no turno e com o folguista anotados: 3 turnos com folguista = 3,6; sem
@@ -1831,17 +1832,25 @@ function fatInd(N, vai, dir) {
   barrasFat($("#fatG3"), lin, [{ k: "trab", rot: "Trabalham", cor: COR_FAT.trab }, { k: "vai", rot: "FAT", cor: COR_FAT.vai, claro: true },
     { k: "semfat", rot: "Sem FAT", cor: COR_FAT.semfat }], total);
 }
-// posições da escala do Transporte por atividade; as que o estudo da frota não tinha ficam marcadas (09/11/2026)
-const ATIV_NOVAS = ["Irrigação", "Ônibus", "Oficina", "Administrativo", "Comboio"];
+// escala do Transporte por atividade, pela frota do estudo (cada escala do Transporte é um equipamento da frota): a
+// escala escolhida de cada atividade, os equipamentos e as posições (seguem a escolha da página Operacional)
 function escalaFat() {
   const card = $("#fatEscCard"); if (!card) return;
   card.hidden = !FAT.escala; if (!FAT.escala) return;
-  const E = FAT.escala, at = E.atividades, s = k => at.reduce((x, a) => x + a[k], 0);
-  let h = `<thead><tr><th class="l">Atividade</th><th>Operadores</th><th>Motoristas</th><th class="escol">Posições</th></tr></thead><tbody>`;
-  at.forEach(a => { h += `<tr><td class="l dep">${esc(a.ativ)}${ATIV_NOVAS.includes(a.ativ) ? `<span class="nova">acrescentada</span>` : ""}</td><td class="qv"><b>${fmt(a.operador)}</b></td><td class="qv"><b>${fmt(a.motorista)}</b></td><td class="qv"><b>${fmt(a.operador + a.motorista)}</b></td></tr>`; });
-  h += `<tr class="tot"><td class="l">Total</td><td class="qv"><b>${fmt(s("operador"))}</b></td><td class="qv"><b>${fmt(s("motorista"))}</b></td><td class="qv"><b>${fmt(s("operador") + s("motorista"))}</b></td></tr></tbody>`;
+  const E = FAT.escala, ps = ["operador", "motorista"];
+  const linhas = E.atividades.map(a => {
+    const eqs = OP.filter(d => d.ativ === a.ativ && d.qtd);
+    const ids = [...new Set(eqs.map(d => conta(d, S.esc[d.dep]) ? S.esc[d.dep] : "5x2"))];
+    const pos = p => Math.round(eqs.filter(d => papelEq(d) === p).reduce((x, d) => x + (conta(d, S.esc[d.dep]) || conta(d, "5x2")).need, 0));
+    return { ativ: a.ativ, ids, eq: eqs.reduce((x, d) => x + d.qtd, 0), operador: pos("operador"), motorista: pos("motorista") };
+  });
+  const s = k => linhas.reduce((x, l) => x + l[k], 0), escTxt = ids => ids.map(id => ESC[id].curto).join(" · ");
+  const cel = v => `<td class="qv"><b>${v}</b></td>`;
+  let h = `<thead><tr><th class="l">Atividade</th><th>Escala escolhida</th><th>Equipamentos</th><th>Operadores</th><th>Motoristas</th><th class="escol">Posições</th></tr></thead><tbody>`;
+  linhas.forEach(l => { h += `<tr><td class="l dep">${esc(l.ativ)}</td><td class="qv esc-at">${esc(escTxt(l.ids))}</td>${cel(fmt(l.eq))}${cel(fmt(l.operador))}${cel(fmt(l.motorista))}${cel(fmt(l.operador + l.motorista))}</tr>`; });
+  h += `<tr class="tot"><td class="l">Total</td><td class="qv esc-at">${esc(escTxt([...new Set(linhas.flatMap(l => l.ids))]))}</td>${cel(fmt(s("eq")))}${cel(fmt(s("operador")))}${cel(fmt(s("motorista")))}${cel(fmt(s("operador") + s("motorista")))}</tr></tbody>`;
   $("#fatEscala").innerHTML = h;
-  $("#fatEscNota").textContent = `${E.fonte}. Posições = escalados mais "a escalar" de cada escala. A frota do estudo (página Operacional) é esta mesma escala, uma linha por escala; marcadas, as atividades que ela não tinha antes (irrigação, ônibus, oficina, administrativo e comboio). Com a escala do Transporte em todos os equipamentos, a escolhida da frota dá as mesmas posições.`;
+  $("#fatEscNota").textContent = `${E.fonte}. Cada escala do Transporte é um equipamento da frota do estudo (página Operacional): a escala escolhida e as posições seguem o que estiver escolhido lá. Posições = escalados de cada escala; a oficina fica com as ${fmt((E.na_oficina || {}).operador || 0)} vagas que há operadores para preencher.`;
 }
 function fatOp() {
   if (!$("#fat")) return;

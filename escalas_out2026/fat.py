@@ -358,7 +358,7 @@ def frota_da_escala(esc, grupo):
     for e in esc:
         cod = e["cod"]
         nome = NOMES_ESCALA.get(cod) or cod.split("-", 1)[-1].replace("_", " ").capitalize()
-        base = {"frente": frente_quadro(nome, grupo(e["ativ"])), "papel": e["papel"]}
+        base = {"frente": frente_quadro(nome, grupo(e["ativ"])), "ativ": grupo(e["ativ"]).capitalize(), "papel": e["papel"]}
         if e["regime"] == "5x2":
             frota.append({"nome": nome, "qtd": e["pos"], "reg": "adm", "folg": False, "esc": "5x2", **base})
             continue
