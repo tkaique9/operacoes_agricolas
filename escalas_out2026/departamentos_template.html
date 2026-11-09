@@ -1837,9 +1837,9 @@ function escalaFat() {
   const card = $("#fatEscCard"); if (!card) return;
   card.hidden = !FAT.escala; if (!FAT.escala) return;
   const E = FAT.escala, at = E.atividades, s = k => at.reduce((x, a) => x + a[k], 0);
-  let h = `<thead><tr><th class="l">Atividade</th><th>Escalas</th><th>Operadores</th><th>Motoristas</th><th class="escol">Posições</th></tr></thead><tbody>`;
-  at.forEach(a => { h += `<tr><td class="l dep">${esc(a.ativ)}${ATIV_NOVAS.includes(a.ativ) ? `<span class="nova">acrescentada</span>` : ""}</td><td class="qv"><b>${a.escalas}</b></td><td class="qv"><b>${fmt(a.operador)}</b></td><td class="qv"><b>${fmt(a.motorista)}</b></td><td class="qv"><b>${fmt(a.operador + a.motorista)}</b></td></tr>`; });
-  h += `<tr class="tot"><td class="l">Total</td><td class="qv"><b>${s("escalas")}</b></td><td class="qv"><b>${fmt(s("operador"))}</b></td><td class="qv"><b>${fmt(s("motorista"))}</b></td><td class="qv"><b>${fmt(s("operador") + s("motorista"))}</b></td></tr></tbody>`;
+  let h = `<thead><tr><th class="l">Atividade</th><th>Operadores</th><th>Motoristas</th><th class="escol">Posições</th></tr></thead><tbody>`;
+  at.forEach(a => { h += `<tr><td class="l dep">${esc(a.ativ)}${ATIV_NOVAS.includes(a.ativ) ? `<span class="nova">acrescentada</span>` : ""}</td><td class="qv"><b>${fmt(a.operador)}</b></td><td class="qv"><b>${fmt(a.motorista)}</b></td><td class="qv"><b>${fmt(a.operador + a.motorista)}</b></td></tr>`; });
+  h += `<tr class="tot"><td class="l">Total</td><td class="qv"><b>${fmt(s("operador"))}</b></td><td class="qv"><b>${fmt(s("motorista"))}</b></td><td class="qv"><b>${fmt(s("operador") + s("motorista"))}</b></td></tr></tbody>`;
   $("#fatEscala").innerHTML = h;
   $("#fatEscNota").textContent = `${E.fonte}. Posições = escalados mais "a escalar" de cada escala. A frota do estudo (página Operacional) é esta mesma escala, uma linha por escala; marcadas, as atividades que ela não tinha antes (irrigação, ônibus, oficina, administrativo e comboio). Com a escala do Transporte em todos os equipamentos, a escolhida da frota dá as mesmas posições.`;
 }
