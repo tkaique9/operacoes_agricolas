@@ -26,10 +26,8 @@ NOTA_OF = {
            "e, em atividade insalubre, de licença do MTE ou cláusula coletiva.",
     "4x2_12": "Risco alto: oficina e frota são CLT urbano e, com a hora noturna reduzida, a noite de 12 h passa de 10 h "
               "contadas (8 h + 2 h extras é o teto). Só vale com norma coletiva que troque a hora reduzida por adicional maior, "
-              "com a prorrogação de 2 h e a licença em atividade insalubre.",
-    "2x1_12": "Fora da lei: 2 plantões de 12 h e 1 folga dão 51h20 por semana (37h20 + 14h extras) e 3 h extras por plantão, "
-              "acima do teto de 2 h por dia (CLT art. 59) e das 42 h da EC 141. Fica só para comparar: 3 pessoas por posto "
-              "24 h, como a 4x2 de 12 h; nunca entra na sugerida.",
+              "com a prorrogação de 2 h e a licença em atividade insalubre. No intervalo de 2 h de cada turno não há folguista: a frota fica parada.",
+    "2x1_12": "Risco alto: 2 plantões de 12 h e 1 folga, com 10 h de trabalho e 2 h de intervalo por turno (8 h + 2 h extras, no teto da CLT art. 59): 46h40 por semana (37h20 + 9h20 extras). No intervalo não há folguista: a frota fica parada as 2 h, como na 4x2 de 12 h. Mesmo quadro da 4x2 de 12 h: 3 pessoas por posto 24 h. Só vale com norma coletiva (prorrogação de 2 h, hora noturna e licença em atividade insalubre).",
 }
 ROTULOS_GRADE = {
     "5x2": [f"Turma {x}" for x in "ABCDEFG"], "4x2": [f"Turma {x}" for x in "ABC"],

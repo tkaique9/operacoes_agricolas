@@ -161,10 +161,10 @@ CENARIOS = [
 ]
 # escalas que só entram na página por departamento (o relatório geral fica com as de cima)
 CENARIOS_DEP = [
-    {"id": "2x1_12", "nome": "2x1 · 2 turnos de 12 h", "curto": "2x1 de 12 h", "turnos": 2, "trab": 2, "ciclo": 3,
-     "h_trab": 11.0, "he_dia": 3.0, "turmas": 3, "parada": 2.0, "risco": "Fora da lei",
-     "horario": "07:00–19:00 e 19:00–07:00, 1 h de intervalo (11 h de trabalho)",
-     "obs": "2 plantões de 12 h e 1 folga: 51h20 por semana, 3 h extras por plantão"},
+    {"id": "2x1_12", "nome": "2x1 · 12 h com 2 h de intervalo", "curto": "2x1 de 12 h", "turnos": 2, "trab": 2, "ciclo": 3,
+     "h_trab": 10.0, "he_dia": 2.0, "turmas": 3, "parada": 4.0, "risco": "Alto",
+     "horario": "07:00–19:00 (intervalo 12:00–14:00) e 19:00–07:00 (intervalo 00:00–02:00): 10 h de trabalho",
+     "obs": "2 plantões de 12 h e 1 folga, 8 h normais + 2 h extras; máquina para no intervalo (09/11/2026)"},
 ]
 for c in CENARIOS + CENARIOS_DEP:
     c.setdefault("he_dia", 0.0)
