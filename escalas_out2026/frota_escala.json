@@ -1,0 +1,357 @@
+{
+ "frota": [
+  {
+   "nome": "Plantadora F1",
+   "qtd": 5,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "operador"
+  },
+  {
+   "nome": "Trator apoio F1",
+   "qtd": 1,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "operador"
+  },
+  {
+   "nome": "Colhedora muda F1",
+   "qtd": 3,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "operador"
+  },
+  {
+   "nome": "Trator transbordo muda F1",
+   "qtd": 5,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "operador"
+  },
+  {
+   "nome": "Caminhão canavieiro muda F1",
+   "qtd": 5,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Plantadora F2",
+   "qtd": 5,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "operador"
+  },
+  {
+   "nome": "Trator apoio F2",
+   "qtd": 1,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "operador"
+  },
+  {
+   "nome": "Colhedora muda F2",
+   "qtd": 2,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "operador"
+  },
+  {
+   "nome": "Trator transbordo muda F2",
+   "qtd": 5,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "operador"
+  },
+  {
+   "nome": "Caminhão canavieiro muda F2",
+   "qtd": 5,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Motorista de pátio",
+   "qtd": 1,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Motorista de pátio (avulso)",
+   "qtd": 1,
+   "reg": "1",
+   "folg": false,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Operador apoio pátio",
+   "qtd": 1,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "operador"
+  },
+  {
+   "nome": "Operador apoio pátio (avulso)",
+   "qtd": 1,
+   "reg": "1",
+   "folg": false,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "operador"
+  },
+  {
+   "nome": "Prancha, IMAVE e pipa",
+   "qtd": 5,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Plantio",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Operador oficina",
+   "qtd": 10,
+   "reg": "adm",
+   "folg": false,
+   "esc": "5x2",
+   "frente": "Oficina",
+   "papel": "operador"
+  },
+  {
+   "nome": "Trator preparo de solo",
+   "qtd": 6,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Preparo de solo",
+   "papel": "operador"
+  },
+  {
+   "nome": "Operador irrigação",
+   "qtd": 13,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Irrigação",
+   "papel": "operador"
+  },
+  {
+   "nome": "Motorista I tratos",
+   "qtd": 2,
+   "reg": "adm",
+   "folg": false,
+   "esc": "5x2",
+   "frente": "Tratos",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Motorista II tratos",
+   "qtd": 6,
+   "reg": "adm",
+   "folg": false,
+   "esc": "5x2",
+   "frente": "Tratos",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Operador I tratos",
+   "qtd": 8,
+   "reg": "adm",
+   "folg": false,
+   "esc": "5x2",
+   "frente": "Tratos",
+   "papel": "operador"
+  },
+  {
+   "nome": "Operador II tratos",
+   "qtd": 3,
+   "reg": "adm",
+   "folg": false,
+   "esc": "5x2",
+   "frente": "Tratos",
+   "papel": "operador"
+  },
+  {
+   "nome": "Operador III tratos",
+   "qtd": 2,
+   "reg": "adm",
+   "folg": false,
+   "esc": "5x2",
+   "frente": "Tratos",
+   "papel": "operador"
+  },
+  {
+   "nome": "Motorista administrativo",
+   "qtd": 7,
+   "reg": "adm",
+   "folg": false,
+   "esc": "5x2",
+   "frente": "Administrativo",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Comboio",
+   "qtd": 5,
+   "reg": "adm",
+   "folg": false,
+   "esc": "5x2",
+   "frente": "Comboio",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Pá carregadeira",
+   "qtd": 1,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Linha amarela",
+   "papel": "operador"
+  },
+  {
+   "nome": "Motoniveladora",
+   "qtd": 1,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Linha amarela",
+   "papel": "operador"
+  },
+  {
+   "nome": "Escavadeira",
+   "qtd": 1,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Linha amarela",
+   "papel": "operador"
+  },
+  {
+   "nome": "Caminhão caçamba",
+   "qtd": 3,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Linha amarela",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Rolo compactador (avulso)",
+   "qtd": 1,
+   "reg": "1",
+   "folg": false,
+   "esc": "4x2_12",
+   "frente": "Linha amarela",
+   "papel": "operador"
+  },
+  {
+   "nome": "Trator eletroímã (avulso)",
+   "qtd": 1,
+   "reg": "1",
+   "folg": false,
+   "esc": "4x2_12",
+   "frente": "Linha amarela",
+   "papel": "operador"
+  },
+  {
+   "nome": "Caminhão molhando trajeto",
+   "qtd": 1,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Linha amarela",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Bombeiro",
+   "qtd": 7,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Linha amarela",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Ônibus indústria",
+   "qtd": 1,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Ônibus",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Ônibus preparo de solo",
+   "qtd": 1,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Ônibus",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Ônibus irrigação (avulso)",
+   "qtd": 2,
+   "reg": "1",
+   "folg": false,
+   "esc": "4x2_12",
+   "frente": "Ônibus",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Ônibus plantio",
+   "qtd": 2,
+   "reg": "3",
+   "folg": true,
+   "esc": "4x2_12",
+   "frente": "Ônibus",
+   "papel": "motorista"
+  },
+  {
+   "nome": "Ônibus tratos",
+   "qtd": 2,
+   "reg": "adm",
+   "folg": false,
+   "esc": "5x2",
+   "frente": "Ônibus",
+   "papel": "motorista"
+  }
+ ],
+ "frentes": {
+  "Plantio": "#E06A3A",
+  "Linha amarela": "#E0A21A",
+  "Irrigação": "#2F6FD0",
+  "Tratos": "#8E5BB5",
+  "Preparo de solo": "#B0472A",
+  "Ônibus": "#1FA37A",
+  "Oficina": "#5A6072",
+  "Administrativo": "#12224A",
+  "Comboio": "#A6620A"
+ }
+}

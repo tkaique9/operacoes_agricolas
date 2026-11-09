@@ -162,12 +162,18 @@ def dados():
         if reg:   # turnos e folguista anotados
             e["reg"], e["folg"] = reg
         frota.append(e)
+    frentes = FRENTES
+    # a frota da escala do Transporte de dezembro (fat.py, 09/11/2026), para a necessidade bater com a aba FAT
+    fe = AQUI / "frota_escala.json"
+    if fe.exists():
+        x = json.loads(fe.read_text(encoding="utf-8"))
+        frota, frentes = x["frota"], x["frentes"]
     adm = AQUI / "adm.json"   # ADM da área agrícola, só contagens (python adm.py)
     rural = AQUI / "rural.json"   # escala rural, só contagens (python rural.py)
     pessoal = AQUI / "pessoal_frota.json"   # motoristas e operadores ativos, só contagens (python pessoal_frota.py)
     fat = AQUI / "fat.json"   # fila de quem tem direito ao FAT, sem nomes (python fat.py)
     return {"area": "Oficina, Operacional, ADM e Rural", "base": "20/10/2026", "escalas": escalas, "deps": deps, "dia": dia,
-            "tot": tot, "frota": frota, "frentes": FRENTES, "clt_op": clt_operacao(),
+            "tot": tot, "frota": frota, "frentes": frentes, "clt_op": clt_operacao(),
             "adm": json.loads(adm.read_text(encoding="utf-8")) if adm.exists() else None,
             "rural": json.loads(rural.read_text(encoding="utf-8")) if rural.exists() else None,
             "pessoal": json.loads(pessoal.read_text(encoding="utf-8")) if pessoal.exists() else None,

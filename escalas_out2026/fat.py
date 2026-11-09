@@ -212,7 +212,8 @@ def escala_transporte():
             for j, l in enumerate(ls):
                 m = re.match(r"ESCALA DE FOLGA . (.+?) . DEZEMBRO", l)
                 if m and j + 1 < len(ls) and re.match(r"^(MOT|OP)-", ls[j + 1]):
-                    cur = {"ativ": m.group(1), "papel": "motorista" if ls[j + 1].startswith("MOT") else "operador", "pos": 0}
+                    cur = {"ativ": m.group(1), "papel": "motorista" if ls[j + 1].startswith("MOT") else "operador", "pos": 0,
+                           "cod": re.match(r"^(.+?)\s*-\s*\(\d+X\d+\)", ls[j + 1]).group(1).strip(), "regime": "5x2" if "5x2" in ls[j + 1] else "4x2"}
                     esc.append(cur)
                 elif cur and (re.match(r"^\d{4,6}[A-Z]", l) or l.startswith("A ESCALAR")):
                     cur["pos"] += 1
@@ -226,8 +227,54 @@ def escala_transporte():
         a["escalas"] += 1
         a[e["papel"]] += e["pos"]
     lista = sorted(ativ.values(), key=lambda a: -(a["operador"] + a["motorista"]))
+    frota_da_escala(esc, grupo)
     return {"fonte": f"Escala de folga da operação, dezembro de 2026 (Transporte, {emit})", "atividades": lista,
             "precisa": {p: sum(a[p] for a in lista) for p in ("operador", "motorista")}}
+
+
+# frota do estudo de escalas (página Operacional) tirada da escala do Transporte, para a necessidade das duas páginas
+# bater (09/11/2026): cada escala vira um equipamento. 4x2 de 12 h com folguista = 3 pessoas por equipamento (dia, noite
+# e o folguista); a sobra que não fecha 3 entra como posto avulso de 1 turno sem folguista (1 pessoa); 5x2 = ADM, 1 por
+# posto. A escala de cada um já vem escolhida: 4x2 de 12 h ou 5x2
+FROTA_ESCALA = AQUI / "frota_escala.json"
+CORES_ATIV = {"PLANTIO": "#E06A3A", "LINHA AMARELA": "#E0A21A", "IRRIGAÇÃO": "#2F6FD0", "TRATOS": "#8E5BB5",
+              "PREPARO DE SOLO": "#B0472A", "ÔNIBUS": "#1FA37A", "OFICINA": "#5A6072", "ADMINISTRATIVO": "#12224A",
+              "COMBOIO": "#A6620A"}
+# nome de cada escala pelo código do relatório; sem nome aqui, sai do próprio código
+NOMES_ESCALA = {
+    "OP-PLANTADORA-PLANTIO_F1": "Plantadora F1", "OP-TRATOR APOIO-PLANTIO_F1": "Trator apoio F1",
+    "OP-COLHEDORA-MUDA_F1": "Colhedora muda F1", "OP-TR-TRANSB.-MUDA_F1": "Trator transbordo muda F1",
+    "MOT-CAM-CANAVIEIRO-MUDA_F1": "Caminhão canavieiro muda F1", "OP-PLANTADORA-PLANTIO_F2": "Plantadora F2",
+    "OP-TRATOR APOIO-PLANTIO_F2": "Trator apoio F2", "OP-COLHEDORA-MUDA_F2": "Colhedora muda F2",
+    "OP-TR-TRANSB.-MUDA_F2": "Trator transbordo muda F2", "MOT-CAM-CANAVIEIRO-MUDA_F2": "Caminhão canavieiro muda F2",
+    "MOT-PATIO": "Motorista de pátio", "OP-APOIO-PATIO": "Operador apoio pátio", "MOT-EQUIPAMENTOS-PATIO": "Prancha, IMAVE e pipa",
+    "OP-OFICINA": "Operador oficina", "OP-PREPARO DE SOLO": "Trator preparo de solo", "OP-IRRIGAÇÃO-II": "Operador irrigação",
+    "MOT-TRATOS-I": "Motorista I tratos", "MOT-TRATOS-II": "Motorista II tratos", "OP-TRATOS-I": "Operador I tratos",
+    "OP-TRATOS-II": "Operador II tratos", "OP-TRATOS-III": "Operador III tratos", "MOT-ADMINISTRATIVO": "Motorista administrativo",
+    "MOT-COMBOIO": "Comboio", "OP-PA CARREGADEIRA-LINHA AMARELA": "Pá carregadeira", "OP-MOTONIVELADORA-LINHA AMARELA": "Motoniveladora",
+    "OP-ESCAVADEIRA-LINHA AMARELA": "Escavadeira", "MOT-CACAMBA-LINHA AMARELA": "Caminhão caçamba",
+    "OP-ROLO COMPACTADOR-LINHA AMARELA": "Rolo compactador", "OP-TRATOR ELETROIMA-LINHA AMARELA": "Trator eletroímã",
+    "MOT-MOLHANDO TRAJETO-LINHA AMARELA": "Caminhão molhando trajeto", "MOT-BOMBEIRO-LINHA AMARELA": "Bombeiro",
+    "MOT-ONIBUS-INDUSTRIA": "Ônibus indústria", "MOT-ONIBUS-PREPARO SOLO": "Ônibus preparo de solo",
+    "MOT-ONIBUS-IRRIGACAO": "Ônibus irrigação", "MOT-ONIBUS-COLHEITA MUDA 1": "Ônibus plantio", "MOT-ONIBUS-TRATOS": "Ônibus tratos",
+}
+
+
+def frota_da_escala(esc, grupo):
+    frota = []
+    for e in esc:
+        cod = e["cod"]
+        nome = NOMES_ESCALA.get(cod) or cod.split("-", 1)[-1].replace("_", " ").capitalize()
+        base = {"frente": grupo(e["ativ"]).capitalize(), "papel": e["papel"]}
+        if e["regime"] == "5x2":
+            frota.append({"nome": nome, "qtd": e["pos"], "reg": "adm", "folg": False, "esc": "5x2", **base})
+            continue
+        if e["pos"] // 3:
+            frota.append({"nome": nome, "qtd": e["pos"] // 3, "reg": "3", "folg": True, "esc": "4x2_12", **base})
+        if e["pos"] % 3:
+            frota.append({"nome": nome + " (avulso)", "qtd": e["pos"] % 3, "reg": "1", "folg": False, "esc": "4x2_12", **base})
+    frentes = {g.capitalize(): c for g, c in CORES_ATIV.items()}
+    FROTA_ESCALA.write_text(json.dumps({"frota": frota, "frentes": frentes}, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
 def escolhidos():
