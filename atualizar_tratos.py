@@ -813,9 +813,45 @@ def retira_fazendas(tab):
             sec["linhas"] = novas
 
 
+# Erros de fórmula da planilha corrigidos (pedido de 10/11/2026). Fica como a planilha o que só parece não fechar:
+# os subtotais e totais somam também as ordens encerradas, que a impressão não lista, então "a tratar − aplicada"
+# no total não é o "a realizar" (este é a soma das fazendas abertas, e essa soma bate)
+def corrige_formulas(tab):
+    for p in tab["programas"]:
+        for sec in p["secoes"]:
+            linhas = sec["linhas"]
+            # 1ª catação: fazenda com exatamente 20 dias de atraso entra nas duas colunas (> 20 e < 20 dias) com a
+            # mesma área; fica só em "< 20 dias" (20 ainda não passou de 20) e sai do subtotal/total
+            if p["tipo"] == "cat1":
+                tira = 0.0
+                for l in linhas:
+                    v = l["v"]
+                    if l["t"] == "faz" and (v.get("maior20") or 0) > 0 and (v.get("menor20") or 0) > 0:
+                        conta = (v.get("aberta") or 0) - (v.get("reforma") or 0) - (v.get("realTotal") or 0)
+                        if abs(v["maior20"] + v["menor20"] - conta) > 0.05 and abs(v["menor20"] - conta) <= 0.05:
+                            print(f"  fórmula corrigida: 1ª catação {l['cod']} {l['prop']} ({l.get('atraso')} dias) "
+                                  f"estava nas duas colunas; fica só em < 20 dias ({v['menor20']})")
+                            tira += v["maior20"]
+                            v["maior20"] = 0.0
+                    elif l["t"] in ("sub", "tot") and tira:
+                        v["maior20"] = r2((v.get("maior20") or 0) - tira)
+                        if l["t"] == "sub":
+                            tira = 0.0
+            # pré-emergência: o total "a colher" tem de ser a soma das regiões (a planilha somou 275,77 a mais)
+            if p["tipo"] == "pre":
+                subs = [l for l in linhas if l["t"] == "sub"]
+                for l in linhas:
+                    if l["t"] == "tot" and subs:
+                        soma = r2(sum(s["v"].get("aColher") or 0 for s in subs))
+                        if abs((l["v"].get("aColher") or 0) - soma) > 0.05:
+                            print(f"  fórmula corrigida: pré-emergência, total a colher {l['v']['aColher']} → {soma} (soma das regiões)")
+                            l["v"]["aColher"] = soma
+
+
 def tabelas_do_pdf(pdf):
     import programas_pdf
     tab = programas_pdf.ler(pdf)
+    corrige_formulas(tab)
     cargill_a_parte(tab)
     retira_fazendas(tab)
     pre_cargill_fornecedor(tab)
