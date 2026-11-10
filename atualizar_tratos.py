@@ -923,6 +923,18 @@ def semana_do_pdf(dados, pdf):
     Histórico dos meses e as atividades que a impressão não traz ficam como estão."""
     import programas_pdf
     s = programas_pdf.ler_semana(pdf)
+    # impressão de 10/11/2026: os dias impressos são da semana fechada (02 a 08/11), mas o DIA REF já é o dia seguinte
+    # (09/11) e "Realizado Dia/Semana/Mês" já contam esse dia. A semana é a dos dias impressos: realizado da semana =
+    # soma dos dias e o do mês sem o do DIA REF
+    if s["datas"] and s["diaRef"] and s["diaRef"] > max(s["datas"]):
+        fim = max(s["datas"])
+        print(f"  DIA REF {s['diaRef']} depois dos dias impressos: a semana vai até {fim}, sem o realizado de {s['diaRef']}")
+        for r in s["atividades"]:
+            if r.get("realMes") is not None:
+                r["realMes"] = r2(r["realMes"] - (r.get("realDia") or 0))
+            r["realSemana"] = r2(sum(v for v in r["dias"].values() if v)) or None
+            r["realDia"] = r["dias"].get(fim)
+        s["diaRef"] = fim
     sem = dados["semana"]
     ref = datetime.date.fromisoformat(s["diaRef"])
     seg = ref - datetime.timedelta(days=ref.weekday())
@@ -1004,7 +1016,13 @@ def semana_do_pdf(dados, pdf):
     for fr in dados["frentes"]:
         for a in fr["atividades"]:
             for (nome, dia), ha in LANCAMENTOS.items():
-                if a["nome"] != nome or dia not in dias:
+                if a["nome"] != nome:
+                    continue
+                if dia not in dias:
+                    # dia de uma semana já passada: o mês dele veio de novo do PDF (sem o lançamento), soma de novo
+                    if a["nome"] in usados and dia[:7] in (ym, ym_ant):
+                        a["mes"][dia[:7]] = r2((a["mes"].get(dia[:7]) or 0) + ha)
+                        print(f"  lançado de novo no mês: {nome} {dia} +{ha} ha")
                     continue
                 k = dias.index(dia)
                 a["dias"][k] = r2((a["dias"][k] or 0) + ha)

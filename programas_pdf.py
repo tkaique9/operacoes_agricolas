@@ -86,6 +86,9 @@ class Layout:
             x = w[2]
         pos = {sem_acento(w[4]): w for w in sorted(cab, key=lambda w: -w[0])}   # primeira ocorrência
         self.x_cod = pos["COD"][0]
+        # a tabela pode andar na página (10/11/2026: ~55 pt para a direita): a linha da tabela começa até
+        # 65 pt depois do título "Região"
+        self.x_ini = pos["REGIAO"][0] + 65 if "REGIAO" in pos else 80
         if tipo == "adub":
             # títulos centralizados: a fronteira entre propriedade e bloco fica no meio deles.
             # O bloco começa logo depois do meio (27/10/2026: meio 244, bloco em 246): com
@@ -258,9 +261,17 @@ def ler(path):
             # seções da adubação
             if tipo == "adub":
                 # "ADUBAÇÃO LOCALIZADA" virou "ADUBAÇÃO PRÓPRIO" em 27/10/2026 (a localizada parou)
-                ms = re.match(r"^(ADUBACAO LOCALIZADA|ADUBACAO PROPRI[OA]|AREA DE QUEIMA|ADUBACAO COM COCHO)(.*)$", t)
+                # 10/11/2026: quadros novos "ÁREA AGUARDANDO AVALIAÇÃO" e "ÁREA ORDEM ABERTO - REGIÃO n"
+                ms = re.match(r"^(ADUBACAO LOCALIZADA|ADUBACAO PROPRI[OA]|AREA DE QUEIMA|ADUBACAO COM COCHO|"
+                              r"AREA AGUARDANDO AVALIACAO|AREA ORDEM ABERTO)(.*)$", t)
                 if ms and not any(NUM.match(w[4]) and w[0] > 300 for w in ws):
                     titulo = texto([w for w in ws if not re.fullmatch(r"\d{2}/\d{2}/\d{4}", w[4]) and w[0] < 600])
+                    # a impressão cola um "1" solto no fim do título e às vezes corta a região ("... PRADO - 1")
+                    titulo = re.sub(r"(REGI\S+ \d+) \d+$", r"", titulo.strip())
+                    titulo = re.sub(r"\s+-\s+\d+$", "", titulo)
+                    if not re.search(r"REGI\S+ \d+$", titulo):
+                        titulo = re.sub(r"\s+\d+$", "", titulo)
+                    titulo = re.sub(r"\s+-$", "", titulo)
                     secao = {"titulo": titulo.title().replace(" Com ", " com ").replace(" Do ", " do ").replace(" De ", " de "), "linhas": []}
                     prog["secoes"].append(secao)
                     continue
@@ -278,12 +289,18 @@ def ler(path):
                 continue
             if not lay:
                 continue
+            # 10/11/2026: o total da Alencar região 2 saiu sem o rótulo, só os números no meio da página
+            if tipo == "adub" and NUM.match(ws[0][4]) and 300 < ws[0][0] < lay.x_num + 60 and sum(1 for w in ws if NUM.match(w[4])) >= 5                     and secao is not None:
+                tot = linha_total(lay, ws, "tot")
+                tot["rot"] = "TOTAL ADUBAÇÃO C/ COCHO"     # o mesmo rótulo dos outros quadros (a página monta o nome)
+                secao["linhas"].append(tot)
+                continue
             if tipo == "pre" and ws[0][0] > 500:
                 for chave in ("TOTAL ENCERRADO", "TOTAL ABERTO", "GERAL"):
                     if t.startswith(chave) and NUM.match(ws[-1][4]):
                         prog["extras"][chave.title()] = num(ws[-1][4])
                 continue
-            if ws[0][0] > 80:
+            if ws[0][0] > lay.x_ini:
                 continue
             if tipo != "adub" and not prog["secoes"]:
                 prog["secoes"].append({"titulo": "", "linhas": []})
@@ -338,7 +355,7 @@ def colunas_do_cabecalho(ws):
     todas, devolve None (vale DIREITA)."""
     pal = [(sem_acento(w[4]), w[2]) for w in ws]
     achou = {}
-    eq = [x for p, x in pal if p.startswith("EQUIPAMENTOS/PESSO")]
+    eq = [x for p, x in pal if p.startswith("EQUIPAMENTOS/PESS")]   # 10/11/2026: "Equipamentos/Pess" cortado
     dia = [x for p, x in pal if p == "DIA"]
     sem = [x for p, x in pal if p == "SEMANA"]
     mes = [x for p, x in pal if p == "MES"]
@@ -375,9 +392,10 @@ def ler_semana(path):
         if "EQUIPAMENTOS/PESSOAS" in t:
             direita = colunas_do_cabecalho(ws) or DIREITA
             continue
-        dd = [w for w in ws if re.fullmatch(r"\d{2}/\d{2}", w[4]) and 150 < w[0] < 380]
+        # dias do bloco: "02/11" ou, desde 10/11/2026, "2/11"
+        dd = [w for w in ws if re.fullmatch(r"\d{1,2}/\d{1,2}", w[4]) and 150 < w[0] < 390]
         if len(dd) >= 5:
-            datas = [((w[0] + w[2]) / 2, f"{ano}-{w[4][3:5]}-{w[4][:2]}") for w in dd]
+            datas = [((w[0] + w[2]) / 2, f"{ano}-{int(w[4].split('/')[1]):02d}-{int(w[4].split('/')[0]):02d}") for w in dd]
             continue
         nome = " ".join(w[4] for w in ws if w[2] < 160)
         nums = [w for w in ws if w[0] >= 150 and NUM.match(w[4])]
@@ -390,11 +408,11 @@ def ler_semana(path):
         dias, quadro = {}, {}
         for w in nums:
             cx = (w[0] + w[2]) / 2
-            if cx < 380 and datas:
+            if datas and cx < max(x for x, _d in datas) + 18:
                 d = min(datas, key=lambda c: abs(c[0] - cx))[1]
                 if w[4] != "-":
                     dias[d] = num(w[4])
-            elif cx >= 380:
+            elif cx >= 380 and not (datas and cx < max(x for x, _d in datas) + 18):
                 ref = w[2] if w[4] != "-" else cx
                 k, x = min(direita, key=lambda a: abs(a[1] - ref))
                 if abs(x - ref) <= 14 and not k.startswith("_") and w[4] != "-":
