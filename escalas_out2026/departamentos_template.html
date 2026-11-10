@@ -1752,9 +1752,7 @@ function resumoFinal() {
   const of = totais(d => S.esc[d.dep]), fr = totaisOp(d => S.esc[d.dep]);
   const ar = AREAS.map(a => ({ a, t: totaisArea(a, d => S.esc[d.dep]) }));
   const T = { hoje: HOJE + fr.hoje + ar.reduce((x, { a }) => x + a.dados.n + mantidos(a), 0), fica: of.quadro + fr.need + ar.reduce((x, { a, t }) => x + t.quadro + mantidos(a), 0) };
-  const sf = (AREAS.find(a => a.dados.safra) || {}).dados?.safra || null;
-  $("#rsChips").innerHTML = [[fmt(T.hoje), "Quadro hoje"], [fmt(T.fica), "Com as escalas"], [sinal(T.fica - T.hoje), `Diferença · ${pctTxt(T.fica - T.hoje, T.hoje) || "0%"}`, T.fica > T.hoje ? "pos" : "zero"],
-    ...(sf ? [[fmt(sf.demitir), "Rural: tratos na entressafra"]] : [])]
+  $("#rsChips").innerHTML = [[fmt(T.hoje), "Quadro hoje"], [fmt(T.fica), "Com as escalas"], [sinal(T.fica - T.hoje), `Diferença · ${pctTxt(T.fica - T.hoje, T.hoje) || "0%"}`, T.fica > T.hoje ? "pos" : "zero"]]
     .map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
   // oficina: departamentos com turno e, embaixo, os de segunda a sexta
   const dias = D.dia.filter(z => !z.parte);
