@@ -281,6 +281,8 @@ ul.rs-dl li .df, .rs-tot .df { text-align: right; font-variant-numeric: tabular-
 ul.rs-dl li.sep { display: block; border-bottom: 0; padding: 5px 0 1px; font: 600 11.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--mut); }
 .rs-safra { margin-top: 10px; padding: 8px 10px; background: var(--bgsoft); border-left: 3px solid var(--red); font: 400 13.5px var(--f-serif); color: var(--ink); line-height: 1.4; }
 .rs-safra b { font: 700 15px var(--f-display); color: var(--navy); }
+.rs-manter { margin-top: 6px; padding: 8px 10px; background: var(--bgsoft); border-left: 3px solid var(--green); font: 600 13.5px var(--f-serif); color: var(--ink); line-height: 1.4; }
+.rs-manter b { font: 700 15px var(--f-display); color: var(--navy); }
 @media screen and (max-width: 1180px) { .rs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media screen and (max-width: 900px) { .rs-grid { grid-template-columns: minmax(0, 1fr); flex: 0 0 auto; } }
 html.imprimindo .rs-grid { flex: none; grid-template-columns: repeat(4, minmax(0, 1fr)); }   /* sem o gráfico, as 4 áreas numa folha */
@@ -1747,7 +1749,8 @@ function resumoFinal() {
     let l = a.itens.map(d => { const id = S.esc[d.dep], r = conta(d, id); return linhaRs(d.nome, "", id, d.n, r.fica); }).join("");
     l += `<li class="sep">Segunda a sexta</li>` + a.dados.deps.filter(d => d.dia).map(d => linhaRs(d.nome, "", "dia", d.dia, d.dia)).join("");
     const s_ = a.dados.safra;
-    const extra = s_ ? `<div class="rs-safra">Fim da safra: quadro de hoje <b>${fmt(s_.quadro)}</b> → <b>${fmt(s_.quadro - s_.demitir)}</b> (−${fmt(s_.demitir)}: ${esc(s_.demitir_por.map(([n, v]) => `${n} ${v}`).join(", "))}).</div>` : "";
+    const extra = s_ ? `<div class="rs-safra">Fim da safra: quadro de hoje <b>${fmt(s_.quadro)}</b> → <b>${fmt(s_.quadro - s_.demitir)}</b> (−${fmt(s_.demitir)}: ${esc(s_.demitir_por.map(([n, v]) => `${n} ${v}`).join(", "))}).</div>
+      <div class="rs-manter">MANTER <b>${fmt(s_.demitir)}</b> funcionários na entressafra nos tratos culturais</div>` : "";
     return colunaRs(a.nome, "pessoas", a.dados.n, t.quadro, escUsadas([...a.itens.map(d => [S.esc[d.dep], 1]), ["dia", a.dados.deps.filter(d => d.dia).length]]) + " departamentos", l, extra);
   });
   $("#rsGrid").innerHTML = [colOf, colFr, ...colAr].join("");
