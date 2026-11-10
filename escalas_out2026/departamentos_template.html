@@ -864,6 +864,9 @@ function totaisArea(a, escolha) {
   a.itens.forEach(d => { let id = escolha(d); if (!conta(d, id)) id = "5x2"; const r = conta(d, id); contr += Math.max(r.c, 0); sobra += r.sobra; fica += r.fica; if (ORD[ESC[id].risco] > ORD[risco]) risco = ESC[id].risco; });
   return { contr, sobra, risco, quadro: fica + a.dia, hoje: a.dados.n };
 }
+// rural: quem não está na escala fica na entressafra nos tratos culturais (pedido de 10/11/2026); no resumo e na capa o
+// quadro de hoje e o final contam essas pessoas, não só a escala
+const mantidos = a => a.dados.safra ? a.dados.safra.demitir : 0;
 
 /* ---------- conta ---------- */
 function precisa(e, P, vol, nt = 3) {
@@ -972,7 +975,7 @@ function capa() {
   const ar = AREAS.map(a => totaisArea(a, d => S.esc[d.dep])), ar5 = AREAS.map(a => totaisArea(a, () => "5x2")), sc = l => l.reduce((x, t) => x + t.contr, 0);
   const quem = ["oficina", "frota", ...AREAS.map(a => a.mod)].reduce((t, x, i, l) => t + (i ? (i === l.length - 1 ? " e " : ", ") : "") + x, "");
   $("#capaBase").textContent = `Base de ${D.base}`;
-  $("#capaSub").textContent = `Oficina ${fmt(HOJE)} pessoas · frota ${nq} equipamentos${AREAS.map(a => ` · ${a.nome} ${fmt(a.dados.n)} pessoas`).join("")}. A 5x2 e as 2 folgas por semana valem a partir de 15/12/2026.`;
+  $("#capaSub").textContent = `Oficina ${fmt(HOJE)} pessoas · frota ${nq} equipamentos${AREAS.map(a => ` · ${a.nome} ${fmt(a.dados.n + mantidos(a))} pessoas`).join("")}. A 5x2 e as 2 folgas por semana valem a partir de 15/12/2026.`;
   $("#capaKpis").innerHTML = [
     [`${fmt(HOJE)} → ${fmt(atual.quadro)}`, "Quadro da oficina", `contratar ${sinal(atual.contr)} na escolha · ${sinal(t5.contr)} com 5x2 em todos`, ""],
     [`${fmt(o.hoje)} → ${fmt(o.need)}`, "Operadores da frota", so ? `${fmt(so.ativos)} ativos · sem atividade: ${fmt(so.sem)} na escolha, ${fmt(so5.sem)} com 5x2 em toda a frota` : `contratar ${sinal(o.contr)} na escolha · ${sinal(o5.contr)} com 5x2 em toda a frota`, ""],
@@ -1204,11 +1207,11 @@ function montaAreas() {
 }
 function chipsArea(a, s) {
   const sf = a.dados.safra;
-  if (sf && s === "PChips") {   // rural: os quadros do painel mostram o fim da safra (quadro de hoje x escala); o detalhe fica na dica
+  if (sf && s === "PChips") {   // rural: os quadros do painel mostram o fim da safra (quem não está na escala fica nos tratos culturais); o detalhe fica na dica
     const por = l => l.map(([n, v]) => `${n} ${v}`).join(" · ");
     $a(a, s).innerHTML = [[fmt(sf.quadro), "Quadro hoje", "", "todos os ativos da área rural"],
-      [`−${fmt(sf.demitir)}`, "Demitir no fim da safra", "pos", `não estão na escala: ${por(sf.demitir_por)}`],
-      [fmt(sf.quadro - sf.demitir), "Após a safra", "", `${fmt(sf.quadro)} − ${fmt(sf.demitir)}: ficam os da escala`]]
+      [fmt(sf.demitir), "Entressafra: tratos culturais", "", `não estão na escala e ficam na entressafra nos tratos culturais: ${por(sf.demitir_por)}`],
+      [fmt(sf.quadro), "Após a safra", "", `${fmt(sf.quadro - sf.demitir)} da escala e ${fmt(sf.demitir)} nos tratos culturais: fica o quadro todo`]]
       .map(([v, k, c, t]) => `<div class="chip" title="${esc(t)}"><div class="v ${c}">${v}</div><div class="k">${k}</div></div>`).join("");
     return;
   }
@@ -1748,10 +1751,10 @@ const escUsadas = pares => { const c = {}; pares.forEach(([id, n]) => { c[id] = 
 function resumoFinal() {
   const of = totais(d => S.esc[d.dep]), fr = totaisOp(d => S.esc[d.dep]);
   const ar = AREAS.map(a => ({ a, t: totaisArea(a, d => S.esc[d.dep]) }));
-  const T = { hoje: HOJE + fr.hoje + ar.reduce((x, { a }) => x + a.dados.n, 0), fica: of.quadro + fr.need + ar.reduce((x, { t }) => x + t.quadro, 0) };
+  const T = { hoje: HOJE + fr.hoje + ar.reduce((x, { a }) => x + a.dados.n + mantidos(a), 0), fica: of.quadro + fr.need + ar.reduce((x, { a, t }) => x + t.quadro + mantidos(a), 0) };
   const sf = (AREAS.find(a => a.dados.safra) || {}).dados?.safra || null;
   $("#rsChips").innerHTML = [[fmt(T.hoje), "Quadro hoje"], [fmt(T.fica), "Com as escalas"], [sinal(T.fica - T.hoje), `Diferença · ${pctTxt(T.fica - T.hoje, T.hoje) || "0%"}`, T.fica > T.hoje ? "pos" : "zero"],
-    ...(sf ? [[`−${fmt(sf.demitir)}`, "Rural: fim da safra", "pos"]] : [])]
+    ...(sf ? [[fmt(sf.demitir), "Rural: tratos na entressafra"]] : [])]
     .map(([v, k, c]) => `<div class="chip"><div class="v ${c || ""}">${v}</div><div class="k">${k}</div></div>`).join("");
   // oficina: departamentos com turno e, embaixo, os de segunda a sexta
   const dias = D.dia.filter(z => !z.parte);
@@ -1770,10 +1773,11 @@ function resumoFinal() {
   const colAr = ar.map(({ a, t }) => {
     let l = a.itens.map(d => { const id = S.esc[d.dep], r = conta(d, id); return linhaRs(d.nome, "", id, d.n, r.fica); }).join("");
     l += `<li class="sep">Segunda a sexta</li>` + a.dados.deps.filter(d => d.dia).map(d => linhaRs(d.nome, "", "dia", d.dia, d.dia)).join("");
-    const s_ = a.dados.safra;
-    const extra = s_ ? `<div class="rs-safra">Fim da safra: quadro de hoje <b>${fmt(s_.quadro)}</b> → <b>${fmt(s_.quadro - s_.demitir)}</b> (−${fmt(s_.demitir)}: ${esc(s_.demitir_por.map(([n, v]) => `${n} ${v}`).join(", "))}).</div>
-      <div class="rs-manter">MANTER <b>${fmt(s_.demitir)}</b> funcionários na entressafra nos tratos culturais</div>` : "";
-    return colunaRs(a.nome, "pessoas", a.dados.n, t.quadro, escUsadas([...a.itens.map(d => [S.esc[d.dep], 1]), ["dia", a.dados.deps.filter(d => d.dia).length]]) + " departamentos", l, extra);
+    const s_ = a.dados.safra, m = mantidos(a);
+    if (m) l += linhaRs("Tratos culturais · entressafra", "", "dia", m, m);
+    const extra = s_ ? `<div class="rs-safra">Fim da safra: dos <b>${fmt(s_.quadro)}</b> de hoje, <b>${fmt(m)}</b> não estão na escala (${esc(s_.demitir_por.map(([n, v]) => `${n} ${v}`).join(", "))}) e ficam nos tratos culturais.</div>
+      <div class="rs-manter">MANTER <b>${fmt(m)}</b> funcionários na entressafra nos tratos culturais</div>` : "";
+    return colunaRs(a.nome, "pessoas", a.dados.n + m, t.quadro + m, escUsadas([...a.itens.map(d => [S.esc[d.dep], 1]), ["dia", a.dados.deps.filter(d => d.dia).length + (m ? 1 : 0)]]) + " departamentos", l, extra);
   });
   $("#rsGrid").innerHTML = [colOf, colFr, ...colAr].join("");
 }

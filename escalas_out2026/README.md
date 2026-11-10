@@ -51,7 +51,9 @@ cadastro, operadores de máquinas (335) e motoristas (250) são CLT urbano e, co
 ### Resumo para a diretoria
 
 Página 14 (módulo Resumo, antes da Referência), para imprimir numa folha A4 e apresentar **como fica o quadro**: no topo,
-quadro hoje, com as escalas escolhidas, a diferença e o rural no fim da safra; embaixo, uma coluna por área (oficina,
+quadro hoje, com as escalas escolhidas, a diferença e os do rural que ficam na entressafra nos tratos culturais (os 34
+fora da escala rural, mantidos a pedido de 10/11/2026: contam no quadro de hoje e no final, linha "Tratos culturais ·
+entressafra" na coluna do rural); embaixo, uma coluna por área (oficina,
 frota, ADM e rural) com cada departamento (na frota, cada tipo de equipamento), a escala escolhida e as pessoas hoje →
 com a escala. Tudo sai das escolhas feitas na página (`resumoFinal()`). Na frota a base é de operadores necessários
 (3,6 por equipamento na 5x1), não o quadro.
